@@ -1,0 +1,160 @@
+package International_Trade_Union.controllers;
+
+import International_Trade_Union.about_us_engDraft.AboutUsEngDraft;
+import International_Trade_Union.governments.Director;
+import International_Trade_Union.governments.Directors;
+import International_Trade_Union.governments.UtilsGovernment;
+import International_Trade_Union.originalCorporateCharter.OriginalPreamble;
+import International_Trade_Union.originalCorporateCharter.OriginalPreambleEng;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
+import International_Trade_Union.model.Account;
+import International_Trade_Union.model.User;
+import International_Trade_Union.network.AllTransactions;
+import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.*;
+import International_Trade_Union.utils.base.Base;
+import International_Trade_Union.utils.base.Base58;
+import International_Trade_Union.vote.Laws;
+import International_Trade_Union.vote.VoteEnum;
+
+
+import java.io.IOException;
+import java.net.http.WebSocket;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Controller
+public class MainController {
+
+    @GetMapping("/")
+    public String home(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        model.addAttribute("title", "Corporation International Trade Union.");
+        Map<String, Account> balances = new HashMap<>();
+//        Blockchain blockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
+
+        //догрузить блокчейн
+//        List<Block> blocks = UtilsBlock.readLineObject(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+//        balances = UtilsBalance.calculateBalances(blocks);
+        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+
+
+        Account account = UtilsBalance.getBalance(User.getUserAddress(), balances);
+        model.addAttribute("account", account);
+
+        return "home";
+    }
+
+    @PostMapping("/setMinner")
+    public ResponseEntity<String> setMinnerAddress(@RequestParam(value = "setMinner") String setMinner, RedirectAttributes redirectAttrs){
+        System.out.println("MainController:  " + setMinner);
+        UtilsFileSaveRead.save(setMinner, Seting.ORIGINAL_ACCOUNT, false);
+        return new ResponseEntity<>("change address: " + setMinner, HttpStatus.OK);
+    }
+
+
+
+    @GetMapping("about")
+    public String aboutUs(Model model){
+        model.addAttribute("title", "ABOUT US");
+        model.addAttribute("eng", OriginalPreambleEng.ARTICLE_0);
+        model.addAttribute("rus", OriginalPreamble.ARTICLE_0);
+        return "about";
+    }
+    @GetMapping("result-sending")
+    public String resultSending(Model model){
+
+        return "result-sending";
+    }
+
+    @PostMapping("/")
+    public String new_transaction(
+            @RequestParam  String sender,
+            @RequestParam  String recipient,
+                                   Double dollar,
+                                   Double stock,
+                                   Double reward,
+                                  @RequestParam  String vote,
+                                  @RequestParam  String password,
+                                  RedirectAttributes redirectAttrs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        Base base = new Base58();
+        vote = vote.toUpperCase(Locale.ROOT);
+        Laws laws =  new Laws();
+        laws.setLaws(new ArrayList<>());
+        laws.setHashLaw("");
+        laws.setPacketLawName("");
+        DtoTransaction dtoTransaction = new DtoTransaction(
+                sender,
+                recipient,
+                dollar,
+                stock,
+                laws,
+                reward,
+                VoteEnum.valueOf(vote));
+        PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));
+        byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
+        System.out.println("Main Controller: new transaction: vote: " + vote);
+        redirectAttrs.addFlashAttribute("title", "sending result!!!");
+        redirectAttrs.addFlashAttribute("sender", sender);
+        redirectAttrs.addFlashAttribute("recipient", recipient);
+        redirectAttrs.addFlashAttribute("dollar", dollar);
+        redirectAttrs.addFlashAttribute("stock", stock);
+        redirectAttrs.addFlashAttribute("reward", reward);
+        redirectAttrs.addFlashAttribute("vote", vote);
+        dtoTransaction.setSign(sign);
+        Directors directors = new Directors();
+        if(dtoTransaction.verify()){
+
+            //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
+            //отправитель совпадает с законом
+            List<Director> enumPosition = directors.getDirectors();
+            List<String> corporateSeniorPositions = directors.getDirectors().stream()
+                    .map(t->t.getName()).collect(Collectors.toList());
+            System.out.println("LawsController: create_law: " + laws.getPacketLawName() + "contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
+            if(corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(sender, laws)){
+                redirectAttrs.addFlashAttribute("sending", "wrong transaction: Position to be equals whith send");
+                return "redirect:/result-sending";
+            }
+            redirectAttrs.addFlashAttribute("sending", "success");
+            System.out.println("dto MainController: " + dtoTransaction);
+
+            AllTransactions.addTransaction(dtoTransaction);
+            String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
+            for (String s : Seting.ORIGINAL_ADDRESSES) {
+
+                String original = s;
+                String url = s +"/addTransaction";
+                if(BasisController.getExcludedAddresses().contains(url)){
+                    System.out.println("MainController: its your address or excluded address: " + url);
+                    continue;
+                }
+                try {
+                    UtilUrl.sendPost(jsonDto, url);
+
+                }catch (Exception e){
+                    System.out.println("exception discover: " + original);
+
+                }
+            }
+
+
+
+        }
+
+        else
+            redirectAttrs.addFlashAttribute("sending", "wrong transaction");
+        return "redirect:/result-sending";
+    }
+
+
+}

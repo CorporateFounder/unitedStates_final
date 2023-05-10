@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header "></header>
+<div class="container mt-5">
+    <h3 th:text="${title}"/>
+</div>
+<div class="container mt-5">
+
+    <div th:each="instance :${show}">
+        <h4 th:text="${instance.key}"/>
+        <div th:each="el : ${instance.value}" class="alert alert-info mt-2">
+            <h4 th:text="'address law: '+${el.addressLaw}"/>
+            <p th:text="'package law name: '+${el.packageName}"/>
+            <p th:text="'votes: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
+            <p th:text="'votesCorporateCouncilOfReferees: '+${el.votesCorporateCouncilOfReferees}"/>
+            <p th:text="'votesBoardOfDirectors: '+${el.votesBoardOfDirectors}"/>
+            <p th:text="'votesBoardOfShareholders: '+${el.votesBoardOfShareholders}"/>
+            <p th:text="'voteGeneralExecutiveDirector: '+${el.voteGeneralExecutiveDirector}"/>
+            <p th:text="'voteHightJudge: '+${el.voteHightJudge}"/>
+            <p th:text="'founderVote: '+${el.founderVote}"/>
+
+            <a th:href="'/detail-laws-current/' + ${el.addressLaw}" class="btn btn-warning">Details</a>
+        </div>
+    </div>
+
+
+
+</div>
+<footer th:insert="blocks/footer :: footer"></footer>
+
+</body>
+</html>

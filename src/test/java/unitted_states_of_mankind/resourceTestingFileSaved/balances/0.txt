@@ -1,0 +1,3 @@
+{"account":"stExZb8ifLfnFoq4JJuTifpAcscegATH8znhwW26zyTa","digitalDollarBalance":1.500001E7,"digitalStockBalance":1.5000014E7}
+{"account":"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ","digitalDollarBalance":0.0,"digitalStockBalance":0.0}
+{"account":"26BR2t9v6TGMgBi7r35N39YfvnqCAYrZ1XArAdK9Stxe5","digitalDollarBalance":144.0,"digitalStockBalance":200.0}

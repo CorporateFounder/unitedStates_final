@@ -1,0 +1,515 @@
+package International_Trade_Union.controllers;
+
+import International_Trade_Union.config.BLockchainFactory;
+import International_Trade_Union.config.BlockchainFactoryEnum;
+import International_Trade_Union.entity.blockchain.Blockchain;
+import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.governments.Director;
+import International_Trade_Union.governments.Directors;
+import International_Trade_Union.governments.NamePOSITION;
+import International_Trade_Union.model.FIndPositonHelperData;
+import International_Trade_Union.model.Mining;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
+import International_Trade_Union.governments.UtilsGovernment;
+import International_Trade_Union.model.Account;
+import International_Trade_Union.network.AllTransactions;
+import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.*;
+import International_Trade_Union.utils.base.Base;
+import International_Trade_Union.utils.base.Base58;
+import International_Trade_Union.vote.*;
+
+import java.io.IOException;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+
+@Controller
+public class LawsController {
+
+    @GetMapping("detail-laws")
+    public String details(Model model) {
+        return "detail-laws";
+    }
+
+
+    @GetMapping("/detail-laws-current/{addressLaw}")
+    public String lawsDetail(@PathVariable(value = "addressLaw") String addressLaw, RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        System.out.println("LawsController detail-laws-current/{addressLaw}: " + addressLaw);
+        redirectAttrs.addAttribute("title", "detail laws");
+        //Seting.ORIGINAL_CURRENT_FEDERAL_LAWS_FILE
+        List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
+                UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+
+        List<String> currntLaws = new ArrayList<>();
+        for (LawEligibleForParliamentaryApproval lawEligibleForParliamentaryApproval : lawEligibleForParliamentaryApprovals) {
+            int i = 0;
+            if (lawEligibleForParliamentaryApproval.getLaws().getHashLaw().equals(addressLaw)) {
+
+                for (String str : lawEligibleForParliamentaryApproval.getLaws().getLaws()) {
+
+                    currntLaws.add("" + i + ": " + str);
+                    ++i;
+                }
+
+            }
+        }
+
+        currntLaws.forEach(System.out::println);
+        redirectAttrs.addFlashAttribute("laws", currntLaws);
+        return "redirect:/detail-laws";
+    }
+
+    @GetMapping("/detail-laws-all/{addressLaw}")
+    public String lawsDetailAll(@PathVariable(value = "addressLaw") String addressLaw, RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        System.out.println("LawsController /detail-laws-all/{addressLaw}: " + addressLaw);
+        redirectAttrs.addAttribute("title", "detail laws");
+        //ORIGINAL_ALL_CORPORATION_LAWS_FILE
+        List<Laws> laws = UtilsLaws.readLineLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
+        List<String> allLaws = new ArrayList<>();
+        for (Laws laws1 : laws) {
+            int i = 0;
+            if (laws1.getHashLaw().equals(addressLaw)) {
+
+                for (String s : laws1.getLaws()) {
+                    allLaws.add("" + i + ": " + s);
+                    ++i;
+                }
+
+            }
+        }
+
+        redirectAttrs.addFlashAttribute("laws", allLaws);
+        return "redirect:/detail-laws";
+    }
+
+
+    @GetMapping("/current-laws")
+    public String currentLaw(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+        Directors directors = new Directors();
+        Blockchain blockchain = Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
+
+        Map<String, Account> balances = new HashMap<>();
+        //считывать баланс
+        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+
+        List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
+                UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+
+
+        List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blockchain.getBlockchainList(), Seting.BOARDS_BLOCK);
+
+
+        //TODO доработать оптимизацию
+        //TODO избавиться от find position в данном методе
+        Map<Director, FIndPositonHelperData> fIndPositonHelperDataMap = new HashMap<>();
+        for (Director higherSpecialPositions : directors.getDirectors()) {
+            if (higherSpecialPositions.isElectedByCEO()) {
+                fIndPositonHelperDataMap.put(higherSpecialPositions,
+                        new FIndPositonHelperData(higherSpecialPositions, false, false, true, false, false));
+            } else if (higherSpecialPositions.isElectedByBoardOfDirectors()) {
+                fIndPositonHelperDataMap.put(higherSpecialPositions,
+                        new FIndPositonHelperData(higherSpecialPositions, false, false, false, true, false));
+            } else if (higherSpecialPositions.isElectedByCorporateCouncilOfReferees()) {
+                fIndPositonHelperDataMap.put(higherSpecialPositions,
+                        new FIndPositonHelperData(higherSpecialPositions, false, false, false, false, true));
+            } else {
+                fIndPositonHelperDataMap.put(higherSpecialPositions,
+                        new FIndPositonHelperData(higherSpecialPositions, true, true, false, false, false));
+
+            }
+
+        }
+        List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
+                lawEligibleForParliamentaryApprovals,
+                balances,
+                boardOfShareholders,
+                blockchain.getBlockchainList(),
+                Seting.LAW_YEAR_VOTE);
+
+
+
+
+        //минимальное значение количество положительных голосов для того чтобы закон действовал,
+        //позиции избираемые акциями совета директоров
+        List<CurrentLawVotesEndBalance> electedByStockBoardOfDirectors = current.stream()
+                .filter(t -> directors.isElectedByStocks(t.getPackageName()))
+                .filter(t -> t.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString()))
+                .filter(t -> t.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE)
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                .limit(directors.getDirector(NamePOSITION.BOARD_OF_DIRECTORS.toString()).getCount())
+                .collect(Collectors.toList());
+
+
+        //минимальное значение количество положительных голосов для того чтобы закон действовал,
+        //позиции избираемые акциями CORPORATE_COUNCIL_OF_REFEREES
+        List<CurrentLawVotesEndBalance> electedByStockCorporateCouncilOfReferees = current.stream()
+                .filter(t -> directors.isElectedByStocks(t.getPackageName()))
+                .filter(t -> t.getPackageName().equals(NamePOSITION.CORPORATE_COUNCIL_OF_REFEREES.toString()))
+                .filter(t -> t.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE)
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                .limit(directors.getDirector(NamePOSITION.CORPORATE_COUNCIL_OF_REFEREES.toString()).getCount())
+                .collect(Collectors.toList());
+
+
+
+        //позиции созданные советом директоров
+        List<CurrentLawVotesEndBalance> createdByBoardOfDirectors = current.stream()
+                .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
+                .filter(t->t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS)
+                .collect(Collectors.toList());
+        //добавление позиций созданных советом директоров
+        for (CurrentLawVotesEndBalance currentLawVotesEndBalance : createdByBoardOfDirectors) {
+            directors.addAllByBoardOfDirectors(currentLawVotesEndBalance.getLaws());
+        }
+
+        //позиции избираемые только советом директоров
+        List<CurrentLawVotesEndBalance> electedByBoardOfDirectors = current.stream()
+                .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
+                .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS)
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
+                .collect(Collectors.toList());
+
+
+        //групируем по списку
+        Map<String, List<CurrentLawVotesEndBalance>> group = electedByBoardOfDirectors.stream()
+                .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));
+
+        Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();
+
+        //оставляем то количество которое описано в данной должности
+        for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {
+            List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();
+            temporary = temporary.stream()
+                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors))
+                    .limit(directors.getDirector(stringListEntry.getKey()).getCount())
+                    .collect(Collectors.toList());
+            original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);
+        }
+
+
+
+        //позиции избираемые советом корпоративных верховных судей
+        List<CurrentLawVotesEndBalance> electedByCorporateCouncilOfReferees = current.stream()
+                .filter(t -> directors.isElectedBYCorporateCouncilOfReferees(t.getPackageName()))
+                .filter(t -> t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesCorporateCouncilOfReferees)).collect(Collectors.toList());
+
+
+        //избираемые GENERAL_EXECUTIVE_DIRECTOR
+        List<CurrentLawVotesEndBalance> electedByGeneralExecutiveDirector = electedByBoardOfDirectors.stream()
+                .filter(t -> directors.isElectedCEO(t.getPackageName()))
+                .filter(t -> NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString().equals(t.getPackageName()))
+                .filter(t -> t.getVoteGeneralExecutiveDirector() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_GENERAL_EXECUTIVE_DIRECTOR)
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVoteGeneralExecutiveDirector))
+                .collect(Collectors.toList());
+
+        //голос верховного судьи
+        List<CurrentLawVotesEndBalance> electedByHightJudge = electedByCorporateCouncilOfReferees.stream()
+                .filter(t -> directors.isElectedBYCorporateCouncilOfReferees(t.getPackageName()))
+                .filter(t -> t.getVoteHightJudge() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE)
+                .collect(Collectors.toList());
+
+
+        //законы которые получили не достаточно голосов которые могут пройти только если верховный судья одобрет
+        List<CurrentLawVotesEndBalance> notEnoughVotes = current.stream()
+                .filter(t -> !directors.contains(t.getPackageName()))
+                .filter(t->!Seting.AMENDMENT_TO_THE_CHARTER.equals(t.getPackageName()))
+                .filter(t->!directors.isCabinets(t.getPackageName()))
+                .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))
+                .filter(t->!Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))
+                .filter(t -> t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS)
+                .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS)
+                .filter(t -> t.getVoteHightJudge() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE)
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());
+
+
+        //законы которые получили достаточно голосов и не требуют одобрения верховного судьи
+        List<CurrentLawVotesEndBalance> powerfulVotes = current.stream()
+                .filter(t -> !directors.contains(t.getPackageName()))
+                .filter(t-> !Seting.AMENDMENT_TO_THE_CHARTER.equals(t.getPackageName()))
+                .filter(t-> !directors.isCabinets(t.getPackageName()))
+                .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))
+                .filter(t->!Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))
+                .filter(t -> t.getVotesBoardOfShareholders() >= (Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS * Seting.POWERFUL_VOTE))
+                .filter(t -> t.getVotesBoardOfDirectors() >= (Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS * Seting.POWERFUL_VOTE))
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());
+
+        //удаление совпадающих голосов
+        notEnoughVotes.addAll(powerfulVotes);
+        notEnoughVotes = notEnoughVotes.stream().distinct().collect(Collectors.toList());
+
+        //внедрение поправок в устав
+        List<CurrentLawVotesEndBalance> chapter_amendment = current.stream()
+                .filter(t -> !directors.contains(t.getPackageName()))
+                .filter(t-> Seting.AMENDMENT_TO_THE_CHARTER.equals(t.getPackageName()))
+                .filter(t->!directors.isCabinets(t.getPackageName()))
+                .filter(t -> t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MINT_VOTE_BOARD_OF_SHAREHOLDERS_AMENDMENT)
+                .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_AMENDMENT)
+                .filter(t -> t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES_AMENDMENT)
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed()).collect(Collectors.toList());
+
+        //бюджет утверждается только советом директоров.
+        List<CurrentLawVotesEndBalance> budjet = current.stream()
+                .filter(t-> !directors.contains(t.getPackageName()))
+                .filter(t->Seting.BUDGET.equals(t.getPackageName()))
+                .filter(t->!directors.isCabinets(t.getPackageName()))
+                .filter(t-> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS)
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
+                .limit(1)
+                .collect(Collectors.toList());
+
+
+        //добавляет законы, которые создают новые должности директоров
+        List<CurrentLawVotesEndBalance> addDirectors = current.stream()
+                .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
+                .filter(t->t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS)
+                .collect(Collectors.toList());
+
+        //план утверждается только палатой Советом Директоров
+        List<CurrentLawVotesEndBalance> planFourYears = current.stream()
+                .filter(t->!directors.contains(t.getPackageName()))
+                .filter(t->Seting.STRATEGIC_PLAN.equals(t.getPackageName()))
+                .filter(t->!directors.isCabinets(t.getPackageName()))
+                .filter(t->t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS)
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
+                .limit(1)
+                .collect(Collectors.toList());
+
+
+        //устав всегда действующий он подписан основателем
+        List<CurrentLawVotesEndBalance> CHARTER_ORIGINAL = current.stream()
+                .filter(t -> !directors.contains(t.getPackageName()) && Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))
+                .filter(t->!directors.isCabinets(t.getPackageName()))
+                .filter(t->t.getFounderVote()>=1)
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                .limit(1)
+                .collect(Collectors.toList());
+
+        //ИСХОДНЫЙ КОД СОЗДАННЫЙ ОСНОВАТЕЛЕМ
+        List<CurrentLawVotesEndBalance> CHARTER_ORIGINAL_CODE = current.stream()
+                .filter(t -> !directors.contains(t.getPackageName()) && Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))
+                .filter(t->!directors.isCabinets(t.getPackageName()))
+                .filter(t->t.getFounderVote()>=1)
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                .limit(1)
+                .collect(Collectors.toList());
+
+
+        int startBlock = 22000;
+        int finishBlock = 22300;
+        if(blockchain.sizeBlockhain() > finishBlock){
+            List<Block> blocksCharter = blockchain.subBlock(startBlock, finishBlock);
+            //учитывает отрезок блоков для выяснения подлиности устава
+            List<CurrentLawVotesEndBalance> charterBlocks = UtilsGovernment.filtersVotes(
+                    lawEligibleForParliamentaryApprovals,
+                    balances,
+                    boardOfShareholders,
+                    blocksCharter,
+                    Seting.LAW_YEAR_VOTE
+            );
+            List<CurrentLawVotesEndBalance> charterCheckBlock = charterBlocks.stream()
+                    .filter(t -> !directors.contains(t.getPackageName()) && Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))
+                    .filter(t->!directors.isCabinets(t.getPackageName()))
+                    .filter(t->t.getFounderVote()>=1)
+                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                    .limit(1)
+                    .collect(Collectors.toList());
+
+            CHARTER_ORIGINAL.addAll(charterCheckBlock);
+
+
+            List<CurrentLawVotesEndBalance> charterOriginalCode = charterBlocks.stream()
+                    .filter(t -> !directors.contains(t.getPackageName()) && Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))
+                    .filter(t->!directors.isCabinets(t.getPackageName()))
+                    .filter(t->t.getFounderVote()>=1)
+                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                    .limit(1)
+                    .collect(Collectors.toList());
+
+            CHARTER_ORIGINAL_CODE.addAll(charterOriginalCode);
+        }
+
+
+        for (Map.Entry<Director, List<CurrentLawVotesEndBalance>> higherSpecialPositionsListMap : original_group.entrySet()) {
+            current.addAll(higherSpecialPositionsListMap.getValue());
+        }
+
+
+        current = new ArrayList<>();
+        current.addAll(addDirectors);
+        current.addAll(budjet);
+        current.addAll(planFourYears);
+        current.addAll(electedByStockBoardOfDirectors);
+        current.addAll(electedByStockCorporateCouncilOfReferees);
+        current.addAll(electedByBoardOfDirectors);
+        current.addAll(electedByCorporateCouncilOfReferees);
+        current.addAll(electedByGeneralExecutiveDirector);
+        current.addAll(electedByHightJudge);
+        current.addAll(notEnoughVotes);
+        current.addAll(CHARTER_ORIGINAL);
+        current.addAll(CHARTER_ORIGINAL_CODE);
+        current.addAll(chapter_amendment);
+        current = current.stream()
+                .filter(UtilsUse.distinctByKey(CurrentLawVotesEndBalance::getAddressLaw))
+                .collect(Collectors.toList());
+        System.out.println("notEnoughVotes: " + notEnoughVotes);
+
+        model.addAttribute("title", "How the current laws are approved are described in the statute." +
+                " ");
+        model.addAttribute("currentLaw", current);
+        return "current-laws";
+    }
+
+    @GetMapping("/all-laws")
+    public String allLaws(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        Blockchain blockchain = Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
+
+        Map<String, Account> balances = new HashMap<>();
+        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+
+
+        List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blockchain.getBlockchainList(), Seting.BOARDS_BLOCK);
+
+
+        List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
+                UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+        //данные для отображения
+
+
+        Directors directors = new Directors();
+        //TODO доработать оптимизацию
+        //TODO избавиться от find position в данном методе
+        //TODO доработать оптимизацию
+        //TODO избавиться от find position в данном методе
+        Map<Director, FIndPositonHelperData> fIndPositonHelperDataMap = new HashMap<>();
+        for (Director higherSpecialPositions : directors.getDirectors()) {
+            if (higherSpecialPositions.isElectedByCEO()) {
+                fIndPositonHelperDataMap.put(higherSpecialPositions,
+                        new FIndPositonHelperData(higherSpecialPositions, false, false, true, false, false));
+            } else if (higherSpecialPositions.isElectedByBoardOfDirectors()) {
+                fIndPositonHelperDataMap.put(higherSpecialPositions,
+                        new FIndPositonHelperData(higherSpecialPositions, false, false, false, true, false));
+            } else if (higherSpecialPositions.isElectedByCorporateCouncilOfReferees()) {
+                fIndPositonHelperDataMap.put(higherSpecialPositions,
+                        new FIndPositonHelperData(higherSpecialPositions, false, false, false, false, true));
+            } else if (higherSpecialPositions.isElectedByStocks()) {
+                fIndPositonHelperDataMap.put(higherSpecialPositions,
+                        new FIndPositonHelperData(higherSpecialPositions, true, true, false, false, false));
+
+            }
+
+        }
+
+
+        List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
+                lawEligibleForParliamentaryApprovals,
+                balances,
+                boardOfShareholders,
+                blockchain.getBlockchainList(),
+                Seting.LAW_YEAR_VOTE);
+
+
+        current = current.stream().distinct().collect(Collectors.toList());
+
+        current = current.stream().sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());
+        model.addAttribute("allLaws", current);
+        return "all-laws";
+    }
+
+
+    @GetMapping("/create-law")
+    public String createLawsShow(Model model) {
+        return "create-law";
+    }
+
+
+    @RequestMapping(value = "/create-law", method = RequestMethod.POST, params = "action=/send")
+    public String createLaw(Model model,
+                            @RequestParam String sender,
+                            @RequestParam String reward,
+                            @RequestParam String nameLaw,
+                            @RequestParam String[] laws,
+                            @RequestParam String password,
+                            RedirectAttributes redirectAttrs) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+
+
+        Laws law = new Laws(nameLaw, Arrays.asList(laws));
+        Base base = new Base58();
+
+        Double rewardD = Double.parseDouble(reward);
+
+
+        DtoTransaction dtoTransaction = new DtoTransaction(
+                sender,
+                law.getHashLaw(),
+                0.0,
+                0.0,
+                law,
+                rewardD,
+                VoteEnum.valueOf("YES"));
+        PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));
+        byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
+
+        redirectAttrs.addFlashAttribute("title", "sending result!!!");
+        redirectAttrs.addFlashAttribute("sender", sender);
+
+        redirectAttrs.addFlashAttribute("recipient", law.getHashLaw());
+        redirectAttrs.addFlashAttribute("dollar", 0.0);
+        redirectAttrs.addFlashAttribute("stock", 0.0);
+        redirectAttrs.addFlashAttribute("reward", rewardD);
+        redirectAttrs.addFlashAttribute("vote", "YES");
+        dtoTransaction.setSign(sign);
+
+        Directors directors = new Directors();
+        if (dtoTransaction.verify()) {
+
+            //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
+            //отправитель совпадает с законом
+            List<Director> enumPosition = directors.getDirectors();
+            List<String> corporateSeniorPositions = enumPosition.stream()
+                    .map(t->t.getName())
+                    .collect(Collectors.toList());
+
+            if (corporateSeniorPositions.contains(law.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(sender, law)) {
+                redirectAttrs.addFlashAttribute("sending", "wrong transaction: Position to be equals whith send");
+                return "redirect:/result-sending";
+            }
+
+            redirectAttrs.addFlashAttribute("sending", "success");
+            AllTransactions.addTransaction(dtoTransaction);
+            String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
+
+            for (String s : Seting.ORIGINAL_ADDRESSES) {
+                String original = s;
+                String url = s + "/addTransaction";
+                if (BasisController.getExcludedAddresses().contains(url)) {
+                    System.out.println("its your address or excluded address: " + url);
+                    continue;
+                }
+                try {
+                    UtilUrl.sendPost(jsonDto, url);
+
+                } catch (Exception e) {
+                    System.out.println("exception discovery: " + original);
+
+                }
+            }
+        } else
+            redirectAttrs.addFlashAttribute("sending", "wrong transaction");
+
+        return "redirect:/result-sending";
+
+    }
+
+}
