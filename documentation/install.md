@@ -15,7 +15,7 @@
 ## ЕСЛИ ОТСУТСТВУЕТ ДИСК С:
 Если у вас отсутствует диск С: или вы хотите изменить расположение файлов где они должны
 храниться, то в src/main/java/International_Trade_Union/setings/Seting.java
-Вы можете изменить там настройки куда должны
+Вы можете изменить там настройки кода должны
 
 ````
     String ORIGINAL_BLOCKCHAIN_FILE = "C:\\resources\\blockchain\\";

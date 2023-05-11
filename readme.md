@@ -2,6 +2,7 @@
 Находится еще в стадии доработки
 
 ## СОДЕРЖАНИЕ
+- [краткое описание](./documentation/preamble.md)
 - [активные url](./documentation/active-url.md)
 - [как установить приложение](./documentation/install.md)
 - [как открыть счет](./documentation/create-account.md)
