@@ -70,9 +70,9 @@ public class DtoTransaction {
         return UtilsUse.sha256hash(sha);
     }
 
-    public String hashForBlock() throws IOException {
-        return UtilsUse.sha256hash(jsonString());
-    }
+//    public String hashForBlock() throws IOException {
+//        return UtilsUse.sha256hash(jsonString());
+//    }
 
     public String jsonString() throws IOException {
         return UtilsJson.objToStringJson(this);

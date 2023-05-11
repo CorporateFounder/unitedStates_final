@@ -106,7 +106,6 @@ GenerateBlockchainFileTest {
 
             Block block = Mining.miningDay(
                     miner,
-                    fileBlockchain,
                     blockchain,
                     blockGenerationInterval,
                     difficultAdjastmentInterval,

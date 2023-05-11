@@ -174,10 +174,6 @@ public interface Seting {
     //подсчет голосов для законов в годах
     int LAW_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 4;
 
-
-
-
-    String ORIGINAL_INDEX_FILE = "C:\\resources\\index\\index.txt";
     String ORIGINAL_BLOCKCHAIN_FILE = "C:\\resources\\blockchain\\";
     String ORIGINAL_BALANCE_FILE = "C:\\resources\\balance\\";
     String ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE = "C:\\resources\\federalGovernment\\federalGovernment.txt";
@@ -190,12 +186,9 @@ public interface Seting {
     String ORIGINAL_ALL_SENDED_TRANSACTION_FILE = "C:\\resources\\sendedTransaction\\";
     String ORIGINAL_POOL_URL_ADDRESS_FILE = "C:\\resources\\poolAddress\\";
 
-    //адресса discovery
+    //адресса внешних сервисов
     Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");
 
-
-    //адреса хранилищ блокчейнов
-//    Set<String> ORIGINAL_ADDRESSES_BLOCKCHAIN_STORAGE = Set.of("http://localhost:8084");
 
     int SIZE_FILE_LIMIT = 100;
 

@@ -41,7 +41,6 @@ public class MainController {
     public String home(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         model.addAttribute("title", "Corporation International Trade Union.");
         Map<String, Account> balances = new HashMap<>();
-//        Blockchain blockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
 
         //догрузить блокчейн
 //        List<Block> blocks = UtilsBlock.readLineObject(Seting.ORIGINAL_BLOCKCHAIN_FILE);
@@ -117,7 +116,6 @@ public class MainController {
 
             //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
             //отправитель совпадает с законом
-            List<Director> enumPosition = directors.getDirectors();
             List<String> corporateSeniorPositions = directors.getDirectors().stream()
                     .map(t->t.getName()).collect(Collectors.toList());
             System.out.println("LawsController: create_law: " + laws.getPacketLawName() + "contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
@@ -134,11 +132,13 @@ public class MainController {
 
                 String original = s;
                 String url = s +"/addTransaction";
+                //если адресс совпадает с внутреним хостом, то не отправляет самому себе
                 if(BasisController.getExcludedAddresses().contains(url)){
                     System.out.println("MainController: its your address or excluded address: " + url);
                     continue;
                 }
                 try {
+                    //отправка в сеть
                     UtilUrl.sendPost(jsonDto, url);
 
                 }catch (Exception e){

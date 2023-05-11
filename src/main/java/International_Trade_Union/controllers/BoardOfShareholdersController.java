@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 
 @Controller
 public class BoardOfShareholdersController {
+
+    /**отображает список Совета Акционеров, отображается в браузере*/
     @GetMapping("board-of-shareholders")
     public String boardOfShareHolders(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
 

@@ -96,15 +96,6 @@ public final class Block implements Cloneable {
             this.index = index;
 
         }
-        private String hashesAllTrans() throws IOException {
-            String hash = "";
-            for (DtoTransaction dtoTransaction : dtoTransactions) {
-                hash += dtoTransaction.hashForBlock();
-            }
-
-            return hash;
-
-        }
 
         public String hashForTransaction() throws IOException {
             return UtilsUse.sha256hash(jsonString());

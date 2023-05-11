@@ -22,6 +22,8 @@ public class BlockchainCheckController {
     //TODO worked after restart server, get true.
     //TODO ошибка возникает если прервать mine,
     //TODO error occurs if mine is interrupted,
+
+    /**Проверяет целостность блокчейна*/
     @GetMapping("/checkValidation")
     public boolean checkValidation() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         try{

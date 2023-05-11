@@ -81,6 +81,7 @@ public class BasisController {
         BasisController.nodes = nodes;
     }
 
+    /**Возвращает список хостов*/
     public static Set<String> getNodes() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
         nodes = new HashSet<>();
@@ -101,6 +102,7 @@ public class BasisController {
     }
 
 
+    /**Возвращяет действующий блокчейн*/
     public static Blockchain getBlockchain() {
         return blockchain;
     }
@@ -136,6 +138,8 @@ public class BasisController {
     //TODO if you interrupted mine, restart the server before next call and call /addBlock before mine
     //TODO иначе будет расождение в файле балансов
     //TODO otherwise there will be a discrepancy in the balance file
+
+    /**Стартует добычу, начинает майнинг*/
     @GetMapping("/mine")
     public synchronized ResponseEntity<String> mine() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
 
@@ -143,20 +147,21 @@ public class BasisController {
         findAddresses();
         sendAddress();
 
+        //собирает класс блокчейн из файла расположенного по пути Seting.ORIGINAL_BALANCE_FILE
         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
         blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
 
+        //если блокчейн работает то продолжить
         if (!blockchain.validatedBlockchain()) {
             return new ResponseEntity<>("blockchain wrong ", HttpStatus.BAD_GATEWAY);
         }
 
-        //Прежде чем добыть новый блок сначала в сети ищет самый длинный
+        //Прежде чем добыть новый блок сначала в сети ищет самый длинный блокчейн
         resolve_conflicts();
 
-
-
+        //если размер блокчейна меньше или равно единице, сохранить в файл генезис блок
         long index = blockchain.sizeBlockhain();
         if (blockchain.sizeBlockhain() <= 1) {
             //сохранение генезис блока
@@ -164,28 +169,40 @@ public class BasisController {
                 UtilsBlock.saveBLock(blockchain.getBlock(0), Seting.ORIGINAL_BLOCKCHAIN_FILE);
             }
 
+            //получить список балансов из файла
             balances = Mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain, balances);
+            //удалить старые файлы баланса
             Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
+            //сохранить балансы
             SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
 
         }
+        //скачать список балансов из файла
         balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
 
+        //получить счет майнера
         Account miner = balances.get(User.getUserAddress());
         if (miner == null) {
+            //если в блокчейне не было баланса, то баланс равен нулю
             miner = new Account(User.getUserAddress(), 0, 0);
         }
 
-        //транзакции которые мы добавили в блок, и которые стоит удалить из списка когда мы дошли до удаления.
+        //транзакции которые мы добавили в блок и теперь нужно удалить из файла, в папке resources/transactions
         List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
 
-        //раз в три для очищяет файл sended
+        //раз в три для очищяет файлы в папке resources/sendedTransaction данная папка
+        //хранит уже добавленые в блокчейн транзации, чтобы повторно не добавлять в
+        //в блок уже добавленные транзакции
         AllTransactions.clearAllSendedTransaction(index);
         AllTransactions.clearUsedTransaction(AllTransactions.getInsanceSended());
         System.out.println("BasisController: start mine:");
+
+        //Сам процесс Майнинга
+        //DIFFICULTY_ADJUSTMENT_INTERVAL как часто происходит коррекция
+        //BLOCK_GENERATION_INTERVAL как часто должен находить блок
+        //temporaryDtoList добавляет транзакции в блок
         Block block = Mining.miningDay(
                 miner,
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 blockchain,
                 Seting.BLOCK_GENERATION_INTERVAL,
                 Seting.DIFFICULTY_ADJUSTMENT_INTERVAL,
@@ -202,10 +219,9 @@ public class BasisController {
         List<Block> testingValidationsBlock = null;
 
         if (blockchain.sizeBlockhain() > diff) {
-//            testingValidationsBlock = blockchain.getBlockchainList().subList(blockchain.sizeBlockhain() - diff, blockchain.sizeBlockhain());
+
             testingValidationsBlock = blockchain.subBlock(blockchain.sizeBlockhain() - diff, blockchain.sizeBlockhain());
         } else {
-//            testingValidationsBlock = blockchain.getBlockchainList();
             testingValidationsBlock = blockchain.clone();
         }
         if (testingValidationsBlock.size() > 1) {
@@ -252,6 +268,7 @@ public class BasisController {
     }
 
 
+    /**Возвращает EntityChain который хранит в себе размер блокчейна и список блоков*/
     @GetMapping("/chain")
     @ResponseBody
     public EntityChain full_chain() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -261,6 +278,7 @@ public class BasisController {
         return new EntityChain(blockchain.sizeBlockhain(), blockchain.getBlockchainList());
     }
 
+    /**возвращяет размер локального блокчейна*/
     @GetMapping("/size")
     @ResponseBody
     public Integer sizeBlockchain() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -270,6 +288,8 @@ public class BasisController {
         return blockchain.sizeBlockhain();
     }
 
+
+    /**Возвращает список блоков ОТ до ДО,*/
     @PostMapping("/sub-blocks")
     @ResponseBody
     public List<Block> subBlocks(@RequestBody SubBlockchainEntity entity) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -279,6 +299,7 @@ public class BasisController {
         return blockchain.getBlockchainList().subList(entity.getStart(), entity.getFinish());
     }
 
+    /**Возвращяет блок по индексу*/
     @PostMapping("/block")
     @ResponseBody
     public Block getBlock(@RequestBody Integer index) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -291,6 +312,9 @@ public class BasisController {
     //TODO нужно чтобы передавался каждый раз не весь блокчейн а часть, как реализованно в биткоин
     //TODO is necessary so that not the entire blockchain is transmitted each time, but a part, as implemented in bitcoin
     //TODO need to optimization because now not best
+
+    /**соединяется к внешним хостам, и скачивает самый длинный блокчейн,
+     * если, локальный блокчейн, меньше других */
     @GetMapping("/nodes/resolve")
     public synchronized void resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         Blockchain temporaryBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
@@ -401,11 +425,10 @@ public class BasisController {
 
 
     /**
-     * добавляет блоки в блок чейн пересохраняя файлы, предназначен когда у нас есть готовый
-     * блокчейн и нужно все файлы(balance, vote, government и т. д.) заного пересохранить.
-     * adds blocks to the block chain by resaving files, designed when we have it ready
-     * * Blockchain and you need to save all files (balance, vote, government, etc.) again.
+     * Перезаписывает весь список блоков, и делает перерасчет баланса, а также других данных
+     * таких как голоса, совет акционеров и т.д. заново записывает в файлы
      */
+
     public static void addBlock(List<Block> orignalBlocks, Blockchain blockchain) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
         Map<String, Account> balances = new HashMap<>();
@@ -441,6 +464,7 @@ public class BasisController {
         System.out.println("BasisController: addBlock: finish");
     }
 
+    /**Регистрирует новый внешний хост*/
     @RequestMapping(method = RequestMethod.POST, value = "/nodes/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public synchronized void register_node(@RequestBody AddressUrl urlAddrress) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
@@ -492,14 +516,7 @@ public class BasisController {
 
     //TODO если происходить майнинг, то он возвращает false, пока не прекратиться майнинг.
     //TODO if mining occurs, it returns false until mining stops.
-    /**проверяет целостность цепочки блокчейн true-значит цепочка правильная.
-     * verifies the integrity of the blockchain chain true-means the chain is correct*/
-
-
-    /**
-     * Делает перерасчет исходя и текущего блокчейна, заного перезаписывая файлы баланса и другие файлы.
-     * Makes a recalculation based on the current blockchain, overwriting balance files and other files.
-     */
+    /** выззывает метод addBlock который перезаписывает весь список блоков, и другие данные*/
     @GetMapping("/addBlock")
     public boolean getBLock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         blockchain = Mining.getBlockchain(
@@ -510,6 +527,7 @@ public class BasisController {
         return true;
     }
 
+    /**Возвращяет список хостов, сохраненных на локальном сервере*/
     @GetMapping("/getNodes")
     public Set<String> getAllNodes() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Set<String> temporary = UtilsAllAddresses.readLineObject(Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
@@ -520,6 +538,8 @@ public class BasisController {
         return nodes;
     }
 
+    /**подключается к другим узлам и у них берет их списки хостов, которые храняться у них,
+     *  и сохраняет эти списки у себя*/
     @GetMapping("/findAddresses")
     public void findAddresses() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         for (String s : Seting.ORIGINAL_ADDRESSES) {
@@ -543,6 +563,7 @@ public class BasisController {
 
     }
 
+    /**Запускает автоматический цикл майнинга, цикл будет идти 2000 шагов*/
     @GetMapping("/moreMining")
     public void moreMining() throws JSONException, IOException {
         for (int i = 1; i < 2000; i++) {
@@ -554,6 +575,7 @@ public class BasisController {
     }
 
 
+    /**Отправляет свой список хостов, другим узлам, и пытается автоматически регистрировать у них*/
     public static void sendAddress() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         //лист временный для отправки аддресов
 
@@ -585,6 +607,7 @@ public class BasisController {
     }
 
     //должен отправлять блокчейн в хранилище блокчейна
+    /**Отправляет список блоков в центральные хранилища (пример: http://194.87.236.238:80)*/
     public static void sendAllBlocksToStorage(List<Block> blocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         String jsonDto;
         System.out.println("BasisController: sendAllBlocksToStorage: start: ");

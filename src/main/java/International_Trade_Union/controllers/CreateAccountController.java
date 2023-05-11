@@ -17,6 +17,7 @@ import java.util.Map;
 public class CreateAccountController {
 
 
+    /**Позвалояет создавать счет, отображается в браузере*/
     @GetMapping("create-account")
     public String createAccount(Model model) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         model.addAttribute("title", "create minerAccount");
@@ -26,6 +27,8 @@ public class CreateAccountController {
         model.addAttribute("password", newAccount.get("privKey"));
         return "create-account";
     }
+
+
     @PostMapping("create-account")
     public String createNewAccount(RedirectAttributes redirectAttrs) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         redirectAttrs.addFlashAttribute("title", "create minerAccount");

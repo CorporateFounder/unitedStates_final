@@ -82,7 +82,6 @@ public class Mining {
 
     public static Block miningDay(
             Account minner,
-            String filename,
             Blockchain blockchain,
             long blockGenerationInterval,
             int DIFFICULTY_ADJUSTMENT_INTERVAL,
@@ -97,6 +96,7 @@ public class Mining {
         //определение валидных транзакций
         List<DtoTransaction> forAdd = new ArrayList<>();
 
+        //проверяет целостность транзакции, что они подписаны правильно
         cicle:
         for (DtoTransaction transaction : listTransactions) {
             if (transaction.verify()) {
@@ -106,10 +106,11 @@ public class Mining {
                     System.out.println("minerAccount null");
                     continue cicle;
                 }
+                //NAME_LAW_ADDRESS_START если адресс  означает правила выбранные сетью
                 if(transaction.getCustomer().startsWith(Seting.NAME_LAW_ADDRESS_START) && !balances.containsKey(transaction.getCustomer())){
                     //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
                     //отправитель совпадает с законом
-                    List<Director> enumPosition = directors.getDirectors();
+//                    List<Director> enumPosition = directors.getDirectors();
                     List<String> corporateSeniorPositions = directors.getDirectors().stream()
                             .map(t->t.getName()).collect(Collectors.toList());
                     System.out.println("LawsController: create_law: " + transaction.getLaws().getPacketLawName()
@@ -175,6 +176,7 @@ public class Mining {
         DtoTransaction minerRew = new DtoTransaction(Seting.BASIS_ADDRESS, minner.getAccount(),
                 minerRewards, digitalReputationForMiner, new Laws(), sumRewards, VoteEnum.YES );
 
+        //подписывает
         byte[] signGold = UtilsSecurity.sign(privateKey, minerRew.toSign());
         minerRew.setSign(signGold);
 
@@ -191,7 +193,6 @@ public class Mining {
 
 
         //определение сложности и создание блока
-
         int difficulty = UtilsBlock.difficulty(blockchain.getBlockchainList(), blockGenerationInterval, DIFFICULTY_ADJUSTMENT_INTERVAL);
 
         System.out.println("Mining: miningBlock: difficulty: " + difficulty + " index: " + index);

@@ -16,17 +16,17 @@
 
 
 <form action="/create-law" method="post">
-    <input type="text" name="sender" placeholder="input address sender" class="form-control"><br>
+    <input type="text" name="sender" placeholder="введите адрес отправителя" class="form-control"><br>
 
-    <input type="text" name="reward" placeholder="send reward for miner" class="form-control"><br>
+    <input type="text" name="reward" placeholder="введите вознаграждение майнера" class="form-control"><br>
     <select  name="nameLaw" class="form-control">
         <option  th:each="position: ${positions}"
         th:value="${position}" th:text="${position}"></option>
     </select><br>
     <textarea name="password" placeholder="input password" th:rows="8" th:cols="120"></textarea><br>
     <button type="submit" class="btn btn-success" name="action" value="/send">Send Law</button><br>
-    <input type="text" name="laws" placeholder="input address sender" class="form-control"><br>
-    <input type="text" name="laws" placeholder="you can enter contact details or personal details, (If you want)" class="form-control"><br>
+    <input type="text" name="laws" placeholder="введите адрес отправителя" class="form-control"><br>
+    <input type="text" name="laws" placeholder="можете ввести какие нибудь данные, например почту и т.д." class="form-control"><br>
 
 
 

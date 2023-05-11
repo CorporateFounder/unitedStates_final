@@ -37,6 +37,8 @@ public class GovernmentController {
     //TODO прерываться сам процесс майнинга
     //TODO if mining occurs for some reason, errors are observed, and this method appears, then it can
     //TODO interrupt the mining process itself
+
+    /**Отображает в браузере список действующих должностей*/
     @GetMapping("/governments")
     public String corporateSeniorpositions(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Blockchain blockchain = Mining.getBlockchain(
@@ -255,6 +257,7 @@ public class GovernmentController {
         return "create-position";
     }
 
+    /**Отображается в браузере, позволяет создавать новые должности*/
     @RequestMapping(value = "/create-position", method = RequestMethod.POST, params = "action=/send")
     public String createLaw(Model model,
                             @RequestParam String sender,

@@ -33,12 +33,13 @@ import java.util.stream.Collectors;
 @Controller
 public class LawsController {
 
+
     @GetMapping("detail-laws")
     public String details(Model model) {
         return "detail-laws";
     }
 
-
+    /**Отображается в браузере, позволяет увидеть содержимое пакета законов, список действующих законов*/
     @GetMapping("/detail-laws-current/{addressLaw}")
     public String lawsDetail(@PathVariable(value = "addressLaw") String addressLaw, RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
         System.out.println("LawsController detail-laws-current/{addressLaw}: " + addressLaw);
@@ -66,6 +67,7 @@ public class LawsController {
         return "redirect:/detail-laws";
     }
 
+    /**Отображается в браузере, показывает содержимое пакета законов, из  списка всех законов*/
     @GetMapping("/detail-laws-all/{addressLaw}")
     public String lawsDetailAll(@PathVariable(value = "addressLaw") String addressLaw, RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
         System.out.println("LawsController /detail-laws-all/{addressLaw}: " + addressLaw);
@@ -90,6 +92,7 @@ public class LawsController {
     }
 
 
+    /**Отображается в браузере, список все действующих законов*/
     @GetMapping("/current-laws")
     public String currentLaw(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         Directors directors = new Directors();
@@ -104,12 +107,13 @@ public class LawsController {
         List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
                 UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
-
+        //получить совет акционеров из файла
         List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blockchain.getBlockchainList(), Seting.BOARDS_BLOCK);
 
 
         //TODO доработать оптимизацию
         //TODO избавиться от find position в данном методе
+        //отфильтровать по типам голосов
         Map<Director, FIndPositonHelperData> fIndPositonHelperDataMap = new HashMap<>();
         for (Director higherSpecialPositions : directors.getDirectors()) {
             if (higherSpecialPositions.isElectedByCEO()) {
@@ -128,6 +132,7 @@ public class LawsController {
             }
 
         }
+        //подсчитать голоса за все проголосованные заканы
         List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
                 lawEligibleForParliamentaryApprovals,
                 balances,
@@ -369,6 +374,7 @@ public class LawsController {
         return "current-laws";
     }
 
+    /**Отображается в браузере, список всех пакета законов*/
     @GetMapping("/all-laws")
     public String allLaws(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Blockchain blockchain = Mining.getBlockchain(
@@ -428,6 +434,7 @@ public class LawsController {
     }
 
 
+    /**Отображается в браузере, позволяет создать новый пакет законов*/
     @GetMapping("/create-law")
     public String createLawsShow(Model model) {
         return "create-law";

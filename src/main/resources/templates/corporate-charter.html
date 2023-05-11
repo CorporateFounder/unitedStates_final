@@ -11,11 +11,11 @@
 <div class="container mt-5">
     <h3 th:text="${title}"/>
 
-    <div th:each="el : ${eng}" class="alert alert-info mt-2">
+    <div th:each="el : ${rus}" class="alert alert-info mt-2">
         <h4 th:text="' '+${el}"/>
     </div>
 
-    <div th:each="el : ${rus}" class="alert alert-info mt-2">
+    <div th:each="el : ${eng}" class="alert alert-info mt-2">
         <h4 th:text="' '+${el}"/>
     </div>
 
