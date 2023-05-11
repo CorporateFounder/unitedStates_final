@@ -368,7 +368,7 @@ public class LawsController {
                 .collect(Collectors.toList());
         System.out.println("notEnoughVotes: " + notEnoughVotes);
 
-        model.addAttribute("title", "How the current laws are approved are described in the statute." +
+        model.addAttribute("title", "Как принимаются действующие законы, описано в уставе." +
                 " ");
         model.addAttribute("currentLaw", current);
         return "current-laws";

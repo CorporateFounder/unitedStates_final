@@ -1,4 +1,5 @@
 # КРИПТОВАЛЮТА МЕЖДУНАРОДНЫЙ ТОРГОВЫЙ СОЮЗ
+Находится еще в стадии доработки
 
 ## СОДЕРЖАНИЕ
 - [активные url](./documentation/active-url.md)
@@ -6,6 +7,7 @@
 - [как открыть счет](./documentation/create-account.md)
 - [как сменить счет на локальном сервере](./documentation/change-account.md)
 - [как добыть блок](./documentation/mine.md)
+- [транзакции](./documentation/transactions.md)
 - [совет акционеров](./documentation/board-of-shareholders.md)
 - [руководство](./documentation/management.md)
 - [как создаются правила сети](./documentation/create-law.md)
@@ -15,4 +17,3 @@
 - [корпоративный устав](./documentation/corporate-charter.md)
 
 
-- [транзакции код](./documentation/transactions.md)
