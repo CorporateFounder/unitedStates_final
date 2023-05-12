@@ -1,7 +1,19 @@
 # Добыча блока
+
+## КАК НАЧАТЬ ДОБЫВАТЬ 
+предварительно прежде чем начать добывать блоки, вам 
+нужно установить адрес майнера, на который будет добываться блок. 
+Как только вы установили свой адресс в качестве майнера, есть два варианта.
+
+### ВАРИАНТ 1.
 чтобы начать добывать, нужно после запуска, зайти на 
-на http://localhost:8082/ внизу будет кнопка майнинг ***начать добычу***,
-после нажатия на него активируется процесс майнинга.
+на http://localhost:8082/mining там будет кнопка ***Начать добычу***
+нажимая на нее автоматически будет добыча, блока.
+
+### ВАРИАНТ 2. 
+вызов http://localhost:8082/mine автоматически начинает добычу.
+
+
 Сложность блокчейна адаптируется аналогично биткоин, но адаптация происходит 
 раз в пол дня.
 Каждый блок дает 200 цифровых доллара и 200 цифровых акций
@@ -34,22 +46,25 @@
 метод нажатие кнопки вызывает кнопку /mine
 
 ````
+    /**Стартует добычу, начинает майнинг*/
     @GetMapping("/mine")
-    public synchronized ResponseEntity<String> mine() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
-
+    public synchronized String mine(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
+        String text = "";
         //нахождение адрессов
         findAddresses();
         sendAddress();
 
-        //собирает класс блокчейн из файла расположенного по пути Seting.ORIGINAL_BALANCE_FILE
+        //собирает класс список балансов из файла расположенного по пути Seting.ORIGINAL_BALANCE_FILE
         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        //собирает объект блокчейн из файла
         blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
 
         //если блокчейн работает то продолжить
         if (!blockchain.validatedBlockchain()) {
-            return new ResponseEntity<>("blockchain wrong ", HttpStatus.BAD_GATEWAY);
+            text = "wrong chain: неправильный блокчейн, добыча прекращена";
+            model.addAttribute("text", text);
         }
 
         //Прежде чем добыть новый блок сначала в сети ищет самый длинный блокчейн
@@ -85,19 +100,18 @@
         List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
 
         //раз в три для очищяет файлы в папке resources/sendedTransaction данная папка
-        //хранит уже добавленые в блокчейн транзации, чтобы повторно не добавлять в 
+        //хранит уже добавленые в блокчейн транзации, чтобы повторно не добавлять в
         //в блок уже добавленные транзакции
         AllTransactions.clearAllSendedTransaction(index);
         AllTransactions.clearUsedTransaction(AllTransactions.getInsanceSended());
         System.out.println("BasisController: start mine:");
-        
+
         //Сам процесс Майнинга
         //DIFFICULTY_ADJUSTMENT_INTERVAL как часто происходит коррекция
         //BLOCK_GENERATION_INTERVAL как часто должен находить блок
         //temporaryDtoList добавляет транзакции в блок
         Block block = Mining.miningDay(
                 miner,
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 blockchain,
                 Seting.BLOCK_GENERATION_INTERVAL,
                 Seting.DIFFICULTY_ADJUSTMENT_INTERVAL,
@@ -131,7 +145,7 @@
             if (validationTesting == false) {
                 System.out.println("wrong validation block: " + validationTesting);
                 System.out.println("index block: " + block.getIndex());
-                return new ResponseEntity<>("bad walidation", HttpStatus.OK);
+                text = "wrong validation";
             }
             testingValidationsBlock.add(block.clone());
         }
@@ -158,7 +172,9 @@
         //отправить актуальный блокчейн
         sendAllBlocksToStorage(blockchain.getBlockchainList());
 
-        return new ResponseEntity<>("add block: " + block.getIndex(), HttpStatus.CREATED);
+        text = "success: блок успешно добыт";
+        model.addAttribute("text", text);
+        return "redirect:/mining";
 
     }
 ````

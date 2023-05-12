@@ -31,22 +31,12 @@ public class Testing {
 
     @Test
     public void generateOriginalBlocks() throws IOException, JSONException, InterruptedException {
-        List<String> addresses = new ArrayList<>();
-        //случайным образом выбирает из адрессов
-        Random random = new Random();
-        addresses.add("22a5XcurUDGGhJ3JncMnRS4Ka8LDRf7tpb6YJMjvTJFZr");
-        addresses.add("stExZb8ifLfnFoq4JJuTifpAcscegATH8znhwW26zyTa");
+
 
 
 
         for (int i = 1; i < 2000; i++) {
-            int size = 0;
 
-            while (size <= 0)
-                size = random.nextInt() * size;
-
-            String address = addresses.get(size);
-            UtilsFileSaveRead.save(address, Seting.ORIGINAL_ACCOUNT, false);
             System.out.println("block generate i: " + i);
             try {
                 UtilUrl.readJsonFromUrl("http://localhost:8082/mine");

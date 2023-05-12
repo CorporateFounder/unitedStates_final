@@ -20,6 +20,8 @@ import International_Trade_Union.utils.*;
 import International_Trade_Union.vote.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestAttributes;
@@ -35,7 +37,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@RestController
+@Controller
 public class BasisController {
     private static Blockchain blockchain;
 
@@ -139,23 +141,27 @@ public class BasisController {
     //TODO иначе будет расождение в файле балансов
     //TODO otherwise there will be a discrepancy in the balance file
 
+
+
     /**Стартует добычу, начинает майнинг*/
     @GetMapping("/mine")
-    public synchronized ResponseEntity<String> mine() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
-
+    public synchronized String mine(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
+        String text = "";
         //нахождение адрессов
         findAddresses();
         sendAddress();
 
-        //собирает класс блокчейн из файла расположенного по пути Seting.ORIGINAL_BALANCE_FILE
+        //собирает класс список балансов из файла расположенного по пути Seting.ORIGINAL_BALANCE_FILE
         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        //собирает объект блокчейн из файла
         blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
 
         //если блокчейн работает то продолжить
         if (!blockchain.validatedBlockchain()) {
-            return new ResponseEntity<>("blockchain wrong ", HttpStatus.BAD_GATEWAY);
+            text = "wrong chain: неправильный блокчейн, добыча прекращена";
+            model.addAttribute("text", text);
         }
 
         //Прежде чем добыть новый блок сначала в сети ищет самый длинный блокчейн
@@ -212,8 +218,11 @@ public class BasisController {
         );
         System.out.println("BasisController: finish mine:");
         //save sended transaction
+        //сохранить уже добавленные в блок транзакции,
+        //чтобы избежать повторного добавления
         AllTransactions.addSendedTransaction(temporaryDtoList);
 
+        //нужна для корректировки сложности
         int diff = Seting.DIFFICULTY_ADJUSTMENT_INTERVAL;
         //Тестирование блока
         List<Block> testingValidationsBlock = null;
@@ -224,6 +233,7 @@ public class BasisController {
         } else {
             testingValidationsBlock = blockchain.clone();
         }
+        //проверяет последние 288 блоков на валидность.
         if (testingValidationsBlock.size() > 1) {
             boolean validationTesting = UtilsBlock.validationOneBlock(
                     blockchain.genesisBlock().getFounderAddress(),
@@ -236,34 +246,38 @@ public class BasisController {
             if (validationTesting == false) {
                 System.out.println("wrong validation block: " + validationTesting);
                 System.out.println("index block: " + block.getIndex());
-                return new ResponseEntity<>("bad walidation", HttpStatus.OK);
+                text = "wrong validation";
             }
             testingValidationsBlock.add(block.clone());
         }
 
-        //сохранение блока
+        //добавляет последний блок в блокчейн
         blockchain.addBlock(block);
+        //сохраняет последний блок в файл
         UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
-        //перерасчет после добычи
+        //перерасчет балансов, подсчитывает какие изменения произошли в балансах
         balances = Mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain, balances);
         Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
+        //сохраняет в файл уже заново посчитанные балансы.
         SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
 
-        //получение и отображение законов, а также сохранение новых законов
-        //и изменение действующих законов
+        //получает все созданные когда либо законы
         Map<String, Laws> allLaws = UtilsLaws.getLaws(blockchain.getBlockchainList(), Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
 
-        //возвращает все законы с балансом
+        //возвращает все законы с голосами проголосовавшими за них
         List<LawEligibleForParliamentaryApproval> allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
         //удаление устаревних законов
         Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+        //записывает все законы в файл с их голосами.
         UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
-        //отправить актуальный блокчейн
+        //отправляет блокчейн во внешние сервера
         sendAllBlocksToStorage(blockchain.getBlockchainList());
 
-        return new ResponseEntity<>("add block: " + block.getIndex(), HttpStatus.CREATED);
+        text = "success: блок успешно добыт";
+        model.addAttribute("text", text);
+        return "redirect:/mining";
 
     }
 

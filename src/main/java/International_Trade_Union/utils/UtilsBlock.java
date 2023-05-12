@@ -181,6 +181,9 @@ public class UtilsBlock {
     //https://tproger.ru/translations/blockchain-explained/
 
     //new https://guicommits.com/building-blockchain-with-python/
+
+    /**определяет сложность, раз пол дня корректирует сложность. В сутках 576 блоков.
+     * каждый блок добывается примерно 2.3 минуты*/
     public static int difficulty(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int  DIFFICULTY_ADJUSTMENT_INTERVAL ){
 
         //секунды как часто создается блоки
@@ -198,6 +201,7 @@ public class UtilsBlock {
     }
 
 
+    /**получить сложность*/
     private static int getAdjustedDifficulty(Block latestBlock, List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL){
         Block prevAdjustmentBlock = blocks.get(blocks.size() - DIFFICULTY_ADJUSTMENT_INTERVAL);
 

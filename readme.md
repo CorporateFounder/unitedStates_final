@@ -15,6 +15,16 @@
 - [как происходит голосование в сети](./documentation/voting-in-network.md)
 - [действующие правила](./documentation/current-law.md)
 - [создание должности](./documentation/create-postion.md)
-- [корпоративный устав](./documentation/corporate-charter.md)
+
+
+## Корпоративный устав
+- Корпоративный Устав
+  - [Полномочия Совета Директоров.](./charter/POWERS_OF_THE_BOARD_OF_DIRECTORS.md)
+  - [Как Избираются Законы.](./charter/HOW_LAWS_ARE_CHOSEN.md)
+  - [Как избирается Совет Директоров.](./charter/HOW_THE_BOARD_OF_DIRECTORS_IS_ELECTED.md)
+  - [Полномочия совета акционеров.](./charter/POWERS_OF_THE_BOARD_OF_SHAREHOLDERS.md)
+  - [Как Избирается Совет Акционеров.](./charter/HOW_SHAREHOLDERS_BOARD_IS_ELECTED.md)
+  - [VOTE_STOCK (Как с помощью акций происходит голосование.)](./charter/VOTE_STOCK.md)
+  - [CODE_VOTE_STOCK (Код голосования с помощью акций)](./charter/CODE_VOTE_STOCK.md)
 
 
