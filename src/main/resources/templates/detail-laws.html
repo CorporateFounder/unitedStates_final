@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>About us</title>
@@ -9,7 +10,7 @@
 
 <div class="container mt-5">
     <h1 th:text="${title}"></h1>
-    <div th:each="el : ${laws}">
+    <div th:each="el : ${laws}" class="alert alert-info mt-2">
         <h5 th:text="${el}"/>
     </div>
 </div>
