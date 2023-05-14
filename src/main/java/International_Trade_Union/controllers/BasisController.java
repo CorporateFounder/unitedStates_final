@@ -37,7 +37,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 public class BasisController {
     private static Blockchain blockchain;
 
@@ -360,6 +360,8 @@ public class BasisController {
                 continue;
             }
             try {
+                if(s.contains("localhost") || s.contains("127.0.0.1"))
+                    continue;
                 String address = s + "/chain";
                 System.out.println("BasisController:resolve conflicts: address: " + s + "/size");
                 String sizeStr = UtilUrl.readJsonFromUrl(s + "/size");
@@ -371,6 +373,7 @@ public class BasisController {
                     String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
 
                     List<Block> emptyList = new ArrayList<>();
+
 
                     List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
                     emptyList.addAll(subBlocks);
@@ -407,6 +410,7 @@ public class BasisController {
                     continue;
                 }
             } catch (IOException e) {
+                e.printStackTrace();
                 System.out.println("BasisController: resolve_conflicts: Error: " + s);
                 continue;
             }
