@@ -19,7 +19,7 @@
 
 Для правильной работы вам нужно скачать и установить jre https://www.java.com/ru/download/manual.jsp
 https://www.oracle.com/cis/java/technologies/downloads/,
-и jdk 19  или выше
+и jdk 19 или выше
 ## ЕСЛИ ОТСУТСТВУЕТ ДИСК С:
 Если у вас отсутствует диск С: или вы хотите изменить расположение файлов где они должны
 храниться, то в src/main/java/International_Trade_Union/setings/Seting.java

@@ -162,6 +162,7 @@ public class BasisController {
         if (!blockchain.validatedBlockchain()) {
             text = "wrong chain: неправильный блокчейн, добыча прекращена";
             model.addAttribute("text", text);
+            return "wrong blockchain";
         }
 
         //Прежде чем добыть новый блок сначала в сети ищет самый длинный блокчейн

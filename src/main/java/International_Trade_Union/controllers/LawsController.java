@@ -39,6 +39,9 @@ public class LawsController {
         return "detail-laws";
     }
 
+    //TODO реализовать голосвание
+
+
     /**Отображается в браузере, позволяет увидеть содержимое пакета законов, список действующих законов*/
     @GetMapping("/detail-laws-current/{addressLaw}")
     public String lawsDetail(@PathVariable(value = "addressLaw") String addressLaw, RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {

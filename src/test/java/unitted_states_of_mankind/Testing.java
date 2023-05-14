@@ -32,9 +32,6 @@ public class Testing {
     @Test
     public void generateOriginalBlocks() throws IOException, JSONException, InterruptedException {
 
-
-
-
         for (int i = 1; i < 2000; i++) {
 
             System.out.println("block generate i: " + i);
