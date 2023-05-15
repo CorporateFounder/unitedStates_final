@@ -87,62 +87,21 @@ public interface OriginalCHARTER {
             "                .limit(directors.getDirector(NamePOSITION.BOARD_OF_DIRECTORS.toString()).getCount())\n" +
             "                .collect(Collectors.toList()); ";
 
-    String POWERS_OF_THE_BOARD_OF_SHAREHOLDERS = " Полномочия совета акционеров.  " +
-            " Совет Акционеров Участвует в утверждении Законов (правил которые должны соблюдать все участники данной Корпорации). " +
-            " Также Совет Акционеров участвует в утверждении поправок в устав Корпорации Международного Торгового Союза AMENDMENT_TO_THE_CHARTER. " +
-            " Совет Акционеров также может участвовать в голосовании при избрании кандидатов CORPORATE_COUNCIL_OF_REFEREES и BOARD_OF_DIRECTORS " +
-            " используя эти правила для голосования за кандидатов VOTE_STOCK. " +
-            "";
+    //Дописан
+    String POWERS_OF_THE_BOARD_OF_SHAREHOLDERS = " OriginalCHARTER.POWERS_OF_THE_BOARD_OF_SHAREHOLDERS: Полномочия совета акционеров. \n" +
+            "Совет Акционеров Участвует в утверждении Законов (правил сети, которые должны соблюдать все участники данной Корпорации).\n" +
+            "Также Совет Акционеров участвует в утверждении поправок в устав Корпорации Международного Торгового Союза AMENDMENT_TO_THE_CHARTER.\n" +
+            "Совет Акционеров также может участвовать в голосовании при избрании кандидатов CORPORATE_COUNCIL_OF_REFEREES и BOARD_OF_DIRECTORS используя\n" +
+            "эти правила для голосования за кандидатов VOTE_STOCK. ";
 
-    String HOW_SHAREHOLDERS_BOARD_IS_ELECTED = " КАК ИЗБИРАЕТСЯ СОВЕТ АКЦИОНЕРОВ. " +
-            " Совет Акционеров состоит из тысячи пятьсот счетов (1500) с наибольшим количеством акций, но учитываются только те счета " +
-            " от чьей активности не прошло больше года. формула: текущий год - один год, и если счет был активен в этом диапазоне, он " +
-            " учитывается. Все счета сортируются по убыванию количества цифровых акций, и отбираются 1500 счетов с наибольшим количеством  " +
-            " акций. Перерасчет происходит Каждый блок. " +
-            "" +
-            "  Пример участка кода как избирается Совет Акционеров: " +
-            " class UtilsGovernment method findBoardOfShareholders: " +
-            "  //определение совета акционеров\n" +
-            "    public static List<Account> findBoardOfShareholders(Map<String, Account> balances, List<Block> blocks, int limit) {\n" +
-            "        List<Block> minersHaveMoreStock = null;\n" +
-            "        if (blocks.size() > limit) {\n" +
-            "            minersHaveMoreStock = blocks.subList(blocks.size() - limit, blocks.size());\n" +
-            "        } else {\n" +
-            "            minersHaveMoreStock = blocks;\n" +
-            "        }\n" +
-            "        List<Account> boardAccounts = minersHaveMoreStock.stream().map(\n" +
-            "                        t -> new Account(t.getMinerAddress(), 0, 0))\n" +
-            "                .collect(Collectors.toList());\n" +
-            "\n" +
-            "        for (Block block : minersHaveMoreStock) {\n" +
-            "            for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {\n" +
-            "                boardAccounts.add(new Account(dtoTransaction.getSender(), 0, 0));\n" +
-            "            }\n" +
-            "\n" +
-            "        }\n" +
-            "\n" +
-            "\n" +
-            "        CompareObject compareObject = new CompareObject();\n" +
-            "\n" +
-            "        List<Account> boardOfShareholders = balances.entrySet().stream()\n" +
-            "                .filter(t -> boardAccounts.contains(t.getValue()))\n" +
-            "                .map(t -> t.getValue()).collect(Collectors.toList());\n" +
-            "\n" +
-            "\n" +
-            "        boardOfShareholders = boardOfShareholders\n" +
-            "                .stream()\n" +
-            "                .filter(t -> !t.getAccount().startsWith(Seting.NAME_LAW_ADDRESS_START))\n" +
-            "                .filter(t -> t.getDigitalStockBalance() > 0)\n" +
-            "                .sorted(Comparator.comparing(Account::getDigitalStockBalance).reversed())\n" +
-            "                .collect(Collectors.toList());\n" +
-            "\n" +
-            "        boardOfShareholders = boardOfShareholders\n" +
-            "                .stream()\n" +
-            "                .limit(Seting.BOARD_OF_SHAREHOLDERS)\n" +
-            "                .collect(Collectors.toList());\n" +
-            "\n" +
-            "        return boardOfShareholders;\n" +
-            "    } ";
+    //дописан
+    String HOW_SHAREHOLDERS_BOARD_IS_ELECTED = " OriginalCHARTER.HOW_SHAREHOLDERS_BOARD_IS_ELECTED: КАК ИЗБИРАЕТСЯ СОВЕТ АКЦИОНЕРОВ. \n" +
+            "Совет Акционеров состоит из тысячи пятьсот счетов (1500) с наибольшим количеством акций, \n" +
+            "но учитываются только те счета от чьей активности не прошло больше года (Активностью считается майнинг или отправка денег, создание закона, отправка штрафов,\n" +
+            "Подача на должность и Создание новой должности).\n" +
+            "формула: текущий год - один год, и если счет был активен в этом диапазоне, он учитывается.\n" +
+            "Все счета сортируются по убыванию количества цифровых акций, и отбираются 1500 счетов с наибольшим количеством акций. Перерасчет происходит Каждый блок.\n" +
+            "Пример участка кода как избирается Совет Акционеров:";
 
     String VOTE_STOCK = " Как с помощью акций происходит голосование. " +
             " Все акции которым счет владеет, приравниваются такому же количеству голосов. " +

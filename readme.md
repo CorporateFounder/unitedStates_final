@@ -14,7 +14,7 @@
 - [как добыть блок](./documentation/mine.md)
 - [транзакции](./documentation/transactions.md)
 - [совет акционеров](./documentation/board-of-shareholders.md)
-- [руководство](./documentation/management.md)
+- [подать на должность](./documentation/management.md)
 - [как создаются правила сети](./documentation/create-law.md)
 - [как происходит голосование в сети](./documentation/voting-in-network.md)
 - [действующие правила](./documentation/current-law.md)

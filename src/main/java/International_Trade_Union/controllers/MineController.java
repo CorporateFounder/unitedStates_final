@@ -1,5 +1,8 @@
 package International_Trade_Union.controllers;
 
+import International_Trade_Union.config.BLockchainFactory;
+import International_Trade_Union.config.BlockchainFactoryEnum;
+import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.User;
 import International_Trade_Union.setings.Seting;
@@ -22,6 +25,24 @@ import java.util.Map;
 
 @Controller
 public class MineController {
+    private static Blockchain blockchain;
+    static {
+        try {
+            blockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (SignatureException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchProviderException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @RequestMapping("/mining")
     public String miming(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -29,6 +50,7 @@ public class MineController {
 
         return "mining";
     }
+
 
 
 }

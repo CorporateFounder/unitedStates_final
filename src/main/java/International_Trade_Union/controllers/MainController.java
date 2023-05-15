@@ -54,11 +54,12 @@ public class MainController {
         return "home";
     }
 
+
     @PostMapping("/setMinner")
-    public ResponseEntity<String> setMinnerAddress(@RequestParam(value = "setMinner") String setMinner, RedirectAttributes redirectAttrs){
+    public String setMinnerAddress(@RequestParam(value = "setMinner") String setMinner, RedirectAttributes redirectAttrs){
         System.out.println("MainController:  " + setMinner);
         UtilsFileSaveRead.save(setMinner, Seting.ORIGINAL_ACCOUNT, false);
-        return new ResponseEntity<>("change address: " + setMinner, HttpStatus.OK);
+        return "redirect:/home";
     }
 
 
@@ -83,11 +84,11 @@ public class MainController {
                                    Double dollar,
                                    Double stock,
                                    Double reward,
-                                  @RequestParam  String vote,
+
                                   @RequestParam  String password,
                                   RedirectAttributes redirectAttrs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Base base = new Base58();
-        vote = vote.toUpperCase(Locale.ROOT);
+
         Laws laws =  new Laws();
         laws.setLaws(new ArrayList<>());
         laws.setHashLaw("");
@@ -99,17 +100,17 @@ public class MainController {
                 stock,
                 laws,
                 reward,
-                VoteEnum.valueOf(vote));
+                VoteEnum.YES);
         PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));
         byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
-        System.out.println("Main Controller: new transaction: vote: " + vote);
+        System.out.println("Main Controller: new transaction: vote: " +VoteEnum.YES);
         redirectAttrs.addFlashAttribute("title", "sending result!!!");
         redirectAttrs.addFlashAttribute("sender", sender);
         redirectAttrs.addFlashAttribute("recipient", recipient);
         redirectAttrs.addFlashAttribute("dollar", dollar);
         redirectAttrs.addFlashAttribute("stock", stock);
         redirectAttrs.addFlashAttribute("reward", reward);
-        redirectAttrs.addFlashAttribute("vote", vote);
+        redirectAttrs.addFlashAttribute("vote", VoteEnum.YES);
         dtoTransaction.setSign(sign);
         Directors directors = new Directors();
         if(dtoTransaction.verify()){
@@ -154,6 +155,13 @@ public class MainController {
         else
             redirectAttrs.addFlashAttribute("sending", "wrong transaction");
         return "redirect:/result-sending";
+    }
+
+
+    @GetMapping("/seting")
+    public String seting(Model model){
+        model.addAttribute("title", "Настройки");
+        return "seting";
     }
 
 

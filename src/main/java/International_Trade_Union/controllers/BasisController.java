@@ -37,7 +37,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@RestController
+@Controller
 public class BasisController {
     private static Blockchain blockchain;
 

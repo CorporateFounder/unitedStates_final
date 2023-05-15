@@ -1,7 +1,11 @@
 package International_Trade_Union.utils;
 
+import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.governments.Directors;
+import International_Trade_Union.governments.UtilsGovernment;
+import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
 
 import java.io.File;
@@ -79,4 +83,8 @@ public class UtilsTransaction {
         return dtoTransactions;
     }
 
+
+    public static void sendTransaction(DtoTransaction dtoTransaction){
+
+    }
 }

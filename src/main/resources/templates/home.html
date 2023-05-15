@@ -27,26 +27,12 @@
         <input type="text" name="stock" placeholder="сколько цифровых акций отправить" class="form-control"><br>
         <input type="text" name="reward" placeholder="вознаграждение майнеру" class="form-control"><br>
 
-        <h5>если ваш голос ДА, то акции получателя увеличивается на переданную сумму акции, если НЕТ, то сумма получателя уменьшается на ту же сумму, которую вы отправили, но не влияет на цифровой доллар.</h5>
-        <h5>Также если адрес получателя начинается с LIBER, значит это закон и будет учитываться ваш голос.</h5>
-        <select  name="vote" class="form-control">
-            <option value="YES" >YES</option>
-            <option value="NO">NO</option>
-        </select><br>
 
         <textarea name="password" placeholder="введите пароль" th:rows="8" th:cols="120"></textarea><br>
         <button type="submit" class="btn btn-success">Отправить деньги</button><br>
     </form>
 
-    <form action="/nodes/register" method="post">
-        <input type="text" name="urlAddrress" placeholder="введите адрес хоста" class="form-control"><br>
-        <button type="submit" class="btn btn-success">Регистрировать новый хост</button><br>
-    </form>
 
-    <form action="/setMinner" method="post">
-        <input type="text" name="setMinner" placeholder="введите логин, для смены адресса майнера" class="form-control"><br>
-        <button type="submit" class="btn btn-success">сменить адресс майнера</button><br>
-    </form>
 </div>
 
 

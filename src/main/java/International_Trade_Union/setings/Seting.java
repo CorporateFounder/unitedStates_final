@@ -33,7 +33,12 @@ public interface Seting {
 
     //минимальное значение количество положительных голосов, для того чтобы избрать
     // Совет Директоров и Совет Корпоративных Верховных Судей,
-    int ORIGINAL_LIMIT_MIN_VOTE = (int) (200 * Seting.COUNT_BLOCK_IN_DAY * 1 / 8);
+    int ORIGINAL_LIMIT_MIN_VOTE = 1; //(int) (200 * Seting.COUNT_BLOCK_IN_DAY * 1 / 8);
+
+
+    //прямая демократия, сколько голосов нужно, чтобы правило вступило в силу,
+    //без необходимости правительства
+    double ALL_STOCK_VOTE = 100000.0;
 
 
 

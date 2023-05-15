@@ -12,7 +12,8 @@
 <div class="container mt 5">
     <h1 th:text="${title}"></h1>
 </div>
-<h3>the cost of creating the law is 5 digital dollars as a reward to the miner</h3>
+<h3>Стоимость создания позиции, 5 цифровых долларов</h3>
+<h3>Если вознаграждение меньше пяти, то закон не будет добавлен в список.</h3>
 
 
 <form action="/create-law" method="post">
@@ -24,7 +25,7 @@
         th:value="${position}" th:text="${position}"></option>
     </select><br>
     <textarea name="password" placeholder="input password" th:rows="8" th:cols="120"></textarea><br>
-    <button type="submit" class="btn btn-success" name="action" value="/send">Send Law</button><br>
+    <button type="submit" class="btn btn-success" name="action" value="/send">Подать на должность</button><br>
     <input type="text" name="laws" placeholder="введите адрес отправителя" class="form-control"><br>
     <input type="text" name="laws" placeholder="можете ввести какие нибудь данные, например почту и т.д." class="form-control"><br>
 

@@ -95,6 +95,176 @@ public class LawsController {
     }
 
 
+    @GetMapping("/sanction")
+    public String sanction(Model model){
+        return "/sanction";
+    }
+
+    @PostMapping("/sanction")
+    public String sanction(
+            @RequestParam
+            String sender,
+            String recipient,
+            Double stock,
+            Double reward,
+            String password,
+            RedirectAttributes redirectAttrs
+
+    ) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        Base base = new Base58();
+
+        Laws laws =  new Laws();
+        laws.setLaws(new ArrayList<>());
+        laws.setHashLaw("");
+        laws.setPacketLawName("");
+        DtoTransaction dtoTransaction = new DtoTransaction(
+                sender,
+                recipient,
+                0.0,
+                stock,
+                laws,
+                reward,
+                VoteEnum.NO);
+        PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));
+        byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
+        System.out.println("Main Controller: new transaction: vote: " + VoteEnum.NO);
+        redirectAttrs.addFlashAttribute("title", "sending result!!!");
+        redirectAttrs.addFlashAttribute("sender", sender);
+        redirectAttrs.addFlashAttribute("recipient", recipient);
+        redirectAttrs.addFlashAttribute("dollar", 0.0);
+        redirectAttrs.addFlashAttribute("stock", stock);
+        redirectAttrs.addFlashAttribute("reward", reward);
+        redirectAttrs.addFlashAttribute("vote", VoteEnum.NO);
+        dtoTransaction.setSign(sign);
+        Directors directors = new Directors();
+        if(dtoTransaction.verify()){
+
+            //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
+            //отправитель совпадает с законом
+            List<String> corporateSeniorPositions = directors.getDirectors().stream()
+                    .map(t->t.getName()).collect(Collectors.toList());
+            System.out.println("LawsController: create_law: " + laws.getPacketLawName() + "contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
+            if(corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(sender, laws)){
+                redirectAttrs.addFlashAttribute("sending", "wrong transaction: Position to be equals whith send");
+                return "redirect:/result-sending";
+            }
+            redirectAttrs.addFlashAttribute("sending", "success");
+            System.out.println("dto MainController: " + dtoTransaction);
+
+            AllTransactions.addTransaction(dtoTransaction);
+            String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
+            for (String s : Seting.ORIGINAL_ADDRESSES) {
+
+                String original = s;
+                String url = s +"/addTransaction";
+                //если адресс совпадает с внутреним хостом, то не отправляет самому себе
+                if(BasisController.getExcludedAddresses().contains(url)){
+                    System.out.println("MainController: its your address or excluded address: " + url);
+                    continue;
+                }
+                try {
+                    //отправка в сеть
+                    UtilUrl.sendPost(jsonDto, url);
+
+                }catch (Exception e){
+                    System.out.println("exception discover: " + original);
+
+                }
+            }
+
+
+
+        }
+
+        else
+            redirectAttrs.addFlashAttribute("sending", "wrong transaction");
+        return "redirect:/result-sending";
+    }
+    /**Голосование учитывает голоса как акций, так и голоса избраных представителей*/
+    @GetMapping("/voting")
+    public String lawVoting(){
+        return "/voting";
+    }
+    @PostMapping("/voting")
+    public String lawVoting(
+            @RequestParam
+            String sender,
+            String recipient,
+            Double reward,
+            String vote,
+            String password,
+            RedirectAttributes redirectAttrs
+
+    ) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        Base base = new Base58();
+        vote = vote.toUpperCase(Locale.ROOT);
+        Laws laws =  new Laws();
+        laws.setLaws(new ArrayList<>());
+        laws.setHashLaw("");
+        laws.setPacketLawName("");
+        DtoTransaction dtoTransaction = new DtoTransaction(
+                sender,
+                recipient,
+                0.0,
+                0.0,
+                laws,
+                reward,
+                VoteEnum.valueOf(vote));
+        PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));
+        byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
+        System.out.println("Main Controller: new transaction: vote: " + vote);
+        redirectAttrs.addFlashAttribute("title", "sending result!!!");
+        redirectAttrs.addFlashAttribute("sender", sender);
+        redirectAttrs.addFlashAttribute("recipient", recipient);
+        redirectAttrs.addFlashAttribute("dollar", 0.0);
+        redirectAttrs.addFlashAttribute("stock", 0.0);
+        redirectAttrs.addFlashAttribute("reward", reward);
+        redirectAttrs.addFlashAttribute("vote", vote);
+        dtoTransaction.setSign(sign);
+        Directors directors = new Directors();
+        if(dtoTransaction.verify()){
+
+            //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
+            //отправитель совпадает с законом
+            List<String> corporateSeniorPositions = directors.getDirectors().stream()
+                    .map(t->t.getName()).collect(Collectors.toList());
+            System.out.println("LawsController: create_law: " + laws.getPacketLawName() + "contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
+            if(corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(sender, laws)){
+                redirectAttrs.addFlashAttribute("sending", "wrong transaction: Position to be equals whith send");
+                return "redirect:/result-sending";
+            }
+            redirectAttrs.addFlashAttribute("sending", "success");
+            System.out.println("dto MainController: " + dtoTransaction);
+
+            AllTransactions.addTransaction(dtoTransaction);
+            String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
+            for (String s : Seting.ORIGINAL_ADDRESSES) {
+
+                String original = s;
+                String url = s +"/addTransaction";
+                //если адресс совпадает с внутреним хостом, то не отправляет самому себе
+                if(BasisController.getExcludedAddresses().contains(url)){
+                    System.out.println("MainController: its your address or excluded address: " + url);
+                    continue;
+                }
+                try {
+                    //отправка в сеть
+                    UtilUrl.sendPost(jsonDto, url);
+
+                }catch (Exception e){
+                    System.out.println("exception discover: " + original);
+
+                }
+            }
+
+
+
+        }
+
+        else
+            redirectAttrs.addFlashAttribute("sending", "wrong transaction");
+        return "redirect:/result-sending";
+    }
     /**Отображается в браузере, список все действующих законов*/
     @GetMapping("/current-laws")
     public String currentLaw(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
@@ -226,6 +396,15 @@ public class LawsController {
                 .filter(t -> t.getVoteHightJudge() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE)
                 .collect(Collectors.toList());
 
+        //ЗАКОНЫ КОТОРЫЕ БЫЛИ ОДОБРЕНЫ ЧЕРЕЗ ПРЯМОЕ ГОЛОСОВАНИЕ
+        List<CurrentLawVotesEndBalance> allVotes = current.stream()
+                .filter(t->!directors.contains(t.getPackageName()))
+                .filter(t->!Seting.AMENDMENT_TO_THE_CHARTER.equals(t.getPackageName()))
+                .filter(t->!directors.isCabinets(t.getPackageName()))
+                .filter(t->!Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))
+                .filter(t->!Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))
+                .filter(t->t.getVotes() > Seting.ALL_STOCK_VOTE)
+                .collect(Collectors.toList());
 
         //законы которые получили не достаточно голосов которые могут пройти только если верховный судья одобрет
         List<CurrentLawVotesEndBalance> notEnoughVotes = current.stream()
@@ -354,6 +533,7 @@ public class LawsController {
 
         current = new ArrayList<>();
         current.addAll(addDirectors);
+        current.addAll(allVotes);
         current.addAll(budjet);
         current.addAll(planFourYears);
         current.addAll(electedByStockBoardOfDirectors);
@@ -436,6 +616,96 @@ public class LawsController {
         return "all-laws";
     }
 
+
+    /**Создать новую должность*/
+    @GetMapping("/add_position")
+    public String addPostion(Model model){
+        model.addAttribute("title", "Создание новой должности");
+        return "add_position";
+    }
+
+    @PostMapping("/add_position")
+    public String addPosition( @RequestParam String sender,
+                               @RequestParam String reward,
+                               @RequestParam String nameLaw,
+                               @RequestParam String[] laws,
+                               @RequestParam String password,
+                               RedirectAttributes redirectAttrs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+
+        nameLaw = Seting.ADD_DIRECTOR + nameLaw;
+        String[] lawsAdd = new String[laws.length];
+        for (int i = 0; i < laws.length; i++) {
+            lawsAdd[i] = Seting.ADD_DIRECTOR + laws[i];
+        }
+        laws = lawsAdd;
+
+        Laws law = new Laws(nameLaw, Arrays.asList(laws));
+        Base base = new Base58();
+
+        Double rewardD = Double.parseDouble(reward);
+
+
+        DtoTransaction dtoTransaction = new DtoTransaction(
+                sender,
+                law.getHashLaw(),
+                0.0,
+                0.0,
+                law,
+                rewardD,
+                VoteEnum.valueOf("YES"));
+        PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));
+        byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
+
+        redirectAttrs.addFlashAttribute("title", "sending result!!!");
+        redirectAttrs.addFlashAttribute("sender", sender);
+
+        redirectAttrs.addFlashAttribute("recipient", law.getHashLaw());
+        redirectAttrs.addFlashAttribute("dollar", 0.0);
+        redirectAttrs.addFlashAttribute("stock", 0.0);
+        redirectAttrs.addFlashAttribute("reward", rewardD);
+        redirectAttrs.addFlashAttribute("vote", "YES");
+        dtoTransaction.setSign(sign);
+
+        Directors directors = new Directors();
+        if (dtoTransaction.verify()) {
+
+            //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
+            //отправитель совпадает с законом
+            List<Director> enumPosition = directors.getDirectors();
+            List<String> corporateSeniorPositions = enumPosition.stream()
+                    .map(t->t.getName())
+                    .collect(Collectors.toList());
+
+            if (corporateSeniorPositions.contains(law.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(sender, law)) {
+                redirectAttrs.addFlashAttribute("sending", "wrong transaction: Position to be equals whith send");
+                return "redirect:/result-sending";
+            }
+
+            redirectAttrs.addFlashAttribute("sending", "success");
+            AllTransactions.addTransaction(dtoTransaction);
+            String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
+
+            for (String s : Seting.ORIGINAL_ADDRESSES) {
+                String original = s;
+                String url = s + "/addTransaction";
+                if (BasisController.getExcludedAddresses().contains(url)) {
+                    System.out.println("its your address or excluded address: " + url);
+                    continue;
+                }
+                try {
+                    UtilUrl.sendPost(jsonDto, url);
+
+                } catch (Exception e) {
+                    System.out.println("exception discovery: " + original);
+
+                }
+            }
+        } else
+            redirectAttrs.addFlashAttribute("sending", "wrong transaction");
+
+        return "redirect:/result-sending";
+
+    }
 
     /**Отображается в браузере, позволяет создать новый пакет законов*/
     @GetMapping("/create-law")

@@ -12,14 +12,14 @@ public double votesLaw(Map<String, Account> balances,
 
             int count = 1;
           count = yesAverage.get(s) > 0 ? yesAverage.get(s) : 1;
-          yes += balances.get(s).getDigitalStockBalance() / Math.pow(count, Seting.POWERING_FOR_VOTING);
+          yes += balances.get(s).getDigitalStockBalance() / count;
 
        }
         
         for (String s : NO) {
            int count = 1;
             count = noAverage.get(s) > 0 ? noAverage.get(s) : 1;
-           no += balances.get(s).getDigitalStockBalance() / Math.pow(count, Seting.POWERING_FOR_VOTING);
+           no += balances.get(s).getDigitalStockBalance() / count);
 
         }
 

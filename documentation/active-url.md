@@ -65,10 +65,19 @@
 http://194.87.236.238:80/getTransactions он возвращяет список
 ***@GetMapping("/getTransactions")
 public List<DtoTransaction> getTransaction()***
-находиться DtoTransaction в 
-
+находиться DtoTransaction в
 ***src/main/java/International_Trade_Union/entity/DtoTransaction/DtoTransaction.java***
 
+
+Отправляет с локального хоста во внешнее хранилище, весь блокчейн
+***@PostMapping("/nodes/resolve_all_blocks")
+public synchronized ResponseEntity<String>resolve_blocks_conflict(@RequestBody List<Block> blocks)***
+***http://194.87.236.238:80/nodes/resolve_all_blocks***
+
+Отправляет с локального хоста во внешнее хранилище от выбранного индекса, до выбранного индекса
+***@PostMapping("/nodes/resolve_from_to_block")
+public synchronized ResponseEntity<String> resolve_conflict(@RequestBody List<Block> blocks)***
+***http://194.87.236.238:80/nodes/resolve_from_to_block***
 ````java
 
 @JsonAutoDetect

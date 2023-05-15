@@ -4,7 +4,10 @@
 пример: java -jar C://unitedStates-0.0.1-SNAPSHOT.jar.
 Но папка ресурсы также необходимо сделать как описано ниже.
 
-для правильной установки программы нужно собрать с помощью intellij idea, jar файла,
+Для правильной работы вам нужно скачать и установить jre https://www.java.com/ru/download/manual.jsp
+https://www.oracle.com/cis/java/technologies/downloads/,
+и jdk 19 или выше
+
 после чего нужно скопировать папку resources в диск С:
 там хранятся
 - файлы блокчейна в папке ***/blockchain***
@@ -17,13 +20,13 @@
 - файлы отправленные транзакции ***/sendedTransaction***
 - файлы список транзакций для отправки ***/transactions***
 
-Для правильной работы вам нужно скачать и установить jre https://www.java.com/ru/download/manual.jsp
-https://www.oracle.com/cis/java/technologies/downloads/,
-и jdk 19 или выше
+
 ## ЕСЛИ ОТСУТСТВУЕТ ДИСК С:
 Если у вас отсутствует диск С: или вы хотите изменить расположение файлов где они должны
 храниться, то в src/main/java/International_Trade_Union/setings/Seting.java
-Вы можете изменить там настройки кода должны
+Вы можете изменить там настройки кода должны быть изменены в соответсвтвии с вашими настройками,
+после чего соберите приложение, например с помощью intellij idea, и проделайте то что описано выше,
+
 
 ````
     String ORIGINAL_BLOCKCHAIN_FILE = "C:\\resources\\blockchain\\";

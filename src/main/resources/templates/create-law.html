@@ -13,12 +13,13 @@
   <h1 th:text="${title}"></h1>
 </div>
 <h3>Стоимость создания закона — пять цифровых долларов, подробности описаны в уставе.</h3>
+<h3>Если вознаграждение меньше пяти, то закон не будет добавлен в список.</h3>
 
 
   <form action="/create-law" method="post">
     <input type="text" name="sender" placeholder="введите адрес отправителя" class="form-control"><br>
 
-    <input type="text" name="reward" placeholder="введите вознаграждение получателя" class="form-control"><br>
+    <input type="text" name="reward" placeholder="введите вознаграждение майнера" class="form-control"><br>
     <input type="text" name="nameLaw" placeholder="введите название пакета законов" class="form-control"><br>
     <textarea name="password" placeholder="введите пароль" th:rows="8" th:cols="120"></textarea><br>
     <button type="submit" class="btn btn-success" name="action" value="/send">Отправить закон</button><br>

@@ -6,9 +6,10 @@
 войдите в http://localhost:8082/
 Введите адрес отправителя, адрес получателя, сколько цифровых 
 долларов хотите отправить, сколько цифровых акций хотите отправить,
-вознаграждение майнеру, выберите ваш голос YES(ДА) или NO(Нет), 
-и введите пароль, после нажмите кнопку отправить деньги
+вознаграждение майнеру
 
+и введите пароль, после нажмите кнопку отправить деньги
+![транзакция](../screenshots/send-money.png)
 
 в localhost:8082/ 
 нужно вести данные в 
@@ -17,7 +18,7 @@
 - input digital dollar to send сумму цифровых долларов для отправки
 - input digital stock to send сумму цифрвых акций для отправки
 - send reward for miner вознаграждение майнера
-- выбрать YES или NO для голосования
+- выбрать YES или NO для голосования, а также для введения санкций
 - input password вести private key
 - и нажать send money
 
@@ -94,7 +95,6 @@
     Double dollar,
     Double stock,
     Double reward,
-    @RequestParam  String vote,
     @RequestParam  String password,
     RedirectAttributes redirectAttrs)
 ````
@@ -215,3 +215,5 @@
         return response;
     }
 ````
+
+[возврат на главную](../readme.md)
