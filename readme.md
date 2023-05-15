@@ -20,7 +20,6 @@
 - [действующие правила](./documentation/current-law.md)
 - [создание должности](./documentation/create-postion.md)
 
-
 ## Корпоративный устав
 - Корпоративный Устав
   - [Полномочия Совета Директоров.](./charter/POWERS_OF_THE_BOARD_OF_DIRECTORS.md)
