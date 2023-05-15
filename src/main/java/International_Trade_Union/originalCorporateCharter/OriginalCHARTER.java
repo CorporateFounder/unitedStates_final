@@ -82,18 +82,18 @@ public interface OriginalCHARTER {
             " если транзакция была совершена VoteEnum.YES то данный счет получает голоса за по формуле " +
             " yesV = количество голосов равные количеству акций отправителя." +
             " yesN = за сколько законов данный счет проголосовал с VoteEnum.YES" +
-            " resultYES = yesV / math.pow(yesN, 3). Пример: счет проголосовал за три счета которые начинаются с LIBER," +
-            " на счету сто акций, значит сто голосов. 100 / math.pow(3, 3) = 3.7 значит каждый счет получит по 3.7 голоса. " +
+            " resultYES = yesV / yesN). Пример: счет проголосовал за три счета которые начинаются с LIBER," +
+            " на счету сто акций, значит сто голосов. 100 / 3 = 33.3 значит каждый счет получит по 33.3 голоса. " +
             "" +
             " если транзакция была совершена с VoteEnum.NO " +
             " то используется такая же формула, но учитываются теперь все счета за которые он проголосовал против " +
             " пример тот же счет проголосовал за два счет против, у него те же сто акций. " +
-            " resultNO = noV / math.pow(noN, 3) = 100/ math.pow(2,3) = 12.5 значит каждый счет за который он проголосовал, " +
+            " resultNO = noV / noN = 50 = 50 значит каждый счет за который он проголосовал, " +
             " против получит 12.5 голосов против. " +
             " дальше каждый счет подсчитывает все отданные ему голоса ЗА (VoteEnum.YES)  и ПРОТИВ (VoteEnum.NO). " +
             " Потом используется данная формула remainder = resultYES - resultNO. " +
             " сначала данные должности отбираются все счета которые получили больше или равно четырнадцать тысяч " +
-            " четыреста голосов остатка (14400) remainder >= 14400." +
+            " четыреста голосов остатка (0) remainder >= 0." +
             " Дальше все счета сортируются по убыванию remainder и оттуда отбираются то количество счетов на " +
             " данные должности, сколько это оговорено в данной должности. Пример: " +
             " Для Совета Директоров это 301 счет с наибольшим количеством остатка. " +
@@ -106,7 +106,8 @@ public interface OriginalCHARTER {
             " были заинтересованы в том чтобы вы процветали. " +
             " Таким способом избираются Только CORPORATE_COUNCIL_OF_REFEREES и BOARD_OF_DIRECTORS" +
             " Учитывается только последняя транзакция отданная за каждый счет, если вы не обновляли свой голос, " +
-            " то по прошествии четырех лет он аннулируется. ";
+            " то по прошествии четырех лет он аннулируется. " +
+            " Для Утверждения Закона нужно 100 тысяч голосов";
 
     String CODE_VOTE_STOCK = " class CurrentLawVotes method: votesLaw " +
             " public double votesLaw(Map<String, Account> balances,\n" +
@@ -119,14 +120,14 @@ public interface OriginalCHARTER {
             "\n" +
             "            int count = 1;\n" +
             "            count = yesAverage.get(s) > 0 ? yesAverage.get(s) : 1;\n" +
-            "            yes += balances.get(s).getDigitalStockBalance() / Math.pow(count, Seting.POWERING_FOR_VOTING);\n" +
+            "            yes += balances.get(s).getDigitalStockBalance() /count;" +
             "\n" +
             "        }\n" +
             "        //\n" +
             "        for (String s : NO) {\n" +
             "            int count = 1;\n" +
             "            count = noAverage.get(s) > 0 ? noAverage.get(s) : 1;\n" +
-            "            no += balances.get(s).getDigitalStockBalance() / Math.pow(count, Seting.POWERING_FOR_VOTING);\n" +
+            "            no += balances.get(s).getDigitalStockBalance() / count;\n" +
             "\n" +
             "        }\n" +
             "\n" +
