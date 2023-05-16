@@ -279,6 +279,7 @@ public interface OriginalCHARTER {
             "может участвовать в решении споров внутри членов сети, как и CORPORATE_COUNCIL_OF_REFEREES, \n" +
             "но его голос выше чем голос CORPORATE_COUNCIL_OF_REFEREES. ";
 
+
     String HOW_IS_THE_PROCESS_OF_AMENDING_THE_CHARTER = " КАК ПРОИСХОДИТ ПРОЦЕСС ВНЕСЕНИЯ ПОПРАВОК В УСТАВ. " +
             " Для внесения поправок, нужно создать закон с названием пакета AMENDMENT_TO_THE_CHARTER, " +
             " дальше за этот закон должны проголосовать методом описанным в VOTE_ONE " +
