@@ -202,6 +202,7 @@ public class LawsController {
         laws.setLaws(new ArrayList<>());
         laws.setHashLaw("");
         laws.setPacketLawName("");
+        System.out.println("LawController: Voting: " + VoteEnum.valueOf(vote));
         DtoTransaction dtoTransaction = new DtoTransaction(
                 sender,
                 recipient,
@@ -491,8 +492,8 @@ public class LawsController {
                 .collect(Collectors.toList());
 
 
-        int startBlock = 22000;
-        int finishBlock = 22300;
+        int startBlock = 22700;
+        int finishBlock = 22800;
         if(blockchain.sizeBlockhain() > finishBlock){
             List<Block> blocksCharter = blockchain.subBlock(startBlock, finishBlock);
             //учитывает отрезок блоков для выяснения подлиности устава
