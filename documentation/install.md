@@ -8,6 +8,7 @@
 https://www.oracle.com/cis/java/technologies/downloads/,
 и jdk 19 или выше
 
+папка resurces находиться в ***src/main/java/resources***
 после чего нужно скопировать папку resources в диск С:
 там хранятся
 - файлы блокчейна в папке ***/blockchain***

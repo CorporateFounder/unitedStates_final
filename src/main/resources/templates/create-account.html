@@ -12,14 +12,15 @@
 
 <div class="container mt-5">
     <h3 th:text="${title}"/>
-    <h3>скопируйте адрес и пароль и сохраните в надежном месте, также задайте в качестве адреса майнера в текстовом файле minerAccount.txt этот адрес будет установлен при майнинге.</h3>
+    <h3>
+        copy the address and password and save it in a secure place, also set as the miner's address in the text file minerAccount.txt this address will be set during mining.</h3>
 
     <div class="alert alert-info mt-2">
-        <h4 th:text="'новый адрес: ' + ${login}"  class="form-control"/><br>
-        <textarea th:text="'пароль: ' + ${password}" class="form-control" rows="12"></textarea><br>
+        <h4 th:text="'new address: ' + ${login}"  class="form-control"/><br>
+        <textarea th:text="'pasword: ' + ${password}" class="form-control" rows="12"></textarea><br>
 
         <form action="/create-account" method="post">
-        <button type="submit" class="btn btn-success">сгенерировать новый адресс</button><br>
+        <button type="submit" class="btn btn-success">generate new account</button><br>
         </form>
 
     </div>
