@@ -10,19 +10,19 @@
 
 
 <div class="container mt-5">
+
     <h3 th:text="${title}"/>
     <div th:each="el : ${allLaws}" class="alert alert-info mt-2">
-        <h4 th:text="'адресс закона: '+${el.addressLaw}"/>
-        <p th:text="'голоса равные акциям: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
-        <p th:text="'голоса Совета Верховных Судей: '+${el.votesCorporateCouncilOfReferees}"/>
-        <p th:text="'голоса Совета Директоров: '+${el.votesBoardOfDirectors}"/>
-        <p th:text="'голоса Совета Акционеров: '+${el.votesBoardOfShareholders}"/>
-        <p th:text="'Голос Генерального Испольнительного Директора: '+${el.voteGeneralExecutiveDirector}"/>
-        <p th:text="'голос Верховного Судьи: '+${el.voteHightJudge}"/>
-        <p th:text="'голос основателя: '+${el.founderVote}"/>
-        <p th:text="'Название Пакета Законов: '+${el.packageName}"/>
-        <a th:href="'/detail-laws-current/' + ${el.addressLaw}" class="btn btn-warning">Посмотреть все законы внутри пакета</a>
-
+        <h4 th:text="'address package law: '+${el.addressLaw}"/>
+        <p th:text="'votes: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'votesCorporateCouncilOfReferees: '+${el.votesCorporateCouncilOfReferees}"/>
+        <p th:text="'votesBoardOfDirectors: '+${el.votesBoardOfDirectors}"/>
+        <p th:text="'votesBoardOfShareholders: '+${el.votesBoardOfShareholders}"/>
+        <p th:text="'voteGeneralExecutiveDirector: '+${el.voteGeneralExecutiveDirector}"/>
+        <p th:text="'voteHightJudge: '+${el.voteHightJudge}"/>
+        <p th:text="'founderVote: '+${el.founderVote}"/>
+        <p th:text="'package law name: '+${el.packageName}"/>
+        <a th:href="'/detail-laws-current/' + ${el.addressLaw}" class="btn btn-warning">Details</a>
     </div>
 
 </div>
