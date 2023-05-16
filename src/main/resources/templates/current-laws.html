@@ -11,7 +11,6 @@
     <h3 th:text="${title}"/>
 
 
-
     <div th:each="el : ${currentLaw}" class="alert alert-info mt-2">
         <h4 th:text="'адрес закона: '+${el.addressLaw}"/>
         <p th:text="'голоса равные акциям: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
