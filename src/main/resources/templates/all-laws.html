@@ -9,6 +9,7 @@
 <header th:insert="blocks/header :: header "></header>
 
 <div class="container mt-5">
+
     <h3 th:text="${title}"/>
     <div th:each="el : ${allLaws}" class="alert alert-info mt-2">
         <h4 th:text="'address package law: '+${el.addressLaw}"/>
