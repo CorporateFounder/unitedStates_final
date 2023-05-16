@@ -2,7 +2,7 @@
 Если у вас windows, то вам нужно скачать с папки target unitedStates-0.0.1-SHAPSHOT.jar
 в поиск виндовс вести cmd открыть командную строку и туда вести java -jar (где находится файл)/unitedStates-0.0.1-SNAPSHOT.jar
 пример: java -jar C://unitedStates-0.0.1-SNAPSHOT.jar.
-Но папка ресурсы также необходимо сделать как описано ниже.
+Но папка ресурсы также необходимо скопировать как описано ниже.
 
 Для правильной работы вам нужно скачать и установить jre https://www.java.com/ru/download/manual.jsp
 https://www.oracle.com/cis/java/technologies/downloads/,
@@ -25,9 +25,8 @@ https://www.oracle.com/cis/java/technologies/downloads/,
 ## ЕСЛИ ОТСУТСТВУЕТ ДИСК С:
 Если у вас отсутствует диск С: или вы хотите изменить расположение файлов где они должны
 храниться, то в src/main/java/International_Trade_Union/setings/Seting.java
-Вы можете изменить там настройки кода должны быть изменены в соответсвтвии с вашими настройками,
-после чего соберите приложение, например с помощью intellij idea, и проделайте то что описано выше,
-
+Вы можете изменить там настройки кода должны быть изменены в соответствии с вашими настройками,
+после чего соберите приложение, например с помощью intellij idea, и заново соберите jar file.
 
 ````
     String ORIGINAL_BLOCKCHAIN_FILE = "C:\\resources\\blockchain\\";
@@ -53,10 +52,10 @@ https://github.com/CorporateFounder/unitedStates_duplicates_original_storage
     Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");
 ````
 
-после того как локальный сервер будет поднять, в браузере 
+После того как локальный сервер будет поднять, в браузере 
 войдите на главную страницу http://localhost:8082 
 
-так выглядит ![главное меню](../screenshots/main-menu.png)
+Так выглядит ![главное меню](../screenshots/main-menu.png)
 
 [возврат на главную](../readme.md)
 

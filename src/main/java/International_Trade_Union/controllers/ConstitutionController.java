@@ -1,19 +1,10 @@
 package International_Trade_Union.controllers;
 
-import International_Trade_Union.CorporateCharterEngDraft.*;
 import International_Trade_Union.originalCorporateCharter.OriginalCHARTER;
-import International_Trade_Union.originalCorporateCharter.OriginalCHARTER_ENG;
 import International_Trade_Union.originalCorporateCharter.OriginalPreamble;
-import International_Trade_Union.originalCorporateCharter.OriginalPreambleEng;
-import International_Trade_Union.setings.Seting;
-import International_Trade_Union.utils.UtilsSecurity;
-import International_Trade_Union.utils.base.Base;
-import International_Trade_Union.utils.base.Base58;
-import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import International_Trade_Union.CorporateCharterDraft.*;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -74,8 +65,8 @@ public class ConstitutionController {
         rus.add("OriginalCHARTER.HOW_SHAREHOLDERS_BOARD_IS_ELECTED:\n"+ OriginalCHARTER.HOW_SHAREHOLDERS_BOARD_IS_ELECTED);
         rus.add("OriginalCHARTER.VOTE_STOCK:\n"+ OriginalCHARTER.VOTE_STOCK);
         rus.add("OriginalCHARTER.CODE_VOTE_STOCK:\n"+ OriginalCHARTER.CODE_VOTE_STOCK);
-        rus.add("OriginalCHARTER.POWERS_OF_DIRECTORS_IN_THE_OFFICE:\n"+ OriginalCHARTER.POWERS_OF_DIRECTORS_IN_THE_OFFICE);
-        rus.add("OriginalCHARTER.HOW_OFFICE_DIRECTORS_ARE_CHOSEN:\n"+ OriginalCHARTER.HOW_OFFICE_DIRECTORS_ARE_CHOSEN);
+        rus.add("OriginalCHARTER.POWERS_OF_DIRECTORS_IN_THE_OFFICE:\n"+ OriginalCHARTER.POWERS_OF_THE_CABINET_OF_DIRECTORS);
+        rus.add("OriginalCHARTER.HOW_OFFICE_DIRECTORS_ARE_CHOSEN:\n"+ OriginalCHARTER.HOW_CABINET_DIRECTORS_ARE_CHOSEN);
         rus.add("OriginalCHARTER.ONE_VOTE:\n"+ OriginalCHARTER.ONE_VOTE);
         rus.add("OriginalCHARTER.CODE_VOTE_ONE:\n"+ OriginalCHARTER.CODE_VOTE_ONE);
         rus.add("OriginalCHARTER.MECHANISM_FOR_REDUCING_THE_NUMBER_OF_SHARES:\n"+ OriginalCHARTER.MECHANISM_FOR_REDUCING_THE_NUMBER_OF_SHARES);
@@ -108,42 +99,6 @@ public class ConstitutionController {
 
 
 
-
-
-        //************************************************************************************
-        eng.add("OriginalPreamble.ARTICLE_0\n"+ OriginalPreambleEng.ARTICLE_0);
-        eng.add("OriginalCHARTER_ENG.POWERS_OF_THE_BOARD_OF_DIRECTORS:\n"+ OriginalCHARTER_ENG.POWERS_OF_THE_BOARD_OF_DIRECTORS);
-        eng.add("OriginalCHARTER_ENG.HOW_LAWS_ARE_CHOSEN:\n"+ OriginalCHARTER_ENG.HOW_LAWS_ARE_CHOSEN);
-        eng.add("OriginalCHARTER_ENG.HOW_THE_BOARD_OF_DIRECTORS_IS_ELECTED:\n"+ OriginalCHARTER_ENG.HOW_THE_BOARD_OF_DIRECTORS_IS_ELECTED);
-        eng.add("OriginalCHARTER_ENG.POWERS_OF_THE_BOARD_OF_SHAREHOLDERS:\n"+ OriginalCHARTER_ENG.POWERS_OF_THE_BOARD_OF_SHAREHOLDERS);
-        eng.add("OriginalCHARTER_ENG.HOW_SHAREHOLDERS_BOARD_IS_ELECTED:\n"+ OriginalCHARTER_ENG.HOW_SHAREHOLDERS_BOARD_IS_ELECTED);
-        eng.add("OriginalCHARTER_ENG.VOTE_STOCK:\n"+ OriginalCHARTER_ENG.VOTE_STOCK);
-        eng.add("OriginalCHARTER_ENG.CODE_VOTE_STOCK:\n"+ OriginalCHARTER_ENG.CODE_VOTE_STOCK);
-        eng.add("OriginalCHARTER_ENG.POWERS_OF_DIRECTORS_IN_THE_OFFICE:\n"+ OriginalCHARTER_ENG.POWERS_OF_DIRECTORS_IN_THE_OFFICE);
-        eng.add("OriginalCHARTER_ENG.HOW_OFFICE_DIRECTORS_ARE_CHOSEN:\n"+ OriginalCHARTER_ENG.HOW_OFFICE_DIRECTORS_ARE_CHOSEN);
-        eng.add("OriginalCHARTER_ENG.ONE_VOTE:\n"+ OriginalCHARTER_ENG.ONE_VOTE);
-        eng.add("OriginalCHARTER_ENG.CODE_VOTE_ONE:\n"+ OriginalCHARTER_ENG.CODE_VOTE_ONE);
-        eng.add("OriginalCHARTER_ENG.MECHANISM_FOR_REDUCING_THE_NUMBER_OF_SHARES:\n"+ OriginalCHARTER_ENG.MECHANISM_FOR_REDUCING_THE_NUMBER_OF_SHARES);
-        eng.add("OriginalCHARTER_ENG.WHO_HAS_THE_RIGHT_TO_CREATE_LAWS:\n"+ OriginalCHARTER_ENG.WHO_HAS_THE_RIGHT_TO_CREATE_LAWS);
-        eng.add("OriginalCHARTER_ENG.POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES:\n"+ OriginalCHARTER_ENG.POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES);
-        eng.add("OriginalCHARTER_ENG.HOW_THE_CORPORATE_BOARD_OF_JUDGES_IS_ELECTED:\n"+ OriginalCHARTER_ENG.HOW_THE_CORPORATE_BOARD_OF_JUDGES_IS_ELECTED);
-        eng.add("OriginalCHARTER_ENG.HOW_THE_CHIEF_JUDGE_IS_CHOSEN:\n"+ OriginalCHARTER_ENG.HOW_THE_CHIEF_JUDGE_IS_CHOSEN);
-        eng.add("OriginalCHARTER_ENG.POWERS_OF_THE_CHIEF_JUDGE:\n"+ OriginalCHARTER_ENG.POWERS_OF_THE_CHIEF_JUDGE);
-        eng.add("OriginalCHARTER_ENG.HOW_IS_THE_PROCESS_OF_AMENDING_THE_CHARTER:\n"+ OriginalCHARTER_ENG.HOW_IS_THE_PROCESS_OF_AMENDING_THE_CHARTER);
-        eng.add("OriginalCHARTER_ENG.HOW_THE_BUDGET_IS_APPROVED:\n"+ OriginalCHARTER_ENG.HOW_THE_BUDGET_IS_APPROVED);
-        eng.add("OriginalCHARTER_ENG.HOW_IS_THE_STRATEGIC:\n"+ OriginalCHARTER_ENG.HOW_IS_THE_STRATEGIC);
-        eng.add("OriginalCHARTER_ENG.HOW_NEW_POSITIONS_ARE_ADDED:\n"+ OriginalCHARTER_ENG.HOW_NEW_POSITIONS_ARE_ADDED);
-        eng.add("OriginalCHARTER_ENG.PROPERTY_OF_THE_CORPORATION:\n"+ OriginalCHARTER_ENG.PROPERTY_OF_THE_CORPORATION);
-        eng.add("OriginalCHARTER_ENG.INTERNET_STORE_DIRECTOR:\n"+ OriginalCHARTER_ENG.INTERNET_STORE_DIRECTOR);
-        eng.add("OriginalCHARTER_ENG.GENERAL_EXECUTIVE_DIRECTOR:\n"+ OriginalCHARTER_ENG.GENERAL_EXECUTIVE_DIRECTOR);
-        eng.add("OriginalCHARTER_ENG.DIRECTOR_OF_THE_DIGITAL_EXCHANGE:\n"+ OriginalCHARTER_ENG.DIRECTOR_OF_THE_DIGITAL_EXCHANGE);
-        eng.add("OriginalCHARTER_ENG.DIRECTOR_OF_DIGITAL_BANK:\n"+ OriginalCHARTER_ENG.DIRECTOR_OF_DIGITAL_BANK);
-        eng.add("OriginalCHARTER_ENG.DIRECTOR_OF_THE_COMMERCIAL_COURT:\n"+ OriginalCHARTER_ENG.DIRECTOR_OF_THE_COMMERCIAL_COURT);
-        eng.add("OriginalCHARTER_ENG.MEDIA_DIRECTOR:\n"+ OriginalCHARTER_ENG.MEDIA_DIRECTOR);
-        eng.add("OriginalCHARTER_ENG.DIRECTOR_OF_THE_DEVELOPMENT_OF_THE_IMPLEMENTATION_OF_CRYPTOCURRENCY_TECHNOLOGIES_OF_THE_INTERNATIONAL_TRADE_UNION_CORPORATION:\n"+ OriginalCHARTER_ENG.DIRECTOR_OF_THE_DEVELOPMENT_OF_THE_IMPLEMENTATION_OF_CRYPTOCURRENCY_TECHNOLOGIES_OF_THE_INTERNATIONAL_TRADE_UNION_CORPORATION);
-        eng.add("OriginalCHARTER_ENG.EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE:\n"+ OriginalCHARTER_ENG.EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE);
-        eng.add("OriginalCHARTER_ENG.FREEDOM_OF_SPEECH:\n"+ OriginalCHARTER_ENG.FREEDOM_OF_SPEECH);
-        eng.add("OriginalCHARTER_ENG.RIGHTS:\n"+ OriginalCHARTER_ENG.RIGHTS);
         return eng;
     }
 }

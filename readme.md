@@ -31,7 +31,7 @@
   - [Как Избирается Совет Акционеров.](./charter/HOW_SHAREHOLDERS_BOARD_IS_ELECTED.md)
   - [VOTE_STOCK (Как с помощью акций происходит голосование.)](./charter/VOTE_STOCK.md)
   - [Полномочия директоров офиса.](./charter/POWERS_OF_THE_BOARD_OF_DIRECTORS.md)
-  - [Как Избираются офисные Директора.](./charter/HOW_OFFICE_DIRECTORS_ARE_CHOSEN.md)
+  - [Как Избираются Кабинетные Директора.](./charter/HOW_CABINET_DIRECTORS_ARE_CHOSEN.md)
   - [ONE_VOTE (Один голос)](./charter/ONE_VOTE.md)
   - [Механизм ведения штрафов](./charter/MECHANISM_FOR_REDUCING_THE_NUMBER_OF_SHARES.md)
-
+  - [Полномочия кабинета директоров](./charter/POWERS_OF_THE_CABINET_OF_DIRECTORS.md)

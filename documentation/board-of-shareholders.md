@@ -1,6 +1,6 @@
 # Совет акционеров.
 
-чтобы увидеть совет акционеров и сколько их сейчас действует войдите по ссылке http://localhost:8082/board-of-shareholders
+Чтобы увидеть совет акционеров и сколько их сейчас действует, войдите по ссылке http://localhost:8082/board-of-shareholders
 
 ![Совет Акционеров](../screenshots/board-of-shareholders.png)
 OriginalCHARTER.POWERS_OF_THE_BOARD_OF_SHAREHOLDERS: Полномочия совета акционеров. 
@@ -49,7 +49,7 @@ OriginalCHARTER.HOW_SHAREHOLDERS_BOARD_IS_ELECTED: КАК ИЗБИРАЕТСЯ �
         .collect(Collectors.toList()); return boardOfShareholders; }
 ---
 
-класс BoardOfShareholdersController отображает актуальные должности
+Класс BoardOfShareholdersController отображает актуальные должности
 
 ````
       @GetMapping("board-of-shareholders")
@@ -75,7 +75,7 @@ OriginalCHARTER.HOW_SHAREHOLDERS_BOARD_IS_ELECTED: КАК ИЗБИРАЕТСЯ �
 
 ````
 
-метод из UtilsGovernment.java находит совет акционеров, 
+Метод из UtilsGovernment.java находит совет акционеров, 
 
 ```
     src/main/java/governments

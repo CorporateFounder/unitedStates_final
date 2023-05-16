@@ -8,7 +8,7 @@
 долларов хотите отправить, сколько цифровых акций хотите отправить,
 вознаграждение майнеру
 
-и введите пароль, после нажмите кнопку отправить деньги
+И введите пароль, после нажмите кнопку отправить деньги
 ![транзакция](../screenshots/send-money.png)
 
 в localhost:8082/ 
@@ -22,7 +22,7 @@
 - input password вести private key
 - и нажать send money
 
-## из чего состоит класс транзакция
+## Из чего состоит класс транзакция
 
 ````
     src/main/java/entity/blockchain/DtoTransaction/DtoTransaction.java
@@ -78,7 +78,7 @@
 
 
 ## КАК ПРОИСХОДИТ ОТПРАВКА
-после того как вы нажали кнопку send
+После того как вы нажали кнопку send
 сработает метод в контроллере класса MainController.java
 
 ````
@@ -152,16 +152,16 @@
 
 ````
 
-класс AllTransaction.java хранит в файлах как уже добавленые в блок транзакции,
+Класс AllTransaction.java хранит в файлах как уже добавленные в блок транзакции,
 так и транзакции которые еще не добыты данным локальным сервером.
 
-класс рассположен в 
+Класс рассоложен в 
 
 ````
     src/main/java/network/AllTransaction.java
 ````
 
-метод который добавляет в файл транзакцию
+Метод, который добавляет в файл транзакцию
 
 ````
       public static synchronized void addTransaction(DtoTransaction transaction) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
@@ -179,14 +179,14 @@
     }
 ````
 
-за отправку отвечает класс UtilUrl.java 
+За отправку отвечает класс UtilUrl.java 
 расположенный 
 
 ````
     src/main/java/utils/UtilUrl.java
 ````
 
-метод отправки
+Метод отправки
 
 ````
     public static int sendPost(String jsonObject, String requestStr) throws IOException {
@@ -216,4 +216,4 @@
     }
 ````
 
-[возврат на главную](../readme.md)
+[Возврат на главную](../readme.md)
