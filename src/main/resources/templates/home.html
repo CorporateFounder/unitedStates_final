@@ -13,26 +13,43 @@
 </div>
 
 <div  class="alert alert-info mt-2">
-    <h4 th:text="'адрес майнера: '+${account.account}"/>
-    <p th:text="'цифровые доллары: '+${#numbers.formatDecimal(account.digitalDollarBalance, 1, 'COMMA', 16, 'POINT')}"/>
-    <p th:text="'цифровые акции: '+${#numbers.formatDecimal(account.digitalStockBalance, 1, 'COMMA', 16, 'POINT')}"/>
+    <h4 th:text="'miner address: '+${account.account}"/>
+    <p th:text="'digital dollar: '+${#numbers.formatDecimal(account.digitalDollarBalance, 1, 'COMMA', 16, 'POINT')}"/>
+    <p th:text="'digital digitalStockBalance: '+${#numbers.formatDecimal(account.digitalStockBalance, 1, 'COMMA', 16, 'POINT')}"/>
 
 </div>
 
 <div class="container mt-5 mb-5">
     <form action="/" method="post">
-        <input type="text" name="sender" placeholder="введите адрес отправителя" class="form-control"><br>
-        <input type="text" name="recipient" placeholder="введите адресс получателя" class="form-control"><br>
-        <input type="text" name="dollar" placeholder="сколько цифровых долларов отправить" class="form-control"><br>
-        <input type="text" name="stock" placeholder="сколько цифровых акций отправить" class="form-control"><br>
-        <input type="text" name="reward" placeholder="вознаграждение майнеру" class="form-control"><br>
+        <input type="text" name="sender" placeholder="input address sender" class="form-control"><br>
+        <input type="text" name="recipient" placeholder="input address recipient" class="form-control"><br>
+        <input type="text" name="dollar" placeholder="input digital dollar to send" class="form-control"><br>
+        <input type="text" name="stock" placeholder="input digital stock to send" class="form-control"><br>
+        <input type="text" name="reward" placeholder="send reward for miner" class="form-control"><br>
 
+        <h5>if your vote is YES, then the recipient's reputation is increased by the transferred amount of reputation, if NO, then the recipient's amount is reduced by the same amount that you sent, but does not affect the digital dollar</h5>
+        <select  name="vote" class="form-control">
+            <option value="YES" >YES</option>
+            <option value="NO">NO</option>
+        </select><br>
 
-        <textarea name="password" placeholder="введите пароль" th:rows="8" th:cols="120"></textarea><br>
-        <button type="submit" class="btn btn-success">Отправить деньги</button><br>
+        <textarea name="password" placeholder="input password" th:rows="8" th:cols="120"></textarea><br>
+        <button type="submit" class="btn btn-success">Send money</button><br>
     </form>
 
+    <form action="/mine" method="get">
+        <button type="submit" class="btn btn-success">Mining block</button><br>
+    </form>
 
+    <form action="/nodes/register" method="post">
+        <input type="text" name="urlAddrress" placeholder="add url address)" class="form-control"><br>
+        <button type="submit" class="btn btn-success">register urlth</button><br>
+    </form>
+
+    <form action="/setMinner" method="post">
+        <input type="text" name="setMinner" placeholder="change miner address)" class="form-control"><br>
+        <button type="submit" class="btn btn-success">change miner address</button><br>
+    </form>
 </div>
 
 
