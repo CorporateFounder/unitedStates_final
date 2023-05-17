@@ -27,8 +27,6 @@
 Вестми́нстерская систе́ма.
 
 
-Документация находится еще в стадии доработки
-
 ## СОДЕРЖАНИЕ
 - [краткое описание](./documentation/preamble.md)
 - [активные url](./documentation/active-url.md)
@@ -65,3 +63,14 @@
   - [Как утверждается бюджет](./charter/HOW_THE_BUDGET_IS_APPROVED.md)
   - [Как утверждается стратегический план](./charter/HOW_IS_THE_STRATEGIC.md)
   - [Устав Как добавляются новые должности](./charter/HOW_NEW_POSITIONS_ARE_ADDED.md)
+  - [Собственность Корпорации](./charter/PROPERTY_OF_THE_CORPORATION.md)
+  - [Директор интернет Магазина-INTERNET_STORE_DIRECTOR](./charter/INTERNET_STORE_DIRECTOR.md)
+  - [Генеральный Исполнительный Директор-DIRECTOR_OF_THE_DIGITAL_EXCHANGE](./charter/GENERAL_EXECUTIVE_DIRECTOR.md)
+  - [Директор интернет Биржы-DIRECTOR_OF_THE_DIGITAL_EXCHANGE](./charter/DIRECTOR_OF_THE_DIGITAL_EXCHANGE.md)
+  - [Директор цифрового банка-DIRECTOR_OF_DIGITAL_BANK](./charter/DIRECTOR_OF_DIGITAL_BANK.md)
+  - [Директор Коммерческого Суда-DIRECTOR_OF_THE_COMMERCIAL_COURT](./charter/DIRECTOR_OF_THE_COMMERCIAL_COURT.md)
+  - [Директор СМИ-MEDIA_DIRECTOR](./charter/MEDIA_DIRECTOR.md)
+  - [Директор разработки и развития-DIRECTOR_OF_THE_DEVELOPMENT_OF_THE_IMPLEMENTATION_OF_CRYPTOCURRENCY_TECHNOLOGIES_OF_THE_INTERNATIONAL_TRADE_UNION_CORPORATION](./charter/DIRECTOR_OF_THE_DEVELOPMENT_OF_THE_IMPLEMENTATION_OF_CRYPTOCURRENCY_TECHNOLOGIES_OF_THE_INTERNATIONAL_TRADE_UNION_CORPORATION.md)
+  - [Почему здесь используется демерредж денег](./charter/EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE.md)
+  - [Право Свободы слова](./charter/FREEDOM_OF_SPEECH.md)
+  - [Естественные права](./charter/RIGHTS.md)

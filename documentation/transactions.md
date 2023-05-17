@@ -28,7 +28,7 @@
 - send reward for miner вознаграждение майнера
 
 - input password вести private key
-- и нажать send money
+- и нажать отправить деньги
 
 ## Из чего состоит класс транзакция
 
@@ -36,7 +36,7 @@
     src/main/java/entity/blockchain/DtoTransaction/DtoTransaction.java
 ````
 
-Конструктор
+Конструктор транзакции.
 - sender (отправителя)
 - customer (получателя)
 - digitalDollar (цифрового доллара)
