@@ -7,6 +7,7 @@ import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.originalCorporateCharter.OriginalPreamble;
 import International_Trade_Union.originalCorporateCharter.OriginalPreambleEng;
 
+import org.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -39,6 +40,8 @@ public class MainController {
 
     @GetMapping("/")
     public String home(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+
+
         model.addAttribute("title", "Corporation International Trade Union.");
         Map<String, Account> balances = new HashMap<>();
 

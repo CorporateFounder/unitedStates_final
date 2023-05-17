@@ -219,6 +219,8 @@ public class UtilsBlock {
         }
     }
 
+
+    public static void resolving(){}
     public static boolean validationOneBlock(
             String addressFounder,
             Block previusblock,

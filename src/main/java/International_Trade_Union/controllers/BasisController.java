@@ -328,6 +328,11 @@ public class BasisController {
     //TODO is necessary so that not the entire blockchain is transmitted each time, but a part, as implemented in bitcoin
     //TODO need to optimization because now not best
 
+    @RequestMapping("/resolving")
+    public String resolving() throws JSONException, NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        resolve_conflicts();
+        return "redirect:/";
+    }
     /**соединяется к внешним хостам, и скачивает самый длинный блокчейн,
      * если, локальный блокчейн, меньше других */
     @GetMapping("/nodes/resolve")
@@ -440,6 +445,7 @@ public class BasisController {
             System.out.println("BasisController: resolve: bigblockchain size: " + bigBlockchain.sizeBlockhain());
 
         }
+
     }
 
 
