@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="${title}"/>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header "></header>
+
+<div class="container mt-5">
+  <h3 th:text="${title}"/>
+
+  <div th:each="el : ${boardOfShareholders}" class="alert alert-info mt-2">
+    <h4 th:text="'address: '+${el.account}"/>
+    <p th:text="'digital dollar: '+${#numbers.formatDecimal(el.digitalDollarBalance, 1, 'COMMA', 16, 'POINT')}"/>
+    <p th:text="'digital digitalStockBalance: '+${#numbers.formatDecimal(el.digitalStockBalance, 1, 'COMMA', 16, 'POINT')}"/>
+
+  </div>
+
+</div>
+
+<footer th:insert="blocks/footer :: footer"></footer>
+
+
+</body>
+</html>

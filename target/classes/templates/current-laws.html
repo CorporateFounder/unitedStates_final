@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header "></header>
+<div class="container mt-5">
+    <h3 th:text="${title}"/>
+
+
+    <div th:each="el : ${currentLaw}" class="alert alert-info mt-2">
+        <h4 th:text="'адрес закона: '+${el.addressLaw}"/>
+        <p th:text="'голоса равные акциям: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'голоса Совета Верховных Судей: '+${el.votesCorporateCouncilOfReferees}"/>
+        <p th:text="'голоса Совета Директоров: '+${el.votesBoardOfDirectors}"/>
+        <p th:text="'голоса Совета Акционеров: '+${el.votesBoardOfShareholders}"/>
+        <p th:text="'Голос Генерального Испольнительного Директора: '+${el.voteGeneralExecutiveDirector}"/>
+        <p th:text="'голос Верховного Судьи: '+${el.voteHightJudge}"/>
+        <p th:text="'голос основателя: '+${el.founderVote}"/>
+        <p th:text="'Название Пакета Законов: '+${el.packageName}"/>
+
+        <a th:href="'/detail-laws-current/' + ${el.addressLaw}" class="btn btn-warning">Посмотреть детально пакет законов</a>
+    </div>
+
+</div>
+<footer th:insert="blocks/footer :: footer"></footer>
+
+</body>
+</html>

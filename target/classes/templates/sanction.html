@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header "></header>
+
+
+<div class="container mt-5">
+    <h3 th:text="${title}"/>
+
+    <form action="/sanction" method="post">
+        <input type="text" name="sender" placeholder="введите адрес отправителя" class="form-control"><br>
+        <input type="text" name="recipient" placeholder="введите адрес кому вы хотите вести штраф" class="form-control"><br>
+        <input type="text" name="stock" placeholder="сколько цифровых акций отправить" class="form-control"><br>
+        <input type="text" name="reward" placeholder="вознаграждение майнеру" class="form-control"><br>
+
+
+        <textarea name="password" placeholder="введите пароль" th:rows="8" th:cols="120"></textarea><br>
+        <button type="submit" class="btn btn-success">Отправить Голос</button><br>
+    </form>
+</div>
+<footer th:insert="blocks/footer :: footer"></footer>
+
+</body>
+</html>
