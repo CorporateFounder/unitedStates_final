@@ -72,7 +72,49 @@ public interface OriginalCHARTER_ENG {
             "Applying for a position and creating a new position).\n" +
             "formula: current year is one year, and if the account was active in this range, it is taken into account.\n" +
             "All accounts are sorted in descending order of the number of digital shares, and the 1500 accounts with the most shares are selected. Recalculation occurs every block.\n" +
-            "An example of a section of code how the Board of Shareholders is elected:";
+            "An example of a section of code how the Board of Shareholders is elected:" +
+            "" +
+            "//определение совета акционеров\n" +
+            "    public static List<Account> findBoardOfShareholders(Map<String, Account> balances, List<Block> blocks, int limit) {\n" +
+            "        List<Block> minersHaveMoreStock = null;\n" +
+            "        if (blocks.size() > limit) {\n" +
+            "            minersHaveMoreStock = blocks.subList(blocks.size() - limit, blocks.size());\n" +
+            "        } else {\n" +
+            "            minersHaveMoreStock = blocks;\n" +
+            "        }\n" +
+            "        List<Account> boardAccounts = minersHaveMoreStock.stream().map(\n" +
+            "                        t -> new Account(t.getMinerAddress(), 0, 0))\n" +
+            "                .collect(Collectors.toList());\n" +
+            "\n" +
+            "        for (Block block : minersHaveMoreStock) {\n" +
+            "            for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {\n" +
+            "                boardAccounts.add(new Account(dtoTransaction.getSender(), 0, 0));\n" +
+            "            }\n" +
+            "\n" +
+            "        }\n" +
+            "\n" +
+            "\n" +
+            "        CompareObject compareObject = new CompareObject();\n" +
+            "\n" +
+            "        List<Account> boardOfShareholders = balances.entrySet().stream()\n" +
+            "                .filter(t -> boardAccounts.contains(t.getValue()))\n" +
+            "                .map(t -> t.getValue()).collect(Collectors.toList());\n" +
+            "\n" +
+            "\n" +
+            "        boardOfShareholders = boardOfShareholders\n" +
+            "                .stream()\n" +
+            "                .filter(t -> !t.getAccount().startsWith(Seting.NAME_LAW_ADDRESS_START))\n" +
+            "                .filter(t -> t.getDigitalStockBalance() > 0)\n" +
+            "                .sorted(Comparator.comparing(Account::getDigitalStockBalance).reversed())\n" +
+            "                .collect(Collectors.toList());\n" +
+            "\n" +
+            "        boardOfShareholders = boardOfShareholders\n" +
+            "                .stream()\n" +
+            "                .limit(Seting.BOARD_OF_SHAREHOLDERS)\n" +
+            "                .collect(Collectors.toList());\n" +
+            "\n" +
+            "        return boardOfShareholders;\n" +
+            "    }";
 
     //Added
     String VOTE_STOCK = "How shares are voted. All shares an account owns count for the same number of votes. every time someone makes a transaction to an account that is a package address that starts with LIBER, they vote for that package. Only those are counted votes less than four years old If the transaction was made VoteEnum.YES then this account receives votes for according to the formula yesV = number of votes equal to the number of shares of the sender yesN = how many laws this account voted for with VoteEnum.YES resultYES = yesV / yesN).Example: an account voted for three accounts that start with LIBER, there are 100 shares in the account, so 100 votes. 100 / 3 = 33.3, so each account will receive 33.3 votes.\n" +

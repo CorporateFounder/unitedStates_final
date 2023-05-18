@@ -74,7 +74,49 @@ public interface OriginalCHARTER {
             "Подача на должность и Создание новой должности).\n" +
             "формула: текущий год - один год, и если счет был активен в этом диапазоне, он учитывается.\n" +
             "Все счета сортируются по убыванию количества цифровых акций, и отбираются 1500 счетов с наибольшим количеством акций. Перерасчет происходит Каждый блок.\n" +
-            "Пример участка кода как избирается Совет Акционеров:";
+            "Пример участка кода как избирается Совет Акционеров:" +
+            "" +
+            "//определение совета акционеров\n" +
+            "    public static List<Account> findBoardOfShareholders(Map<String, Account> balances, List<Block> blocks, int limit) {\n" +
+            "        List<Block> minersHaveMoreStock = null;\n" +
+            "        if (blocks.size() > limit) {\n" +
+            "            minersHaveMoreStock = blocks.subList(blocks.size() - limit, blocks.size());\n" +
+            "        } else {\n" +
+            "            minersHaveMoreStock = blocks;\n" +
+            "        }\n" +
+            "        List<Account> boardAccounts = minersHaveMoreStock.stream().map(\n" +
+            "                        t -> new Account(t.getMinerAddress(), 0, 0))\n" +
+            "                .collect(Collectors.toList());\n" +
+            "\n" +
+            "        for (Block block : minersHaveMoreStock) {\n" +
+            "            for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {\n" +
+            "                boardAccounts.add(new Account(dtoTransaction.getSender(), 0, 0));\n" +
+            "            }\n" +
+            "\n" +
+            "        }\n" +
+            "\n" +
+            "\n" +
+            "        CompareObject compareObject = new CompareObject();\n" +
+            "\n" +
+            "        List<Account> boardOfShareholders = balances.entrySet().stream()\n" +
+            "                .filter(t -> boardAccounts.contains(t.getValue()))\n" +
+            "                .map(t -> t.getValue()).collect(Collectors.toList());\n" +
+            "\n" +
+            "\n" +
+            "        boardOfShareholders = boardOfShareholders\n" +
+            "                .stream()\n" +
+            "                .filter(t -> !t.getAccount().startsWith(Seting.NAME_LAW_ADDRESS_START))\n" +
+            "                .filter(t -> t.getDigitalStockBalance() > 0)\n" +
+            "                .sorted(Comparator.comparing(Account::getDigitalStockBalance).reversed())\n" +
+            "                .collect(Collectors.toList());\n" +
+            "\n" +
+            "        boardOfShareholders = boardOfShareholders\n" +
+            "                .stream()\n" +
+            "                .limit(Seting.BOARD_OF_SHAREHOLDERS)\n" +
+            "                .collect(Collectors.toList());\n" +
+            "\n" +
+            "        return boardOfShareholders;\n" +
+            "    }";
 
     //Дописан
     String VOTE_STOCK = " Как с помощью акций происходит голосование. Все акции которым счет владеет, приравниваются такому же количеству голосов. каждый раз когда кто то делает транзакцию на счет, который является адресом пакета который начинается с LIBER он голосует за данный пакет. Учитываются только те голоса, с которых не прошло больше четырех лет. если транзакция была совершена VoteEnum.YES то данный счет получает голоса за по формуле yesV = количество голосов равные количеству акций отправителя. yesN = за сколько законов данный счет проголосовал с VoteEnum.YES resultYES = yesV / yesN). Пример: счет проголосовал за три счета которые начинаются с LIBER, на счету сто акций, значит сто голосов. 100 / 3 = 33.3 значит каждый счет получит по 33.3 голоса.\n" +
