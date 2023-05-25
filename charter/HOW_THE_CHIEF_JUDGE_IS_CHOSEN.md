@@ -16,4 +16,4 @@
                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesCorporateCouncilOfReferees)).collect(Collectors.toList()); 
 ````
 
-[Выход на главную](../readme.md)
+[Выход на главную](../documentation/documentationRus.md)

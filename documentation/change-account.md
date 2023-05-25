@@ -25,4 +25,4 @@ UtilsFileSaveRead.save() сохраняет новый публичный сче
     resources/minerAccount/minerAccount.txt
 ````
 
-[возврат на главную](../readme.md)
+[возврат на главную](./documentationRus.md)

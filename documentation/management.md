@@ -19,5 +19,5 @@ http://localhost:8082/create-position
 
 
 
-[выход на главную](../readme.md)
+[выход на главную](./documentationRus.md)
 

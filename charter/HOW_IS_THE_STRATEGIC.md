@@ -23,4 +23,4 @@ class LawsController: method currentLaw:
 
 ````
 
-[Выход на главную](../readme.md)
+[Выход на главную](../documentation/documentationRus.md)

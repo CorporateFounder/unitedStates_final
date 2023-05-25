@@ -5,4 +5,4 @@ OriginalCHARTER.POWERS_OF_THE_BOARD_OF_SHAREHOLDERS: Полномочия сов
 Совет Акционеров также может участвовать в голосовании при избрании кандидатов CORPORATE_COUNCIL_OF_REFEREES и BOARD_OF_DIRECTORS используя
 эти правила для голосования за кандидатов VOTE_STOCK.
 
-[Возврат на главную](../readme.md)
+[Возврат на главную](../documentation/documentationRus.md)

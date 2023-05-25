@@ -65,4 +65,4 @@ public double votesLaw(Map<String, Account> balances,
 
 ````
 
-[возврат на главную](../readme.md)
+[возврат на главную](../documentation/documentationRus.md)

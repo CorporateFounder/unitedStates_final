@@ -100,4 +100,4 @@ OriginalCHARTER.HOW_SHAREHOLDERS_BOARD_IS_ELECTED: КАК ИЗБИРАЕТСЯ �
         }
 ```
 
-[выход на главную](../readme.md)
+[выход на главную](./documentationRus.md)

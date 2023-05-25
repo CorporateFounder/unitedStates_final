@@ -24,4 +24,4 @@ CORPORATE_COUNCIL_OF_REFEREES состоит из 55 счетов.
 
 ----
 
-[Выход на главное](../readme.md)
+[Выход на главное](../documentation/documentationRus.md)

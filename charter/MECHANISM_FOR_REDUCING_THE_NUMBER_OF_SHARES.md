@@ -16,3 +16,5 @@ ______
 при избрании CORPORATE_COUNCIL_OF_REFEREES. 
 Данный механизм действует только на цифровые акции и только в том случае, что отправитель отправил с знаком 
 VoteEnum.NO.
+
+[выход на главную](../documentation/documentationRus.md)

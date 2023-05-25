@@ -7,4 +7,4 @@
 так и Верховный Судья, или ниже стоящие судьи избранные CORPORATE_COUNCIL_OF_REFEREES.
 
 
-[Выход на главную](../readme.md)
+[Выход на главную](../documentation/documentationRus.md)

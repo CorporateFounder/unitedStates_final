@@ -80,4 +80,4 @@
 - ДИРЕКТОР ПО РАЗВИТИЮ ВНЕДРЕНИЯ КРИПТОВАЛЮТНЫХ ТЕХНОЛОГИЙ МЕЖДУНАРОДНОЙ ПРОФСОЮЗНОЙ КОРПОРАЦИИ 
   - [DIRECTOR_OF_THE_DEVELOPMENT_OF_THE_IMPLEMENTATION_OF_CRYPTOCURRENCY_TECHNOLOGIES_OF_THE_INTERNATIONAL_TRADE_UNION_CORPORATION]
 
-[возврат на главную](../readme.md)
+[возврат на главную](./documentationRus.md)

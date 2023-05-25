@@ -30,4 +30,4 @@
                .collect(Collectors.toList());
 ````
 
-[возврат на главную](../readme.md)
+[возврат на главную](../documentation/documentationRus.md)

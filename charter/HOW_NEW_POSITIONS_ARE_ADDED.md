@@ -38,4 +38,4 @@ VOTE_ONE 15 или больше голосов.
 
 ````
 
-[Выход на главную](../readme.md)
+[Выход на главную](../documentation/documentationRus.md)

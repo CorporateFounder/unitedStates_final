@@ -6,4 +6,4 @@
 
 Совет Директоров, CORPORATE_COUNCIL_OF_REFEREES, HIGH_JUDGE, Совет Акционеров и GENERAL_EXECUTIVE_DIRECTOR могут быть как 
 физическими лицами, так и юридическими лицами, но один счет будет учитываться как один голос. 
-[Выход на главную](../readme.md)
+[Выход на главную](../documentation/documentationRus.md)

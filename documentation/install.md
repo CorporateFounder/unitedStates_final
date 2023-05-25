@@ -57,5 +57,5 @@ https://github.com/CorporateFounder/unitedStates_duplicates_original_storage
 
 Так выглядит ![главное меню](../screenshots/main-menu.png)
 
-[возврат на главную](../readme.md)
+[возврат на главную](./documentationRus.md)
 
