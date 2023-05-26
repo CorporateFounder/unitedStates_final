@@ -40,12 +40,4 @@ public class CreateAccountController {
         return "redirect:/create-account";
     }
 
-//    @PostMapping("save-creating-minerAccount")
-//    public String saveNewAccount(Model model, @RequestParam String changeAddress){
-//        User.setUserAddress(changeAddress);
-//        return "redirect:/";
-//    }
-
-
-
 }

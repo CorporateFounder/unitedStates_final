@@ -13,24 +13,24 @@
 </div>
 
 <div  class="alert alert-info mt-2">
-    <h4 th:text="'адрес майнера: '+${account.account}"/>
-    <p th:text="'цифровые доллары: '+${#numbers.formatDecimal(account.digitalDollarBalance, 1, 'COMMA', 16, 'POINT')}"/>
-    <p th:text="'цифровые акции: '+${#numbers.formatDecimal(account.digitalStockBalance, 1, 'COMMA', 16, 'POINT')}"/>
+    <h4 th:text="'miner address: '+${account.account}"/>
+    <p th:text="'digital dollar: '+${#numbers.formatDecimal(account.digitalDollarBalance, 1, 'COMMA', 16, 'POINT')}"/>
+    <p th:text="'digital stock: '+${#numbers.formatDecimal(account.digitalStockBalance, 1, 'COMMA', 16, 'POINT')}"/>
 
 </div>
 
 
 <div class="container mt-5 mb-5">
     <form action="/" method="post">
-        <input type="text" name="sender" placeholder="введите адрес отправителя" class="form-control"><br>
-        <input type="text" name="recipient" placeholder="введите адресс получателя" class="form-control"><br>
-        <input type="text" name="dollar" placeholder="сколько цифровых долларов отправить" class="form-control"><br>
-        <input type="text" name="stock" placeholder="сколько цифровых акций отправить" class="form-control"><br>
-        <input type="text" name="reward" placeholder="вознаграждение майнеру" class="form-control"><br>
+        <input type="text" name="sender" placeholder="enter the sender's address" class="form-control"><br>
+        <input type="text" name="recipient" placeholder="enter the recipient's address" class="form-control"><br>
+        <input type="text" name="dollar" placeholder="enter the number of digital dollars to send" class="form-control"><br>
+        <input type="text" name="stock" placeholder="enter the number of digital shares to send" class="form-control"><br>
+        <input type="text" name="reward" placeholder="miner reward" class="form-control"><br>
 
 
-        <textarea name="password" placeholder="введите пароль" th:rows="8" th:cols="120"></textarea><br>
-        <button type="submit" class="btn btn-success">Отправить деньги</button><br>
+        <textarea name="password" placeholder="enter private key" th:rows="8" th:cols="120"></textarea><br>
+        <button type="submit" class="btn btn-success">Send money</button><br>
     </form>
 
 
@@ -38,7 +38,7 @@
 
 <div class="container mt-5 mb-5">
     <form action="/resolving" method="get">
-        <button type="submit" class="btn btn-success">Обновить блокчейн</button><br>
+        <button type="submit" class="btn btn-success">Update blockchain</button><br>
     </form>
 </div>
 

@@ -18,7 +18,7 @@
         <div th:each="el : ${instance.value}" class="alert alert-info mt-2">
             <h4 th:text="'address law: '+${el.addressLaw}"/>
             <p th:text="'package law name: '+${el.packageName}"/>
-            <p th:text="'votes: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
+            <p th:text="'stock votes: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
             <p th:text="'votesCorporateCouncilOfReferees: '+${el.votesCorporateCouncilOfReferees}"/>
             <p th:text="'votesBoardOfDirectors: '+${el.votesBoardOfDirectors}"/>
             <p th:text="'votesBoardOfShareholders: '+${el.votesBoardOfShareholders}"/>

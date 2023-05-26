@@ -116,7 +116,17 @@ public interface OriginalCHARTER_ENG {
             "        return boardOfShareholders;\n" +
             "    }";
 
-    //Added
+    String WHO_HAS_THE_RIGHT_TO_CREATE_LAWS = "that has the Right to Create Laws.\n" +
+            "Create Laws in Cryptocurrency Corporations of the International Trade Union have the right\n" +
+            "all network members who have at least five digital dollars. \n" +
+            "To create law through the International Trade Union Corporation's cryptocurrency mechanism\n" +
+            "You need to create an object of the Laws class inside this cryptocurrency, where packetLawName is the name of the law package. \n" +
+            "List<String> laws - is a list of laws, String hashLaw - is the address of this package of laws and starts with LIBER. \n" +
+            "For a law to be included in the pool of laws, you need to create a transaction where the recipient is the hashLaw of this law and the reward \n" +
+            "the miner is equal to five digital dollars (5) of this cryptocurrency. After that, when the law gets into the block, it will be in the pool\n" +
+            "laws and it will be possible to vote for him. \n" +
+            "The number of lines in a package of laws can be as many as needed and there are no restrictions.";
+
     String VOTE_STOCK = "How shares are voted. All shares an account owns count for the same number of votes. every time someone makes a transaction to an account that is a package address that starts with LIBER, they vote for that package. Only those are counted votes less than four years old If the transaction was made VoteEnum.YES then this account receives votes for according to the formula yesV = number of votes equal to the number of shares of the sender yesN = how many laws this account voted for with VoteEnum.YES resultYES = yesV / yesN).Example: an account voted for three accounts that start with LIBER, there are 100 shares in the account, so 100 votes. 100 / 3 = 33.3, so each account will receive 33.3 votes.\n" +
             "\n" +
             "if the transaction was made with VoteEnum.NO then the same formula is used, but now all accounts for which he voted against are taken into account example the same account voted for two against, he has the same hundred shares. resultNO = noV / noN = 50 = 50 means each account for which he voted against will receive 50 votes against.next, each account counts and sums up all the votes given to it FOR (VoteEnum.YES) and AGAINST (VoteEnum.NO).Then use this formula remainder = resultYES - resultNO.first these positions, all accounts that received more than or equal to one vote remainder (0) remainder >= 1. Then all accounts are sorted in descending order by remainder and from there the number of accounts for these positions is selected, as specified in this position.For the Board of Directors, this is 301 the account with the most balance.\n" +

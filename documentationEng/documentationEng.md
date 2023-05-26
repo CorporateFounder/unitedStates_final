@@ -90,3 +90,54 @@ for digital dollars and 0.2% for digital shares, this allows miners to mine 200 
 In this case, the total amount of money will not increase, which also does not require a doubling of the value of the coins, since the coins
 always mined in the same amount. Imagine it - as if you jointly rented a cell or several cells in a bank,
 and each of you would store your gold there, but you would pay for storage depending on the amount of gold that each of you stores.
+
+
+## CONTENT
+- [short description](../documentationEng/preambleEng.md)
+- [active url](../documentationEng/active-urlEng.md)
+- [how to install the application](../documentationEng/installEng.md)
+- [how to open an account](../documentationEng/create-accountEng.md)
+- [how to change account on local server](../documentationEng/change-accountEng.md)
+- [how to get the block](../documentationEng/%20mineEng.md)
+- [transactions](../documentationEng/transactionsEng.md)
+- [board of shareholders](../documentationEng/board-of-shareholdersEng.md)
+- [apply for position](../documentation/management.md)
+- [how network rules are created](../documentation/create-law.md)
+- [how voting works in the network](../documentation/voting-in-network.md)
+- [current rules](../documentation/current-law.md)
+- [post creation](../documentation/create-postion.md)
+
+## Corporate Charter
+- Corporate Charter
+   - [Powers of the Board of Directors.](../charter/POWERS_OF_THE_BOARD_OF_DIRECTORS.md)
+   - [How Laws Are Chosen.](../charter/HOW_LAWS_ARE_CHOSEN.md)
+   - [How the Board of Directors is elected.](../charter/HOW_THE_BOARD_OF_DIRECTORS_IS_ELECTED.md)
+   - [Powers of the Board of Shareholders.](../charter/POWERS_OF_THE_BOARD_OF_SHAREHOLDERS.md)
+   - [How the Board of Shareholders is Elected.](../charter/HOW_SHAREHOLDERS_BOARD_IS_ELECTED.md)
+   - [VOTE_STOCK (How voting is done with shares.)](../charter/VOTE_STOCK.md)
+   - [Powers of the directors' cabinet](../charter/POWERS_OF_THE_CABINET_OF_DIRECTORS.md)
+   - [How Cabinet Directors Are Chosen.](../charter/HOW_CABINET_DIRECTORS_ARE_CHOSEN.md)
+   - [ONE_VOTE (One vote)](../charter/ONE_VOTE.md)
+   - [Mechanism for maintaining fines](../charter/MECHANISM_FOR_REDUCING_THE_NUMBER_OF_SHARES.md)
+   - [Who has the right to create Laws](../charter/WHO_HAS_THE_RIGHT_TO_CREATE_LAWS.md)
+   - [Powers of the Corporate Council of Supreme Judges](../charter/POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES.md)
+   - [How the Board of Corporate Chief Justices is elected](../charter/HOW_THE_CORPORATE_BOARD_OF_JUDGES_IS_ELECTED.md)
+   - [How the Chief Judge is elected](../charter/HOW_THE_CHIEF_JUDGE_IS_CHOSEN.md)
+   - [Powers of the Chief Justice](../charter/POWERS_OF_THE_CHIEF_JUDGE.md)
+   - [How the charter amendment process works](../charter/HOW_IS_THE_PROCESS_OF_AMENDING_THE_CHARTER.md)
+   - [How the budget is approved](../charter/HOW_THE_BUDGET_IS_APPROVED.md)
+   - [How the strategic plan is approved](../charter/HOW_IS_THE_STRATEGIC.md)
+   - [Charter How new positions are added](../charter/HOW_NEW_POSITIONS_ARE_ADDED.md)
+   - [Corporation Property](../charter/PROPERTY_OF_THE_CORPORATION.md)
+   - [Internet_STORE_DIRECTOR Director](../charter/INTERNET_STORE_DIRECTOR.md)
+   - [General Executive Director-DIRECTOR_OF_THE_DIGITAL_EXCHANGE](../charter/GENERAL_EXECUTIVE_DIRECTOR.md)
+   - [Director of the Internet Exchange-DIRECTOR_OF_THE_DIGITAL_EXCHANGE](../charter/DIRECTOR_OF_THE_DIGITAL_EXCHANGE.md)
+   - [DIRECTOR_OF_DIGITAL_BANK](../charter/DIRECTOR_OF_DIGITAL_BANK.md)
+   - [Director of the Commercial Court-DIRECTOR_OF_THE_COMMERCIAL_COURT](../charter/DIRECTOR_OF_THE_COMMERCIAL_COURT.md)
+   - [Media Director-MEDIA_DIRECTOR](../charter/MEDIA_DIRECTOR.md)
+   - [Director of Development and Development-DIRECTOR_OF_THE_DEVELOPMENT_OF_THE_IMPLEMENTATION_OF_CRYPTOCURRENCY_TECHNOLOGIES_OF_THE_INTERNATIONAL_TRADE_UNION_CORPORATION](../charter/DIRECTOR_OF_THE_DEVELOPMENT_OF_THE_IMPLEMENTATION_OF_CRYPTOCURRENCY_TECHNOLOGIES_OF_THE_INTERNATIONAL_TRADE_UNION_CORPORATION.md)
+   - [Why money demurrage is used here](../charter/EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE.md)
+   - [Right of Free Speech](../charter/FREEDOM_OF_SPEECH.md)
+   - [Natural Rights](../charter/RIGHTS.md)
+
+[home](../readme.md)

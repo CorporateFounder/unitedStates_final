@@ -552,7 +552,7 @@ public class LawsController {
                 .collect(Collectors.toList());
         System.out.println("notEnoughVotes: " + notEnoughVotes);
 
-        model.addAttribute("title", "Как принимаются действующие законы, описано в уставе." +
+        model.addAttribute("title", "How the current laws are made is described in the charter." +
                 " ");
         model.addAttribute("currentLaw", current);
         return "current-laws";
@@ -621,7 +621,7 @@ public class LawsController {
     /**Создать новую должность*/
     @GetMapping("/add_position")
     public String addPostion(Model model){
-        model.addAttribute("title", "Создание новой должности");
+        model.addAttribute("title", "Create a new position");
         return "add_position";
     }
 

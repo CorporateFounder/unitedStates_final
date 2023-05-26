@@ -163,7 +163,7 @@ public class MainController {
 
     @GetMapping("/seting")
     public String seting(Model model){
-        model.addAttribute("title", "Настройки");
+        model.addAttribute("title", "Settings");
         return "seting";
     }
 
