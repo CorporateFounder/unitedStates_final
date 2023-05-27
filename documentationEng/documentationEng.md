@@ -57,8 +57,7 @@ your profitability, you must either increase the production of coins, and this i
 sell for more. Since you are not able to influence the market rate, you will be forced to increase the cost of payment for
 transaction, since there are only 500 thousand transactions in a day, the cost of transactions will double so that you stay
 cost-effective, but it will also encourage participants to spend less of their coins in the short term.
-If you lose both sources of income, namely the reduction in production and the reduction in the number of transactions
-tion, this
+If you lose both sources of income, namely the reduction in production and the reduction in the number of transactions, this
 leads to bankruptcy.
 As mining is declining, this should lead to more bankruptcies and monopolization of the coin.
 and drop in hash rate because most miners will not be able to meet fixed costs such as hardware and
@@ -101,11 +100,11 @@ and each of you would store your gold there, but you would pay for storage depen
 - [how to get the block](../documentationEng/%20mineEng.md)
 - [transactions](../documentationEng/transactionsEng.md)
 - [board of shareholders](../documentationEng/board-of-shareholdersEng.md)
-- [apply for position](../documentation/management.md)
-- [how network rules are created](../documentation/create-law.md)
-- [how voting works in the network](../documentation/voting-in-network.md)
-- [current rules](../documentation/current-law.md)
-- [post creation](../documentation/create-postion.md)
+- [apply for position](../documentationEng/managmentEng.md)
+- [how network rules are created](../documentationEng/create-lawEng.md)
+- [how voting works in the network](../documentationEng/voting-in-networkEng.md)
+- [current rules](../documentationEng/current-lawEng.md)
+- [post creation](../documentationEng/create-positionEng.md)
 
 ## Corporate Charter
 - Corporate Charter
