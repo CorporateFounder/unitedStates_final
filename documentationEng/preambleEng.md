@@ -16,13 +16,26 @@ and it's called a negative rate, but the most direct application was
 The first practical application of Gesell's views was an experiment in 1932 in the Austrian town of Wörgl with a population of 3,000 people.
 
 This measure provides frequent course corrections, which allows this System to be as
-crisis-resistant and do not depreciate quickly.
+resilient to the crisis and sustainably maintain its course.
 
-There are two types of currencies in the system - digital dollars and digital stocks,
-576 blocks can be mined per day, each block gives 200 coins
-each type.
-In this package they are
-***src/main/java/International_Trade_Union/utils/UtilsBlock.java***
+Why do we need an electoral system?
+I will give a real example from cryptocurrencies and you will understand why you need it.
+1. Bitcoin. Bitcoin is still debating whether to increase the block size or not.
+   This task cannot be solved within the framework of bitcoin, since there is no voting mechanism in bitcoin.
+   You cannot make a single decision in bitcoin because there is no legitimate decision making mechanism.
+2. Imagine that you have purchased mining equipment, and tomorrow the development team without
+   your consent will cancel the mining, and go to the POS. Do you think this is impossible? Look at ethereum.
+3. You want to buy goods with cryptocurrency, but you know that if you transfer money to a scammer,
+   then you won't be able to get your money back. How are you going to find out which of the sellers of goods is
+   deceiver? In this system, you can see the current package of laws, where inside there will be a list
+   all online stores you can trust.
+4. If you have a legal commercial dispute, you are citizens of different countries, how will you resolve this dispute?
+   This system already has elected judges who will resolve contentious issues within the framework of the rules of this network.
+   There are two types of currencies in the system - digital dollars and digital stocks,
+   576 blocks can be mined per day, each block gives 200 coins
+   each type.
+   In this package they are
+   ***src/main/java/International_Trade_Union/utils/UtilsBlock.java***
 
 Difficulty is determined by the formula and is corrected every half a day.
 ````
@@ -78,6 +91,6 @@ What positions are there?
 - Director of Private Judges [DIRECTOR_OF_THE_COMMERCIAL_COURT]
 - Media Director [MEDIA_DIRECTOR]
 - DIRECTOR FOR THE DEVELOPMENT OF THE IMPLEMENTATION OF CRYPTOCURRENCY TECHNOLOGIES OF THE INTERNATIONAL TRADE UNION CORPORATION
-    - [DIRECTOR_OF_THE_DEVELOPMENT_OF_THE_IMPLEMENTATION_OF_CRYPTOCURRENCY_TECHNOLOGIES_OF_THE_INTERNATIONAL_TRADE_UNION_CORPORATION]
+  - [DIRECTOR_OF_THE_DEVELOPMENT_OF_THE_IMPLEMENTATION_OF_CRYPTOCURRENCY_TECHNOLOGIES_OF_THE_INTERNATIONAL_TRADE_UNION_CORPORATION]
 
-[back to home](./documentationEng.md)
+[return home](./documentationEng.md)
