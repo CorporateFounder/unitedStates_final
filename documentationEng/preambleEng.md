@@ -1,4 +1,40 @@
 # Brief description of the cryptocurrency
+## Why is the voting system implemented in this system.
+Let's pretend that you
+1. A US citizen and you are 25 years old.
+2. Live in Texas
+3. Work on a chicken farm
+4. And you are on social security.
+
+It turned out to be quite a complex character.
+Now see the Board of Shareholders consists of 1500 accounts with the most votes.
+You know that kfc is on the Board of Shareholders and this company proposes laws that
+help increase her sales, which in turn turns out to help your
+farm to sell more chicken. Thus, the Board of Shareholders represents the interests
+this corporation and your interests by improving the quality of the economy. Because of this, the Board of Shareholders is not elected,
+and appointed by the system 1500 with the most shares.
+
+But as a Texas resident, you also want infrastructure to develop in your area.
+Thus, you participate in the voting and elect your representatives to the Board of Directors,
+how is this electoral system specially designed in such a way that the Board of Directors
+there are persons who represent mainly regions.
+
+But you may have conservative views, then your interests in this aspect are already represented
+factions of your choice.
+
+You are also on social security, and for example, you yourself can vote for
+a law that will reduce the price of a specific group of medicines.
+
+Thus the Board of Directors and Fractions are elected and represent your interests at the regional
+level and your views. The economic interests are represented by the Board of Shareholders, who are not elected,
+but are key players in this economy.
+And you can represent specific interests yourself by voting pointwise for this or that law.
+
+It uses a different mechanism of the electoral system and a different way of voting in order to
+represent your interests at different levels.
+
+
+## Brief description of the cryptocurrency
 
 This cryptocurrency is a whole eco-system that allows not only to exchange
 monetary units, but also in this system an electoral system is implemented,
@@ -93,4 +129,4 @@ What positions are there?
 - DIRECTOR FOR THE DEVELOPMENT OF THE IMPLEMENTATION OF CRYPTOCURRENCY TECHNOLOGIES OF THE INTERNATIONAL TRADE UNION CORPORATION
    - [DIRECTOR_OF_THE_DEVELOPMENT_OF_THE_IMPLEMENTATION_OF_CRYPTOCURRENCY_TECHNOLOGIES_OF_THE_INTERNATIONAL_TRADE_UNION_CORPORATION]
 
-[return home](./documentationEng.md)
+[back to home](./documentationRus.md)
