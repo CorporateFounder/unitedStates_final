@@ -20,26 +20,14 @@ public class Directors {
 
         Director GENERAL_EXECUTIVE_DIRECTOR = new Director("GENERAL_EXECUTIVE_DIRECTOR", 1, false, true, false, false, true);
         Director HIGH_JUDGE = new Director("HIGH_JUDGE",1, false, false, true, false, false);
-
-        Director INTERNET_STORE_DIRECTOR = new Director("INTERNET_STORE_DIRECTOR",1, false, true, false, false, true);
-        Director DIRECTOR_OF_THE_DIGITAL_EXCHANGE = new Director("DIRECTOR_OF_THE_DIGITAL_EXCHANGE",1, false, true, false, false, true);
-        Director DIRECTOR_OF_DIGITAL_BANK = new Director("DIRECTOR_OF_DIGITAL_BANK",1, false, true, false, false, true);
-        Director DIRECTOR_OF_THE_COMMERCIAL_COURT = new Director("DIRECTOR_OF_THE_COMMERCIAL_COURT",1, false, true, false, false, true);
-        Director MEDIA_DIRECTOR = new Director("MEDIA_DIRECTOR",1, false, true, false, false, true);
-        Director DIRECTOR_OF_THE_DEVELOPMENT_OF_THE_IMPLEMENTATION_OF_CRYPTOCURRENCY_TECHNOLOGIES_OF_THE_INTERNATIONAL_TRADE_UNION_CORPORATION = new Director("DIRECTOR_OF_THE_DEVELOPMENT_OF_THE_IMPLEMENTATION_OF_CRYPTOCURRENCY_TECHNOLOGIES_OF_THE_INTERNATIONAL_TRADE_UNION_CORPORATION",1, false, true, false, false, true);
-
+        Director FRACTION = new Director("FRACTION", 100, false, false, false, true, false);
         directors.add(CORPORATE_COUNCIL_OF_REFEREES);
         directors.add(BOARD_OF_DIRECTORS);
+        directors.add(FRACTION);
 
         directors.add(GENERAL_EXECUTIVE_DIRECTOR);
         directors.add(HIGH_JUDGE);
 
-        directors.add(INTERNET_STORE_DIRECTOR);
-        directors.add(DIRECTOR_OF_THE_DIGITAL_EXCHANGE);
-        directors.add(DIRECTOR_OF_DIGITAL_BANK);
-        directors.add(DIRECTOR_OF_THE_COMMERCIAL_COURT);
-        directors.add(MEDIA_DIRECTOR);
-        directors.add(DIRECTOR_OF_THE_DEVELOPMENT_OF_THE_IMPLEMENTATION_OF_CRYPTOCURRENCY_TECHNOLOGIES_OF_THE_INTERNATIONAL_TRADE_UNION_CORPORATION);
     }
 
 

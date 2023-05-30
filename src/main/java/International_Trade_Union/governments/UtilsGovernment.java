@@ -116,6 +116,7 @@ public class UtilsGovernment {
                 int primeMinisterVotes = 0;
                 int hightJudgesVotes = 0;
                 int founderVote = 0;
+                double fraction = 0;
 
                 //для законов подсчитываем специальные голоса
                 vote = votesMap.get(lawEligibleForParliamentaryApproval.getLaws().getHashLaw()).votesLaw(balances, yesAverage, noAverage);
@@ -134,6 +135,7 @@ public class UtilsGovernment {
                         primeMinisterVotes,
                         hightJudgesVotes,
                         founderVote,
+                        fraction,
                         laws);
                 current.add(currentLawVotesEndBalance);
 
@@ -142,11 +144,11 @@ public class UtilsGovernment {
 
         List<String> houseOfRepresentativies = new ArrayList<>();
         List<String> chamberOfSumpremeJudges = new ArrayList<>();
+        Map<String, Double> fractions = new HashMap<>();
 
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance: current) {
             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString())){
                 if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
-
                     houseOfRepresentativies.add(currentLawVotesEndBalance.getLaws().get(0));
                 }
 
@@ -157,6 +159,14 @@ public class UtilsGovernment {
                 }
 
             }
+
+
+            if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.FRACTION.toString())){
+                if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
+                    fractions.put(currentLawVotesEndBalance.getLaws().get(0), currentLawVotesEndBalance.getVotes());
+                }
+            }
+
         }
 
 
@@ -168,19 +178,25 @@ public class UtilsGovernment {
                 double vote = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).votesLaw(balances, yesAverage, noAverage);
                 int supremeVotes  = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteGovernment(balances, chamberOfSumpremeJudges);
                 int houseOfRepresentativiesVotes = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteGovernment(balances, houseOfRepresentativies);
+                double fractionsVotes = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteFractions(fractions);
 
                 currentLawVotesEndBalance.setVotes(vote);
                 currentLawVotesEndBalance.setVotesBoardOfDirectors(houseOfRepresentativiesVotes);
                 currentLawVotesEndBalance.setVotesCorporateCouncilOfReferees(supremeVotes);
+                currentLawVotesEndBalance.setFractionVote(fractionsVotes);
             }
 
         }
 
+        //изирается Генеральный исполнительный директор
         List<String> primeMinister = new ArrayList<>();
         List<String> hightJudge = new ArrayList<>();
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : current) {
             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString())){
-                if(currentLawVotesEndBalance.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS){
+                if(currentLawVotesEndBalance.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
+                && currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                && currentLawVotesEndBalance.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS
+                && currentLawVotesEndBalance.getVotes() >= Seting.ALL_STOCK_VOTE){
                     primeMinister.add(currentLawVotesEndBalance.getLaws().get(0));
                 }
             }
@@ -236,7 +252,7 @@ public class UtilsGovernment {
                 List<String> laws = lawEligibleForParliamentaryApproval.getLaws().getLaws();
                 double vote = votesMap.get(lawEligibleForParliamentaryApproval.getLaws().getHashLaw()).votes(balances, yesAverage, noAverage);
 
-                CurrentLawVotesEndBalance currentLawVotesEndBalance = new CurrentLawVotesEndBalance(address, packageName, vote, 0, 0, 0, 0, 0, 0,  laws);
+                CurrentLawVotesEndBalance currentLawVotesEndBalance = new CurrentLawVotesEndBalance(address, packageName, vote, 0, 0, 0, 0, 0, 0, 0,  laws);
                 current.add(currentLawVotesEndBalance);
 
             }

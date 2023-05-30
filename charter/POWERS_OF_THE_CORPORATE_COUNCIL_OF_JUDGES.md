@@ -1,4 +1,4 @@
-# POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES  ПОЛНОМОЧИЯ КОРПОРАТИВНОГО СОВЕТА СУДЕЙ. 
+# POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES  Судебная Власть. 
 Утверждает Верховного судью.
 Участвует в голосовании внедрения поправок. 
 
@@ -17,5 +17,24 @@
 Ни один суд не должен быть тайным, но правосудие должно вершиться открыто и бесплатно, полностью и безотлагательно, 
 и каждый человек должен иметь правовую защиту от вреда, причиненного жизни, свободе или имуществу. 
 Верховный Суд CORPORATE_COUNCIL_OF_REFEREES и верховный судья HIGH_JUDGE.
+
+## Как избирается Корпоративный Совет Судей.
+Корпоративный Совет судей состоит из 55 счетов и избирается Участниками сети,
+с системой подсчета описанной в VOTE_STOCK, аналогично Совету Директоров и Фракциям.
+Отбираются 55 счетов, которые получили наибольшее количество голосов.
+![голоса акциями](../screenshots/stock_vote.png)
+````
+//минимальное значение количество положительных голосов для того чтобы закон действовал,
+        //позиции избираемые акциями CORPORATE_COUNCIL_OF_REFEREES
+        List<CurrentLawVotesEndBalance> electedByStockCorporateCouncilOfReferees = current.stream()
+                .filter(t -> directors.isElectedByStocks(t.getPackageName()))
+                .filter(t -> t.getPackageName().equals(NamePOSITION.CORPORATE_COUNCIL_OF_REFEREES.toString()))
+                .filter(t -> t.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE)
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                .limit(directors.getDirector(NamePOSITION.CORPORATE_COUNCIL_OF_REFEREES.toString()).getCount())
+                .collect(Collectors.toList());
+````
+
+Каждый счет такого судьи приравнивается одному голосу аналогично ONE_VOTE
 
 [Выход на главную](../documentation/documentationRus.md)

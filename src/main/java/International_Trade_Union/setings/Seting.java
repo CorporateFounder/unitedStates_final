@@ -38,24 +38,27 @@ public interface Seting {
 
     //прямая демократия, сколько голосов нужно, чтобы правило вступило в силу,
     //без необходимости правительства
-    double ALL_STOCK_VOTE = 100000.0;
+    double ALL_STOCK_VOTE = 1.0;
 
 
 
     //Минимальное значение чтобы Совет Корпоративных Верховных Судей могла избрать Верховного Судью
-    int ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES = 3;
+    int ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES = 2;
 
     //Минимальное значение остатка голосов чтобы Совет директоров утверждал бюджет,
     //стратегический план, в создании новых должностей и назначении новых должностей,
     //и т.д. Также участвовал в утверждении законов, вместе с другими участниками.
-    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS = 15;//15;
+    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS = 10;
 
     //Минимальное количество остатка голосов чтобы Совет Акционеров
     //утверждал вместе с остальными участниками в утверждении законов.
-    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS = 100; //100;
+    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS = 10; //100;
 
     //голос Генерального Исполнительного Директора
     int ORIGINAL_LIMIT_MIN_VOTE_GENERAL_EXECUTIVE_DIRECTOR = 1;
+
+    //фракционный голос минимум 10.0
+    double ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS = 10.0;
 
     //голос Верховного Судьи
     int ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE = 1;
@@ -121,7 +124,9 @@ public interface Seting {
     String AMENDMENT_TO_THE_CHARTER = "AMENDMENT_TO_THE_CHARTER";
 
     //директора созданные Советом директоров
-    String ADD_DIRECTOR = "ADD_DIRECTOR";
+    String ADD_DIRECTOR = "ADD_DIRECTOR_";
+
+
 
     //бюджет должен формировать только палата представителей
     String BUDGET = "BUDGET";
@@ -141,6 +146,8 @@ public interface Seting {
 
     //Совет акционеров минимум 20% голосов
     int ORIGINAL_LIMIT_MINT_VOTE_BOARD_OF_SHAREHOLDERS_AMENDMENT = BOARD_OF_SHAREHOLDERS * 20 / 100;
+
+
 
 
     //    адресс основателя: здесь будет мой адрес. Сейчас заглушка

@@ -543,13 +543,13 @@ public class BasisController {
     //TODO if mining occurs, it returns false until mining stops.
     /** выззывает метод addBlock который перезаписывает весь список блоков, и другие данные*/
     @GetMapping("/addBlock")
-    public boolean getBLock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public ResponseEntity getBLock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
         UtilsBlock.deleteFiles();
         addBlock(blockchain.getBlockchainList(), BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL));
-        return true;
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     /**Возвращяет список хостов, сохраненных на локальном сервере*/

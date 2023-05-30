@@ -23,6 +23,7 @@ public class CurrentLawVotesEndBalance {
     private int founderVote;
     private String packageName;
     private List<String> laws;
+    private double fractionVote;
 
     public CurrentLawVotesEndBalance() {
     }
@@ -37,6 +38,7 @@ public class CurrentLawVotesEndBalance {
              int voteGeneralExecutiveDirector,
              int voteHightJudge,
                     int founderVote,
+             double fractionVote,
              List<String> laws) {
         this.addressLaw = addressLaw;
         this.packageName = packageName;
@@ -46,6 +48,7 @@ public class CurrentLawVotesEndBalance {
         this.voteGeneralExecutiveDirector = voteGeneralExecutiveDirector;
         this.voteHightJudge = voteHightJudge;
         this.founderVote = founderVote;
+        this.fractionVote = fractionVote;
 
         this.votes = votes;
         this.laws = laws;
