@@ -336,7 +336,7 @@ public class BasisController {
     /**соединяется к внешним хостам, и скачивает самый длинный блокчейн,
      * если, локальный блокчейн, меньше других */
     @GetMapping("/nodes/resolve")
-    public synchronized void resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
+    public synchronized ResponseEntity resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         Blockchain temporaryBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
         Blockchain bigBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
         blockchain = Mining.getBlockchain(
@@ -445,7 +445,7 @@ public class BasisController {
             System.out.println("BasisController: resolve: bigblockchain size: " + bigBlockchain.sizeBlockhain());
 
         }
-
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 
