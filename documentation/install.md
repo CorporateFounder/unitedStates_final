@@ -1,61 +1,60 @@
-# Установка
-Если у вас windows, то вам нужно скачать с папки target unitedStates-0.0.1-SHAPSHOT.jar
-в поиск виндовс вести cmd открыть командную строку и туда вести java -jar (где находится файл)/unitedStates-0.0.1-SNAPSHOT.jar
-пример: java -jar C://unitedStates-0.0.1-SNAPSHOT.jar.
-Но папка ресурсы также необходимо скопировать как описано ниже.
+# Installation
+If you have windows, then you need to download from the folder target unitedStates-0.0.1-SHAPSHOT.jar
+in the search for windows, enter cmd open the command line and enter java -jar there (where the file is located) / unitedStates-0.0.1-SNAPSHOT.jar
+example: java -jar C://unitedStates-0.0.1-SNAPSHOT.jar.
+But the resources folder also needs to be copied as described below.
 
-Для правильной работы вам нужно скачать и установить jre https://www.java.com/ru/download/manual.jsp
+To work properly you need to download and install jre https://www.java.com/ru/download/manual.jsp
 https://www.oracle.com/cis/java/technologies/downloads/,
-и jdk 19 или выше
+and jdk 19 or higher
 
-папка resurces находиться в ***src/main/java/resources***
-после чего нужно скопировать папку resources в диск С:
-там хранятся
-- файлы блокчейна в папке ***/blockchain***
-- файлы баланс в папке ***/balance***
-- файлы правила за которые проголосовали с их голосами ***/allLawsWithBalance***
-- файлы все правила без голосов в ***/federalLaws***
-- файлы счета, которые были избраны в качестве руководства ***/federalLaws***
-- файл хранящий счет майнера ***/minerAccount***
-- файлы адреса хостов ***/poolAddress***
-- файлы отправленные транзакции ***/sendedTransaction***
-- файлы список транзакций для отправки ***/transactions***
+the resources folder is in ***src/main/java/resources***
+after which you need to copy the resources folder to drive C:
+there are stored
+- blockchain files in the ***/blockchain*** folder
+- balance files in the folder ***/balance***
+- rules files voted for with their votes ***/allLawsWithBalance***
+- files all rules without votes in ***/federalLaws***
+- account files that have been elected as guide ***/federalLaws***
+- file storing miner account ***/minerAccount***
+- host address files ***/poolAddress***
+- files sent by transaction ***/sentTransaction***
+- transaction list files to send ***/transactions***
 
 
-## ЕСЛИ ОТСУТСТВУЕТ ДИСК С:
-Если у вас отсутствует диск С: или вы хотите изменить расположение файлов где они должны
-храниться, то в src/main/java/International_Trade_Union/setings/Seting.java
-Вы можете изменить там настройки кода должны быть изменены в соответствии с вашими настройками,
-после чего соберите приложение, например с помощью intellij idea, и заново соберите jar file.
+## IF NO DISK C:
+If you do not have a C: drive or want to change the location of the files where they should
+be stored then in src/main/java/International_Trade_Union/setings/Seting.java
+You can change there code settings should be changed according to your settings,
+then build the application, for example, using intellij idea, and rebuild the jar file.
 
 ````
-    String ORIGINAL_BLOCKCHAIN_FILE = "C:\\resources\\blockchain\\";
-    String ORIGINAL_BALANCE_FILE = "C:\\resources\\balance\\";
-    String ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE = "C:\\resources\\federalGovernment\\federalGovernment.txt";
-    String ORIGINAL_ALL_CORPORATION_LAWS_FILE = "C:\\resources\\federalLaws\\";
-    String ORIGINAL_ACCOUNT = "C:\\resources\\minerAccount\\minerAccount.txt";
-    String ORIGINAL_CORPORATE_VOTE_FILE = "C:\\resources\\vote\\";
+     String ORIGINAL_BLOCKCHAIN_FILE = "C:\\resources\\blockchain\\";
+     String ORIGINAL_BALANCE_FILE = "C:\\resources\\balance\\";
+     String ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE = "C:\\resources\\federalGovernment\\federalGovernment.txt";
+     String ORIGINAL_ALL_CORPORATION_LAWS_FILE = "C:\\resources\\federalLaws\\";
+     String ORIGINAL_ACCOUNT = "C:\\resources\\minerAccount\\minerAccount.txt";
+     String ORIGINAL_CORPORATE_VOTE_FILE = "C:\\resources\\vote\\";
 
-    String ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE = "C:\\resources\\allLawsWithBalance\\";
-    String ORGINAL_ALL_TRANSACTION_FILE = "C:\\resources\\transactions\\";
-    String ORIGINAL_ALL_SENDED_TRANSACTION_FILE = "C:\\resources\\sendedTransaction\\";
-    String ORIGINAL_POOL_URL_ADDRESS_FILE = "C:\\resources\\poolAddress\\";
+     String ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE = "C:\\resources\\allLawsWithBalance\\";
+     String ORGINAL_ALL_TRANSACTION_FILE = "C:\\resources\\transactions\\";
+     String ORIGINAL_ALL_SENDED_TRANSACTION_FILE = "C:\\resources\\sendedTransaction\\";
+     String ORIGINAL_POOL_URL_ADDRESS_FILE = "C:\\resources\\poolAddress\\";
 ````
 
-## куда подключается Сервер
-Запустите jar файл
-Локальный Сервер http://localhost:8082/ подключается уже к готовому серверу
+## where the Server connects to
+Run jar file
+Local Server http://localhost:8082/ is connected to a ready server
 https://github.com/CorporateFounder/unitedStates_duplicates_original_storage
-который поднять на хосте http://194.87.236.238:80
+which to raise on the host http://194.87.236.238:80
 
 ````
-    Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");
+     Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");
 ````
 
-После того как локальный сервер будет поднять, в браузере 
-войдите на главную страницу http://localhost:8082 
+After the local server is up, in the browser
+login to main page http://localhost:8082
 
-Так выглядит ![главное меню](../screenshots/main-menu.png)
+This is what ![main menu](../screenshots/main-menuEng.png) looks like
 
-[возврат на главную](./documentationRus.md)
-
+[back to home](../documentationEng/documentationEng.md)

@@ -2,6 +2,8 @@
 ## Corporation International Trade Union
 (Corporation International Trade Union - CITU)
 
+Required if you have google translate installed, prohibit translating from English into Russian,
+as everything is already written in Russian. But google translate starts translating the text, distorting the text from Russian into Russian.
 
 ## Preamble
 Please read this section before installing.
@@ -28,7 +30,7 @@ By the way, the great and indestructible dollar also turned out to be already in
 The rise in US public debt is evidence of this.
 And the problem is not even that a default may occur, since the United States can always raise the bar for public debt,
 but that the country imports much more than it exports, which leads to an increase in the money supply.
-Since the country's revenues are already being spent mainly on debt servicing.
+Since the country's revenues are already being spent mainly on debt service.
 Fractional reserve banking also contributes to this destruction of the dollar.
 The fact is that with fractional reserve banking, the same dollar is given on credit several times,
 more than there is real cash in the economy to pay off all the loans of money, in the economy
@@ -54,7 +56,7 @@ abbreviations. Let me give you an example: In 2020, bitcoin was mined for 6 coin
 twenty thousand, then at the time of writing this text, namely on May 25, 2023, the cost is 26222 dollars,
 while mining is already only 3 coins per block. Now let's imagine that you are a miner and in order to save
 your profitability, you must either increase the production of coins, and this is also limited to 144 blocks per day or
-sell for more. Since you are not able to influence the market rate, you will be forced to increase the cost of payment for
+sell for more. Since you are not able to influence the market rate, you will be forced to increase the cost of payment behind
 transaction, since there are only 500 thousand transactions in a day, the cost of transactions will double so that you stay
 cost-effective, but it will also encourage participants to spend less of their coins in the short term.
 If you lose both sources of income, namely the reduction in production and the reduction in the number of transactions, this
@@ -90,47 +92,36 @@ In this case, the total amount of money will not increase, which also does not r
 always mined in the same amount. Imagine it - as if you jointly rented a cell or several cells in a bank,
 and each of you would store your gold there, but you would pay for storage depending on the amount of gold that each of you stores.
 
-
 ## CONTENT
 - [short description](../documentationEng/preambleEng.md)
 - [active url](../documentationEng/active-urlEng.md)
 - [how to install the application](../documentationEng/installEng.md)
 - [how to open an account](../documentationEng/create-accountEng.md)
 - [how to change account on local server](../documentationEng/change-accountEng.md)
-- [how to get the block](../documentationEng/%20mineEng.md)
+- [how to get the block](../documentationEng/mineEng.md)
 - [transactions](../documentationEng/transactionsEng.md)
 - [board of shareholders](../documentationEng/board-of-shareholdersEng.md)
-- [apply for position](../documentationEng/managmentEng.md)
+- [apply for position](../documentationEng/managementEng.md)
 - [how network rules are created](../documentationEng/create-lawEng.md)
 - [how voting works in the network](../documentationEng/voting-in-networkEng.md)
-- [current rules](../documentationEng/current-lawEng.md)
-- [post creation](../documentationEng/create-positionEng.md)
-
+- [post creation](../documentationEng/create-postionEng.md)
+- [create fraction](../documentationEng/create-fractionEng.md)
 ## Corporate Charter
 - Corporate Charter
-   - [Powers of the Board of Directors.](../charter/POWERS_OF_THE_BOARD_OF_DIRECTORS.md)
-   - [How Laws Are Chosen.](../charter/HOW_LAWS_ARE_CHOSEN.md)
-   - [How the Board of Directors is elected.](../charter/HOW_THE_BOARD_OF_DIRECTORS_IS_ELECTED.md)
-   - [Powers of the Board of Shareholders.](../charter/POWERS_OF_THE_BOARD_OF_SHAREHOLDERS.md)
-   - [How the Board of Shareholders is Elected.](../charter/HOW_SHAREHOLDERS_BOARD_IS_ELECTED.md)
-   - [VOTE_STOCK (How voting is done with shares.)](../charter/VOTE_STOCK.md)
-   - [Powers of the directors' cabinet](../charter/POWERS_OF_THE_CABINET_OF_DIRECTORS.md)
-   - [How Cabinet Directors Are Chosen.](../charter/HOW_CABINET_DIRECTORS_ARE_CHOSEN.md)
-   - [ONE_VOTE (One vote)](../charter/ONE_VOTE.md)
-   - [Mechanism for maintaining fines](../charter/MECHANISM_FOR_REDUCING_THE_NUMBER_OF_SHARES.md)
-   - [Who has the right to create Laws](../charter/WHO_HAS_THE_RIGHT_TO_CREATE_LAWS.md)
-   - [Powers of the Corporate Council of Supreme Judges](../charter/POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES.md)
-   - [How the Board of Corporate Chief Justices is elected](../charter/HOW_THE_CORPORATE_BOARD_OF_JUDGES_IS_ELECTED.md)
-   - [How the Chief Judge is elected](../charter/HOW_THE_CHIEF_JUDGE_IS_CHOSEN.md)
-   - [Powers of the Chief Justice](../charter/POWERS_OF_THE_CHIEF_JUDGE.md)
-   - [How the charter amendment process works](../charter/HOW_IS_THE_PROCESS_OF_AMENDING_THE_CHARTER.md)
-   - [How the budget is approved](../charter/HOW_THE_BUDGET_IS_APPROVED.md)
-   - [How the strategic plan is approved](../charter/HOW_IS_THE_STRATEGIC.md)
-   - [Charter How new positions are added](../charter/HOW_NEW_POSITIONS_ARE_ADDED.md)
-   - [Corporation Property](../charter/PROPERTY_OF_THE_CORPORATION.md)
-   - [General Executive Director-GENERAL_EXECUTIVE_DIRECTOR](../charter/GENERAL_EXECUTIVE_DIRECTOR.md)
-   - [Why money demurrage is used here](../charter/EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE.md)
-   - [Right of Free Speech](../charter/FREEDOM_OF_SPEECH.md)
-   - [Natural Rights](../charter/RIGHTS.md)
+  - [How Laws Are Chosen.](../charter/HOW_LAWS_ARE_CHOSEN.md)
+  - [VOTE_STOCK (How voting is done with shares.)](../charter/VOTE_STOCK.md)
+  - [ONE_VOTE (One vote)](../charter/ONE_VOTE.md)
+  - [VOTE_FRACTION](../charter/VOTE_FRACTION.md)
+  - [Mechanism for maintaining fines](../charter/MECHANISM_FOR_REDUCING_THE_NUMBER_OF_SHARES.md)
+  - [Who has the right to create Laws](../charter/WHO_HAS_THE_RIGHT_TO_CREATE_LAWS.md)
+  - [Powers of the Corporate Council of Supreme Judges](../charter/POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES.md)
+  - [How the Chief Judge is elected](../charter/HOW_THE_CHIEF_JUDGE_IS_CHOSEN.md)
+  - [Corporation Property](../charter/PROPERTY_OF_THE_CORPORATION.md)
+  - [CEO-GENERAL_EXECUTIVE_DIRECTOR](../charter/GENERAL_EXECUTIVE_DIRECTOR.md)
+    - [Why is money demurrage used here](../charter/EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE.md)
+    - [Right of Free Speech](../charter/FREEDOM_OF_SPEECH.md)
+    - [Natural Rights](../charter/RIGHTS.md)
+    - [Legislative Power](../charter/POWER.md)
+
 
 [home](../readme.md)

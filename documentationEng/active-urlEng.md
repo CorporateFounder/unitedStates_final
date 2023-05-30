@@ -115,7 +115,7 @@ public class DtoTransaction {
 // PublicKey publicKey = UtilsSecurity.publicByteToPublicKey(pub);
      String sha = sender + customer + digitalDollar + digitalStockBalance + laws + bonusForMiner;
      sha = UtilsUse.sha256hash(sha);
-     if(sender.isBlank() || customer.isBlank() || digitalDollar < 0 || digitalStockBalance < 0 || bonusForMiner < 0 || laws == null){
+     if(sender.isBlank() || customer.isBlank() || digitalDollar < 0 || digitalStockBalance < 0 || bonusForMiner < 0|| laws == null){
        System.out.println("wrong dto transaction sender or customer blank? or dollar, reputation or reward less then 0");
        return false;
      }
@@ -211,4 +211,4 @@ public class AddressUrl {
    }
 }
    ````
-[Return to Home](./documentationEng.md)
+[Return to main page](./documentationEng.md)
