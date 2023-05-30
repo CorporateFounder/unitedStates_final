@@ -1,3 +1,4 @@
+International_Trade_Union\governments\FractionPower.class
 International_Trade_Union\controllers\MineController.class
 International_Trade_Union\utils\UtilsJson.class
 International_Trade_Union\CorporateCharterDraft\ArticleThreeJudiciaryDraft.class
@@ -22,6 +23,7 @@ International_Trade_Union\utils\UtilsBlock.class
 International_Trade_Union\model\Keys.class
 International_Trade_Union\governments\CompareObject.class
 International_Trade_Union\utils\UtilsSecurity.class
+International_Trade_Union\controllers\FractionController.class
 International_Trade_Union\model\CreateAccount.class
 International_Trade_Union\originalCorporateCharter\OriginalPreambleEng.class
 International_Trade_Union\utils\UtilsJson$4.class
