@@ -35,6 +35,6 @@
                 .collect(Collectors.toList());
 ````
 
-Каждый счет такого судьи приравнивается одному голосу аналогично ONE_VOTE
+Каждый счет такого судьи приравнивается одному голосу аналогично [ONE_VOTE](../charter/ONE_VOTE.md)
 
 [Выход на главную](../documentation/documentationRus.md)

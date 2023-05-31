@@ -494,8 +494,8 @@ public class LawsController {
                 .collect(Collectors.toList());
 
 
-        int startBlock = 22820;
-        int finishBlock = 22830;
+        int startBlock = 23660;
+        int finishBlock = 23670;
         if(blockchain.sizeBlockhain() > finishBlock){
             List<Block> blocksCharter = blockchain.subBlock(startBlock, finishBlock);
             //учитывает отрезок блоков для выяснения подлиности устава

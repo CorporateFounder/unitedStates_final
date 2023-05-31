@@ -121,12 +121,5 @@
 - Совет Корпоративных Судей [CORPORATE_COUNCIL_OF_REFEREES]
 - Генеральный Исполнительный Директор [GENERAL_EXECUTIVE_DIRECTOR]
 - Верховный Судья [HIGH_JUDGE]
-- Директор интернет Магазина [INTERNET_STORE_DIRECTOR]
-- Директор интернет биржа [DIRECTOR_OF_THE_DIGITAL_EXCHANGE]
-- Директор интернет банка [DIRECTOR_OF_DIGITAL_BANK]
-- Директор частных судей [DIRECTOR_OF_THE_COMMERCIAL_COURT]
-- Директор СМИ [MEDIA_DIRECTOR]
-- ДИРЕКТОР ПО РАЗВИТИЮ ВНЕДРЕНИЯ КРИПТОВАЛЮТНЫХ ТЕХНОЛОГИЙ МЕЖДУНАРОДНОЙ ПРОФСОЮЗНОЙ КОРПОРАЦИИ 
-  - [DIRECTOR_OF_THE_DEVELOPMENT_OF_THE_IMPLEMENTATION_OF_CRYPTOCURRENCY_TECHNOLOGIES_OF_THE_INTERNATIONAL_TRADE_UNION_CORPORATION]
-
+- Фракции [FRACTION]
 [возврат на главную](./documentationRus.md)

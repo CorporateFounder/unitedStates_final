@@ -9,7 +9,7 @@ click on the button ***Apply for a position***
 ![apply for position](../screenshots/positionEng.png)
 
 
-The leadership includes positions both elected through digital shares and through other officials.
+The leadership includes positions both elected through digital shares and with the help of other officials
 details are in http://localhost:8082/corporate-charter
 
 In order to apply for a position, you must be logged in.
