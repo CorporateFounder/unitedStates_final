@@ -1,0 +1,1 @@
+{"sender":"stExZb8ifLfnFoq4JJuTifpAcscegATH8znhwW26zyTa","customer":"25TzGfMpAygvuFvXujL4seof4LHpzC92crCTydGC9RmZP","digitalDollar":1.0,"digitalStockBalance":1.0,"laws":{"packetLawName":"","laws":[],"hashLaw":""},"bonusForMiner":1.0,"voteEnum":"YES","sign":"MEYCIQDIV3WRs2DO4MGeKgVzaGdYJM0t1mSHxjYTjnWhxxg5aAIhAIRs9JQYJEHnCZW0teekQNzhOYiZKsgE0x+w6lhXN42J"}
