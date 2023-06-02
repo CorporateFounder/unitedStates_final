@@ -99,61 +99,66 @@ public class Mining {
         //проверяет целостность транзакции, что они подписаны правильно
         cicle:
         for (DtoTransaction transaction : listTransactions) {
-            if (transaction.verify()) {
+            try {
+                if (transaction.verify()) {
 
-                Account account = balances.get(transaction.getSender());
-                if (account == null) {
-                    System.out.println("minerAccount null");
-                    continue cicle;
-                }
-                //NAME_LAW_ADDRESS_START если адресс  означает правила выбранные сетью
-                if(transaction.getCustomer().startsWith(Seting.NAME_LAW_ADDRESS_START) && !balances.containsKey(transaction.getCustomer())){
-                    //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
-                    //отправитель совпадает с законом
+                    Account account = balances.get(transaction.getSender());
+                    if (account == null) {
+                        System.out.println("minerAccount null");
+                        continue cicle;
+                    }
+                    //NAME_LAW_ADDRESS_START если адресс  означает правила выбранные сетью
+                    if (transaction.getCustomer().startsWith(Seting.NAME_LAW_ADDRESS_START) && !balances.containsKey(transaction.getCustomer())) {
+                        //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
+                        //отправитель совпадает с законом
 //                    List<Director> enumPosition = directors.getDirectors();
-                    List<String> corporateSeniorPositions = directors.getDirectors().stream()
-                            .map(t->t.getName()).collect(Collectors.toList());
-                    System.out.println("LawsController: create_law: " + transaction.getLaws().getPacketLawName()
-                            + "contains: " + corporateSeniorPositions.contains(transaction.getLaws().getPacketLawName()));
-                    if(corporateSeniorPositions.contains(transaction.getLaws().getPacketLawName())
-                            && !UtilsGovernment.checkPostionSenderEqualsLaw(transaction.getSender(), transaction.getLaws())){
-                        System.out.println("if your create special corporate position, you need " +
-                                "sender to be equals with first law: now its wrong");
-                        continue cicle;
+                        List<String> corporateSeniorPositions = directors.getDirectors().stream()
+                                .map(t -> t.getName()).collect(Collectors.toList());
+                        System.out.println("LawsController: create_law: " + transaction.getLaws().getPacketLawName()
+                                + "contains: " + corporateSeniorPositions.contains(transaction.getLaws().getPacketLawName()));
+                        if (corporateSeniorPositions.contains(transaction.getLaws().getPacketLawName())
+                                && !UtilsGovernment.checkPostionSenderEqualsLaw(transaction.getSender(), transaction.getLaws())) {
+                            System.out.println("if your create special corporate position, you need " +
+                                    "sender to be equals with first law: now its wrong");
+                            continue cicle;
+                        }
                     }
-                }
-                if(transaction.getLaws() == null){
-                    System.out.println("law cannot to be null: ");
-                    continue cicle;
-                }
-
-                if (account != null) {
-                    if(transaction.getSender().equals(Seting.BASIS_ADDRESS)){
-                        System.out.println("only this miner can input basis adress in this block");
-                        continue cicle;
-                    }
-                    if(transaction.getCustomer().equals(Seting.BASIS_ADDRESS)){
-                        System.out.println("basis address canot to be customer(recipient)");
+                    if (transaction.getLaws() == null) {
+                        System.out.println("law cannot to be null: ");
                         continue cicle;
                     }
 
-                    if( account.getDigitalDollarBalance() < transaction.getDigitalDollar() + transaction.getBonusForMiner()){
-                        System.out.println("sender don't have digital dollar: " + account.getAccount() + " balance: " + account.getDigitalDollarBalance() );
-                        System.out.println("digital dollar for send: " + (transaction.getDigitalDollar() + transaction.getBonusForMiner()));
-                        continue cicle;
-                    }
-                    if (account.getDigitalStockBalance() < transaction.getDigitalStockBalance()){
-                        System.out.println("sender don't have digital reputation: " + account.getAccount() + " balance: " + account.getDigitalStockBalance());
-                        System.out.println("digital reputation for send: " + (transaction.getDigitalDollar() + transaction.getBonusForMiner()));
-                        continue cicle;
-                    }
-                    if(transaction.getSender().equals(transaction.getCustomer()) ){
-                        System.out.println("sender end recipient equals " + transaction.getSender() + " : recipient: " + transaction.getCustomer());
-                        continue cicle;
-                    }
-                    forAdd.add(transaction);
-                }
+                    if (account != null) {
+                        if (transaction.getSender().equals(Seting.BASIS_ADDRESS)) {
+                            System.out.println("only this miner can input basis adress in this block");
+                            continue cicle;
+                        }
+                        if (transaction.getCustomer().equals(Seting.BASIS_ADDRESS)) {
+                            System.out.println("basis address canot to be customer(recipient)");
+                            continue cicle;
+                        }
 
+                        if (account.getDigitalDollarBalance() < transaction.getDigitalDollar() + transaction.getBonusForMiner()) {
+                            System.out.println("sender don't have digital dollar: " + account.getAccount() + " balance: " + account.getDigitalDollarBalance());
+                            System.out.println("digital dollar for send: " + (transaction.getDigitalDollar() + transaction.getBonusForMiner()));
+                            continue cicle;
+                        }
+                        if (account.getDigitalStockBalance() < transaction.getDigitalStockBalance()) {
+                            System.out.println("sender don't have digital reputation: " + account.getAccount() + " balance: " + account.getDigitalStockBalance());
+                            System.out.println("digital reputation for send: " + (transaction.getDigitalDollar() + transaction.getBonusForMiner()));
+                            continue cicle;
+                        }
+                        if (transaction.getSender().equals(transaction.getCustomer())) {
+                            System.out.println("sender end recipient equals " + transaction.getSender() + " : recipient: " + transaction.getCustomer());
+                            continue cicle;
+                        }
+                        forAdd.add(transaction);
+                    }
+
+                }
+            }catch (IOException e){
+                e.printStackTrace();
+                continue;
             }
         }
 
