@@ -62,7 +62,7 @@ public class MainController {
     public String setMinnerAddress(@RequestParam(value = "setMinner") String setMinner, RedirectAttributes redirectAttrs){
         System.out.println("MainController:  " + setMinner);
         UtilsFileSaveRead.save(setMinner, Seting.ORIGINAL_ACCOUNT, false);
-        return "redirect:/home";
+        return "redirect:/seting";
     }
 
 
