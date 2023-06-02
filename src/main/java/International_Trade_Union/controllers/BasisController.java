@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -141,11 +142,14 @@ public class BasisController {
     //TODO иначе будет расождение в файле балансов
     //TODO otherwise there will be a discrepancy in the balance file
 
-
-
+    @GetMapping("/miningblock")
+    public String mining( RedirectAttributes model) throws JSONException, NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+        mine();
+        return "redirect:/mining";
+    }
     /**Стартует добычу, начинает майнинг*/
     @GetMapping("/mine")
-    public synchronized String mine(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
+    public synchronized ResponseEntity mine() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
         String text = "";
         //нахождение адрессов
         findAddresses();
@@ -161,8 +165,8 @@ public class BasisController {
         //если блокчейн работает то продолжить
         if (!blockchain.validatedBlockchain()) {
             text = "wrong chain: неправильный блокчейн, добыча прекращена";
-            model.addAttribute("text", text);
-            return "wrong blockchain";
+//            model.addAttribute("text", text);
+            return new ResponseEntity("rong blockchain", HttpStatus.OK);
         }
 
         //Прежде чем добыть новый блок сначала в сети ищет самый длинный блокчейн
@@ -277,8 +281,8 @@ public class BasisController {
         sendAllBlocksToStorage(blockchain.getBlockchainList());
 
         text = "success: блок успешно добыт";
-        model.addAttribute("text", text);
-        return "redirect:/mining";
+//        model.addAttribute("text", text);
+        return new ResponseEntity("OK", HttpStatus.OK);
 
     }
 
