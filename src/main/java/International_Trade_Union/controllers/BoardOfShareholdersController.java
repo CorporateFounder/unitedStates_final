@@ -42,7 +42,6 @@ public class BoardOfShareholdersController {
 
         boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blockchain.getBlockchainList(), Seting.BOARDS_BLOCK);
 
-
         model.addAttribute("title", "Board of shareholders quantity: " + boardOfShareholders.size());
         model.addAttribute("boardOfShareholders", boardOfShareholders);
         return "board-of-shareholders";

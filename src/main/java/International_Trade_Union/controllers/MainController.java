@@ -92,6 +92,15 @@ public class MainController {
                                   RedirectAttributes redirectAttrs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Base base = new Base58();
 
+        if(dollar == null)
+            dollar = 0.0;
+
+        if(stock == null)
+            stock = 0.0;
+
+        if(reward == null)
+            reward = 0.0;
+
         Laws laws =  new Laws();
         laws.setLaws(new ArrayList<>());
         laws.setHashLaw("");
