@@ -4,7 +4,7 @@
 ## Local urls
 
 
-- http://localhost:8082/mine creates a block
+- http://localhost:8082/miningblock creates a block
     - ***@GetMapping("/mine")
       public synchronized ResponseEntity<String> mine()***
 - http://localhost:8082/chain

@@ -7,7 +7,7 @@ Once you have set your address as a miner, there are two options.
 
 ### OPTION 1.
 To start mining, after launch, go to
-there will be a button on http://localhost:8082/mining. ***Start mining***
+there will be a button on http://localhost:8082/miningblock. ***Start mining***
 clicking on it will automatically produce a block.
 
 ![mining block](../screenshots/mineEng.png)
