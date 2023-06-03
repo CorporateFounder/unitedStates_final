@@ -186,17 +186,17 @@ public interface Seting {
     //подсчет голосов для законов в годах
     int LAW_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 4;
 
-    String ORIGINAL_BLOCKCHAIN_FILE = "C:\\resources\\blockchain\\";
-    String ORIGINAL_BALANCE_FILE = "C:\\resources\\balance\\";
-    String ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE = "C:\\resources\\federalGovernment\\federalGovernment.txt";
-    String ORIGINAL_ALL_CORPORATION_LAWS_FILE = "C:\\resources\\federalLaws\\";
-    String ORIGINAL_ACCOUNT = "C:\\resources\\minerAccount\\minerAccount.txt";
-    String ORIGINAL_CORPORATE_VOTE_FILE = "C:\\resources\\vote\\";
+    String ORIGINAL_BLOCKCHAIN_FILE = "\\resources\\blockchain\\";
+    String ORIGINAL_BALANCE_FILE = "\\resources\\balance\\";
+    String ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE = "\\resources\\federalGovernment\\federalGovernment.txt";
+    String ORIGINAL_ALL_CORPORATION_LAWS_FILE = "\\resources\\federalLaws\\";
+    String ORIGINAL_ACCOUNT = "\\resources\\minerAccount\\minerAccount.txt";
+    String ORIGINAL_CORPORATE_VOTE_FILE = "\\resources\\vote\\";
 
-    String ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE = "C:\\resources\\allLawsWithBalance\\";
-    String ORGINAL_ALL_TRANSACTION_FILE = "C:\\resources\\transactions\\";
-    String ORIGINAL_ALL_SENDED_TRANSACTION_FILE = "C:\\resources\\sendedTransaction\\";
-    String ORIGINAL_POOL_URL_ADDRESS_FILE = "C:\\resources\\poolAddress\\";
+    String ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE = "\\resources\\allLawsWithBalance\\";
+    String ORGINAL_ALL_TRANSACTION_FILE = "\\resources\\transactions\\";
+    String ORIGINAL_ALL_SENDED_TRANSACTION_FILE = "\\resources\\sendedTransaction\\";
+    String ORIGINAL_POOL_URL_ADDRESS_FILE = "\\resources\\poolAddress\\";
 
     //адресса внешних сервисов
     Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");

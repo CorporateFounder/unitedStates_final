@@ -38,6 +38,13 @@ import java.util.stream.Collectors;
 @Controller
 public class MainController {
 
+   static {
+       try {
+           UtilsCreatedDirectory.createPackages();
+       } catch (IOException e) {
+           throw new RuntimeException(e);
+       }
+   }
     @GetMapping("/")
     public String home(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 

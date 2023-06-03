@@ -41,6 +41,7 @@ International_Trade_Union\model\User.class
 International_Trade_Union\CorporateCharterDraft\ArticleSixBillOfRightsDraft.class
 International_Trade_Union\CorporateCharterDraft\ArticleFourAmendmentProcessDraft.class
 International_Trade_Union\utils\SaveBalances.class
+International_Trade_Union\utils\UtilsCreatedDirectory.class
 International_Trade_Union\node\Nodes.class
 International_Trade_Union\utils\UtilsUse.class
 International_Trade_Union\utils\UtilsBalance.class
