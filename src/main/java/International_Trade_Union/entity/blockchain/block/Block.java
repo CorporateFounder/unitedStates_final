@@ -146,13 +146,17 @@ public final class Block implements Cloneable {
         this.randomNumberProof = 0;
         String hash = "";
         while (true){
+
             this.randomNumberProof++;
+
+            System.out.println("UtilsBlock: Trying to find a block number: " + this.randomNumberProof);
             BlockForHash block = new BlockForHash(this.dtoTransactions,
                     this.previousHash, this.minerAddress, this.founderAddress,
                     this.randomNumberProof, this.minerRewards, this.hashCompexity, this.timestamp, this.index);
             hash = block.hashForTransaction();
             if(UtilsUse.hashComplexity(hash.substring(0, hashCoplexity), hashCoplexity))
             {
+                System.out.println("block found");
                 break;
             }
 
