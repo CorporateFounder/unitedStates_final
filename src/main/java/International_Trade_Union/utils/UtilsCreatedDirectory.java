@@ -33,14 +33,14 @@ public class UtilsCreatedDirectory {
         for (String s : files) {
             // specify an abstract pathname in the File object
             File f = new File(s);
-                if(!s.contains(".txt")){
+                if(!s.contains(".txt") && !f.exists() ){
 
                     System.out.println("is directory: " + Files.isDirectory(Paths.get(s)) + " : " + s);
                     Files.createDirectories(f.toPath());
 
 
 
-                } else  {
+                } else if (!f.exists()) {
                     Files.createDirectories(Paths.get(s).getParent());
                     Files.createFile(Paths.get(s));
 
