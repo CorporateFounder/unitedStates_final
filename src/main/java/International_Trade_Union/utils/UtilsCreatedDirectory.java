@@ -24,6 +24,7 @@ public class UtilsCreatedDirectory {
         files.add(Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
         files.add(Seting.ORIGINAL_CORPORATE_VOTE_FILE);
         files.add(Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
+        files.add(Seting.ORIGINAL_ALL_SENDED_TRANSACTION_FILE);
 
         files.add(Seting.ORIGINAL_ACCOUNT);
         files.add(Seting.ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE);
