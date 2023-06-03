@@ -8,6 +8,11 @@ To work properly you need to download and install jre https://www.java.com/ru/do
 https://www.oracle.com/cis/java/technologies/downloads/,
 and jdk 19 or higher
 
+now jar file created disc automatically
+Download the jar file, run it, then be sure to click update.
+The program itself should create all the necessary folders on one of your disks.
+
+
 the resources folder is in ***src/main/java/resources***
 after which you need to copy the resources folder to drive C:
 there are stored
@@ -20,6 +25,7 @@ there are stored
 - host address files ***/poolAddress***
 - files sent by transaction ***/sentTransaction***
 - transaction list files to send ***/transactions***
+
 
 
 ## IF NO DISK C:
