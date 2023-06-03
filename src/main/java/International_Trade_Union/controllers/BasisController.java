@@ -142,6 +142,13 @@ public class BasisController {
     //TODO otherwise there will be a discrepancy in the balance file
 
 
+
+    @GetMapping("constantMining")
+    public void alwaysMining() throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+        for (int i = 0; i < 100 ; i++) {
+            mining();
+        }
+    }
     public synchronized String mining() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
         String text = "";
         //нахождение адрессов

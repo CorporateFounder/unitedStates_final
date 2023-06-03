@@ -12,8 +12,15 @@ clicking on it will automatically produce a block.
 
 ![mining block](../screenshots/mineEng.png)
 
-### OPTION 2.
+### OPTION 2
+push button ***Constant mining 100 block in while***
+there will be a cycle of 100 attempts to find blocks
+
+
+### OPTION 3.
 calling http://localhost:8082/mine automatically starts mining.
+
+
 
 
 Blockchain complexity adapts similarly to bitcoin, but adaptation happens
