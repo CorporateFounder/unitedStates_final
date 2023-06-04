@@ -8,6 +8,7 @@ import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.setings.Seting;
+import org.springframework.expression.spel.ast.Literal;
 
 
 import java.io.*;
@@ -326,6 +327,19 @@ public class UtilsBlock {
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
     }
 
+    public static List<DtoTransaction> checkDuplicatesTransaction(List<Block> blocks, List<DtoTransaction> dtoTransactions){
+        boolean notHaveDuplicates = true;
+        List<DtoTransaction> transactions = new ArrayList<>();
+        for (int i = 24100; i < blocks.size(); i++) {
+            for (DtoTransaction dtoTransaction : blocks.get(i).getDtoTransactions()) {
+                transactions.add(dtoTransaction);
+            }
+
+        }
+        dtoTransactions.removeAll(transactions);
+        return dtoTransactions;
+    }
+
     public static boolean validation(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL ) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         boolean validated = true;
         List<DtoTransaction> transactions = new ArrayList<>();
@@ -341,6 +355,8 @@ public class UtilsBlock {
         if(size != withoutDuplicates){
             System.out.println("blockchain wrong because in block have duplicates transaction");
             validated = false;
+            System.out.println("your blockchain wrong all files deleted");
+            UtilsBlock.deleteFiles();
             return validated;
         }
 

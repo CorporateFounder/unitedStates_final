@@ -200,6 +200,8 @@ public class BasisController {
 
         //транзакции которые мы добавили в блок и теперь нужно удалить из файла, в папке resources/transactions
         List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
+        //удаляет танзакции есть в них дубликаты
+        temporaryDtoList = UtilsBlock.checkDuplicatesTransaction(blockchain.getBlockchainList(),temporaryDtoList);
 
         //раз в три для очищяет файлы в папке resources/sendedTransaction данная папка
         //хранит уже добавленые в блокчейн транзации, чтобы повторно не добавлять в

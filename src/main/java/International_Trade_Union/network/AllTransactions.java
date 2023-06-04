@@ -57,6 +57,7 @@ public class AllTransactions {
         sendedTransaction = getInsanceSended();
 
         instance.removeAll(sendedTransaction);
+
         return instance;
     }
 
