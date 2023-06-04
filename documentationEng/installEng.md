@@ -36,6 +36,19 @@ which to raise on the host http://194.87.236.238:80
 After the local server is up, in the browser
 login to main page http://localhost:8082
 
+# STEP BY STEP WITH PHOTO
+![step 1](../screenshots/step-1-install.png)
+
+![step 2](../screenshots/step-2-install.png)
+![step 3](../screenshots/step-3-install.png)
+![step 4](../screenshots/step-4-install.png)
+![step 5](../screenshots/step5-instatll.png)
+![step 6](../screenshots/step-6-install.png)
+![step 7](../screenshots/step-7-install.png)
+![step 8](../screenshots/step-8-install.png)
+
+
+
 This is what ![main menu](../screenshots/main-menuEng.png) looks like
 
 [back to home](./documentationEng.md)
