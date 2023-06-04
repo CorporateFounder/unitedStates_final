@@ -84,7 +84,7 @@ public interface Seting {
     double STOCK_VOTE_GOVERNMENT = 1;
 
     //    процент который получает основатель от добычи
-    Double FOUNDERS_REWARD = 2.0;
+    Double FOUNDERS_REWARD = 3.0;
 
     //address for send rewards
     String BASIS_ADDRESS = "faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ";
@@ -151,11 +151,11 @@ public interface Seting {
 
 
     //    адресс основателя: здесь будет мой адрес. Сейчас заглушка
-    String ADDRESS_FOUNDER_TEST = "stExZb8ifLfnFoq4JJuTifpAcscegATH8znhwW26zyTa";
-    String ADDRESS_FOUNDER = "stExZb8ifLfnFoq4JJuTifpAcscegATH8znhwW26zyTa";
+    String ADDRESS_FOUNDER_TEST = "tjfpahRgj9HGNy96HdWSKiT9bChPmKj1jYDFAuALg2xN";
+    String ADDRESS_FOUNDER = "tjfpahRgj9HGNy96HdWSKiT9bChPmKj1jYDFAuALg2xN";
+    String ADDRESS_FOUNDER_ORIGINAL_VERSTION = "gjMoEkLZPwFKBbNKiFVHD3fSe2pwyHYbcGVD1W8WqR9B";
 
-    String CORPORATE_CHARTER_DRAFT = International_Trade_Union.CorporateCharterDraft.CorporateCharter.getAllConstitution() + "\n" + CorporateCharter.getAllConstitution() + AboutUsDraft.getAboutUs()
-            + AboutUsEngDraft.getAboutUs();
+    String CORPORATE_CHARTER_DRAFT = "";
 
     //КЛЮЧЕВОЕ НАЗВАНИЕ ПАКЕТА ЧТО ЭТО УСТАВ, ДЕЙСТВУЮЩИЙ УСТАВ ПОДПИСАН ОСНОВАТЕЛЕМ.
     String ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME = "ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME";
@@ -164,8 +164,8 @@ public interface Seting {
     String ORIGINAL_CHARTER_CURRENT_ALL_CODE = "ORIGINAL_CHARTER_CURRENT_ALL_CODE";
 
     //начальная сумма основателя
-    Double FOUNDERS_REMUNERATION_DIGITAL_DOLLAR = 30000000.0;
-    double FOUNDERS_REMNUNERATION_DIGITAL_STOCK = 30000000.0;
+    Double FOUNDERS_REMUNERATION_DIGITAL_DOLLAR = 60000000.0;
+    double FOUNDERS_REMNUNERATION_DIGITAL_STOCK = 60000000.0;
 
 
     // сколько секунд в сутках
@@ -202,7 +202,7 @@ public interface Seting {
     Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");
 
 
-    int SIZE_FILE_LIMIT = 100;
+    int SIZE_FILE_LIMIT = 5;
 
     //папки файла для тестирования с сохранениям файла
     String TEST_LAST_BLOCK = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileSaved\\lastBlock\\";
@@ -227,8 +227,8 @@ public interface Seting {
     String TEST_ALL_FEDERAL_LAWS_WITH_BALANCE_TEMPORARY = ".\\unitedStates\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileWithoutSave\\allLawsWithBalance\\";
 
     String TEST_FILE_WRITE_INFO = ".\\src\\test\\java\\unitted_states_of_mankind\\blockchainTwentyYearTest\\";
-    double DIGITAL_DOLLAR_REWARDS_BEFORE = 200.0;
-    double DIGITAL_STOCK_REWARDS_BEFORE = 200.0;
+    double DIGITAL_DOLLAR_REWARDS_BEFORE = 400.0;
+    double DIGITAL_STOCK_REWARDS_BEFORE = 400.0;
     double DIGITAL_DOLLAR_FOUNDER_REWARDS_BEFORE = Math.round(UtilsUse.countPercents(Seting.DIGITAL_DOLLAR_REWARDS_BEFORE, Seting.FOUNDERS_REWARD));
     double DIGITAL_REPUTATION_FOUNDER_REWARDS_BEFORE = Math.round(UtilsUse.countPercents(Seting.DIGITAL_STOCK_REWARDS_BEFORE, Seting.FOUNDERS_REWARD));
 
