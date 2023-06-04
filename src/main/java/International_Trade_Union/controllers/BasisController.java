@@ -177,7 +177,7 @@ public class BasisController {
         if (blockchain.sizeBlockhain() <= 1) {
             //сохранение генезис блока
             if (blockchain.sizeBlockhain() == 1) {
-                UtilsBlock.saveBLock(blockchain.getBlock(0), Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                UtilsBlock.saveBLock(blockchain.genesisBlock(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
             }
 
             //получить список балансов из файла
@@ -186,6 +186,10 @@ public class BasisController {
             Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
             //сохранить балансы
             SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
+            blockchain = Mining.getBlockchain(
+                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                    BlockchainFactoryEnum.ORIGINAL);
+
 
         }
         //скачать список балансов из файла
@@ -200,18 +204,15 @@ public class BasisController {
 
         //транзакции которые мы добавили в блок и теперь нужно удалить из файла, в папке resources/transactions
         List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
-        //удаляет танзакции есть в них дубликаты
-        temporaryDtoList = UtilsBlock.checkDuplicatesTransaction(blockchain.getBlockchainList(),temporaryDtoList);
+        //отказ от дублирующих транзакций
+        temporaryDtoList = UtilsBlock.validDto(blockchain.getBlockchainList(),temporaryDtoList);
 
         //раз в три для очищяет файлы в папке resources/sendedTransaction данная папка
         //хранит уже добавленые в блокчейн транзации, чтобы повторно не добавлять в
         //в блок уже добавленные транзакции
 //        AllTransactions.clearAllSendedTransaction(index);
-
         AllTransactions.clearUsedTransaction(AllTransactions.getInsanceSended());
         System.out.println("BasisController: start mine:");
-
-
 
         //Сам процесс Майнинга
         //DIFFICULTY_ADJUSTMENT_INTERVAL как часто происходит коррекция

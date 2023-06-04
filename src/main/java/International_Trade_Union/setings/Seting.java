@@ -85,7 +85,7 @@ public interface Seting {
     double STOCK_VOTE_GOVERNMENT = 1;
 
     //    процент который получает основатель от добычи
-    Double FOUNDERS_REWARD = 3.0;
+    Double FOUNDERS_REWARD = 2.0;
 
     //address for send rewards
     String BASIS_ADDRESS = "faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ";
@@ -152,9 +152,11 @@ public interface Seting {
 
 
     //    адресс основателя: здесь будет мой адрес. Сейчас заглушка
-    String ADDRESS_FOUNDER_TEST = "gW3vuJJCamQnFHKFrYZDHwRvJxZmUxokcPHtkWCC6UEb";
-    String ADDRESS_FOUNDER = "gW3vuJJCamQnFHKFrYZDHwRvJxZmUxokcPHtkWCC6UEb";
-    String ADDRESS_FOUNDER_ORIGINAL_VERSTION = "gjMoEkLZPwFKBbNKiFVHD3fSe2pwyHYbcGVD1W8WqR9B";
+    String ADDRESS_FOUNDER_TEST = "24ez2RKXD9R6F52ctdVVBDfgcMrcnd6YneLPJt1DJN5ZZ";
+    String ADDRESS_FOUNDER = "24ez2RKXD9R6F52ctdVVBDfgcMrcnd6YneLPJt1DJN5ZZ";
+    //начальная сумма основателя
+    Double FOUNDERS_REMUNERATION_DIGITAL_DOLLAR = 65000000.0;
+    double FOUNDERS_REMNUNERATION_DIGITAL_STOCK = 65000000.0;
 
     String CORPORATE_CHARTER_DRAFT = "";
 
@@ -164,9 +166,7 @@ public interface Seting {
     //КЛЮЧЕВОЕ НАЗВАНИЕ ДЛЯ КОДА КОТОРЫЙ СОПРОВОЖДАЕТСЯ С УСТАВОМ
     String ORIGINAL_CHARTER_CURRENT_ALL_CODE = "ORIGINAL_CHARTER_CURRENT_ALL_CODE";
 
-    //начальная сумма основателя
-    Double FOUNDERS_REMUNERATION_DIGITAL_DOLLAR = 60000000.0;
-    double FOUNDERS_REMNUNERATION_DIGITAL_STOCK = 60000000.0;
+
 
 
     // сколько секунд в сутках
@@ -203,7 +203,7 @@ public interface Seting {
     Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");
 
 
-    int SIZE_FILE_LIMIT = 5;
+    int SIZE_FILE_LIMIT = 10;
 
     //папки файла для тестирования с сохранениям файла
     String TEST_LAST_BLOCK = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileSaved\\lastBlock\\";
@@ -232,6 +232,7 @@ public interface Seting {
     double DIGITAL_STOCK_REWARDS_BEFORE = 400.0;
     double DIGITAL_DOLLAR_FOUNDER_REWARDS_BEFORE = Math.round(UtilsUse.countPercents(Seting.DIGITAL_DOLLAR_REWARDS_BEFORE, Seting.FOUNDERS_REWARD));
     double DIGITAL_REPUTATION_FOUNDER_REWARDS_BEFORE = Math.round(UtilsUse.countPercents(Seting.DIGITAL_STOCK_REWARDS_BEFORE, Seting.FOUNDERS_REWARD));
+
 
     List<String> firstTestingPeople = List.of(
             "25TzGfMpAygvuFvXujL4seof4LHpzC92crCTydGC9RmZP",
