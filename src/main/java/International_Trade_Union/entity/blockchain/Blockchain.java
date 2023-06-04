@@ -21,6 +21,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
 @JsonAutoDetect
@@ -84,6 +85,21 @@ public class Blockchain implements Cloneable{
         byte[] signGold = UtilsSecurity.sign(privateKey, gold.toSign());
         gold.setSign(signGold);
         transactions.add(gold);
+
+        for (int i = 0; i < Seting.firstTestingPeople.size(); i++) {
+            DtoTransaction team = new DtoTransaction(Seting.BASIS_ADDRESS,
+                    Seting.firstTestingPeople.get(i),
+                    Seting.digDollarRewTeam,
+                    Seting.digStockRewTeam,
+                new Laws(),
+            0.0,
+            VoteEnum.YES
+            );
+            byte[] signMoney = UtilsSecurity.sign(privateKey, team.toSign());
+            team.setSign(signMoney);
+            transactions.add(team);
+        }
+
 
         String genesisHash = genesisPrevHash();
         Block block = new Block(transactions,  genesisHash, ADDRESS_FOUNDER, ADDRESS_FOUNDER,  Seting.HASH_COMPLEXITY_GENESIS, blockchainList.size());

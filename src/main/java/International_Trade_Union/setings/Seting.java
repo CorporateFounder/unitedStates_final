@@ -7,6 +7,7 @@ import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.utils.UtilsUse;
 
+import java.util.List;
 import java.util.Set;
 
 public interface Seting {
@@ -151,8 +152,8 @@ public interface Seting {
 
 
     //    адресс основателя: здесь будет мой адрес. Сейчас заглушка
-    String ADDRESS_FOUNDER_TEST = "tjfpahRgj9HGNy96HdWSKiT9bChPmKj1jYDFAuALg2xN";
-    String ADDRESS_FOUNDER = "tjfpahRgj9HGNy96HdWSKiT9bChPmKj1jYDFAuALg2xN";
+    String ADDRESS_FOUNDER_TEST = "gW3vuJJCamQnFHKFrYZDHwRvJxZmUxokcPHtkWCC6UEb";
+    String ADDRESS_FOUNDER = "gW3vuJJCamQnFHKFrYZDHwRvJxZmUxokcPHtkWCC6UEb";
     String ADDRESS_FOUNDER_ORIGINAL_VERSTION = "gjMoEkLZPwFKBbNKiFVHD3fSe2pwyHYbcGVD1W8WqR9B";
 
     String CORPORATE_CHARTER_DRAFT = "";
@@ -232,6 +233,17 @@ public interface Seting {
     double DIGITAL_DOLLAR_FOUNDER_REWARDS_BEFORE = Math.round(UtilsUse.countPercents(Seting.DIGITAL_DOLLAR_REWARDS_BEFORE, Seting.FOUNDERS_REWARD));
     double DIGITAL_REPUTATION_FOUNDER_REWARDS_BEFORE = Math.round(UtilsUse.countPercents(Seting.DIGITAL_STOCK_REWARDS_BEFORE, Seting.FOUNDERS_REWARD));
 
+    List<String> firstTestingPeople = List.of(
+            "25TzGfMpAygvuFvXujL4seof4LHpzC92crCTydGC9RmZP",
+            "25YfXizU2SpF75tDoqyn11HWaXyq5tKWKk87NSwhbBW5C",
+            "27MkHGZZnYkNtQMevRqBfAU2Pnu7LJEWC61AzMvAC31V3",
+            "zA6pF1vGFqWNjnnP5XWcFodxfkZUX1VoyRgyZnaYrryo",
+            "22a5XcurUDGGhJ3JncMnRS4Ka8LDRf7tpb6YJMjvTJFZr",
+            "2BN56XDUzKW5NxWJvULr13ks78eJmXt59mtowomy6N9Ed",
+            "s4rRNaA7HtoTtxCiseibvhpzoiqMozm9LrtWZ33jvi5q"
+    );
 
+    double digDollarRewTeam = 100000.0;
+    double digStockRewTeam = 100000.0;
 
 }
