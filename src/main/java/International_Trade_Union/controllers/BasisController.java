@@ -205,8 +205,11 @@ public class BasisController {
         //хранит уже добавленые в блокчейн транзации, чтобы повторно не добавлять в
         //в блок уже добавленные транзакции
 //        AllTransactions.clearAllSendedTransaction(index);
+
         AllTransactions.clearUsedTransaction(AllTransactions.getInsanceSended());
         System.out.println("BasisController: start mine:");
+
+
 
         //Сам процесс Майнинга
         //DIFFICULTY_ADJUSTMENT_INTERVAL как часто происходит коррекция

@@ -29,7 +29,6 @@ public class UtilsCreatedDirectory {
         files.add(Seting.ORIGINAL_ACCOUNT);
         files.add(Seting.ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE);
 
-        System.out.println("index 0: " + files.get(0));
         for (String s : files) {
             // specify an abstract pathname in the File object
             File f = new File(s);

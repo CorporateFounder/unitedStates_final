@@ -374,6 +374,13 @@ public class UtilsBlock {
             }
             prevBlock = block;
         }
+
+        //if blockchain wrong deleted all file
+        if(validated == false){
+            System.out.println("your blockchain wrong all files deleted");
+            UtilsBlock.deleteFiles();
+        }
+
         return validated;
     }
 }
