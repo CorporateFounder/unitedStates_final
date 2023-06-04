@@ -65,8 +65,8 @@ public class AllTransactions {
         Mining.deleteFiles(Seting.ORGINAL_ALL_TRANSACTION_FILE);
     }
 
-    public static synchronized void clearAllSendedTransaction(long index) {
-        if(index % (Seting.COUNT_BLOCK_IN_DAY * Seting.DAY_DELETED_SENDED_FILE) == 0){
+    public static synchronized void clearAllSendedTransaction(boolean deleted) {
+        if(deleted){
             sendedTransaction = new ArrayList<>();
             Mining.deleteFiles(Seting.ORIGINAL_ALL_SENDED_TRANSACTION_FILE);
             System.out.println("clear delete sended transaction");

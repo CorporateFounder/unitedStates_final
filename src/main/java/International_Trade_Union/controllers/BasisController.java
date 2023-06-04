@@ -204,7 +204,7 @@ public class BasisController {
         //раз в три для очищяет файлы в папке resources/sendedTransaction данная папка
         //хранит уже добавленые в блокчейн транзации, чтобы повторно не добавлять в
         //в блок уже добавленные транзакции
-        AllTransactions.clearAllSendedTransaction(index);
+//        AllTransactions.clearAllSendedTransaction(index);
         AllTransactions.clearUsedTransaction(AllTransactions.getInsanceSended());
         System.out.println("BasisController: start mine:");
 

@@ -144,8 +144,8 @@ public class MainController {
                 return "redirect:/result-sending";
             }
             redirectAttrs.addFlashAttribute("sending", "success");
-            System.out.println("dto MainController: " + dtoTransaction);
-
+           String str =  base.encode(dtoTransaction.getSign());
+            System.out.println("sign: " + str);
             AllTransactions.addTransaction(dtoTransaction);
             String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
             for (String s : Seting.ORIGINAL_ADDRESSES) {
