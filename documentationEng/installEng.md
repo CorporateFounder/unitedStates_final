@@ -27,7 +27,7 @@ there are stored
 ## where the Server connects to
 Run jar file
 Local Server http://localhost:8082/ is connected to a ready server
-https://github.com/CorporateFounder/unitedStates_duplicates_original_storage
+https://github.com/CorporateFounder/unitedStates_storage
 which to raise on the host http://194.87.236.238:80
 ````
      Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");
