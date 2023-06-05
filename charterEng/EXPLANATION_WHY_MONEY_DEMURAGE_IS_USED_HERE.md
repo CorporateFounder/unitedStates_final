@@ -1,7 +1,7 @@
 # EXPLANATION WHY MONEY DEMURAGE IS USED HERE
 The negative rate is now applied in many countries, this measure stimulates money holders when the price is excessively high,
 saturate the market with money.
-The amount of money mined for each block is 200 digital dollars and 200 digital shares,
+The amount of money mined for each block is 400 digital dollars and 400 digital shares,
 also 2% of each mining reward to the founder, which is 4 digital dollars and 4 digital Shares for each block mining.
 Here it is used as the Theories of Silvio Gesell, as well as the school of monetarism in a modified form.
 
@@ -39,7 +39,7 @@ And these two phenomena are two sides of the same coin, in one case we get a def
 stagflation.
 
 To avoid such crises, in this cryptocurrency, money grows in the same predictable amount.
-204 (4 - founder reward, 200 - earner reward)
+408 (8 - founder's reward, 400 - earner's reward)
 digital dollars and shares per block, about 576 blocks per day. A negative rate adjusts the value of coins every six months.
 It is also forbidden to use fractional reserve banking for these coins, as their number grows linearly, and
 will not be able to cover the debts incurred due to fractional reserve banking, due to lack of
@@ -50,13 +50,14 @@ even galloping inflation. If it is necessary to increase the growth of the money
 keeping the founder's remuneration percentage at two percent. And mining per block should not increase more than 5% for
 ten years, each subsequent increase that may be made must pass at least ten years through amendments,
 and no more than 5% per block from the reward of the last block. (Example: if we change
-through amendments, then the extraction should not be higher than 210 coins, but each following will be no more than five percent of the last.
-Thus, the next increase introduced by without amendment will be 220.5 coins. But this amendment will be introduced only in ten
+through the amendments, then the extraction should not be higher than 420 coins, but each following will be no more than five percent of the last.
+Thus, the next increase introduced by without amendment will be 440.10 coins. But this amendment will be introduced only in ten
 years after the first production adjustment)
 
 With a lack of money supply, if the number of mined coins has not been changed through an amendment, you can add a few
 additional zeros after the decimal point, so it will simply increase the value of the coins, without increasing the total money supply.
 
 Negative rates should not be higher than 0.5% per annum and lower than 0.2% per annum. Negative rates can only be changed through amendments.
+
 
 [Exit to home](../documentationEng/documentationEng.md)

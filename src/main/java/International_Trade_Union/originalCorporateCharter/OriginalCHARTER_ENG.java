@@ -654,7 +654,7 @@ public interface OriginalCHARTER_ENG {
     String EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE_11 = "# EXPLANATION WHY MONEY DEMURAGE IS USED HERE\n" +
             "The negative rate is now applied in many countries, this measure stimulates money holders when the price is excessively high,\n" +
             "saturate the market with money.\n" +
-            "The amount of money mined for each block is 200 digital dollars and 200 digital shares,\n" +
+            "The amount of money mined for each block is 400 digital dollars and 400 digital shares,\n" +
             "also 2% of each mining reward to the founder, which is 4 digital dollars and 4 digital Shares for each block mining.\n" +
             "Here it is used as the Theories of Silvio Gesell, as well as the school of monetarism in a modified form.\n" +
             "\n" +
@@ -692,7 +692,7 @@ public interface OriginalCHARTER_ENG {
             "stagflation.\n" +
             "\n" +
             "To avoid such crises, in this cryptocurrency, money grows in the same predictable amount.\n" +
-            "204 (4 - founder reward, 200 - earner reward)\n" +
+            "408 (8 - founder's reward, 400 - earner's reward)\n" +
             "digital dollars and shares per block, about 576 blocks per day. A negative rate adjusts the value of coins every six months.\n" +
             "It is also forbidden to use fractional reserve banking for these coins, as their number grows linearly, and\n" +
             "will not be able to cover the debts incurred due to fractional reserve banking, due to lack of\n" +
@@ -703,29 +703,15 @@ public interface OriginalCHARTER_ENG {
             "keeping the founder's remuneration percentage at two percent. And mining per block should not increase more than 5% for\n" +
             "ten years, each subsequent increase that may be made must pass at least ten years through amendments,\n" +
             "and no more than 5% per block from the reward of the last block. (Example: if we change\n" +
-            "through amendments, then the extraction should not be higher than 210 coins, but each following will be no more than five percent of the last.\n" +
-            "Thus, the next increase introduced by without amendment will be 220.5 coins. But this amendment will be introduced only in ten\n" +
+            "through the amendments, then the extraction should not be higher than 420 coins, but each following will be no more than five percent of the last.\n" +
+            "Thus, the next increase introduced by without amendment will be 440.10 coins. But this amendment will be introduced only in ten\n" +
             "years after the first production adjustment)\n" +
             "\n" +
             "With a lack of money supply, if the number of mined coins has not been changed through an amendment, you can add a few\n" +
             "additional zeros after the decimal point, so it will simply increase the value of the coins, without increasing the total money supply.\n" +
             "\n" +
             "Negative rates should not be higher than 0.5% per annum and lower than 0.2% per annum. Negative rates can only be changed through amendments.\n" +
-            "\n" +
-            "[Exit to home](../documentationEng/documentationEng.md)";
-
-    String FREEDOM_OF_SPEECH_12 = "# FREEDOM_OF_SPEECH The right to free speech\n" +
-            "No body of this corporation or entity shall prohibit free practice\n" +
-            "any religion; or restrict freedom of speech, conscience or the press\n" +
-            "or the right of people to peacefully assemble or associate with one another, or not associate with one another, and\n" +
-            "apply to the management of the Corporation of the International Trade Union and to this corporation with a petition for satisfaction of complaints; +\n" +
-            "or violate the right to the fruits of one's labor or\n" +
-            "the right to a peaceful life of their choice.\n" +
-            "Freedoms of speech and conscience include the freedom to contribute to\n" +
-            "political campaigns or nominations for corporate office and shall be construed as\n" +
-            "extending equally to any means of communication.\n" +
-            "\n" +
-            "[Exit to home](../documentationEng/documentationEng.md)";
+            "\n";
 
     String RIGHTS_13 = "# RIGHTS Natural Rights\n" +
             "All members of the network must respect the Natural Human Rights and not violate them.\n" +
