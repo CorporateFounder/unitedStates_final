@@ -152,8 +152,8 @@ public interface Seting {
 
 
     //    адресс основателя: здесь будет мой адрес. Сейчас заглушка
-    String ADDRESS_FOUNDER_TEST = "24ez2RKXD9R6F52ctdVVBDfgcMrcnd6YneLPJt1DJN5ZZ";
-    String ADDRESS_FOUNDER = "24ez2RKXD9R6F52ctdVVBDfgcMrcnd6YneLPJt1DJN5ZZ";
+    String ADDRESS_FOUNDER_TEST = "nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43";
+    String ADDRESS_FOUNDER = "nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43";
     //начальная сумма основателя
     Double FOUNDERS_REMUNERATION_DIGITAL_DOLLAR = 65000000.0;
     double FOUNDERS_REMNUNERATION_DIGITAL_STOCK = 65000000.0;
