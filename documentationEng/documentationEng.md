@@ -5,18 +5,9 @@
 Required if you have google translate installed, prohibit translating from English into Russian,
 as everything is already written in Russian. But google translate starts translating the text, distorting the text from Russian into Russian.
 
-## Preamble
-Hi all.
-Before downloading, I would like you to read the text below.
-My cryptocurrency was inspired by the US Constitution and the parliamentary system of government.
-My system has implemented a system that allows all participants to create laws and approve laws through democratic procedures.
-Imagine a world where a resident of the United States, Mexico, Canada or other regions will elect their representatives and approve laws,
-and also using direct democracy, but I need you to participate, I am a developer and can modify
-code to make the legislative system better. Together we will be like the founding fathers of digital democracy.
-
 How is the law going now.
 There are four groups of people who are elected and vote differently.
-1. Independent members, each time you mine a block you are given 200 digital dollars and 200 digital shares.
+1. Independent members, each time you mine a block you are given 400 digital dollars and 400 digital shares.
    Every time you vote for a law, the law gets as many votes as you have shares, but with some nuances.
    Imagine you voted YES for 2 laws and NO for 4 laws and you have 100 shares. Then the laws you voted YES
    will receive 50 votes according to the formula (YES/2), the same for NO/4=25. But it doesn't end there.
@@ -31,7 +22,7 @@ There are four groups of people who are elected and vote differently.
 3. The Board of Directors is an analogue of the House of Representatives.
    Consists of 301 elected members. Members are elected by independent members and the 301 accounts that received
    the largest number of votes become members of the board of directors. One account is equal to one vote and how with the Board of Shareholders we are for each law
-   sum separately YES and NO and subtract from YES - NO and the remainder must be 10 or more.
+   sum separately YES and NO and subtract from YES - NO (participates only in making amendments)
 
 4. And the last fourth group, these are fractions, fractions consist of 100 accounts and are elected similarly to the Board of Directors, but their
    votes are equal to shares. For example, if a Faction received 23% of the votes from 100 participants, then its vote is 23%.
@@ -41,18 +32,9 @@ There are four groups of people who are elected and vote differently.
 For all participants, only votes from which no more than four years have passed are taken into account. Votes dynamically change with each block
 taking into account how many shares are held by independent participants or retains or officials of their positions. A law is valid if it
 more than 1 vote from Independent Participants.
-10 or more votes from the Board of Shareholders.
 10 or more votes from the Board of Directors
-and 10% or more from fractions. But the law must be approved by all 4 groups.
+and 10% or more from fractions. But the law must be approved by all 3 groups.
 
-
-The system also has a negative rate.
-Why is she needed? Let's imagine that you mine a coin, every four years it reduces your mining. This means that you remain profitable,
-the value of the coin should double every four years and this is simply not possible mathematically, since you do not affect the value of the coin
-and this can eventually ruin the system. There are other coins that have lifted the mining cap, but they are subject to high inflation.
-So that the total number of coins does not grow, I
-made such a system. If every six months we withdraw 0.1% of digital dollars and 0.2% of digital shares from all accounts, at some point we will come to the conclusion that
-that the created coins will be equal to the destroyed ones and this will limit the total number of coins.
 ## CONTENT
 - [short description](../documentationEng/preambleEng.md)
 - [active url](../documentationEng/active-urlEng.md)

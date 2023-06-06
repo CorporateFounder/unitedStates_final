@@ -143,11 +143,12 @@ public class BasisController {
 
 
 
-    @GetMapping("constantMining")
-    public void alwaysMining() throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
-        for (int i = 0; i < 100 ; i++) {
+    @GetMapping("/constantMining")
+    public String alwaysMining() throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+        for (int i = 0; i < 150 ; i++) {
             mining();
         }
+        return "redirect:/mining";
     }
     public synchronized String mining() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
         String text = "";

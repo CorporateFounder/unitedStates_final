@@ -31,10 +31,8 @@ public interface OriginalCHARTER {
             "1. название пакета закона не должно совпадать с выделенными ключевыми словами.\n" +
             "2. Закон должен получить больше 1 голоса по системе подсчета описанной [VOTE_STOCK](../charter/VOTE_STOCK.md)\n" +
             "3. Должен получить 10 или больше голосов Совета Директоров по системе подсчета описанной в [ONE_VOTE](../charter/ONE_VOTE.md)\n" +
-            "4. Должен получить 10 или больше голосов Совета Акционеров по системе подсчета описанной в [ONE_VOTE](../charter/ONE_VOTE.md)\n" +
-            "5. Должен получить 10% голосов от фракций по системе подсчета описанной в [VOTE_FRACTION](../charter/VOTE_FRACTION.md).\n" +
+            "4. Должен получить 10% голосов от фракций по системе подсчета описанной в [VOTE_FRACTION](../charter/VOTE_FRACTION.md).\n" +
             "\n" +
-            "![утверждение обычных законов](../screenshots/law-classic.png)\n" +
             "Пример кода в LawsController current law:\n" +
             "````\n" +
             "     //законы должны быть одобрены всеми.\n" +
@@ -44,8 +42,8 @@ public interface OriginalCHARTER {
             "                .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
             "                .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))\n" +
             "                .filter(t->!Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))\n" +
-            "                .filter(t -> t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS\n" +
-            "                && t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS\n" +
+            "                .filter(t -> \n" +
+            "                 t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS\n" +
             "                && t.getVotes() >= Seting.ALL_STOCK_VOTE\n" +
             "                && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS)\n" +
             "                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());\n" +
@@ -68,7 +66,7 @@ public interface OriginalCHARTER {
             "                .filter(t->Seting.STRATEGIC_PLAN.equals(t.getPackageName()))\n" +
             "                .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
             "                .filter(t->t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS\n" +
-            "                        && t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS\n" +
+            "                       \n" +
             "                        && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
             "                        && t.getVotes() >= Seting.ALL_STOCK_VOTE)\n" +
             "                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())\n" +
@@ -88,7 +86,7 @@ public interface OriginalCHARTER {
             "                .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
             "                .filter(t->\n" +
             "                        t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS\n" +
-            "                        && t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS\n" +
+            "                       \n" +
             "                        && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
             "                        && t.getVotes() >= Seting.ALL_STOCK_VOTE)\n" +
             "                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())\n" +
@@ -109,7 +107,7 @@ public interface OriginalCHARTER {
             "        List<CurrentLawVotesEndBalance> electedByBoardOfDirectors = current.stream()\n" +
             "                .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))\n" +
             "                .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS\n" +
-            "                && t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS\n" +
+            "                \n" +
             "                && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
             "                && t.getVotes() >= Seting.ALL_STOCK_VOTE)\n" +
             "                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())\n" +

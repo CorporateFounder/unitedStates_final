@@ -26,12 +26,10 @@ All laws are divided into several groups.
 ### REGULAR LAWS
 To establish ordinary laws,
 1. The name of the package of law should not match the highlighted keywords.
-2. The law must receive more than 1 vote according to the scoring system described by [VOTE_STOCK](../charterEng/VOTE_STOCK.md)
-3. Must receive 10 or more votes of the Board of Directors according to the scoring system described in [ONE_VOTE](../charterEng/ONE_VOTE.md)
-4. Must receive 10 or more votes of the Board of Shareholders according to the scoring system described in [ONE_VOTE](../charterEng/ONE_VOTE.md)
-5. Must receive 10% of votes from factions according to the counting system described in [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md).
+2. The law must receive more than 1 vote according to the scoring system described by [VOTE_STOCK](../charter/VOTE_STOCK.md)
+3. Must receive 10 or more votes of the Board of Directors according to the scoring system described in [ONE_VOTE](../charter/ONE_VOTE.md)
+4. Must receive 10% of votes from factions according to the counting system described in [VOTE_FRACTION](../charter/VOTE_FRACTION.md).
 
-![asserting customary laws](../screenshots/law-classic.png)
 Sample code in LawsController current law:
 ````
       //laws must be approved by everyone.
@@ -41,8 +39,8 @@ Sample code in LawsController current law:
                  .filter(t->!directors.isCabinets(t.getPackageName()))
                  .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))
                  .filter(t->!Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))
-                 .filter(t -> t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS
-                 && t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
+                 .filter(t ->
+                  t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                  && t.getVotes() >= Seting.ALL_STOCK_VOTE
                  && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS)
                  .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());
@@ -65,7 +63,7 @@ but there are some differences from ordinary laws.
                  .filter(t->Seting.STRATEGIC_PLAN.equals(t.getPackageName()))
                  .filter(t->!directors.isCabinets(t.getPackageName()))
                  .filter(t->t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
-                         && t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS
+                       
                          && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                          && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                  .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
@@ -85,7 +83,7 @@ but the name of the package should be BUDGET and it is also in a single copy.
                  .filter(t->!directors.isCabinets(t.getPackageName()))
                  .filter(t->
                          t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
-                         && t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS
+                       
                          && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                          && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                  .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
@@ -106,7 +104,7 @@ But the number is determined for each position separately.
          List<CurrentLawVotesEndBalance> electedByBoardOfDirectors = current.stream()
                  .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
                  .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
-                 && t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS
+                
                  && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                  && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                  .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
@@ -137,10 +135,10 @@ With the obligatory underscore.
 ### CHARTER AMENDMENTS
 To amend the charter, the law package must be named AMENDMENT_TO_THE_CHARTER.
 For an amendment to be valid
-1. It is necessary that 20% or more of the votes received from the Council of Shareholders by the counting system [ONE_VOTE](../charterEng/ONE_VOTE.md).
-2. Need to get 20% or more votes from the Board of Directors by the [ONE_VOTE](../charterEng/ONE_VOTE.md) counting system .
+1. It is necessary that 20% or more of the votes received from the Council of Shareholders by the counting system [ONE_VOTE](../charter/ONE_VOTE.md).
+2. Need to get 20% or more votes from the Board of Directors by the [ONE_VOTE] counting system (../charter/ONE_VOTE.md).
 3. Need to get 5 or more votes from the Legislative Branch of the Corporate Chief Justices.
-4. Need to get 10% or more of votes from factions by counting system [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md).
+4. Need to get 10% or more of votes from factions by counting system [VOTE_FRACTION](../charter/VOTE_FRACTION.md).
 
 ![Charter amendments](../screenshots/amendment-chapter.png)
 ````
@@ -160,7 +158,7 @@ For an amendment to be valid
 ### SAM CHARTER.
 The first charter is approved by the founder and it is valid, the vote of the founder for approval
 The charter never has an expiration date.
-The charter package name starts with CHARTER_ORIGINAL and the name refone CHARTER_ORIGINAL_CODE.
+The charter package name starts with CHARTER_ORIGINAL and the source code name is CHARTER_ORIGINAL_CODE.
 These two packages are a holistic charter, but in the first place, the source code must not contradict
 the principles described in CHARTER_ORIGINAL.
 ````

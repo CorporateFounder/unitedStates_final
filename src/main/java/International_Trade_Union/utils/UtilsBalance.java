@@ -161,6 +161,7 @@ public class UtilsBalance {
                     recipientAddress.setDigitalStockBalance(recipientAddress.getDigitalStockBalance() - digitalReputation);
                 }
 
+
             }
 
 
