@@ -5,7 +5,9 @@ Power consists of 4 groups in this system.
 3. Fractions
 4. Independent members of the network.
 
-All participants must participate in the vote for the law adopted by the system to be valid.
+All participants must participate in the vote for the law adopted by the system to be valid
+(The only exception is the Board of Shareholders, since the Board of Shareholders participates
+only in the approval of amendments to the Charter).
 For all votes, only votes cast in the last four years count.
 All members may hold multiple positions from different groups, but may not
 hold more than one position in the same category.

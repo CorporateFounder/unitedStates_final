@@ -97,7 +97,7 @@ public class LawsController {
 
     @GetMapping("/sanction")
     public String sanction(Model model){
-        return "/sanction";
+        return "sanction";
     }
 
     @PostMapping("/sanction")

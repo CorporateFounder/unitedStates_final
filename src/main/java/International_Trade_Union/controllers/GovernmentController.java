@@ -40,9 +40,8 @@ public class GovernmentController {
     //TODO interrupt the mining process itself
 
     /**Отображает в браузере список действующих должностей*/
-
-    @GetMapping("/managment")
-    public String managment(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+    @GetMapping("/governments")
+    public String corporateSeniorpositions(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         Directors directors = new Directors();
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
@@ -183,21 +182,6 @@ public class GovernmentController {
                 .collect(Collectors.toList());
 
 
-        //законы должны быть одобрены всеми.
-
-        //бюджет утверждается всеми
-        List<CurrentLawVotesEndBalance> budjet = current.stream()
-                .filter(t-> !directors.contains(t.getPackageName()))
-                .filter(t->Seting.BUDGET.equals(t.getPackageName()))
-                .filter(t->!directors.isCabinets(t.getPackageName()))
-                .filter(t->
-                        t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
-                                && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
-                                && t.getVotes() >= Seting.ALL_STOCK_VOTE)
-                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
-                .limit(1)
-                .collect(Collectors.toList());
-
 
         //добавляет законы, которые создают новые должности утверждается всеми
         List<CurrentLawVotesEndBalance> addDirectors = current.stream()
@@ -208,6 +192,9 @@ public class GovernmentController {
                 .collect(Collectors.toList());
 
 
+
+
+
         for (Map.Entry<Director, List<CurrentLawVotesEndBalance>> higherSpecialPositionsListMap : original_group.entrySet()) {
             current.addAll(higherSpecialPositionsListMap.getValue());
         }
@@ -215,7 +202,6 @@ public class GovernmentController {
 
         current = new ArrayList<>();
         current.addAll(addDirectors);
-        current.addAll(budjet);
         current.addAll(electedFraction);
         current.addAll(electedByStockBoardOfDirectors);
         current.addAll(electedByStockCorporateCouncilOfReferees);
@@ -223,18 +209,17 @@ public class GovernmentController {
         current.addAll(electedByCorporateCouncilOfReferees);
         current.addAll(electedByGeneralExecutiveDirector);
         current.addAll(electedByHightJudge);
-
         current = current.stream()
                 .filter(UtilsUse.distinctByKey(CurrentLawVotesEndBalance::getAddressLaw))
+                .filter(t->directors.contains(t.getPackageName()))
                 .collect(Collectors.toList());
-        current = current.stream().filter(t->directors.contains(t.getPackageName()))
-                        .collect(Collectors.toList());
+
 
         model.addAttribute("title", "How the current laws are made is described in the charter." +
                 " ");
         model.addAttribute("currentLaw", current);
 
-        return "managment";
+        return "governments";
     }
 
     @GetMapping("/create-position")

@@ -55,7 +55,7 @@ public class UtilsCurrentLaw {
                             currentLawVotes.getNO().add(transaction.getSender());
                             currentLawVotes.getYES().remove(transaction.getSender());
                         }
-                        else if(transaction.getVoteEnum().equals(VoteEnum.NOTHING)){
+                        else if(transaction.getVoteEnum().equals(VoteEnum.REMOVE_YOUR_VOICE)){
                             currentLawVotes.getNO().remove(transaction.getSender());
                             currentLawVotes.getYES().remove(transaction.getSender());
                         }

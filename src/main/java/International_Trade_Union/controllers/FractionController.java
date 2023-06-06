@@ -110,6 +110,6 @@ public class FractionController {
 
         model.addAttribute("title", "fractions end fractions power");
         model.addAttribute("currentLaw", currentLaw);
-        return "/fractions";
+        return "fractions";
     }
 }

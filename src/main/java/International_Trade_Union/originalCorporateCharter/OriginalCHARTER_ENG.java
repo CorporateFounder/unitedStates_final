@@ -1,192 +1,55 @@
 package International_Trade_Union.originalCorporateCharter;
 
 public interface OriginalCHARTER_ENG {
-    String HOW_LAWS_ARE_CHOSEN_1 = "# HOW THE LAWS ARE CHOSEN.\n" +
+    String HOW_LAWS_ARE_CHOSEN_1 = "#VOTE_FRACTION\n" +
+            "This voting system is used only for factions.\n" +
+            "First, 100 factions are selected that have become legitimate.\n" +
+            "Then all the votes given to 100 selected factions are summed up.\n" +
+            "After that, the share of each fraction from the total amount is determined.\n" +
+            "votes cast for this faction.\n" +
+            "The number of votes of each faction is equal to its percentage shares.\n" +
+            "Thus, if a faction has 23% of the votes of all votes, out of\n" +
+            "100 factions, then her vote is equal to 23%.\n" +
+            "On behalf of the factions, the leaders always act and because of this it is\n" +
+            "First of all, the leader system. Identical factions with ideological\n" +
+            "system here can be represented by different leaders, even\n" +
+            "if they are from the same community.\n" +
             "\n" +
-            "## Approval of the law\n" +
-            "_____\n" +
-            "\n" +
-            "## CHARTER\n" +
-            "No law is retroactive. No law shall violate the existing statute or be inconsistent with\n" +
-            "other applicable laws. If there is a contradiction between several laws from one set of laws,\n" +
-            "then the current one is the one that is higher in the index in the list. Example: alcohol sales package\n" +
-            "the law under index 3 contradicts the law from index 17, in this case the law under index three will be valid,\n" +
-            "because he is higher in status.\n" +
-            "In the event of a conflict between several laws in force, the Judiciary shall give priority to those laws\n" +
-            "which were adopted earlier, but should be taken into account precisely from the last date of adoption of the law.\n" +
-            "The law is in force as long as it satisfies the conditions for the adoption of the law and as soon as the condition\n" +
-            "violated, the law loses its force until the law is re-adopted.\n" +
-            "In the voting of all laws, only the votes given in the last four years are taken into account.\n" +
-            "All laws are divided into several groups.\n" +
-            "1. Ordinary laws\n" +
-            "2. Strategic Plan\n" +
-            "3. Budget\n" +
-            "4. Appointed by the Legislature\n" +
-            "6. Laws that create new positions. These positions are approved only by the Legislative Power.\n" +
-            "7. Amendments to the Charter\n" +
-            "8. The charter itself\n" +
-            "\n" +
-            "### REGULAR LAWS\n" +
-            "To establish ordinary laws,\n" +
-            "1. The name of the package of law should not match the highlighted keywords.\n" +
-            "2. The law must receive more than 1 vote according to the scoring system described by [VOTE_STOCK](../charterEng/VOTE_STOCK.md)\n" +
-            "3. Must receive 10 or more votes of the Board of Directors according to the scoring system described in [ONE_VOTE](../charterEng/ONE_VOTE.md)\n" +
-            "4. Must receive 10 or more votes of the Board of Shareholders according to the scoring system described in [ONE_VOTE](../charterEng/ONE_VOTE.md)\n" +
-            "5. Must receive 10% of votes from factions according to the counting system described in [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md).\n" +
-            "\n" +
-            "![asserting customary laws](../screenshots/law-classic.png)\n" +
-            "Sample code in LawsController current law:\n" +
-            "````\n" +
-            "      //laws must be approved by everyone.\n" +
-            "         List<CurrentLawVotesEndBalance> notEnoughVotes = current.stream()\n" +
-            "                 .filter(t -> !directors.contains(t.getPackageName()))\n" +
-            "                 .filter(t->!Seting.AMENDMENT_TO_THE_CHARTER.equals(t.getPackageName()))\n" +
-            "                 .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
-            "                 .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))\n" +
-            "                 .filter(t->!Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))\n" +
-            "                 .filter(t -> t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS\n" +
-            "                 && t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS\n" +
-            "                 && t.getVotes() >= Seting.ALL_STOCK_VOTE\n" +
-            "                 && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS)\n" +
-            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());\n" +
-            "   \n" +
+            "Then every time a faction votes for laws,\n" +
+            "that start with LIBER (VoteEnum.YES) or (VoteEnum.NO).\n" +
+            "This law counts all the votes given *** for ***\n" +
+            "and *** against ***, after which it is subtracted from *** for *** - *** against ***.\n" +
+            "This result is displayed as a percentage.\n" +
             "\n" +
             "````\n" +
+            "  //faction voice\n" +
+            "     public double voteFractions(Map<String, Double> fractions){\n" +
+            "         double yes = 0;\n" +
+            "         double no = 0;\n" +
+            "         double sum = fractions.entrySet().stream()\n" +
+            "                 .map(t->t.getValue())\n" +
+            "                 .collect(Collectors.toList())\n" +
+            "                 .stream().reduce(0.0, Double::sum);\n" +
             "\n" +
-            "### STRATEGIC PLAN.\n" +
-            "The strategic plan is the general plan for the entire network and is approved in the same way as an ordinary law,\n" +
-            "but there are some differences from ordinary laws.\n" +
-            "1. The strategic plan package should be called STRATEGIC_PLAN\n" +
-            "2. All plans that have been approved are sorted from highest to lowest by the number of votes,\n" +
-            "   received from the Board of Directors.\n" +
-            "3. After Sorting, only one PLAN with the highest number of votes received from the Board of Directors is selected.\n" +
+            "         for (String s : YES) {\n" +
+            "             if (fractions.containsKey(s)) {\n" +
+            "                 yes += (fractions.get(s)/sum) * Seting.HUNDRED_PERCENT;\n" +
+            "             }\n" +
             "\n" +
-            "````\n" +
-            "//the plan is approved by everyone\n" +
-            "         List<CurrentLawVotesEndBalance> planFourYears = current.stream()\n" +
-            "                 .filter(t->!directors.contains(t.getPackageName()))\n" +
-            "                 .filter(t->Seting.STRATEGIC_PLAN.equals(t.getPackageName()))\n" +
-            "                 .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
-            "                 .filter(t->t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS\n" +
-            "                         && t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS\n" +
-            "                         && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
-            "                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)\n" +
-            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())\n" +
-            "                 .limit(1)\n" +
-            "                 .collect(Collectors.toList());\n" +
-            "````\n" +
-            "\n" +
-            "### BUDGET\n" +
-            "The budget is the overall cost for the system and is approved similarly to the Strategic Plan,\n" +
-            "but the name of the package should be BUDGET and it is also in a single copy.\n" +
-            "\n" +
-            "````\n" +
-            "  //budget approved by everyone\n" +
-            "         List<CurrentLawVotesEndBalance> budjet = current.stream()\n" +
-            "                 .filter(t-> !directors.contains(t.getPackageName()))\n" +
-            "                 .filter(t->Seting.BUDGET.equals(t.getPackageName()))\n" +
-            "                 .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
-            "                 .filter(t->\n" +
-            "                         t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS\n" +
-            "                         && t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS\n" +
-            "                         && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
-            "                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)\n" +
-            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())\n" +
-            "                 .limit(1)\n" +
-            "                 .collect(Collectors.toList());\n" +
-            "````\n" +
-            "\n" +
-            "### POSTS THAT ARE APPOINTED ONLY BY THE LEGISLATIVE AUTHORITY\n" +
-            "There are positions that are appointed only by the Legislature and such positions include\n" +
-            "General Executive Director. This position is similar to the Prime Minister and is\n" +
-            "Executive Power in this system.\n" +
-            "Each such position can be limited to the number that is defined in this system.\n" +
-            "for this position. Example: There is only one CEO position.\n" +
-            "Elected in the same way as ***strategic plan*** and ***budget***.\n" +
-            "But the number is determined for each position separately.\n" +
-            "````\n" +
-            "   //positions elected only by all participants\n" +
-            "         List<CurrentLawVotesEndBalance> electedByBoardOfDirectors = current.stream()\n" +
-            "                 .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))\n" +
-            "                 .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS\n" +
-            "                 && t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS\n" +
-            "                 && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
-            "                 && t.getVotes() >= Seting.ALL_STOCK_VOTE)\n" +
-            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())\n" +
-            "                 .collect(Collectors.toList());\n" +
-            "                \n" +
-            "                   //group by list\n" +
-            "         Map<String, List<CurrentLawVotesEndBalance>> group = electedByBoardOfDirectors.stream()\n" +
-            "                 .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));\n" +
-            "\n" +
-            "         Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();\n" +
-            "\n" +
-            "         // leave the amount that is described in this post\n" +
-            "         for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {\n" +
-            "             List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();\n" +
-            "             temporary = temporary.stream()\n" +
-            "                     .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors))\n" +
-            "                     .limit(directors.getDirector(stringListEntry.getKey()).getCount())\n" +
-            "                     .collect(Collectors.toList());\n" +
-            "             original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);\n" +
             "         }\n" +
-            "````\n" +
+            "         for (String s : NO) {\n" +
+            "             if (fractions.containsKey(s)) {\n" +
+            "                 no += (fractions.get(s)/sum) * Seting.HUNDRED_PERCENT;\n" +
+            "             }\n" +
             "\n" +
-            "There are also positions that are created with the help of laws, these positions are also approved by the Legislative power.\n" +
-            "For each such position, there is only one seat for each title.\n" +
-            "The name of such packages starts with ADD_DIRECTOR_.\n" +
-            "With the obligatory underscore.\n" +
+            "         }\n" +
+            "         return yes - no;\n" +
             "\n" +
-            "### CHARTER AMENDMENTS\n" +
-            "To amend the charter, the law package must be named AMENDMENT_TO_THE_CHARTER.\n" +
-            "For an amendment to be valid\n" +
-            "1. It is necessary that 20% or more of the votes received from the Council of Shareholders by the counting system [ONE_VOTE](../charterEng/ONE_VOTE.md).\n" +
-            "2. Need to get 20% or more votes from the Board of Directors by the [ONE_VOTE](../charterEng/ONE_VOTE.md) counting system .\n" +
-            "3. Need to get 5 or more votes from the Legislative Branch of the Corporate Chief Justices.\n" +
-            "4. Need to get 10% or more of votes from factions by counting system [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md).\n" +
-            "\n" +
-            "![Charter amendments](../screenshots/amendment-chapter.png)\n" +
-            "````\n" +
-            "    //introduction of amendments to the charter\n" +
-            "         List<CurrentLawVotesEndBalance> chapter_amendment = current.stream()\n" +
-            "                 .filter(t -> !directors.contains(t.getPackageName()))\n" +
-            "                 .filter(t-> Seting.AMENDMENT_TO_THE_CHARTER.equals(t.getPackageName()))\n" +
-            "                 .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
-            "                 .filter(t -> t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MINT_VOTE_BOARD_OF_SHAREHOLDERS_AMENDMENT\n" +
-            "                 && t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_AMENDMENT\n" +
-            "                 && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES_AMENDMENT\n" +
-            "                 && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS)\n" +
-            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed()).collect(Collectors.toList());\n" +
+            "     }\n" +
             "\n" +
             "````\n" +
             "\n" +
-            "### SAM CHARTER.\n" +
-            "The first charter is approved by the founder and it is valid, the vote of the founder for approval\n" +
-            "The charter never has an expiration date.\n" +
-            "The charter package name starts with CHARTER_ORIGINAL and the name refone CHARTER_ORIGINAL_CODE.\n" +
-            "These two packages are a holistic charter, but in the first place, the source code must not contradict\n" +
-            "the principles described in CHARTER_ORIGINAL.\n" +
-            "````\n" +
-            "// the charter is always valid, it is signed by the founder\n" +
-            "         List<CurrentLawVotesEndBalance> CHARTER_ORIGINAL = current.stream()\n" +
-            "                 .filter(t -> !directors.contains(t.getPackageName()) && Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))\n" +
-            "                 .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
-            "                 .filter(t->t.getFounderVote()>=1)\n" +
-            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())\n" +
-            "                 .limit(1)\n" +
-            "                 .collect(Collectors.toList());\n" +
-            "\n" +
-            "         // SOURCE CODE CREATED BY THE FOUNDER\n" +
-            "         List<CurrentLawVotesEndBalance> CHARTER_ORIGINAL_CODE = current.stream()\n" +
-            "                 .filter(t -> !directors.contains(t.getPackageName()) && Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))\n" +
-            "                 .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
-            "                 .filter(t->t.getFounderVote()>=1)\n" +
-            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())\n" +
-            "                 .limit(1)\n" +
-            "                 .collect(Collectors.toList());\n" +
-            "````\n" +
             "[Return to main page](../documentationEng/documentationEng.md)";
-
     String VOTE_STOCK_2 = "# VOTE_STOCK (How shares are voted.)\n" +
             "\n" +
             "How shares are voted.\n" +
@@ -309,6 +172,10 @@ public interface OriginalCHARTER_ENG {
             "The number of votes of each faction is equal to its percentage shares.\n" +
             "Thus, if a faction has 23% of the votes of all votes, out of\n" +
             "100 factions, then her vote is equal to 23%.\n" +
+            "On behalf of the factions, the leaders always act and because of this it is\n" +
+            "First of all, the leader system. Identical factions with ideological\n" +
+            "system here can be represented by different leaders, even\n" +
+            "if they are from the same community.\n" +
             "\n" +
             "Then every time a faction votes for laws,\n" +
             "that start with LIBER (VoteEnum.YES) or (VoteEnum.NO).\n" +
@@ -317,7 +184,7 @@ public interface OriginalCHARTER_ENG {
             "This result is displayed as a percentage.\n" +
             "\n" +
             "````\n" +
-            "  //faction vote\n" +
+            "  //faction voice\n" +
             "     public double voteFractions(Map<String, Double> fractions){\n" +
             "         double yes = 0;\n" +
             "         double no = 0;\n" +
@@ -712,6 +579,7 @@ public interface OriginalCHARTER_ENG {
             "\n" +
             "Negative rates should not be higher than 0.5% per annum and lower than 0.2% per annum. Negative rates can only be changed through amendments.\n" +
             "\n";
+
     String FREEDOM_OF_SPEECH_12 = "FREEDOM_OF_SPEECH The right to free speech\n" +
             "No body of this corporation or entity shall prohibit free practice any religion; or restrict freedom of speech, conscience or the press or the right of people to peacefully assemble or associate with one another, or not associate with one another, and apply to the management of the Corporation of the International Trade Union and to this corporation with a petition for satisfaction of complaints; + or violate the right to the fruits of one's labor or the right to a peaceful life of their choice. Freedoms of speech and conscience include the freedom to contribute to political campaigns or nominations for corporate office and shall be construed as extending equally to any means of communication.";
     String RIGHTS_13 = "# RIGHTS Natural Rights\n" +
@@ -753,7 +621,9 @@ public interface OriginalCHARTER_ENG {
             "3. Fractions\n" +
             "4. Independent members of the network.\n" +
             "\n" +
-            "All participants must participate in the vote for the law adopted by the system to be valid.\n" +
+            "All participants must participate in the vote for the law adopted by the system to be valid\n" +
+            "(The only exception is the Board of Shareholders, since the Board of Shareholders participates\n" +
+            "only in the approval of amendments to the Charter).\n" +
             "For all votes, only votes cast in the last four years count.\n" +
             "All members may hold multiple positions from different groups, but may not\n" +
             "hold more than one position in the same category.\n" +
@@ -844,6 +714,24 @@ public interface OriginalCHARTER_ENG {
             "\n" +
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
+
+    String FRACTION_15 = "# Create a faction\n" +
+            "## How factions are created\n" +
+            "Fractions are created similarly to other positions such as the Board of Directors.\n" +
+            "You need to enter the ***apply for a position*** tab, select\n" +
+            "from the FRACTION drop-down list. Give a reward of 5 coins to the miner and\n" +
+            "so that the sender's address and the first line of the law match.\n" +
+            "Factions are always led by leaders, so you always vote for the leader and\n" +
+            "there can always be several ideologically identical factions that lead\n" +
+            "different leaders. You must think of the faction chamber as a leader chamber.\n" +
+            "![apply_fraction](../screenshots/apply_fraction.png)\n" +
+            "## What is the difference between the factions then.\n" +
+            "The difference between the factions lies in the voting system, namely when it casts its vote,\n" +
+            "a member of the Board of Directors or a member of the Board of Shareholders, then one account equals one vote.\n" +
+            "At the same time, the faction's vote is equal to the share of votes it received.\n" +
+            "To do this, the votes of all 100 factions are summed up, and each then the share of each faction is determined.\n" +
+            "Example: if your faction received 23% of the share, then the vote will be equal to 23%.\n" +
+            "Detailed in [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md)";
 
 
 }

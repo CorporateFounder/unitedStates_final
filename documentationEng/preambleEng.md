@@ -6,32 +6,17 @@ Let's pretend that you
 3. Work on a chicken farm
 4. And you are on social security.
 
-It turned out to be quite a complex character.
-Now see the Board of Shareholders consists of 1500 accounts with the most votes.
-You know that kfc is on the Board of Shareholders and this company proposes laws that
-help increase her sales, which in turn turns out to help your
-farm to sell more chicken. Thus, the Board of Shareholders represents the interests
-this corporation and your interests by improving the quality of the economy. Because of this, the Board of Shareholders is not elected,
-and appointed by the system 1500 with the most shares.
-
-But as a Texas resident, you also want infrastructure to develop in your area.
-Thus, you participate in the voting and elect your representatives to the Board of Directors,
-how is this electoral system specially designed in such a way that the Board of Directors
-there are persons who represent mainly regions.
-
-But you may have conservative views, then your interests in this aspect are already represented
-factions of your choice.
-
-You are also on social security, and for example, you yourself can vote for
-a law that will reduce the price of a specific group of medicines.
-
-Thus the Board of Directors and Fractions are elected and represent your interests at the regional
-level and your views. The economic interests are represented by the Board of Shareholders, who are not elected,
-but are key players in this economy.
-And you can represent specific interests yourself by voting pointwise for this or that law.
-
-It uses a different mechanism of the electoral system and a different way of voting in order to
-represent your interests at different levels.
+Such an electoral system makes it possible to take into account the votes of all participants, including people of different groups.
+1. Direct Democracy allows you to vote for Laws and members directly. This
+   a measure is needed when people have their own opinion on some specific issues.
+2. Board of Directors allows you to elect your representatives more often
+   In total, people from different groups will fall into the board of directors.
+   The system is organized in such a way that the parliament is proportional.
+3. Factions - You can also call Faction Leaders, made in order to
+   different leaders could participate at the same time and depending on their influence,
+   had so many votes. Example: In such a situation, you would not have to choose between,
+   Hillary Clinton, Ron Paul and Trump, since each of them would be in the House and have
+   would have as much influence as you gave them.
 
 
 ## Brief description of the cryptocurrency
@@ -68,7 +53,7 @@ I will give a real example from cryptocurrencies and you will understand why you
 4. If you have a legal commercial dispute, you are citizens of different countries, how will you resolve this dispute?
    This system already has elected judges who will resolve contentious issues within the framework of the rules of this network.
    There are two types of currencies in the system - digital dollars and digital stocks,
-   576 blocks can be mined per day, each block gives 200 coins
+   576 blocks can be mined per day, each block gives 400 coins
    each type.
    In this package they are
    ***src/main/java/International_Trade_Union/utils/UtilsBlock.java***
@@ -121,5 +106,5 @@ What positions are there?
 - Council of Corporate Judges [CORPORATE_COUNCIL_OF_REFEREES]
 - General Executive Director [GENERAL_EXECUTIVE_DIRECTOR]
 - High Judge [HIGH_JUDGE]
-- Fraction [FRACTION]
-[back to home](./documentationEng.md)
+- Fractions [FRACTION]
+  [back to home](./documentationEng.md)
