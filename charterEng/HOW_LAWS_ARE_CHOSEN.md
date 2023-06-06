@@ -23,6 +23,7 @@ All laws are divided into several groups.
 7. Amendments to the Charter
 8. The charter itself
 
+NOTHING removes the vote from the candidate when voting for the candidate.
 ### REGULAR LAWS
 To establish ordinary laws,
 1. The name of the package of law should not match the highlighted keywords.
