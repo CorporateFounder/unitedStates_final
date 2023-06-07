@@ -141,12 +141,17 @@ public class BasisController {
     //TODO иначе будет расождение в файле балансов
     //TODO otherwise there will be a discrepancy in the balance file
 
-    boolean startMining = true;
 
     @GetMapping("/constantMining")
     public String alwaysMining() throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+
         for (int i = 0; i < 576 ; i++) {
-            mining();
+            try {
+                mining();
+            }catch (IOException e){
+                System.out.println("BasisisController: constantMining find error: ");
+                continue;
+            }
         }
         return "redirect:/mining";
     }
