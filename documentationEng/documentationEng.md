@@ -2,8 +2,10 @@
 ## Corporation International Trade Union
 (Corporation International Trade Union - CITU)
 
-Required if you have google translate installed, prohibit translating from English into Russian,
-as everything is already written in Russian. But google translate starts translating the text, distorting the text from Russian into Russian.
+## Mission.
+Using a new economic model that is resistant to deflationary and inflationary crises, unite humanity into a single democratic trading network.
+Our digital democracy is resistant to vote-stuffing and the parliament represents all sections of society.
+First of all, we are creating a democratic platform where the views of all participants should be heard.
 
 ## Preamble
 Hi all.
