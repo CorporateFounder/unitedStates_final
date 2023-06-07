@@ -1,4 +1,7 @@
 # EXPLANATION WHY MONEY DEMURAGE IS USED HERE
+How does the negative rate work here? Every six months we burn 0.1% of digital dollars from all accounts
+and 0.2% of digital shares, which allows us to keep the money supply unchanged, preventing it from growing,
+for the new money created and the money destroyed come into parity.
 The negative rate is now applied in many countries, this measure stimulates money holders when the price is excessively high,
 saturate the market with money.
 The amount of money mined for each block is 400 digital dollars and 400 digital shares,
@@ -48,16 +51,15 @@ cash, since with fractional reserve banking, the increase in debt will be much h
 Also, if you increase the money supply by changing the settings, and making the money supply increase much higher, it can cause hyperinflation or
 even galloping inflation. If it is necessary to increase the growth of the money supply, this should only happen through amendments,
 keeping the founder's remuneration percentage at two percent. And mining per block should not increase more than 5% for
-ten years, each subsequent increase that may be made must pass at least ten years through amendments,
+ten years, each subsequent increase that may be made must take place at least tenyears through amendments,
 and no more than 5% per block from the reward of the last block. (Example: if we change
 through the amendments, then the extraction should not be higher than 420 coins, but each following will be no more than five percent of the last.
-Thus, the next increase introduced by without amendment will be 440.10 coins. But this amendment will be introduced only in ten
+Thus, the next increase made through the amendments will be 440.10 coins. But this amendment will be introduced only in ten
 years after the first production adjustment)
 
 With a lack of money supply, if the number of mined coins has not been changed through an amendment, you can add a few
 additional zeros after the decimal point, so it will simply increase the value of the coins, without increasing the total money supply.
 
 Negative rates should not be higher than 0.5% per annum and lower than 0.2% per annum. Negative rates can only be changed through amendments.
-
 
 [Exit to home](../documentationEng/documentationEng.md)

@@ -2,6 +2,9 @@
 ## Corporation International Trade Union
 (Corporation International Trade Union - CITU)
 
+Required if you have google translate installed, prohibit translating from English into Russian,
+as everything is already written in Russian. But google translate starts translating the text, distorting the text from Russian into Russian.
+
 ## Mission.
 Using a new economic model that is resistant to deflationary and inflationary crises, unite humanity into a single democratic trading network.
 Our digital democracy is resistant to vote-stuffing and the parliament represents all sections of society.
@@ -52,8 +55,11 @@ Why is she needed? Let's imagine that you mine a coin, every four years it reduc
 the value of the coin should double every four years and this is simply not possible mathematically, since you do not affect the value of the coin
 and this can eventually ruin the system. There are other coins that have lifted the mining cap, but they are subject to high inflation.
 So that the total number of coins does not grow, I
-made such a system. If every six months we withdraw 0.1% of digital dollars and 0.2% of digital shares from all accounts, at some point we will come to the conclusion that
+made such a system. If every six months we destroy 0.1% of digital dollars and 0.2% of digital shares from all accounts, at some point we will come to the conclusion that
 that the created coins will be equal to the destroyed ones and this will limit the total number of coins.
+Unlike other systems, we reduce production once every half a year, destroying coins on all accounts, 0.1% for digital
+dollars and 0.2% of digital stocks, and this money does not return to the economy, so we save
+money supply without letting it grow.
 
 ## CONTENT
 - [short description](../documentationEng/preambleEng.md)

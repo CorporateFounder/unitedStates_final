@@ -519,6 +519,9 @@ public interface OriginalCHARTER_ENG {
             "[Exit to home](../documentationEng/documentationEng.md)";
 
     String EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE_11 = "# EXPLANATION WHY MONEY DEMURAGE IS USED HERE\n" +
+            "How does the negative rate work here? Every six months we burn 0.1% of digital dollars from all accounts\n" +
+            "and 0.2% of digital shares, which allows us to keep the money supply unchanged, preventing it from growing,\n" +
+            "for the new money created and the money destroyed come into parity.\n" +
             "The negative rate is now applied in many countries, this measure stimulates money holders when the price is excessively high,\n" +
             "saturate the market with money.\n" +
             "The amount of money mined for each block is 400 digital dollars and 400 digital shares,\n" +
@@ -568,50 +571,16 @@ public interface OriginalCHARTER_ENG {
             "Also, if you increase the money supply by changing the settings, and making the money supply increase much higher, it can cause hyperinflation or\n" +
             "even galloping inflation. If it is necessary to increase the growth of the money supply, this should only happen through amendments,\n" +
             "keeping the founder's remuneration percentage at two percent. And mining per block should not increase more than 5% for\n" +
-            "ten years, each subsequent increase that may be made must pass at least ten years through amendments,\n" +
+            "ten years, each subsequent increase that may be made must take place at least tenyears through amendments,\n" +
             "and no more than 5% per block from the reward of the last block. (Example: if we change\n" +
             "through the amendments, then the extraction should not be higher than 420 coins, but each following will be no more than five percent of the last.\n" +
-            "Thus, the next increase introduced by without amendment will be 440.10 coins. But this amendment will be introduced only in ten\n" +
+            "Thus, the next increase made through the amendments will be 440.10 coins. But this amendment will be introduced only in ten\n" +
             "years after the first production adjustment)\n" +
             "\n" +
             "With a lack of money supply, if the number of mined coins has not been changed through an amendment, you can add a few\n" +
             "additional zeros after the decimal point, so it will simply increase the value of the coins, without increasing the total money supply.\n" +
             "\n" +
             "Negative rates should not be higher than 0.5% per annum and lower than 0.2% per annum. Negative rates can only be changed through amendments.\n" +
-            "\n";
-
-    String FREEDOM_OF_SPEECH_12 = "FREEDOM_OF_SPEECH The right to free speech\n" +
-            "No body of this corporation or entity shall prohibit free practice any religion; or restrict freedom of speech, conscience or the press or the right of people to peacefully assemble or associate with one another, or not associate with one another, and apply to the management of the Corporation of the International Trade Union and to this corporation with a petition for satisfaction of complaints; + or violate the right to the fruits of one's labor or the right to a peaceful life of their choice. Freedoms of speech and conscience include the freedom to contribute to political campaigns or nominations for corporate office and shall be construed as extending equally to any means of communication.";
-    String RIGHTS_13 = "# RIGHTS Natural Rights\n" +
-            "All members of the network must respect the Natural Human Rights and not violate them.\n" +
-            "\"The presumption of innocence must also be respected and every member of the network must have the right to a fair and independent\n" +
-            "trial.\n" +
-            "Each participant has the right to a lawyer or to be his own lawyer.\n" +
-            "\n" +
-            "The International Trade Union Corporation shall not regulate the cost of goods and services of network members that\n" +
-            "sell through this platform.\n" +
-            "Also, the Corporation should not ban individual brands on its site, but may\n" +
-            "prohibit the sale of entire groups of goods that fall within the characteristics described by applicable laws, if\n" +
-            "this prohibition does not violate Natural Human Rights. As a source of rights, you can take\n" +
-            "as a precedent Countries recognized as democratic countries.\n" +
-            "\n" +
-            "A detailed list is at the United Nations (UN)\n" +
-            "\n" +
-            "The right to live\n" +
-            "Right to liberty and security of person\n" +
-            "Right to privacy\n" +
-            "The right to determine and indicate one's nationality\n" +
-            "The right to use one's native language\n" +
-            "The right to freedom of movement and choice of place of stay and residence\n" +
-            "Right to freedom of conscience\n" +
-            "\n" +
-            "Freedom of thought and speech\n" +
-            "Freedom of Information\n" +
-            "The right to form public associations\n" +
-            "The right to hold public events\n" +
-            "The right to participate in the management of the affairs of the Corporation of the International Trade Union\n" +
-            "The right to appeal to the bodies of the Corporation of the International Trade Union and local governments.\n" +
-            "\n" +
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
     String LEGISLATURE_14 = "#LEGISLATURE.\n" +
