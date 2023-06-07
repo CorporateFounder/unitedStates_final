@@ -583,6 +583,20 @@ public interface OriginalCHARTER_ENG {
             "Negative rates should not be higher than 0.5% per annum and lower than 0.2% per annum. Negative rates can only be changed through amendments.\n" +
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
+
+    String FREEDOM_OF_SPEECH_12 = "FREEDOM_OF_SPEECH The right to free speech\n" +
+            "No body of this corporation or entity shall prohibit free practice any religion; or restrict freedom of speech, conscience or the press or the right of people to peacefully assemble or associate with one another, or not associate with one another, and apply to the management of the Corporation of the International Trade Union and to this corporation with a petition for satisfaction of complaints; + or violate the right to the fruits of one's labor or the right to a peaceful life of their choice. Freedoms of speech and conscience include the freedom to contribute to political campaigns or nominations for corporate office and shall be construed as extending equally to any means of communication.";
+
+    String RIGHTS_13 = "RIGHTS Natural Rights\n" +
+            "All members of the network must respect the Natural Human Rights and not violate them. \"The presumption of innocence must also be respected and every member of the network must have the right to a fair and independent trial. Each participant has the right to a lawyer or to be his own lawyer.\n" +
+            "\n" +
+            "The International Trade Union Corporation shall not regulate the cost of goods and services of network members that sell through this platform. Also, the Corporation should not ban individual brands on its site, but may prohibit the sale of entire groups of goods that fall within the characteristics described by applicable laws, if this prohibition does not violate Natural Human Rights. As a source of rights, you can take as a precedent Countries recognized as democratic countries.\n" +
+            "\n" +
+            "A detailed list is at the United Nations (UN)\n" +
+            "\n" +
+            "The right to live Right to liberty and security of person Right to privacy The right to determine and indicate one's nationality The right to use one's native language The right to freedom of movement and choice of place of stay and residence Right to freedom of conscience\n" +
+            "\n" +
+            "Freedom of thought and speech Freedom of Information The right to form public associations The right to hold public events The right to participate in the management of the affairs of the Corporation of the International Trade Union The right to appeal to the bodies of the Corporation of the International Trade Union and local governments.";
     String LEGISLATURE_14 = "#LEGISLATURE.\n" +
             "Power consists of 4 groups in this system.\n" +
             "1. Board of Shareholders\n" +
