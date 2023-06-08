@@ -2,6 +2,7 @@ package International_Trade_Union.controllers;
 
 import International_Trade_Union.entity.AddressUrl;
 import International_Trade_Union.entity.SubBlockchainEntity;
+import org.bouncycastle.math.raw.Mod;
 import org.json.JSONException;
 
 import org.springframework.http.MediaType;
@@ -27,8 +28,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.Document;
 import java.io.IOException;
 
 import java.security.*;
@@ -305,14 +308,23 @@ public class BasisController {
     @GetMapping("/mine")
     public synchronized String mine(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
         mining();
+
         return "redirect:/mining";
 
     }
+
     @GetMapping("/miningblock")
     public synchronized ResponseEntity minings() throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         mining();
         return new ResponseEntity("OK", HttpStatus.OK);
     }
+    @GetMapping("/process-mining")
+    public synchronized String proccessMining(Model model, Integer number) throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+        mining();
+        model.addAttribute("title","mining proccess");
+        return "redirect:/process-mining";
+    }
+
 
 
     /**Возвращает EntityChain который хранит в себе размер блокчейна и список блоков*/
