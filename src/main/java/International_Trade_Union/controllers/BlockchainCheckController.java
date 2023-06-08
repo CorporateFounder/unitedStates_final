@@ -4,6 +4,7 @@ import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.UtilsBlock;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,6 +33,11 @@ public class BlockchainCheckController {
                     BlockchainFactoryEnum.ORIGINAL);
             System.out.println("BlockchainCheckController: checkValidation: size: " + blockchain.sizeBlockhain());
             boolean check = blockchain.validatedBlockchain();
+            if (check = false){
+                System.out.println("file blockchain deletes: because blockchain wrong");
+                UtilsBlock.deleteFiles();
+            }
+
             System.out.println("check: " + check);
             return check;}
         catch (IOException e){
