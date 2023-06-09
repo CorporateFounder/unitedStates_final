@@ -183,7 +183,7 @@ public class LawsController {
     /**Голосование учитывает голоса как акций, так и голоса избраных представителей*/
     @GetMapping("/voting")
     public String lawVoting(){
-        return "/voting";
+        return "voting";
     }
     @PostMapping("/voting")
     public String lawVoting(

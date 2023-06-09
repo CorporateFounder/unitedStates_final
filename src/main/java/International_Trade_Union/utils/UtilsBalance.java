@@ -159,6 +159,8 @@ public class UtilsBalance {
                 } else if (voteEnum.equals(VoteEnum.NO)) {
                     //политика сдерживания.
                     recipientAddress.setDigitalStockBalance(recipientAddress.getDigitalStockBalance() - digitalReputation);
+                } else if (voteEnum.equals(VoteEnum.REMOVE_YOUR_VOICE)) {
+                    recipientAddress.setDigitalStockBalance(recipientAddress.getDigitalStockBalance());
                 }
 
 
