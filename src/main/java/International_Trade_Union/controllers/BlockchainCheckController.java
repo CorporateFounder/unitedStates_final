@@ -33,10 +33,7 @@ public class BlockchainCheckController {
                     BlockchainFactoryEnum.ORIGINAL);
             System.out.println("BlockchainCheckController: checkValidation: size: " + blockchain.sizeBlockhain());
             boolean check = blockchain.validatedBlockchain();
-            if (check = false){
-                System.out.println("file blockchain deletes: because blockchain wrong");
-                UtilsBlock.deleteFiles();
-            }
+
 
             System.out.println("check: " + check);
             return check;}
