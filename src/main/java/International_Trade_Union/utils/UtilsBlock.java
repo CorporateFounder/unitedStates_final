@@ -386,9 +386,6 @@ public class UtilsBlock {
             if(validated == false){
 
 
-                System.out.println("file blockchain deletes: because blockchain wrong");
-                UtilsBlock.deleteFiles();
-
                 System.out.println("ERROR: UtilsBlock: validation: prevBLock.Hash():" + prevBlock.getHashBlock());
                 System.out.println("ERROR: UtilsBlock: validation: index:" + block.getIndex());
                 System.out.println("ERROR: UtilsBlock: validation: block.Hash():" + block.getHashBlock());
