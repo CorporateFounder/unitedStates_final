@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header "></header>
+<div class="container mt-5">
+    <h3 th:text="${title}"/>
+    <div class="container mt-5 mb-5">
+        <form action="/transactions" method="post">
+            <input type="text" name="from" placeholder="enter from block" class="form-control"><br>
+            <input type="text" name="to" placeholder="enter to block" class="form-control"><br>
+            <h5>sent transactions or received transactions</h5>
+            <select  name="isSent" class="form-control">
+                <option value="true" >sent transactions</option>
+                <option value="false">received transactions</option>
+            </select><br>
+
+            <button type="submit" class="btn btn-success">check </button><br>
+        </form>
+
+
+    </div>
+
+    <div th:each="el : ${transactions}" class="alert alert-info mt-2">
+        <h4 th:text="'number block: '+${el.numberBlock}"/>
+        <h4 th:text="'sender: '+${el.sender}"/>
+        <h4 th:text="'customer: '+${el.customer}"/>
+        <p th:text="'digital dollar: '+${#numbers.formatDecimal(el.digitalDollar, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'digital stock: '+${#numbers.formatDecimal(el.digitalStockBalance, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'digital bonus miner: '+${#numbers.formatDecimal(el.bonusForMiner, 1, 'COMMA', 16, 'POINT')}"/>
+        <h4 th:text="'voteEnum: '+${el.voteEnum}"/>
+
+
+    </div>
+
+</div>
+<footer th:insert="blocks/footer :: footer"></footer>
+
+</body>
+</html>

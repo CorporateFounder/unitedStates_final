@@ -29,11 +29,6 @@ public class ConstitutionController {
         List<String> rus = charterRusList();
 
 
-
-
-
-
-
         model.addAttribute("rus", rus);
         model.addAttribute("eng", eng);
         return "corporate-charter";
