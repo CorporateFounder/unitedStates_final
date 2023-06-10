@@ -51,6 +51,9 @@ public class TransactionsController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/transactions")
     public String transactions(Model model) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        blockchain= Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
         String account = UtilsFileSaveRead.read(Seting.ORIGINAL_ACCOUNT);
         System.out.println("BlockchainCheckController: checkValidation: size: " + blockchain.sizeBlockhain());
         List<DataForTransaction> transactions = new ArrayList<>();
@@ -106,8 +109,12 @@ public class TransactionsController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/transactions")
-    public String transactions( @RequestParam int from, int to,
-                               @RequestParam boolean isSent){
+    public String transactions(@RequestParam int from, int to,
+                               @RequestParam boolean isSent) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+
+        blockchain= Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
         System.out.println("from: " + from);
         System.out.println("to: " + to);
         System.out.println("isSent: " + isSent);
