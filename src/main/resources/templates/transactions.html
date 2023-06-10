@@ -11,8 +11,10 @@
     <h3 th:text="${title}"/>
     <div class="container mt-5 mb-5">
         <form action="/transactions" method="post">
-            <input type="text" name="from" placeholder="enter from block" class="form-control"><br>
-            <input type="text" name="to" placeholder="enter to block" class="form-control"><br>
+            <h5>enter number block from </h5>
+            <input type="text" name="from" th:value="0" placeholder="enter from block" class="form-control"><br>
+           <h5>enter number block to </h5>
+            <input type="text" name="to" th:value="0" placeholder="enter to block" class="form-control"><br>
             <h5>sent transactions or received transactions</h5>
             <select  name="isSent" class="form-control">
                 <option value="true" >sent transactions</option>
