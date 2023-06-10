@@ -9,6 +9,8 @@ import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.FIndPositonHelperData;
 import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.base.Base;
+import International_Trade_Union.utils.base.Base58;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -22,10 +24,18 @@ import java.util.stream.Collectors;
 public class UtilsCurrentLaw {
     //подсчет по штучно баланса
     public static Map<String, CurrentLawVotes> calculateVote(Map<String, CurrentLawVotes> votes, List<Account> governments, Block block) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-
+        Base base = new Base58();
+        List<String> signs = new ArrayList<>();
         for (int j = 0; j < block.getDtoTransactions().size(); j++) {
             DtoTransaction transaction = block.getDtoTransactions().get(j);
-
+            if(signs.contains(transaction.getSign())){
+                System.out.println("this transaction signature has already been used and is not valid");
+                continue;
+            }
+            else {
+                signs.add(transaction.toSign());
+                System.out.println("we added new sign transaction");
+            }
             if (transaction.getSender().startsWith(Seting.NAME_LAW_ADDRESS_START)) {
                 System.out.println("law balance cannot be sender");
                 continue;

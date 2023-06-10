@@ -343,21 +343,6 @@ public class UtilsBlock {
     }
     public static boolean validation(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL ) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         boolean validated = true;
-        List<DtoTransaction> transactions = new ArrayList<>();
-        for (int i = 0; i < blocks.size(); i++) {
-            for (DtoTransaction dtoTransaction : blocks.get(i).getDtoTransactions()) {
-                transactions.add(dtoTransaction);
-            }
-
-        }
-
-        int size = transactions.size();
-        int withoutDuplicates = transactions.stream().distinct().collect(Collectors.toList()).size();
-        if(size != withoutDuplicates){
-            System.out.println("blockchain wrong because in block have duplicates transaction");
-            validated = false;
-            return validated;
-        }
 
         List<Block> temporary = new ArrayList<>();
         Block prevBlock  = null;

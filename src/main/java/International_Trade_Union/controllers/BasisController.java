@@ -169,7 +169,10 @@ public class BasisController {
         //нахождение адрессов
         findAddresses();
         sendAddress();
-
+        if(blockchain.sizeBlockhain() % (576 * 2) == 0){
+            System.out.println("clear storage transaction because is old");
+            AllTransactions.clearAllTransaction();
+        }
         //собирает класс список балансов из файла расположенного по пути Seting.ORIGINAL_BALANCE_FILE
         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
         //собирает объект блокчейн из файла
@@ -196,7 +199,8 @@ public class BasisController {
             }
 
             //получить список балансов из файла
-            balances = Mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain, balances);
+            List<String> signs = new ArrayList<>();
+            balances = Mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain, balances, signs);
             //удалить старые файлы баланса
             Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
             //сохранить балансы
@@ -284,7 +288,8 @@ public class BasisController {
         UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
         //перерасчет балансов, подсчитывает какие изменения произошли в балансах
-        balances = Mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain, balances);
+        List<String> signs = new ArrayList<>();
+        balances = Mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain, balances, signs);
         Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
         //сохраняет в файл уже заново посчитанные балансы.
         SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);

@@ -38,7 +38,7 @@ public class Mining {
         return blockchain;
     }
 
-    public static Map<String, Account> getBalances(String filename, Blockchain blockchain, Map<String, Account> balances) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public static Map<String, Account> getBalances(String filename, Blockchain blockchain, Map<String, Account> balances, List<String> signs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         //start test
 
 
@@ -66,7 +66,7 @@ public class Mining {
         Block block;
         if(blockchain != null && blockchain.sizeBlockhain() > 0){
             block = blockchain.getBlock(blockchain.sizeBlockhain() - 1);
-            balances = UtilsBalance.calculateBalance(balances, block);
+            balances = UtilsBalance.calculateBalance(balances, block, signs);
 
 
         }

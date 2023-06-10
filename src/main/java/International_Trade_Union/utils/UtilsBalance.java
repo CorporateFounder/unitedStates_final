@@ -7,6 +7,8 @@ import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.model.Account;
+import International_Trade_Union.utils.base.Base;
+import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.VoteEnum;
 
 import java.io.IOException;
@@ -18,9 +20,8 @@ import java.util.*;
 public class UtilsBalance {
 
     //подсчет по штучно баланса
-    public  static Map<String, Account> calculateBalance(Map<String, Account> balances, Block block) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-
-
+    public  static Map<String, Account> calculateBalance(Map<String, Account> balances, Block block, List<String> sign) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        Base base = new Base58();
         double percent = Seting.ANNUAL_MAINTENANCE_FREE_DIGITAL_DOLLAR_YEAR / Seting.HALF_YEAR;
         double digitalReputationPercent = Seting.ANNUAL_MAINTENANCE_FREE_DIGITAL_STOCK_YEAR / Seting.HALF_YEAR;
             int i = (int) block.getIndex();
@@ -31,6 +32,13 @@ public class UtilsBalance {
 
 
                 DtoTransaction transaction = block.getDtoTransactions().get(j);
+                if(sign.contains(base.encode(transaction.getSign()))){
+                    System.out.println("this transaction signature has already been used and is not valid");
+                    continue;
+                }else {
+                    System.out.println("we added new sign transaction");
+                    sign.add(base.encode(transaction.getSign()));
+                }
 
                 if(transaction.getSender().startsWith(Seting.NAME_LAW_ADDRESS_START)){
                     System.out.println("law balance cannot be sender");
@@ -94,8 +102,9 @@ public class UtilsBalance {
     //подсчет целиком баланса
     public static Map<String, Account> calculateBalances(List<Block> blocks) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balances = new HashMap<>();
+        List<String> signs = new ArrayList<>();
         for (Block block :  blocks) {
-            calculateBalance(balances, block);
+            calculateBalance(balances, block, signs);
         }
 
         return balances;

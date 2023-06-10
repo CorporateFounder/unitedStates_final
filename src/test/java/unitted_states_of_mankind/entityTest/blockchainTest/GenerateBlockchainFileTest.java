@@ -71,8 +71,9 @@ GenerateBlockchainFileTest {
         Random random = new Random();
         Blockchain blockchain = BLockchainFactory.getBlockchain(factoryEnum);
 
-
+        List<String> signs = new ArrayList<>();
         Map<String, Account> balances = new HashMap<>();
+
         for (int i = 0; i < year; i++) {
 
             TransactionsTest transactionsTest = new TransactionsTest(transactions, list);
@@ -98,7 +99,7 @@ GenerateBlockchainFileTest {
                     UtilsBlock.saveBLock(blockchain.getBlock(0), fileBlockchain);
                 }
 
-                balances = Mining.getBalances(fileBlockchainBalance, blockchain, balances);
+                balances = Mining.getBalances(fileBlockchainBalance, blockchain, balances, signs);
                 Mining.deleteFiles(fileBlockchainBalance);
                 SaveBalances.saveBalances(balances, fileBlockchainBalance);
             }
@@ -152,7 +153,7 @@ GenerateBlockchainFileTest {
 
 
             //перерасчет после добычи
-            balances = Mining.getBalances(fileBlockchainBalance, blockchain, balances);
+            balances = Mining.getBalances(fileBlockchainBalance, blockchain, balances, signs);
             Mining.deleteFiles(fileBlockchainBalance);
             SaveBalances.saveBalances(balances, fileBlockchainBalance);
 

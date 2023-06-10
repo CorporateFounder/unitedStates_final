@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,8 +76,9 @@ public class BlockchainReadTest {
                 4.0);
 
         Map<String, Account> balanceWithSave = new HashMap<>();
+        List<String> signs = new ArrayList<>();
         for (Block block : blockchainWithSave.getBlockchainList()) {
-            balanceWithSave = UtilsBalance.calculateBalance(balanceWithSave, block);
+            balanceWithSave = UtilsBalance.calculateBalance(balanceWithSave, block, signs);
         }
         Map<String, Account> calculatesTest = UtilsBalance.calculateBalances(blockchainWithSave.getBlockchainList());
 
