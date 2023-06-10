@@ -222,6 +222,7 @@ public class BasisController {
         //отказ от дублирующих транзакций
         temporaryDtoList = UtilsBlock.validDto(blockchain.getBlockchainList(),temporaryDtoList);
 
+
         //раз в три для очищяет файлы в папке resources/sendedTransaction данная папка
         //хранит уже добавленые в блокчейн транзации, чтобы повторно не добавлять в
         //в блок уже добавленные транзакции

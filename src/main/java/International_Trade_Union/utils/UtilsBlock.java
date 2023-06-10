@@ -8,6 +8,7 @@ import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.setings.Seting;
+import org.springframework.http.converter.json.GsonBuilderUtils;
 
 
 import java.io.*;
@@ -327,7 +328,7 @@ public class UtilsBlock {
     }
 
     public static List<DtoTransaction> validDto(List<Block> blocks, List<DtoTransaction> transactions){
-        boolean validated = true;
+
         List<DtoTransaction> transactionArrayList = new ArrayList<>();
         for (int i = 0; i < blocks.size(); i++) {
             for (DtoTransaction dtoTransaction : blocks.get(i).getDtoTransactions()) {
@@ -336,15 +337,8 @@ public class UtilsBlock {
 
         }
 
-        int size = transactionArrayList.size();
-        int withoutDuplicates = transactionArrayList.stream().distinct().collect(Collectors.toList()).size();
-        if(size != withoutDuplicates){
-            System.out.println("blockchain wrong because in block have duplicates transaction");
-            validated = false;
-            return null;
-        }
-        transactions.removeAll(transactionArrayList);
         return transactions;
+
 
     }
     public static boolean validation(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL ) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
