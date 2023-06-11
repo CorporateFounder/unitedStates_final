@@ -169,6 +169,7 @@ public class BasisController {
         //нахождение адрессов
         findAddresses();
         sendAddress();
+        resolving();
         if(blockchain.sizeBlockhain() % (576 * 2) == 0){
             System.out.println("clear storage transaction because is old");
             AllTransactions.clearAllTransaction();
