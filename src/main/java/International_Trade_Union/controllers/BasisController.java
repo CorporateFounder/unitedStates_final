@@ -494,7 +494,7 @@ public class BasisController {
 
             blockchain = bigBlockchain;
             UtilsBlock.deleteFiles();
-            addBlock(bigBlockchain.getBlockchainList(), BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL));
+            addBlock(bigBlockchain.getBlockchainList());
             System.out.println("BasisController: resolve: bigblockchain size: " + bigBlockchain.sizeBlockhain());
 
         }
@@ -507,7 +507,7 @@ public class BasisController {
      * таких как голоса, совет акционеров и т.д. заново записывает в файлы
      */
 
-    public static void addBlock(List<Block> orignalBlocks, Blockchain blockchain) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public static void addBlock(List<Block> orignalBlocks) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
         Map<String, Account> balances = new HashMap<>();
         Blockchain temporaryForValidation = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
@@ -601,7 +601,7 @@ public class BasisController {
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
         UtilsBlock.deleteFiles();
-        addBlock(blockchain.getBlockchainList(), BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL));
+        addBlock(blockchain.getBlockchainList());
         return new ResponseEntity(HttpStatus.OK);
     }
 

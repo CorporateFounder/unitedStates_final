@@ -1,7 +1,9 @@
 package International_Trade_Union.entity.blockchain;
 
+import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.UtilsBlock;
 import International_Trade_Union.utils.UtilsJson;
@@ -107,6 +109,9 @@ public class Blockchain implements Cloneable{
 
 
     public boolean validatedBlockchain() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+//        Blockchain blockchain = Mining.getBlockchain(
+//                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+//                BlockchainFactoryEnum.ORIGINAL);
        return UtilsBlock.validation(blockchainList, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
     }
 

@@ -107,6 +107,6 @@ public class Testing {
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
 
-        BasisController.addBlock(blockchain.getBlockchainList(), blockchain);
+        BasisController.addBlock(blockchain.getBlockchainList());
     }
 }
