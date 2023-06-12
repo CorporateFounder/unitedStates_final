@@ -184,6 +184,11 @@ public class BasisController {
         blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
+        if(blockchain.validatedBlockchain() == false){
+            System.out.println("you have wrong blockchain end deleted this: ");
+            UtilsBlock.deleteFiles();
+            blockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
+        }
         int blocks_current_size = blockchain.sizeBlockhain();
         long hashCountZeroTemporary = 0;
         long hashCountZeroBigBlockchain = 0;
