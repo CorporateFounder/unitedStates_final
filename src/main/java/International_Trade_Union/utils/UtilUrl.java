@@ -72,8 +72,6 @@ public class UtilUrl {
     }
 
 
-
-
     public static int sendPost(String jsonObject, String requestStr) throws IOException {
         int response;
         URL url = new URL(requestStr);

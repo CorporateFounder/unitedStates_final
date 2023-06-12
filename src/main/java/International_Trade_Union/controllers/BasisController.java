@@ -548,8 +548,8 @@ public class BasisController {
                         System.out.println("resolve_from_to_block: response body " + response);
 
                     }catch (Exception e){
-                        e.printStackTrace();
-                        System.out.println("exception discover: " + originalF);
+
+                        System.out.println("exception discover time out connect: " + originalF);
                     }
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
@@ -563,7 +563,7 @@ public class BasisController {
                             UtilUrl.sendPost(jsonDto, url);
 
                         }catch (Exception e){
-                            System.out.println("exception discover: " + original);
+                            System.out.println("exception discover time out connet: " + original);
                             continue;
 
                         }
