@@ -548,8 +548,8 @@ public class BasisController {
                         System.out.println("resolve_from_to_block: response body " + response);
 
                     }catch (Exception e){
+                        e.printStackTrace();
                         System.out.println("exception discover: " + originalF);
-                        continue;
                     }
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
