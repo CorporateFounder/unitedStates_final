@@ -545,6 +545,8 @@ public class BasisController {
                     String urlFrom = s + "/nodes/resolve_from_to_block";
                     try {
                         response = UtilUrl.sendPost(jsonFromTo, urlFrom);
+                        System.out.println("resolve_from_to_block: response body " + response);
+
                     }catch (Exception e){
                         System.out.println("exception discover: " + originalF);
                         continue;
@@ -552,7 +554,7 @@ public class BasisController {
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
 
-                    if(response != 0){
+                    if(response != HttpStatus.OK.value()){
                         System.out.println("BasisController: sendAllBlocks: need change all: " + response);
                         //Test start algorithm
                         String original = s;
