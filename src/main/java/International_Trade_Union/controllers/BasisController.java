@@ -264,6 +264,7 @@ public class BasisController {
                     continue;
                 }
             } catch (IOException e) {
+
                 e.printStackTrace();
                 System.out.println("BasisController: resolve_conflicts: Error: " + s);
                 continue;
