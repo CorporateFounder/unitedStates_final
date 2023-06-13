@@ -2,7 +2,7 @@
 ## Corporation International Trade Union
 (Corporation International Trade Union - CITU)
 
-my discord https://discord.gg/J5KF5NPJ
+my discord https://discord.gg/Mmwfec3E
 ## Mission.
 Using a new economic model that is resistant to deflationary and inflationary crises,
 unite humanity into a single democratic trading network. Our digital democracy is resilient to stuffing
