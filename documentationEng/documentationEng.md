@@ -36,21 +36,25 @@ There are four groups of people who are elected and vote differently.
    all YES and all NO and also subtract from YES - NO (participates only in the approval of amendments.)
 
 3. The Board of Directors is an analogue of the House of Representatives.
-   Consists of 301 elected members. Members are elected by independent members and the 301 accounts that received
+   Consists of 601 elected members. Members are elected by independent members and the 301 accounts that received
    the largest number of votes become members of the board of directors. One account is equal to one vote and how with the Board of Shareholders we are for each law
    sum separately YES and NO and subtract from YES - NO the result must be greater than 10
 
-4. And the last fourth group is the leader factions, the leader factions consist of 100 accounts and are elected similarly to the Board of Directors, but their
-   votes are equal to shares. Example if the Leading Faction received 23% of the votes from 100 participants, then its vote is 23%.
-   So, every time a faction votes for a law, we go through the same procedure as for the others. Namely, we summarize separately
-   all YES and NO and subtract from YES - NO and the result should be more than 10%.
+[//]: # (4. And the last fourth group is the leader factions, the leader factions consist of 100 accounts and are elected similarly to the Board of Directors, but their)
+
+[//]: # (   votes are equal to shares. Example if the Leading Faction received 23% of the votes from 100 participants, then its vote is 23%.)
+
+[//]: # (   So, every time a faction votes for a law, we go through the same procedure as for the others. Namely, we summarize separately)
+
+[//]: # (   all YES and NO and subtract from YES - NO and the result should be more than 10%.)
 
 For all participants, only votes from which no more than four years have passed are taken into account. Votes dynamically change with each block
 taking into account how many shares are held by independent participants or retains or officials of their positions. A law is valid if it
 more than 1 vote from Independent Participants.
-10 or more votes from the Board of Directors
-and 10% or more from the faction-leader. But the law must be approved by all 3 groups.
-
+For all participants, only votes from which no more than four years have passed are taken into account. Votes change with each block
+taking into account the number of shares, those present have either retained or present their positions. The law is valid if it
+more than 1 vote from Independent Participants.
+10 or more votes from the Board of Directors, but must be approved by all 2 classes.
 
 The system also has a negative rate.
 Why is she needed? Let's imagine that you mine a coin, every four years it reduces your mining. This means that you remain profitable,
@@ -76,23 +80,23 @@ money supply without letting it grow.
 - [how network rules are created](../documentationEng/create-lawEng.md)
 - [how voting works in the network](../documentationEng/voting-in-networkEng.md)
 - [post creation](../documentationEng/create-positionEng.md)
-- [create fraction](../documentationEng/create-fractionEng.md)
+
+[//]: # (- [create fraction]&#40;../documentationEng/create-fractionEng.md&#41;)
 ## Corporate Charter
 - Corporate Charter
   - [How Laws Are Chosen.](../charterEng/HOW_LAWS_ARE_CHOSEN.md)
   - [VOTE_STOCK (How voting is done with shares.)](../charterEng/VOTE_STOCK.md)
   - [ONE_VOTE (One vote)](../charterEng/ONE_VOTE.md)
-  - [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md)
   - [Mechanism for maintaining fines](../charterEng/MECHANISM_FOR_REDUCING_THE_NUMBER_OF_SHARES.md)
   - [Who has the right to create Laws](../charterEng/WHO_HAS_THE_RIGHT_TO_CREATE_LAWS.md)
   - [Powers of the Corporate Council of Supreme Judges](../charterEng/POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES.md)
   - [How the Chief Judge is elected](../charterEng/HOW_THE_CHIEF_JUDGE_IS_CHOSEN.md)
   - [Corporation Property](../charterEng/PROPERTY_OF_THE_CORPORATION.md)
   - [CEO-GENERAL_EXECUTIVE_DIRECTOR](../charterEng/GENERAL_EXECUTIVE_DIRECTOR.md)
-    - [Why is money demurrage used here](../charterEng/EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE.md)
-    - [Right of Free Speech](../charterEng/FREEDOM_OF_SPEECH.md)
-    - [Natural Rights](../charterEng/RIGHTS.md)
-    - [Legislative Power](../charterEng/POWER.md)
+  - [Why is money demurrage used here](../charterEng/EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE.md)
+  - [Right of Free Speech](../charterEng/FREEDOM_OF_SPEECH.md)
+  - [Natural Rights](../charterEng/RIGHTS.md)
+  - [Legislative Power](../charterEng/POWER.md)
 
 
 [home](../readme.md)

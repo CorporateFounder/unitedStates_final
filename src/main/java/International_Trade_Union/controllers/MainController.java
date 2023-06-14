@@ -1,9 +1,12 @@
 package International_Trade_Union.controllers;
 
 import International_Trade_Union.about_us_engDraft.AboutUsEngDraft;
+import International_Trade_Union.config.BlockchainFactoryEnum;
+import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.governments.Director;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
+import International_Trade_Union.model.Mining;
 import International_Trade_Union.originalCorporateCharter.OriginalPreamble;
 import International_Trade_Union.originalCorporateCharter.OriginalPreambleEng;
 
@@ -50,7 +53,14 @@ public class MainController {
 
 
         model.addAttribute("title", "Corporation International Trade Union.");
+        Blockchain blockchain = Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
+        int size = blockchain.sizeBlockhain();
         Map<String, Account> balances = new HashMap<>();
+
+        model.addAttribute("size", size);
+
 
         //догрузить блокчейн
 //        List<Block> blocks = UtilsBlock.readLineObject(Seting.ORIGINAL_BLOCKCHAIN_FILE);

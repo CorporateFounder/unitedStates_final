@@ -70,7 +70,6 @@ public class ConstitutionController {
         rus.add("OriginalCHARTER.FREEDOM_OF_SPEECH_12:\n"+ OriginalCHARTER.FREEDOM_OF_SPEECH_12);
         rus.add("OriginalCHARTER.RIGHTS_13:\n"+ OriginalCHARTER.RIGHTS_13);
         rus.add("OriginalCHARTER.LEGISLATURE_14:\n"+ OriginalCHARTER.LEGISLATURE_14);
-        rus.add("OriginalCHARTER.FRACTION_15:\n"+ OriginalCHARTER.FRACTION_15);
 
         return rus;
     }
@@ -95,7 +94,7 @@ public class ConstitutionController {
         eng.add("OriginalCHARTER.FREEDOM_OF_SPEECH_12:\n"+ OriginalCHARTER_ENG.FREEDOM_OF_SPEECH_12);
         eng.add("OriginalCHARTER.RIGHTS_13:\n"+ OriginalCHARTER_ENG.RIGHTS_13);
         eng.add("OriginalCHARTER.LEGISLATURE_14:\n"+ OriginalCHARTER_ENG.LEGISLATURE_14);
-        eng.add("OriginalCHARTER.FRACTION_15:\n"+ OriginalCHARTER_ENG.FRACTION_15);
+
 
         return eng;
     }

@@ -18,7 +18,9 @@
     <p th:text="'digital stock: '+${#numbers.formatDecimal(account.digitalStockBalance, 1, 'COMMA', 16, 'POINT')}"/>
 
 </div>
-
+<div  class="alert alert-info mt-2">
+    <h4 th:text="'blockchain local size: ' + ${size}"/>
+</div>
 
 <div class="container mt-5 mb-5">
     <form action="/" method="post">

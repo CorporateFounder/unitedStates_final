@@ -161,11 +161,11 @@ public class UtilsGovernment {
             }
 
 
-            if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.FRACTION.toString())){
-                if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
-                    fractions.put(currentLawVotesEndBalance.getLaws().get(0), currentLawVotesEndBalance.getVotes());
-                }
-            }
+//            if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.FRACTION.toString())){
+//                if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
+//                    fractions.put(currentLawVotesEndBalance.getLaws().get(0), currentLawVotesEndBalance.getVotes());
+//                }
+//            }
 
         }
 
@@ -194,8 +194,6 @@ public class UtilsGovernment {
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : current) {
             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString())){
                 if(currentLawVotesEndBalance.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
-                && currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
-                && currentLawVotesEndBalance.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS
                 && currentLawVotesEndBalance.getVotes() >= Seting.ALL_STOCK_VOTE){
                     primeMinister.add(currentLawVotesEndBalance.getLaws().get(0));
                 }

@@ -2,8 +2,7 @@
 Power consists of 4 groups in this system.
 1. Board of Shareholders
 2. Board of Directors
-3. Fractions
-4. Independent members of the network.
+3. Independent members of the network.
 
 All participants must participate in the vote for the law adopted by the system to be valid
 (The only exception is the Board of Shareholders, since the Board of Shareholders participates
@@ -23,7 +22,7 @@ The Board of Shareholders consists of 1500 accounts with the largest number of s
 but only those accounts are selected that have either been mining in the last year,
 either sent digital dollars or digital shares, or participated in voting.
 A member of one Board of Shareholders has one vote. One score equals one vote.
-The voting system described in [ONE_VOTE](../charterEng/ONE_VOTE.md) is used
+The voting system described in [ONE_VOTE](../charter/ONE_VOTE.md) is used
 
 ````
    //determining the board of shareholders
@@ -48,9 +47,9 @@ The voting system described in [ONE_VOTE](../charterEng/ONE_VOTE.md) is used
 
 ## Board of Directors
 The Board of Directors is elected by the members of the network.
-The Board of Directors consists of 301 accounts that received the most votes
-according to the system described in [VOTE_STOCK](../charterEng/VOTE_STOCK.md). Each score is equal to one vote, described
-in [ONE_VOTE](../charterEng/ONE_VOTE.md).
+The Board of Directors consists of 601 accounts that received the most votes
+according to the system described in [VOTE_STOCK](../charter/VOTE_STOCK.md). Each score is equal to one vote, described
+in [ONE_VOTE](../charter/ONE_VOTE.md).
 
 ````
   //minimum value for the number of positive votes for the law to be valid,
@@ -69,32 +68,13 @@ First you need to go to the tab in ***apply for a position*** Select BOARD_OF_DI
 and fill in all the lines with the required data.
 ![apply_board_of_directors](../screenshots/apply_board_or_directors.png)
 
-## Fractions.
-The factions are elected by the members of the network.
-There are only 100 revenge for factions. One hundred with the most votes received by the system
-described in [VOTE_STOCK](../charterEng/VOTE_STOCK.md) becomes a faction. The vote of each faction is equal to the share which
-she received relatively 99 other factions. Each faction has a vote described in [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md).
 
-````
-//select factions
-         List<CurrentLawVotesEndBalance> electedFraction = current.stream()
-                 .filter(t -> directors.isElectedByStocks(t.getPackageName()))
-                 .filter(t -> t.getPackageName().equals(NamePOSITION.FRACTION.toString()))
-                 .filter(t -> t.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE)
-                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
-                 .limit(directors.getDirector(NamePOSITION.FRACTION.toString()).getCount())
-                 .collect(Collectors.toList());
-````
-
-### How to create a new faction
-To create a faction, you need to follow the same procedure as for submitting to the board of directors.
-![apply_fraction](../screenshots/apply_fraction.png)
 
 
 ## Independent Network Members.
 All network members who have shares and are not included in the first three categories listed above,
 are ***independent members of the network***. The votes of each such participant are equal to
-to the number of shares at the moment and is described in detail in [VOTE_STOCK](../charterEng/VOTE_STOCK.md).
+to the number of shares at the moment and is described in detail in [VOTE_STOCK](../charter/VOTE_STOCK.md).
 
 
-[Exit to home](../documentationEng/documentationEng.md)
+[Exit to home](../documentation/documentationEng.md)

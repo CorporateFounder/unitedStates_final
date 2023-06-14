@@ -29,7 +29,7 @@ NOTHING снимает голос с кандидата при голосова�
 1. название пакета закона не должно совпадать с выделенными ключевыми словами.
 2. Закон должен получить больше 1 голоса по системе подсчета описанной [VOTE_STOCK](../charter/VOTE_STOCK.md)
 3. Должен получить 10 или больше голосов Совета Директоров по системе подсчета описанной в [ONE_VOTE](../charter/ONE_VOTE.md)
-4. Должен получить 10% голосов от фракций(Лидеров фракций) по системе подсчета описанной в [VOTE_FRACTION](../charter/VOTE_FRACTION.md).
+
 
 Пример кода в LawsController current law:
 ````
@@ -43,7 +43,6 @@ NOTHING снимает голос с кандидата при голосова�
                 .filter(t -> 
                  t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                 && t.getVotes() >= Seting.ALL_STOCK_VOTE
-                && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());
    
 
@@ -65,7 +64,7 @@ NOTHING снимает голос с кандидата при голосова�
                 .filter(t->!directors.isCabinets(t.getPackageName()))
                 .filter(t->t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                        
-                        && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                       
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
                 .limit(1)
@@ -85,7 +84,7 @@ NOTHING снимает голос с кандидата при голосова�
                 .filter(t->
                         t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                        
-                        && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                       
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
                 .limit(1)
@@ -106,7 +105,7 @@ NOTHING снимает голос с кандидата при голосова�
                 .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
                 .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                 
-                && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+              
                 && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
                 .collect(Collectors.toList());
@@ -139,7 +138,7 @@ NOTHING снимает голос с кандидата при голосова�
 1. Нужно чтобы 20% или больше голосов получила от Совета Акционеров системой подсчета [ONE_VOTE](../charter/ONE_VOTE.md).
 2. Нужно, чтобы получить 20% или больше голосов от Совета Директоров системой подсчета [ONE_VOTE](../charter/ONE_VOTE.md).
 3. Нужно, чтобы получить 5 или больше голосов от Законодательной Власти Корпоративных Верховных Судей.
-4. Нужно, чтобы получить 10% или больше голосов от фракций системой подсчета [VOTE_FRACTION](../charter/VOTE_FRACTION.md).
+
 
 ![поправки в устав](../screenshots/amendment-chapter.png)
 ````
@@ -151,7 +150,7 @@ NOTHING снимает голос с кандидата при голосова�
                 .filter(t -> t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MINT_VOTE_BOARD_OF_SHAREHOLDERS_AMENDMENT
                 && t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_AMENDMENT
                 && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES_AMENDMENT
-                && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS)
+               )
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed()).collect(Collectors.toList());
 
 ````

@@ -7,16 +7,13 @@ Let's pretend that you
 4. And you are on social security.
 
 Such an electoral system makes it possible to take into account the votes of all participants, including people of different groups.
+Here is an improved version of approval voting
 1. Direct Democracy allows you to vote for Laws and members directly. This
    a measure is needed when people have their own opinion on some specific issues.
 2. Board of Directors allows you to elect your representatives more often
    In total, people from different groups will fall into the board of directors.
    The system is organized in such a way that the parliament is proportional.
-3. Factions - You can also call Faction Leaders, made in order to
-   different leaders could participate at the same time and depending on their influence,
-   had so many votes. Example: In such a situation, you would not have to choose between,
-   Hillary Clinton, Ron Paul and Trump, since each of them would be in the House and have
-   would have as much influence as you gave them.
+
 
 
 ## Brief description of the cryptocurrency
@@ -95,8 +92,7 @@ Difficulty is determined by the formula and is corrected every half a day.
          difficulty = latestBlock.getHashCompexity();
          }
 
-         return difficulty == 0? 1: difficulty;
-         }
+         return difficulty == 0? 1: difficulty;}
 
 ````
 
@@ -106,5 +102,4 @@ What positions are there?
 - Council of Corporate Judges [CORPORATE_COUNCIL_OF_REFEREES]
 - General Executive Director [GENERAL_EXECUTIVE_DIRECTOR]
 - High Judge [HIGH_JUDGE]
-- Fractions [FRACTION]
   [back to home](./documentationEng.md)

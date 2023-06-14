@@ -1,4 +1,4 @@
 
-[//]: # ([Русский язык]&#40;./documentation/documentationRus.md&#41;)
+[Русский язык](./documentation/documentationRus.md)
 
 [English language](./documentationEng/documentationEng.md)

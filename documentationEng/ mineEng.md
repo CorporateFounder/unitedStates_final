@@ -25,7 +25,7 @@ calling http://localhost:8082/mine automatically starts mining.
 
 Blockchain complexity adapts similarly to bitcoin, but adaptation happens
 once every half day.
-Each block gives 200 digital dollars and 200 digital shares
+Each block gives 400 digital dollars and 400 digital shares
 
 The current blockchain is not only the longest blockchain, but it should also have more zeros.
 

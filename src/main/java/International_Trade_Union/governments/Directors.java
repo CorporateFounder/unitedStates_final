@@ -16,14 +16,14 @@ public class Directors {
 
         directors = new ArrayList<>();
         Director CORPORATE_COUNCIL_OF_REFEREES = new Director("CORPORATE_COUNCIL_OF_REFEREES", 55, false, false, false, true, false);
-        Director BOARD_OF_DIRECTORS = new Director("BOARD_OF_DIRECTORS", 301, false, false, false, true, false);
+        Director BOARD_OF_DIRECTORS = new Director("BOARD_OF_DIRECTORS", 601, false, false, false, true, false);
 
         Director GENERAL_EXECUTIVE_DIRECTOR = new Director("GENERAL_EXECUTIVE_DIRECTOR", 1, false, true, false, false, true);
         Director HIGH_JUDGE = new Director("HIGH_JUDGE",1, false, false, true, false, false);
-        Director FRACTION = new Director("FRACTION", 100, false, false, false, true, false);
+//        Director FRACTION = new Director("FRACTION", 100, false, false, false, true, false);
         directors.add(CORPORATE_COUNCIL_OF_REFEREES);
         directors.add(BOARD_OF_DIRECTORS);
-        directors.add(FRACTION);
+//        directors.add(FRACTION);
 
         directors.add(GENERAL_EXECUTIVE_DIRECTOR);
         directors.add(HIGH_JUDGE);
