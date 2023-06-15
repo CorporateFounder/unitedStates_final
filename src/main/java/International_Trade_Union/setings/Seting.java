@@ -248,6 +248,7 @@ public interface Seting {
     double digStockRewTeam = 100000.0;
 
     //каким количеством порций отправлять блоки
+
     int PORTION_BLOCK_TO_SEND = 300;
 
 }

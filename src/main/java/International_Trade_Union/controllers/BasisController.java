@@ -570,6 +570,7 @@ public class BasisController {
                         }
                     }
 
+
                     if(response != HttpStatus.OK.value() || response == 200){
                         System.out.println("BasisController: sendAllBlocks: need change all: " + response);
                         //Test start algorithm
