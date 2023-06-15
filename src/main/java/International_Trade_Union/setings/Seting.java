@@ -200,7 +200,7 @@ public interface Seting {
     String ORIGINAL_POOL_URL_ADDRESS_FILE = "\\resources\\poolAddress\\";
 
     //адресса внешних сервисов
-    Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");
+    Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80", "http://154.40.38.130:3389");
 
 
     int SIZE_FILE_LIMIT = 10;
@@ -246,5 +246,8 @@ public interface Seting {
 
     double digDollarRewTeam = 100000.0;
     double digStockRewTeam = 100000.0;
+
+    //каким количеством порций отправлять блоки
+    int PORTION_BLOCK_TO_SEND = 100;
 
 }

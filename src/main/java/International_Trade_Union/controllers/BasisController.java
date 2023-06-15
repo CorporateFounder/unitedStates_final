@@ -554,6 +554,20 @@ public class BasisController {
                     }
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
+                    if(response != HttpStatus.OK.value() || response == 200){
+                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
+                        //Test start algorithm
+                        String original = s;
+                        String url = s + "/nodes/resolve_portion_block";
+                        try {
+                            UtilUrl.sendPost(jsonDto, url);
+
+                        }catch (Exception e){
+                            System.out.println("exception discover time out connet: " + original);
+                            continue;
+
+                        }
+                    }
 
                     if(response != HttpStatus.OK.value() || response == 200){
                         System.out.println("BasisController: sendAllBlocks: need change all: " + response);
