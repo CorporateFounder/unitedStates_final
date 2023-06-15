@@ -1,0 +1,18 @@
+# Created at 2023-06-09T14:03:37.541
+java.lang.RuntimeException: Unable to create test class 'unitted_states_of_mankind.data.DtoTransactionTest'
+	at org.apache.maven.surefire.util.DefaultScanResult.loadClass(DefaultScanResult.java:140)
+	at org.apache.maven.surefire.util.DefaultScanResult.applyFilter(DefaultScanResult.java:100)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.scanClasspath(JUnitPlatformProvider.java:143)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:124)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:384)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:345)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:126)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:418)
+Caused by: java.lang.ClassNotFoundException: unitted_states_of_mankind.data.DtoTransactionTest
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641)
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:521)
+	at org.apache.maven.surefire.util.DefaultScanResult.loadClass(DefaultScanResult.java:136)
+	... 7 more
+
+

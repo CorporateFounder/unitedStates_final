@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}"/>
+
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header "></header>
+
+<div class="container mt-5">
+    <h3 th:text="${title}"/>
+    <h3>
+        copy the address and password and save it in a secure place, also set as the miner's address in the text file minerAccount.txt this address will be set during mining.</h3>
+
+    <div class="alert alert-info mt-2">
+        <h4 th:text="'new address: ' + ${login}"  class="form-control"/><br>
+        <textarea th:text="'pasword: ' + ${password}" class="form-control" rows="12"></textarea><br>
+
+        <form action="/create-account" method="post">
+        <button type="submit" class="btn btn-success">generate new account</button><br>
+        </form>
+
+    </div>
+
+
+</div>
+<footer th:insert="blocks/footer :: footer"></footer>
+
+</body>
+</html>

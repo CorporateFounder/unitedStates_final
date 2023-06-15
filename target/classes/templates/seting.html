@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+    <link rel="stylesheet" href="type/css" th:href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+
+<header th:insert="blocks/header :: header "></header>
+<div class="container mt 5">
+    <h1 th:text="${title}"></h1>
+</div>
+
+
+<form action="/nodes/register" method="post">
+    <input type="text" name="urlAddrress" placeholder="enter the address of the host you want to add" class="form-control"><br>
+    <button type="submit" class="btn btn-success">Register a new host</button><br>
+</form>
+
+<form action="/setMinner" method="post">
+    <input type="text" name="setMinner" placeholder="enter pubkey to change miner address" class="form-control"><br>
+    <button type="submit" class="btn btn-success">change miner address</button><br>
+</form>
+
+
+</div>
+
+
+<footer th:insert="blocks/footer :: footer"></footer>
+</body>
+</html>
