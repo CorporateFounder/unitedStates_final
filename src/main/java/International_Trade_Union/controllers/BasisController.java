@@ -559,12 +559,13 @@ public class BasisController {
                         //Test start algorithm
                         String original = s;
                         String url = s + "/nodes/resolve_portion_block";
+                        fromToTempBlock = blocks.subList(blocks.size() - Seting.PORTION_BLOCK_TO_SEND, blocks.size());
+                        jsonFromTo = UtilsJson.objToStringJson(fromToTempBlock);
                         try {
-                            UtilUrl.sendPost(jsonDto, url);
+                            UtilUrl.sendPost(jsonFromTo, url);
 
                         }catch (Exception e){
                             System.out.println("exception discover time out connet: " + original);
-                            continue;
 
                         }
                     }
