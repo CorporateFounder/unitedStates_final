@@ -21,7 +21,9 @@ public class UtilsBalance {
 
     //подсчет по штучно баланса
     public  static Map<String, Account> calculateBalance(Map<String, Account> balances, Block block, List<String> sign) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+
         Base base = new Base58();
+        System.out.println("start calculateBalance");
         double percent = Seting.ANNUAL_MAINTENANCE_FREE_DIGITAL_DOLLAR_YEAR / Seting.HALF_YEAR;
         double digitalReputationPercent = Seting.ANNUAL_MAINTENANCE_FREE_DIGITAL_STOCK_YEAR / Seting.HALF_YEAR;
             int i = (int) block.getIndex();
@@ -36,7 +38,7 @@ public class UtilsBalance {
                     System.out.println("this transaction signature has already been used and is not valid");
                     continue;
                 }else {
-                    System.out.println("we added new sign transaction");
+//                    System.out.println("we added new sign transaction");
                     sign.add(base.encode(transaction.getSign()));
                 }
 
@@ -95,7 +97,7 @@ public class UtilsBalance {
             }
         }
 
-
+        System.out.println("finish calculateBalance");
         return balances;
 
     }

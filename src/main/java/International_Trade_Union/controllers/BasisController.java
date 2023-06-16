@@ -2,6 +2,7 @@ package International_Trade_Union.controllers;
 
 import International_Trade_Union.entity.AddressUrl;
 import International_Trade_Union.entity.SubBlockchainEntity;
+import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import org.bouncycastle.math.raw.Mod;
 import org.json.JSONException;
 
@@ -265,8 +266,8 @@ public class BasisController {
                 }
             } catch (IOException e) {
 
-                e.printStackTrace();
-                System.out.println("BasisController: resolve_conflicts: Error: " + s);
+//                e.printStackTrace();
+                System.out.println("BasisController: resolve_conflicts: connect refused Error: " + s);
                 continue;
             }
 
@@ -555,6 +556,7 @@ public class BasisController {
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
                     if(response != HttpStatus.OK.value() || response == 200){
+                        System.out.println("start send with portion: response: " + response);
                         System.out.println("BasisController: sendAllBlocks: need change all: " + response);
                         //Test start algorithm
                         String original = s;
@@ -572,6 +574,7 @@ public class BasisController {
 
 
                     if(response != HttpStatus.OK.value() || response == 200){
+                        System.out.println("start send all block: response: " + response);
                         System.out.println("BasisController: sendAllBlocks: need change all: " + response);
                         //Test start algorithm
                         String original = s;
@@ -589,15 +592,16 @@ public class BasisController {
                 }
 
             } catch (JSONException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
                 continue;
 
             } catch (IOException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
                 continue;
             }
 
         }
+        System.out.println("finish sendAllBlocksToStorage");
 
     }
 
@@ -777,6 +781,11 @@ public class BasisController {
 
     }
 
+    @GetMapping("/sizeTest")
+    @ResponseBody
+    public synchronized DataShortBlockchainInformation sizeTest() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        return Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+    }
 
 }
 

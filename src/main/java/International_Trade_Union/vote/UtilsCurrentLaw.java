@@ -34,7 +34,7 @@ public class UtilsCurrentLaw {
             }
             else {
                 signs.add(transaction.toSign());
-                System.out.println("we added new sign transaction");
+//                System.out.println("we added new sign transaction");
             }
             if (transaction.getSender().startsWith(Seting.NAME_LAW_ADDRESS_START)) {
                 System.out.println("law balance cannot be sender");
