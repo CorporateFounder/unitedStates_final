@@ -587,14 +587,14 @@ public class BasisController {
                     }
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
-                    if(HttpStatus.EXPECTATION_FAILED.value() == response){
-//                        Mining.deleteFiles(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-//                        Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
-//                        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-//                        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
-
-                        return false;
-                    }
+//                    if(HttpStatus.EXPECTATION_FAILED.value() == response){
+////                        Mining.deleteFiles(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+////                        Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
+////                        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+////                        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
+//
+//                        return false;
+//                    }
 //                    if(response != HttpStatus.OK.value() || response == 200){
 //                        System.out.println("start send with portion: response: " + response);
 //                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
