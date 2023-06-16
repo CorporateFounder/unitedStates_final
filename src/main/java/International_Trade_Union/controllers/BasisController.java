@@ -44,6 +44,8 @@ import java.util.stream.Collectors;
 @Controller
 public class BasisController {
     private static Blockchain blockchain;
+    private static int blockchainSize = 0;
+    private static boolean blockchainValid = false;
     private static Set<String> excludedAddresses = new HashSet<>();
     public static HttpServletRequest getCurrentRequest() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
@@ -115,6 +117,12 @@ public class BasisController {
     static {
         try {
             blockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
+            blockchain = Mining.getBlockchain(
+                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                    BlockchainFactoryEnum.ORIGINAL);
+            blockchainSize = blockchain.sizeBlockhain();
+            blockchainValid = blockchain.validatedBlockchain();
+
 
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
@@ -143,38 +151,50 @@ public class BasisController {
     @GetMapping("/chain")
     @ResponseBody
     public EntityChain full_chain() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
-        return new EntityChain(blockchain.sizeBlockhain(), blockchain.getBlockchainList());
+        if(blockchainValid == false || blockchainSize == 0){
+            blockchain = Mining.getBlockchain(
+                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                    BlockchainFactoryEnum.ORIGINAL);
+        }
+
+        return new EntityChain(blockchainSize, blockchain.getBlockchainList());
     }
 
     /**возвращяет размер локального блокчейна*/
     @GetMapping("/size")
     @ResponseBody
     public Integer sizeBlockchain() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
-        return blockchain.sizeBlockhain();
+       if(blockchainValid == false || blockchainSize == 0){
+           blockchain = Mining.getBlockchain(
+                   Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                   BlockchainFactoryEnum.ORIGINAL);
+       }
+
+        return blockchainSize;
     }
 
     /**Возвращает список блоков ОТ до ДО,*/
     @PostMapping("/sub-blocks")
     @ResponseBody
     public List<Block> subBlocks(@RequestBody SubBlockchainEntity entity) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
+        if(blockchainValid == false || blockchainSize == 0){
+            blockchain = Mining.getBlockchain(
+                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                    BlockchainFactoryEnum.ORIGINAL);
+        }
+
         return blockchain.getBlockchainList().subList(entity.getStart(), entity.getFinish());
     }
     /**Возвращяет блок по индексу*/
     @PostMapping("/block")
     @ResponseBody
     public Block getBlock(@RequestBody Integer index) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
+       if(blockchainValid == false || blockchainSize == 0){
+           blockchain = Mining.getBlockchain(
+                   Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                   BlockchainFactoryEnum.ORIGINAL);
+       }
+
         return blockchain.getBlock(index);
     }
     @GetMapping("/nodes/resolve")
@@ -182,15 +202,18 @@ public class BasisController {
         System.out.println("start resolve");
         Blockchain temporaryBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
         Blockchain bigBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
-        blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
-        if(blockchain.validatedBlockchain() == false){
+        if(blockchainValid == false || blockchainSize == 0){
+            blockchain = Mining.getBlockchain(
+                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                    BlockchainFactoryEnum.ORIGINAL);
+        }
+
+        if(blockchainValid== false){
             System.out.println("you have wrong blockchain end deleted this: ");
             UtilsBlock.deleteFiles();
             blockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
         }
-        int blocks_current_size = blockchain.sizeBlockhain();
+        int blocks_current_size = blockchainSize;
         long hashCountZeroTemporary = 0;
         long hashCountZeroBigBlockchain = 0;
         EntityChain entityChain = null;
@@ -288,7 +311,7 @@ public class BasisController {
         }
 
 
-        if (bigBlockchain.sizeBlockhain() > blockchain.sizeBlockhain() && hashCountZeroBigBlockchain > hashCountZeroAll) {
+        if (bigBlockchain.sizeBlockhain() > blockchainSize && hashCountZeroBigBlockchain > hashCountZeroAll) {
 
             blockchain = bigBlockchain;
             UtilsBlock.deleteFiles();
@@ -329,16 +352,20 @@ public class BasisController {
         //удаление устаревних законов
         Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
         UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-
+        blockchainSize = blockchain.sizeBlockhain();
+        blockchainValid = blockchain.validatedBlockchain();
         System.out.println("BasisController: addBlock: finish");
     }
     @GetMapping("/addBlock")
     public ResponseEntity getBLock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+
         blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
         UtilsBlock.deleteFiles();
         addBlock(blockchain.getBlockchainList());
+        blockchainSize = blockchain.sizeBlockhain();
+        blockchainValid = blockchain.validatedBlockchain();
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -629,19 +656,24 @@ public class BasisController {
         findAddresses();
         sendAddress();
         resolve_conflicts();
-        if(blockchain.sizeBlockhain() % (576 * 2) == 0){
+        if(blockchainSize % (576 * 2) == 0){
             System.out.println("clear storage transaction because is old");
             AllTransactions.clearAllTransaction();
         }
         //собирает класс список балансов из файла расположенного по пути Seting.ORIGINAL_BALANCE_FILE
         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
         //собирает объект блокчейн из файла
-        blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
+
+            blockchain = Mining.getBlockchain(
+                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                    BlockchainFactoryEnum.ORIGINAL);
+            blockchainSize = blockchain.sizeBlockhain();
+            blockchainValid = blockchain.validatedBlockchain();
+
+
 
         //если блокчейн работает то продолжить
-        if (!blockchain.validatedBlockchain()) {
+        if (!blockchainValid) {
             text = "wrong chain: неправильный блокчейн, добыча прекращена";
 //            model.addAttribute("text", text);
             return "wrong blockchain";
@@ -779,12 +811,6 @@ public class BasisController {
 
         return "redirect:/mining";
 
-    }
-
-    @GetMapping("/sizeTest")
-    @ResponseBody
-    public synchronized DataShortBlockchainInformation sizeTest() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        return Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
     }
 
 }
