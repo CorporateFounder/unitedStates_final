@@ -59,7 +59,8 @@ public class Testing {
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
 
-        BasisController.sendAllBlocksToStorage(blockchain.getBlockchainList());
+        boolean result = BasisController.sendAllBlocksToStorage(blockchain.getBlockchainList());
+
     }
 
     @Test

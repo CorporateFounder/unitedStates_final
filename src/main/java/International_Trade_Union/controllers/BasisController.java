@@ -536,7 +536,7 @@ public class BasisController {
     //должен отправлять блокчейн в хранилище блокчейна
     /**Отправляет список блоков в центральные хранилища (пример: http://194.87.236.238:80)*/
 
-    public static void sendAllBlocksToStorage(List<Block> blocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public static boolean sendAllBlocksToStorage(List<Block> blocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         String jsonDto;
         System.out.println("BasisController: sendAllBlocksToStorage: start: ");
         try {
@@ -580,41 +580,49 @@ public class BasisController {
 
                         System.out.println("exception discover time out connect: " + originalF);
                     }
+                    if(HttpStatus.OK.value() == response){
+                        System.out.println("good saved");
+                        return true;
+                    }
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
-                    if(response != HttpStatus.OK.value() || response == 200){
-                        System.out.println("start send with portion: response: " + response);
-                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
-                        //Test start algorithm
-                        String original = s;
-                        String url = s + "/nodes/resolve_portion_block";
-                        fromToTempBlock = blocks.subList(blocks.size() - Seting.PORTION_BLOCK_TO_SEND, blocks.size());
-                        jsonFromTo = UtilsJson.objToStringJson(fromToTempBlock);
-                        try {
-                            UtilUrl.sendPost(jsonFromTo, url);
-
-                        }catch (Exception e){
-                            System.out.println("exception discover time out connet: " + original);
-
-                        }
+                    if(HttpStatus.EXPECTATION_FAILED.value() == response){
+                        UtilsBlock.deleteFiles();
+                        return false;
                     }
-
-
-                    if(response != HttpStatus.OK.value() || response == 200){
-                        System.out.println("start send all block: response: " + response);
-                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
-                        //Test start algorithm
-                        String original = s;
-                        String url = s + "/nodes/resolve_all_blocks";
-                        try {
-                            UtilUrl.sendPost(jsonDto, url);
-
-                        }catch (Exception e){
-                            System.out.println("exception discover time out connet: " + original);
-                            continue;
-
-                        }
-                    }
+//                    if(response != HttpStatus.OK.value() || response == 200){
+//                        System.out.println("start send with portion: response: " + response);
+//                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
+//                        //Test start algorithm
+//                        String original = s;
+//                        String url = s + "/nodes/resolve_portion_block";
+//                        fromToTempBlock = blocks.subList(blocks.size() - Seting.PORTION_BLOCK_TO_SEND, blocks.size());
+//                        jsonFromTo = UtilsJson.objToStringJson(fromToTempBlock);
+//                        try {
+//                            UtilUrl.sendPost(jsonFromTo, url);
+//
+//                        }catch (Exception e){
+//                            System.out.println("exception discover time out connet: " + original);
+//
+//                        }
+//                    }
+//
+//
+//                    if(response != HttpStatus.OK.value() || response == 200){
+//                        System.out.println("start send all block: response: " + response);
+//                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
+//                        //Test start algorithm
+//                        String original = s;
+//                        String url = s + "/nodes/resolve_all_blocks";
+//                        try {
+//                            UtilUrl.sendPost(jsonDto, url);
+//
+//                        }catch (Exception e){
+//                            System.out.println("exception discover time out connet: " + original);
+//                            continue;
+//
+//                        }
+//                    }
 
                 }
 
@@ -629,7 +637,7 @@ public class BasisController {
 
         }
         System.out.println("finish sendAllBlocksToStorage");
-
+        return false;
     }
 
     @GetMapping("/constantMining")
