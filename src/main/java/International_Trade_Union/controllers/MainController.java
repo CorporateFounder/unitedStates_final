@@ -63,8 +63,6 @@ public class MainController {
 
 
         //догрузить блокчейн
-//        List<Block> blocks = UtilsBlock.readLineObject(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-//        balances = UtilsBalance.calculateBalances(blocks);
         balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
 
 
