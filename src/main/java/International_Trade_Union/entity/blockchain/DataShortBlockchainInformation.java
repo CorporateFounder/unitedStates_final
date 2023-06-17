@@ -6,13 +6,15 @@ import lombok.Data;
 public class DataShortBlockchainInformation {
     private long size;
     private boolean isValidation;
+    private long hashCount;
 
     public DataShortBlockchainInformation() {
     }
 
-    public DataShortBlockchainInformation(long size, boolean isValidation) {
+    public DataShortBlockchainInformation(long size, boolean isValidation, long hashCount) {
         this.size = size;
         this.isValidation = isValidation;
+        this.hashCount = hashCount;
     }
 }
 
