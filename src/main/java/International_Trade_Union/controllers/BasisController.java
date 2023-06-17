@@ -209,11 +209,7 @@ public class BasisController {
                     BlockchainFactoryEnum.ORIGINAL);
         }
 
-        if(blockchainValid== false){
-            System.out.println("you have wrong blockchain end deleted this: ");
-            UtilsBlock.deleteFiles();
-            blockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
-        }
+
         int blocks_current_size = blockchainSize;
         long hashCountZeroTemporary = 0;
         long hashCountZeroBigBlockchain = 0;
