@@ -587,14 +587,14 @@ public class BasisController {
                     }
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
-//                    if(HttpStatus.EXPECTATION_FAILED.value() == response){
-////                        Mining.deleteFiles(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-////                        Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
-////                        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-////                        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
-//
-//                        return false;
-//                    }
+                    if(HttpStatus.EXPECTATION_FAILED.value() == response){
+//                        Mining.deleteFiles(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+//                        Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
+//                        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+//                        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
+
+                        return false;
+                    }
 //                    if(response != HttpStatus.OK.value() || response == 200){
 //                        System.out.println("start send with portion: response: " + response);
 //                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
@@ -613,21 +613,21 @@ public class BasisController {
 //                    }
 //
 //
-                    if(response != HttpStatus.OK.value() || response == 200){
-                        System.out.println("start send all block: response: " + response);
-                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
-                        //Test start algorithm
-                        String original = s;
-                        String url = s + "/nodes/resolve_all_blocks";
-                        try {
-                            UtilUrl.sendPost(jsonDto, url);
-
-                        }catch (Exception e){
-                            System.out.println("exception discover time out connet: " + original);
-                            continue;
-
-                        }
-                    }
+//                    if(response != HttpStatus.OK.value() || response == 200){
+//                        System.out.println("start send all block: response: " + response);
+//                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
+//                        //Test start algorithm
+//                        String original = s;
+//                        String url = s + "/nodes/resolve_all_blocks";
+//                        try {
+//                            UtilUrl.sendPost(jsonDto, url);
+//
+//                        }catch (Exception e){
+//                            System.out.println("exception discover time out connet: " + original);
+//                            continue;
+//
+//                        }
+//                    }
 
                 }
 
@@ -810,7 +810,15 @@ public class BasisController {
         UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
         //отправляет блокчейн во внешние сервера
-        sendAllBlocksToStorage(blockchain.getBlockchainList());
+        boolean send = sendAllBlocksToStorage(blockchain.getBlockchainList());
+        if(send == false){
+            Mining.deleteFiles(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
+            Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
+            Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+            UtilsCreatedDirectory.createPackages();
+            System.out.println("your finger is outdated");
+        }
 
         text = "success: блок успешно добыт";
 //        model.addAttribute("text", text);
