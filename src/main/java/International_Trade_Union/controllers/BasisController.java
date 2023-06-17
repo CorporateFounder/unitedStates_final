@@ -330,6 +330,7 @@ public class BasisController {
         UtilsBlock.deleteFiles();
         System.out.println("addBlock start");
         for (Block block : orignalBlocks) {
+            System.out.println("BasisController: addBlock: blockchain is being updated ");
             UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
         }
 
