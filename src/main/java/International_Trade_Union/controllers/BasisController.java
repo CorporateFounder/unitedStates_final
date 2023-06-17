@@ -589,10 +589,7 @@ public class BasisController {
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
                     if(HttpStatus.EXPECTATION_FAILED.value() == response){
-//                        Mining.deleteFiles(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-//                        Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
-//                        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-//                        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
+//
 
                         return false;
                     }
@@ -812,15 +809,11 @@ public class BasisController {
 
         //отправляет блокчейн во внешние сервера
         boolean send = sendAllBlocksToStorage(blockchain.getBlockchainList());
-        if(send == false){
-            Mining.deleteFiles(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-            Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
-            Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
-            Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-            UtilsCreatedDirectory.createPackages();
-            System.out.println("your finger is outdated");
-        }
 
+        if(send == false) {
+           UtilesNode.updates(blockchainValid, blockchainSize, blockchain, getNodes());
+            System.out.println("updatedBlockchain");
+        }
         text = "success: блок успешно добыт";
 //        model.addAttribute("text", text);
         return "ok";
