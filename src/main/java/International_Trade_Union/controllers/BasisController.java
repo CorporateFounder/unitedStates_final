@@ -43,6 +43,7 @@ import java.util.stream.Collectors;
 
 @Controller
 public class BasisController {
+    private static DataShortBlockchainInformation shortDataBlockchain = null;
     private static Blockchain blockchain;
     private static int blockchainSize = 0;
     private static boolean blockchainValid = false;
@@ -120,9 +121,10 @@ public class BasisController {
             blockchain = Mining.getBlockchain(
                     Seting.ORIGINAL_BLOCKCHAIN_FILE,
                     BlockchainFactoryEnum.ORIGINAL);
+            shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            blockchainSize = (int) shortDataBlockchain.getSize();
+            blockchainValid = shortDataBlockchain.isValidation();
 
-            blockchainSize = blockchain.sizeBlockhain();
-            blockchainValid = blockchain.validatedBlockchain();
 
 
         } catch (NoSuchAlgorithmException e) {
@@ -156,6 +158,9 @@ public class BasisController {
             blockchain = Mining.getBlockchain(
                     Seting.ORIGINAL_BLOCKCHAIN_FILE,
                     BlockchainFactoryEnum.ORIGINAL);
+            shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            blockchainSize = (int) shortDataBlockchain.getSize();
+            blockchainValid = shortDataBlockchain.isValidation();
         }
 
         return new EntityChain(blockchainSize, blockchain.getBlockchainList());
@@ -169,6 +174,9 @@ public class BasisController {
            blockchain = Mining.getBlockchain(
                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
                    BlockchainFactoryEnum.ORIGINAL);
+           shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+           blockchainSize = (int) shortDataBlockchain.getSize();
+           blockchainValid = shortDataBlockchain.isValidation();
        }
 
         return blockchainSize;
@@ -207,6 +215,9 @@ public class BasisController {
             blockchain = Mining.getBlockchain(
                     Seting.ORIGINAL_BLOCKCHAIN_FILE,
                     BlockchainFactoryEnum.ORIGINAL);
+            shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            blockchainSize = (int) shortDataBlockchain.getSize();
+            blockchainValid = shortDataBlockchain.isValidation();
         }
 
 
@@ -217,12 +228,13 @@ public class BasisController {
         System.out.println("resolve_conflicts: blocks_current_size: " + blocks_current_size);
         long hashCountZeroAll = 0;
         //count hash start with zero all
-        for (Block block : blockchain.getBlockchainList()) {
-            hashCountZeroAll += UtilsUse.hashCount(block.getHashBlock());
-        }
+//        for (Block block : blockchain.getBlockchainList()) {
+//            hashCountZeroAll += UtilsUse.hashCount(block.getHashBlock());
+//        }
+        hashCountZeroAll =  shortDataBlockchain.getHashCount();
 
         Set<String> nodesAll = getNodes();
-//        nodesAll.addAll(Seting.ORIGINAL_ADDRESSES_BLOCKCHAIN_STORAGE);
+
         System.out.println("BasisController: resolve_conflicts: size nodes: " + getNodes().size());
         for (String s : nodesAll) {
             System.out.println("while resolve_conflicts: node address: " + s);
@@ -236,6 +248,7 @@ public class BasisController {
                 if(s.contains("localhost") || s.contains("127.0.0.1"))
                     continue;
                 String address = s + "/chain";
+
                 System.out.println("resolve_conflicts: start /size");
                 System.out.println("BasisController:resolve conflicts: address: " + s + "/size");
                 String sizeStr = UtilUrl.readJsonFromUrl(s + "/size");
@@ -333,6 +346,9 @@ public class BasisController {
         blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
+        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        blockchainSize = (int) shortDataBlockchain.getSize();
+        blockchainValid = shortDataBlockchain.isValidation();
 
         //перерасчет после добычи
         balances = UtilsBalance.calculateBalances(blockchain.getBlockchainList());
@@ -350,8 +366,7 @@ public class BasisController {
         //удаление устаревних законов
         Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
         UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-        blockchainSize = blockchain.sizeBlockhain();
-        blockchainValid = blockchain.validatedBlockchain();
+
         System.out.println("BasisController: addBlock: finish");
     }
     @GetMapping("/addBlock")
@@ -362,8 +377,9 @@ public class BasisController {
                 BlockchainFactoryEnum.ORIGINAL);
         UtilsBlock.deleteFiles();
         addBlock(blockchain.getBlockchainList());
-        blockchainSize = blockchain.sizeBlockhain();
-        blockchainValid = blockchain.validatedBlockchain();
+        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        blockchainSize = (int) shortDataBlockchain.getSize();
+        blockchainValid = shortDataBlockchain.isValidation();
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -674,8 +690,9 @@ public class BasisController {
             blockchain = Mining.getBlockchain(
                     Seting.ORIGINAL_BLOCKCHAIN_FILE,
                     BlockchainFactoryEnum.ORIGINAL);
-            blockchainSize = blockchain.sizeBlockhain();
-            blockchainValid = blockchain.validatedBlockchain();
+        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        blockchainSize = (int) shortDataBlockchain.getSize();
+        blockchainValid = shortDataBlockchain.isValidation();
 
 
 

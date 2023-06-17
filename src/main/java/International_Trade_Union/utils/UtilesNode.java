@@ -57,11 +57,6 @@ public class UtilesNode {
             hashCountZeroAll += UtilsUse.hashCount(block.getHashBlock());
         }
 
-//        Set<String> nodesAll = nodes;
-//        nodesAll.addAll(Seting.ORIGINAL_ADDRESSES_BLOCKCHAIN_STORAGE);
-//        System.out.println("BasisController: resolve_conflicts: size nodes: " + nodes.size());
-
-
 
             System.out.println("while resolve_conflicts: node address: " + s);
             String temporaryjson = null;
