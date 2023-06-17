@@ -599,7 +599,12 @@ public class BasisController {
                         return true;
                     }
 
+                    System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
+                    if(HttpStatus.EXPECTATION_FAILED.value() == response){
+//
 
+                        return false;
+                    }
 //                    if(response != HttpStatus.OK.value() || response == 200){
 //                        System.out.println("start send with portion: response: " + response);
 //                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
@@ -618,28 +623,21 @@ public class BasisController {
 //                    }
 //
 //
-                    if(response != HttpStatus.OK.value() || response == 200){
-                        System.out.println("start send all block: response: " + response);
-                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
-                        //Test start algorithm
-                        String original = s;
-                        String url = s + "/nodes/resolve_all_blocks";
-                        try {
-                            UtilUrl.sendPost(jsonDto, url);
-
-                        }catch (Exception e){
-                            System.out.println("exception discover time out connet: " + original);
-                            continue;
-
-                        }
-                    }
-
-                    System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
-                    if(HttpStatus.EXPECTATION_FAILED.value() == response){
+//                    if(response != HttpStatus.OK.value() || response == 200){
+//                        System.out.println("start send all block: response: " + response);
+//                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
+//                        //Test start algorithm
+//                        String original = s;
+//                        String url = s + "/nodes/resolve_all_blocks";
+//                        try {
+//                            UtilUrl.sendPost(jsonDto, url);
 //
-
-                        return false;
-                    }
+//                        }catch (Exception e){
+//                            System.out.println("exception discover time out connet: " + original);
+//                            continue;
+//
+//                        }
+//                    }
 
                 }
 
