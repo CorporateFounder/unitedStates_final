@@ -28,10 +28,10 @@ import java.util.stream.Collectors;
 import static International_Trade_Union.controllers.BasisController.addBlock;
 
 public class UtilesNode {
-    public static ResponseEntity<String> updates(boolean blockchainValid,
+    public static Blockchain updates(boolean blockchainValid,
                             int blockchainSize,
                             Blockchain blockchain,
-                            Set<String> nodes) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
+                            String s) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         System.out.println("start resolve");
         Blockchain temporaryBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
         Blockchain bigBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
@@ -57,29 +57,31 @@ public class UtilesNode {
             hashCountZeroAll += UtilsUse.hashCount(block.getHashBlock());
         }
 
-        Set<String> nodesAll = nodes;
+//        Set<String> nodesAll = nodes;
 //        nodesAll.addAll(Seting.ORIGINAL_ADDRESSES_BLOCKCHAIN_STORAGE);
-        System.out.println("BasisController: resolve_conflicts: size nodes: " + nodes.size());
-        for (String s : nodesAll) {
+//        System.out.println("BasisController: resolve_conflicts: size nodes: " + nodes.size());
+
+
+
             System.out.println("while resolve_conflicts: node address: " + s);
             String temporaryjson = null;
 
             if (BasisController.getExcludedAddresses().contains(s)) {
                 System.out.println("its your address or excluded address: " + s);
-                continue;
+                return null;
             }
             try {
                 if(s.contains("localhost") || s.contains("127.0.0.1"))
-                    continue;
+                    return null;
                 String address = s + "/chain";
                 System.out.println("resolve_conflicts: start /size");
                 System.out.println("BasisController:resolve conflicts: address: " + s + "/size");
                 String sizeStr = UtilUrl.readJsonFromUrl(s + "/size");
                 Integer size = Integer.valueOf(sizeStr);
                 System.out.println("resolve_conflicts: finish /size: " + size);
+                System.out.println("size: " + size + " current_size: " + blocks_current_size);
 
-                if (size >= blocks_current_size) {
-                    System.out.println("size from address: " + s + " upper than: " + size + ":blocks_current_size " + blocks_current_size);
+                System.out.println("size from address: " + s + " upper than: " + size + ":blocks_current_size " + blocks_current_size);
                     //Test start algorithm
 
                     List<Block> emptyList = new ArrayList<>();
@@ -96,7 +98,7 @@ public class UtilesNode {
 
                         for (int i = size - 1; i > 0; i--) {
                             Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(i), s + "/block"));
-                            if(i > blockchain.sizeBlockhain()){
+                            if(i > blockchain.sizeBlockhain() - 1){
                                 emptyList.add(block);
                             }
                             else if (!blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
@@ -117,15 +119,12 @@ public class UtilesNode {
                         temporaryBlockchain.setBlockchainList(
                                 entityChain.getBlocks().stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList()));
                     }
-                } else {
-                    System.out.println("BasisController: resove: size less: " + size + " address: " + address);
-                    continue;
-                }
+
             } catch (IOException e) {
 
 //                e.printStackTrace();
                 System.out.println("BasisController: resolve_conflicts: connect refused Error: " + s);
-                continue;
+                return null;
             }
 
 
@@ -142,7 +141,7 @@ public class UtilesNode {
                 hashCountZeroTemporary = 0;
             }
 
-        }
+
 
 
         if (bigBlockchain.sizeBlockhain() > blockchainSize && hashCountZeroBigBlockchain > hashCountZeroAll) {
@@ -153,6 +152,6 @@ public class UtilesNode {
             System.out.println("BasisController: resolve: bigblockchain size: " + bigBlockchain.sizeBlockhain());
 
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return blockchain;
     }
 }

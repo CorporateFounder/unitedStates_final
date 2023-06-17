@@ -811,7 +811,13 @@ public class BasisController {
         boolean send = sendAllBlocksToStorage(blockchain.getBlockchainList());
 
         if(send == false) {
-           UtilesNode.updates(blockchainValid, blockchainSize, blockchain, getNodes());
+
+            for (String s : getNodes()) {
+//
+                blockchain = UtilesNode.updates(blockchainValid, blockchainSize, blockchain, s);
+            }
+
+
             System.out.println("updatedBlockchain");
         }
         text = "success: блок успешно добыт";
@@ -828,6 +834,16 @@ public class BasisController {
 
     }
 
+    @GetMapping("/testUpdate")
+    @ResponseBody
+    public void testUpdate() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
+        Set<String> address = getNodes();
+        for (String s : address) {
+            UtilesNode.updates(blockchainValid, blockchainSize, blockchain, s);
+        }
+
+
+    }
 }
 
 
