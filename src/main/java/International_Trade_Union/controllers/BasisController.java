@@ -275,7 +275,7 @@ public class BasisController {
 //                        emptyList.addAll(subBlocks);
                         for (int i = size - 1; i > 0; i--) {
                             Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(i), s + "/block"));
-                            if(i > blockchain.sizeBlockhain()){
+                            if(i > blockchain.sizeBlockhain() - 1){
                                 emptyList.add(block);
                             }
                             else if (!blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
