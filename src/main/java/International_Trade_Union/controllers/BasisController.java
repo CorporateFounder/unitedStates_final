@@ -603,45 +603,44 @@ public class BasisController {
                     }
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
+
+                    if(response != HttpStatus.OK.value() || response == 200){
+                        System.out.println("start send with portion: response: " + response);
+                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
+                        //Test start algorithm
+                        String original = s;
+                        String url = s + "/nodes/resolve_portion_block";
+                        fromToTempBlock = blocks.subList(blocks.size() - Seting.PORTION_BLOCK_TO_SEND, blocks.size());
+                        jsonFromTo = UtilsJson.objToStringJson(fromToTempBlock);
+                        try {
+                            UtilUrl.sendPost(jsonFromTo, url);
+
+                        }catch (Exception e){
+                            System.out.println("exception discover time out connet: " + original);
+
+                        }
+                    }
+//
+//
+                    if(response != HttpStatus.OK.value() || response == 200){
+                        System.out.println("start send all block: response: " + response);
+                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
+                        //Test start algorithm
+                        String original = s;
+                        String url = s + "/nodes/resolve_all_blocks";
+                        try {
+                            UtilUrl.sendPost(jsonDto, url);
+                        }catch (Exception e){
+                            System.out.println("exception discover time out connet: " + original);
+                            continue;
+
+                        }
+                    }
                     if(HttpStatus.EXPECTATION_FAILED.value() == response){
 //
 
                         return false;
                     }
-//                    if(response != HttpStatus.OK.value() || response == 200){
-//                        System.out.println("start send with portion: response: " + response);
-//                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
-//                        //Test start algorithm
-//                        String original = s;
-//                        String url = s + "/nodes/resolve_portion_block";
-//                        fromToTempBlock = blocks.subList(blocks.size() - Seting.PORTION_BLOCK_TO_SEND, blocks.size());
-//                        jsonFromTo = UtilsJson.objToStringJson(fromToTempBlock);
-//                        try {
-//                            UtilUrl.sendPost(jsonFromTo, url);
-//
-//                        }catch (Exception e){
-//                            System.out.println("exception discover time out connet: " + original);
-//
-//                        }
-//                    }
-//
-//
-//                    if(response != HttpStatus.OK.value() || response == 200){
-//                        System.out.println("start send all block: response: " + response);
-//                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
-//                        //Test start algorithm
-//                        String original = s;
-//                        String url = s + "/nodes/resolve_all_blocks";
-//                        try {
-//                            UtilUrl.sendPost(jsonDto, url);
-//
-//                        }catch (Exception e){
-//                            System.out.println("exception discover time out connet: " + original);
-//                            continue;
-//
-//                        }
-//                    }
-
                 }
 
             } catch (JSONException e) {
@@ -655,7 +654,7 @@ public class BasisController {
 
         }
         System.out.println("finish sendAllBlocksToStorage");
-        return false;
+        return true;
     }
 
     @GetMapping("/constantMining")
