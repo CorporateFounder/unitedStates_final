@@ -3,6 +3,7 @@ package International_Trade_Union.controllers;
 import International_Trade_Union.entity.AddressUrl;
 import International_Trade_Union.entity.SubBlockchainEntity;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.bouncycastle.math.raw.Mod;
 import org.json.JSONException;
 
@@ -275,7 +276,7 @@ public class BasisController {
 //                        emptyList.addAll(subBlocks);
                         for (int i = size - 1; i > 0; i--) {
                             Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(i), s + "/block"));
-                            if(i > blockchain.sizeBlockhain() - 1){
+                            if(i > blockchainSize - 1){
                                 emptyList.add(block);
                             }
                             else if (!blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
@@ -863,15 +864,23 @@ public class BasisController {
 
     }
 
-    @GetMapping("/testUpdate")
+
+
+    @GetMapping("/testBlock")
     @ResponseBody
-    public void testUpdate() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
-        Set<String> address = getNodes();
-        for (String s : address) {
-            UtilesNode.updates(blockchainValid, blockchainSize, blockchain, s);
-        }
+    public List<Block> testBlock() throws JsonProcessingException, CloneNotSupportedException {
+        List<List<Block>> list = new ArrayList<>();
+         List<Block> blocks = Blockchain.subFromFile(6, 8, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
+        return blocks;
+//        list.add(blockList);
 
+    }
+    @GetMapping("testBlock1")
+    @ResponseBody
+    public List<Block> testBlock1() throws CloneNotSupportedException {
+        List<Block> blockList = blockchain.subBlock(6, 8);
+        return blockList;
     }
 }
 

@@ -9,6 +9,7 @@ import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Data;
 
 import java.io.File;
@@ -317,6 +318,62 @@ public class Blockchain implements Cloneable{
         return new DataShortBlockchainInformation(size, valid, hashCount);
     }
 
+    public static Block indexFromFile(int index, String filename) throws JsonProcessingException {
+        File folder = new File(filename);
+        Block block = null;
+        int size = 0;
+
+        for (final File fileEntry : folder.listFiles()) {
+            if (fileEntry.isDirectory()) {
+                System.out.println("is directory " + fileEntry.getAbsolutePath());
+            } else {
+                List<String> list = UtilsFileSaveRead.reads(fileEntry.getAbsolutePath());
+                for (String s : list) {
+
+                    if(size == index){
+                        block = UtilsJson.jsonToBLock(s);
+                        if(index == block.getIndex())
+                            return block;
+                    }
+
+                    size += 1;
+                }
+
+            }
+        }
+
+
+        return block;
+    }
+    public static List<Block> subFromFile(int indexFrom, int indexTo, String filename) throws JsonProcessingException {
+        File folder = new File(filename);
+        Block block = null;
+        int size = 0;
+        List<Block> blocks = new ArrayList<>();
+
+        for (final File fileEntry : folder.listFiles()) {
+            if (fileEntry.isDirectory()) {
+                System.out.println("is directory " + fileEntry.getAbsolutePath());
+            } else {
+                List<String> list = UtilsFileSaveRead.reads(fileEntry.getAbsolutePath());
+                for (String s : list) {
+
+                    if(size >= indexFrom &&  size < indexTo){
+                        block = UtilsJson.jsonToBLock(s);
+                        if( block.getIndex() >= indexFrom && block.getIndex() < indexTo) {
+                            blocks.add(block);
+                        }
+
+                    }
+
+                    size += 1;
+                }
+
+            }
+        }
+
+        return blocks;
+    }
 
 
     public String genesisPrevHash() throws IOException {
