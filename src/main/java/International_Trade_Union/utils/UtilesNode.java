@@ -46,16 +46,16 @@ public class UtilesNode {
             UtilsBlock.deleteFiles();
             blockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
         }
-        int blocks_current_size = blockchainSize;
+        int blocks_current_size = 0;
         long hashCountZeroTemporary = 0;
         long hashCountZeroBigBlockchain = 0;
         EntityChain entityChain = null;
         System.out.println("resolve_conflicts: blocks_current_size: " + blocks_current_size);
         long hashCountZeroAll = 0;
         //count hash start with zero all
-        for (Block block : blockchain.getBlockchainList()) {
-            hashCountZeroAll += UtilsUse.hashCount(block.getHashBlock());
-        }
+//        for (Block block : blockchain.getBlockchainList()) {
+//            hashCountZeroAll += UtilsUse.hashCount(block.getHashBlock());
+//        }
 
 
             System.out.println("while resolve_conflicts: node address: " + s);
@@ -88,7 +88,7 @@ public class UtilesNode {
                     emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
                     temporaryBlockchain.setBlockchainList(emptyList);
 
-                        System.out.println("first algorithm not worked");
+                        System.out.println("UtilesNode: updates: start first algorithm updates");
                         emptyList = new ArrayList<>();
 
                         for (int i = size - 1; i > 0; i--) {
@@ -108,7 +108,7 @@ public class UtilesNode {
                         }
 
                     if (!temporaryBlockchain.validatedBlockchain()) {
-                        System.out.println("second algorith not worked");
+                        System.out.println("UtilesNode: updates: start second algorithtm updates file");
                         temporaryjson = UtilUrl.readJsonFromUrl(address);
                         entityChain = UtilsJson.jsonToEntityChain(temporaryjson);
                         temporaryBlockchain.setBlockchainList(
@@ -124,9 +124,11 @@ public class UtilesNode {
 
 
             if (temporaryBlockchain.validatedBlockchain()) {
+
                 for (Block block : temporaryBlockchain.getBlockchainList()) {
                     hashCountZeroTemporary += UtilsUse.hashCount(block.getHashBlock());
                 }
+
 
                 if (blocks_current_size < temporaryBlockchain.sizeBlockhain() && hashCountZeroAll < hashCountZeroTemporary) {
                     blocks_current_size = temporaryBlockchain.sizeBlockhain();
@@ -138,15 +140,12 @@ public class UtilesNode {
 
 
 
-
-        if (bigBlockchain.sizeBlockhain() > blockchainSize && hashCountZeroBigBlockchain > hashCountZeroAll) {
-
             blockchain = bigBlockchain;
             UtilsBlock.deleteFiles();
             addBlock(bigBlockchain.getBlockchainList());
             System.out.println("BasisController: resolve: bigblockchain size: " + bigBlockchain.sizeBlockhain());
 
-        }
+
         return blockchain;
     }
 }
