@@ -210,14 +210,7 @@ public class BasisController {
         return Blockchain.indexFromFile(index, Seting.ORIGINAL_BLOCKCHAIN_FILE);
     }
     @GetMapping("/nodes/resolve")
-    public synchronized ResponseEntity resolve_conflicts()
-            throws NoSuchAlgorithmException,
-            InvalidKeySpecException,
-            IOException,
-            SignatureException,
-            NoSuchProviderException,
-            InvalidKeyException,
-            JSONException {
+    public synchronized ResponseEntity resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         System.out.println("start resolve");
         Blockchain temporaryBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
         Blockchain bigBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
@@ -282,14 +275,10 @@ public class BasisController {
                     if (!temporaryBlockchain.validatedBlockchain()) {
                         System.out.println("first algorithm not worked");
                         emptyList = new ArrayList<>();
-//                        emptyList.addAll(subBlocks);
-                        for (int i = size - 1; i > 0; i--) {
+                        emptyList.addAll(subBlocks);
+                        for (int i = blockchain.sizeBlockhain() - 1; i > 0; i--) {
                             Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(i), s + "/block"));
-                            if(i > blockchainSize - 1){
-                                emptyList.add(block);
-                            }
-                            else if (!blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
-                                System.out.println("get block from index: " + i);
+                            if (!blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
                                 emptyList.add(block);
                             } else {
                                 emptyList.add(block);
@@ -299,18 +288,6 @@ public class BasisController {
                                 break;
                             }
                         }
-//                        for (int i = blockchain.sizeBlockhain() - 1; i > 0; i--) {
-//                            Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(i), s + "/block"));
-//                            if (!blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
-//                                emptyList.add(block);
-//                            } else {
-//                                emptyList.add(block);
-//                                emptyList.addAll(blockchain.getBlockchainList().subList(0, i));
-//                                emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
-//                                temporaryBlockchain.setBlockchainList(emptyList);
-//                                break;
-//                            }
-//                        }
                     }
                     if (!temporaryBlockchain.validatedBlockchain()) {
                         System.out.println("second algorith not worked");
