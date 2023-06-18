@@ -272,10 +272,14 @@ public class BasisController {
                     if (!temporaryBlockchain.validatedBlockchain()) {
                         System.out.println("first algorithm not worked");
                         emptyList = new ArrayList<>();
-                        emptyList.addAll(subBlocks);
-                        for (int i = blockchain.sizeBlockhain() - 1; i > 0; i--) {
+//                        emptyList.addAll(subBlocks);
+                        for (int i = size - 1; i > 0; i--) {
                             Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(i), s + "/block"));
-                            if (!blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
+                            if(i > blockchain.sizeBlockhain() - 1){
+                                emptyList.add(block);
+                            }
+                            else if (!blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
+                                System.out.println("get block from index: " + i);
                                 emptyList.add(block);
                             } else {
                                 emptyList.add(block);
@@ -285,6 +289,18 @@ public class BasisController {
                                 break;
                             }
                         }
+//                        for (int i = blockchain.sizeBlockhain() - 1; i > 0; i--) {
+//                            Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(i), s + "/block"));
+//                            if (!blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
+//                                emptyList.add(block);
+//                            } else {
+//                                emptyList.add(block);
+//                                emptyList.addAll(blockchain.getBlockchainList().subList(0, i));
+//                                emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+//                                temporaryBlockchain.setBlockchainList(emptyList);
+//                                break;
+//                            }
+//                        }
                     }
                     if (!temporaryBlockchain.validatedBlockchain()) {
                         System.out.println("second algorith not worked");
