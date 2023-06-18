@@ -193,7 +193,8 @@ public class BasisController {
                     BlockchainFactoryEnum.ORIGINAL);
         }
 
-        return blockchain.getBlockchainList().subList(entity.getStart(), entity.getFinish());
+//        return blockchain.getBlockchainList().subList(entity.getStart(), entity.getFinish());
+        return Blockchain.subFromFile(entity.getStart(), entity.getFinish(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
     }
     /**Возвращяет блок по индексу*/
     @PostMapping("/block")
@@ -205,7 +206,8 @@ public class BasisController {
                    BlockchainFactoryEnum.ORIGINAL);
        }
 
-        return blockchain.getBlock(index);
+//        return blockchain.getBlock(index);
+        return Blockchain.indexFromFile(index, Seting.ORIGINAL_BLOCKCHAIN_FILE);
     }
     @GetMapping("/nodes/resolve")
     public synchronized ResponseEntity resolve_conflicts()
@@ -733,6 +735,7 @@ public class BasisController {
         //если размер блокчейна меньше или равно единице, сохранить в файл генезис блок
         long index = blockchain.sizeBlockhain();
         if (blockchain.sizeBlockhain() <= 1) {
+            System.out.println("save genesis block");
             //сохранение генезис блока
             if (blockchain.sizeBlockhain() == 1) {
                 UtilsBlock.saveBLock(blockchain.genesisBlock(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
@@ -752,10 +755,13 @@ public class BasisController {
 
         }
         //скачать список балансов из файла
+        System.out.println("BasisController: minining: read list balance");
         balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
 
         //получить счет майнера
+
         Account miner = balances.get(User.getUserAddress());
+        System.out.println("BasisController: mining: account miner: " + miner);
         if (miner == null) {
             //если в блокчейне не было баланса, то баланс равен нулю
             miner = new Account(User.getUserAddress(), 0, 0);
@@ -791,6 +797,7 @@ public class BasisController {
         //save sended transaction
         //сохранить уже добавленные в блок транзакции,
         //чтобы избежать повторного добавления
+
         AllTransactions.addSendedTransaction(temporaryDtoList);
 
         //нужна для корректировки сложности
@@ -858,6 +865,7 @@ public class BasisController {
             System.out.println("updatedBlockchain");
         }
         text = "success: блок успешно добыт";
+        System.out.println("BasisController: mining: text: " + text);
 //        model.addAttribute("text", text);
         return "ok";
     }
