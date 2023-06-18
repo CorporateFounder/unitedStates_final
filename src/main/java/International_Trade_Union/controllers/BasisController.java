@@ -260,7 +260,7 @@ public class BasisController {
                 if (size > blocks_current_size) {
                     System.out.println("size from address: " + s + " upper than: " + size + ":blocks_current_size " + blocks_current_size);
                     //Test start algorithm
-                    SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(blocks_current_size, size);
+                    SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(blocks_current_size-1, size-1);
                     String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
 
                     List<Block> emptyList = new ArrayList<>();
