@@ -208,7 +208,14 @@ public class BasisController {
         return blockchain.getBlock(index);
     }
     @GetMapping("/nodes/resolve")
-    public synchronized ResponseEntity resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
+    public synchronized ResponseEntity resolve_conflicts()
+            throws NoSuchAlgorithmException,
+            InvalidKeySpecException,
+            IOException,
+            SignatureException,
+            NoSuchProviderException,
+            InvalidKeyException,
+            JSONException {
         System.out.println("start resolve");
         Blockchain temporaryBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
         Blockchain bigBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
