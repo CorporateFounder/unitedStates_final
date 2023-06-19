@@ -348,7 +348,8 @@ public class BasisController {
         }
 
 
-        if (bigBlockchain.sizeBlockhain() > blockchainSize && hashCountZeroBigBlockchain > hashCountZeroAll) {
+        if (bigBlockchain.sizeBlockhain() > blockchainSize && hashCountZeroBigBlockchain > hashCountZeroAll)
+        {
 
             blockchain = bigBlockchain;
             UtilsBlock.deleteFiles();
@@ -512,8 +513,11 @@ public class BasisController {
         for (String s : Seting.ORIGINAL_ADDRESSES) {
             Set<String> addressesSet = new HashSet<>();
             try {
+                System.out.println("start download addressses");
+                System.out.println("trying to connect to the server:"+ s +" timeout 45 seconds");
                 String addresses = UtilUrl.readJsonFromUrl(s + "/getDiscoveryAddresses");
                 addressesSet = UtilsJson.jsonToSetAddresses(addresses);
+                System.out.println("finish download addreses");
             } catch (IOException e) {
                 System.out.println("BasisController: findAddress: error");
                 continue;
@@ -547,7 +551,7 @@ public class BasisController {
         //лист временный для отправки аддресов
 
         for (String s : Seting.ORIGINAL_ADDRESSES) {
-
+            System.out.println("start send addreses");
             String original = s;
             String url = s + "/nodes/register";
 
@@ -558,7 +562,7 @@ public class BasisController {
             try {
                 for (String s1 : BasisController.getNodes()) {
 
-
+                    System.out.println("trying to connect to the server: send addreses: " + s+": timeout 45 seconds");
                     AddressUrl addressUrl = new AddressUrl(s1);
                     String json = UtilsJson.objToStringJson(addressUrl);
                     UtilUrl.sendPost(json, url);
@@ -571,6 +575,7 @@ public class BasisController {
 
 
         }
+        System.out.println("finish send addressess");
     }
 
     //должен отправлять блокчейн в хранилище блокчейна
@@ -592,6 +597,7 @@ public class BasisController {
         getNodes().stream().forEach(System.out::println);
         for (String s : getNodes()) {
 
+            System.out.println("trying to connect to the server send block: " +s+": timeout 45 seconds");
 
             if (BasisController.getExcludedAddresses().contains(s)) {
                 System.out.println("its your address or excluded address: " + s);
@@ -674,7 +680,7 @@ public class BasisController {
         String text = "";
         //нахождение адрессов
         findAddresses();
-        sendAddress();
+
         while (resolve_conflicts() == -1){
             System.out.println("need updates blockchain");
         }
@@ -828,7 +834,8 @@ public class BasisController {
 
         //отправляет блокчейн во внешние сервера
         sendAllBlocksToStorage(blockchain.getBlockchainList());
-
+        //отправить адресса
+        sendAddress();
         text = "success: блок успешно добыт";
 //        model.addAttribute("text", text);
         return "ok";
