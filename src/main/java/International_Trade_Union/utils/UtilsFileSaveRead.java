@@ -1,13 +1,49 @@
 package International_Trade_Union.utils;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class UtilsFileSaveRead {
+    public void write(MultipartFile file, Path dir) {
+        Path filepath = Paths.get(dir.toString(), file.getOriginalFilename());
 
+        try (OutputStream os = Files.newOutputStream(filepath)) {
+            os.write(file.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static boolean deleted(int index, String fileName, String temp) throws IOException {
+        File inputFile = new File("myFile.txt");
+        File tempFile = new File("myTempFile.txt");
+
+        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+        int number = 0;
+        String currentLine;
+
+        while((currentLine = reader.readLine()) != null) {
+            number++;
+            // trim newline when comparing with lineToRemove
+            String trimmedLine = currentLine.trim();
+            if(index == number) continue;
+            writer.write(currentLine + System.getProperty("line.separator"));
+        }
+        writer.close();
+        reader.close();
+        deleteFile(fileName);
+        boolean successful = tempFile.renameTo(inputFile);
+        return successful;
+    }
     public static void save(String object, String fileName) throws IOException {
        save(object, fileName, true);
     }

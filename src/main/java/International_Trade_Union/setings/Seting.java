@@ -198,10 +198,12 @@ public interface Seting {
     String ORGINAL_ALL_TRANSACTION_FILE = "\\resources\\transactions\\";
     String ORIGINAL_ALL_SENDED_TRANSACTION_FILE = "\\resources\\sendedTransaction\\";
     String ORIGINAL_POOL_URL_ADDRESS_FILE = "\\resources\\poolAddress\\";
+    String ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE = "\\resources\\pooAddressBlocked\\";
 
     //адресса внешних сервисов
-    Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80", "http://154.40.38.130:3389");
-
+    Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");
+    Set<String> ORIGINAL_BLOCKED_ADDRESS = Set.of("http://154.40.38.130:80",
+            "http://10.0.36.2:80");
 
     int SIZE_FILE_LIMIT = 10;
 

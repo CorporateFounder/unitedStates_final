@@ -14,6 +14,7 @@ import International_Trade_Union.utils.UtilsFileSaveRead;
 import org.json.JSONException;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -59,7 +60,7 @@ public class Testing {
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
 
-        boolean result = BasisController.sendAllBlocksToStorage(blockchain.getBlockchainList());
+
 
     }
 

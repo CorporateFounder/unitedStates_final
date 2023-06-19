@@ -23,6 +23,7 @@ import International_Trade_Union.utils.*;
 import International_Trade_Union.vote.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
@@ -30,12 +31,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.swing.text.Document;
+import java.io.File;
 import java.io.IOException;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 
@@ -102,10 +108,25 @@ public class BasisController {
                 .filter(t -> t.startsWith("\""))
                 .collect(Collectors.toSet());
         nodes = nodes.stream().map(t -> t.replaceAll("\"", "")).collect(Collectors.toSet());
+        Set<String> bloked = UtilsAllAddresses.readLineObject(Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
+        nodes.removeAll(bloked);
+        nodes.removeAll(Seting.ORIGINAL_BLOCKED_ADDRESS);
         nodes.addAll(Seting.ORIGINAL_ADDRESSES);
         return nodes;
     }
 
+    @GetMapping("/getNodes")
+    public Set<String> getAllNodes() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        Set<String> temporary = UtilsAllAddresses.readLineObject(Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
+        nodes.addAll(temporary);
+        nodes.addAll(Seting.ORIGINAL_ADDRESSES);
+        nodes = nodes.stream().filter(t -> t.startsWith("\""))
+                .collect(Collectors.toSet());
+        Set<String> bloked = UtilsAllAddresses.readLineObject(Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
+        nodes.removeAll(bloked);
+        nodes.removeAll(Seting.ORIGINAL_BLOCKED_ADDRESS);
+        return nodes;
+    }
 
     /**Возвращяет действующий блокчейн*/
     public static Blockchain getBlockchain() {
@@ -210,7 +231,7 @@ public class BasisController {
         return Blockchain.indexFromFile(index, Seting.ORIGINAL_BLOCKCHAIN_FILE);
     }
     @GetMapping("/nodes/resolve")
-    public synchronized ResponseEntity resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
+    public synchronized int resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         System.out.println("start resolve");
         Blockchain temporaryBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
         Blockchain bigBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
@@ -223,7 +244,7 @@ public class BasisController {
             blockchainValid = shortDataBlockchain.isValidation();
         }
 
-
+        int bigSize = 0;
         int blocks_current_size = blockchainSize;
         long hashCountZeroTemporary = 0;
         long hashCountZeroBigBlockchain = 0;
@@ -309,6 +330,9 @@ public class BasisController {
 
 
             if (temporaryBlockchain.validatedBlockchain()) {
+                if(bigSize < temporaryBlockchain.sizeBlockhain()){
+                    bigSize = temporaryBlockchain.sizeBlockhain();
+                }
                 for (Block block : temporaryBlockchain.getBlockchainList()) {
                     hashCountZeroTemporary += UtilsUse.hashCount(block.getHashBlock());
                 }
@@ -332,7 +356,15 @@ public class BasisController {
             System.out.println("BasisController: resolve: bigblockchain size: " + bigBlockchain.sizeBlockhain());
 
         }
-        return new ResponseEntity(HttpStatus.OK);
+        if(blockchainSize > bigSize){
+            return 1;
+        }
+        else if(blockchainSize < bigSize){
+            return -1;
+        }
+        else {
+            return 0;
+        }
     }
     public static void addBlock(List<Block> orignalBlocks) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
@@ -472,15 +504,6 @@ public class BasisController {
     /** выззывает метод addBlock который перезаписывает весь список блоков, и другие данные*/
 
     /**Возвращяет список хостов, сохраненных на локальном сервере*/
-    @GetMapping("/getNodes")
-    public Set<String> getAllNodes() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        Set<String> temporary = UtilsAllAddresses.readLineObject(Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
-        nodes.addAll(temporary);
-        nodes.addAll(Seting.ORIGINAL_ADDRESSES);
-        nodes = nodes.stream().filter(t -> t.startsWith("\""))
-                .collect(Collectors.toSet());
-        return nodes;
-    }
 
     /**подключается к другим узлам и у них берет их списки хостов, которые храняться у них,
      *  и сохраняет эти списки у себя*/
@@ -553,7 +576,9 @@ public class BasisController {
     //должен отправлять блокчейн в хранилище блокчейна
     /**Отправляет список блоков в центральные хранилища (пример: http://194.87.236.238:80)*/
 
-    public static boolean sendAllBlocksToStorage(List<Block> blocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    //должен отправлять блокчейн в хранилище блокчейна
+    /**Отправляет список блоков в центральные хранилища (пример: http://194.87.236.238:80)*/
+    public static void sendAllBlocksToStorage(List<Block> blocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         String jsonDto;
         System.out.println("BasisController: sendAllBlocksToStorage: start: ");
         try {
@@ -591,74 +616,42 @@ public class BasisController {
                     String urlFrom = s + "/nodes/resolve_from_to_block";
                     try {
                         response = UtilUrl.sendPost(jsonFromTo, urlFrom);
-                        System.out.println("resolve_from_to_block: response body " + response);
-
                     }catch (Exception e){
-
-                        System.out.println("exception discover time out connect: " + originalF);
-                    }
-                    if(HttpStatus.OK.value() == response){
-                        System.out.println("good saved");
-                        return true;
+                        System.out.println("exception discover: " + originalF);
+                        continue;
                     }
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
 
-                    if(response != HttpStatus.OK.value() || response == 200){
-                        System.out.println("start send with portion: response: " + response);
+                    if(response != 0){
                         System.out.println("BasisController: sendAllBlocks: need change all: " + response);
                         //Test start algorithm
                         String original = s;
-                        String url = s + "/nodes/resolve_portion_block";
-                        fromToTempBlock = blocks.subList(blocks.size() - Seting.PORTION_BLOCK_TO_SEND, blocks.size());
-                        jsonFromTo = UtilsJson.objToStringJson(fromToTempBlock);
+                        String url = s + "/nodes/resolve_all_blocks";
                         try {
-                            UtilUrl.sendPost(jsonFromTo, url);
+                            UtilUrl.sendPost(jsonDto, url);
 
                         }catch (Exception e){
-                            System.out.println("exception discover time out connet: " + original);
+                            System.out.println("exception discover: " + original);
+                            continue;
 
                         }
                     }
-//
-//
-//                    if(response != HttpStatus.OK.value() || response == 200){
-//                        System.out.println("start send all block: response: " + response);
-//                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
-//                        //Test start algorithm
-//                        String original = s;
-//                        String url = s + "/nodes/resolve_all_blocks";
-//                        try {
-//
-//                            UtilUrl.sendPost(jsonDto, url);
-//                        }catch (Exception e){
-//                            System.out.println("exception discover time out connet: " + original);
-//                            continue;
-//
-//                        }
-//                    }
-                    if(HttpStatus.EXPECTATION_FAILED.value() == response){
-//
 
-                        return false;
-                    }
                 }
 
             } catch (JSONException e) {
-//                e.printStackTrace();
+                e.printStackTrace();
                 continue;
 
             } catch (IOException e) {
-//                e.printStackTrace();
+                e.printStackTrace();
                 continue;
             }
 
-
         }
-        System.out.println("finish sendAllBlocksToStorage");
-        return true;
-    }
 
+    }
     @GetMapping("/constantMining")
     public String alwaysMining() throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
 
@@ -682,7 +675,12 @@ public class BasisController {
         //нахождение адрессов
         findAddresses();
         sendAddress();
-        resolve_conflicts();
+        while (resolve_conflicts() == -1){
+            System.out.println("need updates blockchain");
+        }
+
+
+
         if(blockchainSize % (576 * 2) == 0){
             System.out.println("clear storage transaction because is old");
             AllTransactions.clearAllTransaction();
@@ -775,7 +773,6 @@ public class BasisController {
         //save sended transaction
         //сохранить уже добавленные в блок транзакции,
         //чтобы избежать повторного добавления
-
         AllTransactions.addSendedTransaction(temporaryDtoList);
 
         //нужна для корректировки сложности
@@ -830,20 +827,9 @@ public class BasisController {
         UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
         //отправляет блокчейн во внешние сервера
-        boolean send = sendAllBlocksToStorage(blockchain.getBlockchainList());
+        sendAllBlocksToStorage(blockchain.getBlockchainList());
 
-        if(send == false) {
-
-            for (String s : getNodes()) {
-//
-                blockchain = UtilesNode.updates(blockchainValid, blockchainSize, blockchain, s);
-            }
-
-
-            System.out.println("updatedBlockchain");
-        }
         text = "success: блок успешно добыт";
-        System.out.println("BasisController: mining: text: " + text);
 //        model.addAttribute("text", text);
         return "ok";
     }
@@ -871,9 +857,20 @@ public class BasisController {
     }
     @GetMapping("testBlock1")
     @ResponseBody
-    public List<Block> testBlock1() throws CloneNotSupportedException {
-        List<Block> blockList = blockchain.subBlock(6, 8);
-        return blockList;
+    public Boolean testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        blockchain = Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
+        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        blockchainSize = (int) shortDataBlockchain.getSize();
+        blockchainValid = shortDataBlockchain.isValidation();
+
+       for (int i = 0; i < 100; i++){
+           sendAllBlocksToStorage(blockchain.getBlockchainList());
+
+       }
+
+        return true;
     }
 }
 
