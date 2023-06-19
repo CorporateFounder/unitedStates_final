@@ -36,6 +36,7 @@ public class AllTransactions {
         //считываем с пула транзакции из дисковери.
         for (String s : Seting.ORIGINAL_ADDRESSES) {
             try {
+                System.out.println("get transactions from server: " + s + "its time 45 seconds");
                 String json = UtilUrl.readJsonFromUrl(s + "/getTransactions");
                 List<DtoTransaction> list = UtilsJson.jsonToDtoTransactionList(json);
 
