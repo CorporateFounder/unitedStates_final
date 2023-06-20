@@ -40,8 +40,17 @@ import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
+    private static int globalSize = 0;
 
-   static {
+    public static int getGlobalSize() {
+        return globalSize;
+    }
+
+    public static void setGlobalSize(int globalSize) {
+        MainController.globalSize = globalSize;
+    }
+
+    static {
        try {
            UtilsCreatedDirectory.createPackages();
        } catch (IOException e) {
@@ -49,10 +58,14 @@ public class MainController {
        }
    }
     @GetMapping("/")
-    public String home(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public String home(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
 
-
+        String sizeStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/size");
+        Integer sizeG = Integer.valueOf(sizeStr);
+        globalSize = sizeG;
         model.addAttribute("title", "Corporation International Trade Union.");
+        model.addAttribute("globalSize", globalSize);
+
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);

@@ -277,6 +277,7 @@ public class BasisController {
                 System.out.println("BasisController:resolve conflicts: address: " + s + "/size");
                 String sizeStr = UtilUrl.readJsonFromUrl(s + "/size");
                 Integer size = Integer.valueOf(sizeStr);
+                MainController.setGlobalSize(size);
                 System.out.println("resolve_conflicts: finish /size: " + size);
                 if (size > blocks_current_size) {
                     System.out.println("size from address: " + s + " upper than: " + size + ":blocks_current_size " + blocks_current_size);
@@ -680,10 +681,7 @@ public class BasisController {
         String text = "";
         //нахождение адрессов
         findAddresses();
-
-        while (resolve_conflicts() == -1){
-            System.out.println("need updates blockchain");
-        }
+        resolve_conflicts();
 
 
 
