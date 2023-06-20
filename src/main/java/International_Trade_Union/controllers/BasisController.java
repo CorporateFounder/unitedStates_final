@@ -860,12 +860,16 @@ public class BasisController {
     }
     @GetMapping("testBlock1")
     @ResponseBody
-    public Boolean testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public List<File> testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        File folder = new File(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        List<File> files = new ArrayList<>();
+        for (File file : folder.listFiles()) {
+            if(!file.isDirectory()){
+                files.add(file);
+            }
+        }
 
-        UtilsBlock.saveBlocks(blockchain.getBlockchainList(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
-        UtilsBlock.saveBlocks(blockchain.getBlockchainList(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
-
-        return true;
+        return files;
     }
 }
 
