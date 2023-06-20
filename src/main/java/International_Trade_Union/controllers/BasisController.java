@@ -683,8 +683,6 @@ public class BasisController {
         findAddresses();
         resolve_conflicts();
 
-
-
         if(blockchainSize % (576 * 2) == 0){
             System.out.println("clear storage transaction because is old");
             AllTransactions.clearAllTransaction();
@@ -863,17 +861,9 @@ public class BasisController {
     @GetMapping("testBlock1")
     @ResponseBody
     public Boolean testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
-        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-        blockchainSize = (int) shortDataBlockchain.getSize();
-        blockchainValid = shortDataBlockchain.isValidation();
 
-       for (int i = 0; i < 100; i++){
-           sendAllBlocksToStorage(blockchain.getBlockchainList());
-
-       }
+        UtilsBlock.saveBlocks(blockchain.getBlockchainList(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        UtilsBlock.saveBlocks(blockchain.getBlockchainList(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
         return true;
     }
