@@ -199,6 +199,8 @@ public interface Seting {
     String ORIGINAL_ALL_SENDED_TRANSACTION_FILE = "\\resources\\sendedTransaction\\";
     String ORIGINAL_POOL_URL_ADDRESS_FILE = "\\resources\\poolAddress\\";
     String ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE = "\\resources\\pooAddressBlocked\\";
+    String temp = "\\resources\\\\tempblockchain\\";
+
 
     //адресса внешних сервисов
     Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");
@@ -217,6 +219,7 @@ public interface Seting {
     String TEST_CURRENT_LAWS = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileSaved\\current laws\\";
     String TEST_FEDERAL_VOTE = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileSaved\\vote\\";
     String TEST_ALL_FEDERAL_LAWS_WITH_BALANCE_FILE = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileSaved\\allLawsWithBalance\\";
+
 
     //Временный блокчейн для тестирования
     String TEST_LAST_BLOCK_TEMPORARY = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileWithoutSave\\lastBlock\\";
