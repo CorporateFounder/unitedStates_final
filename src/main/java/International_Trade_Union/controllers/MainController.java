@@ -32,6 +32,7 @@ import International_Trade_Union.vote.VoteEnum;
 
 
 import java.io.IOException;
+import java.net.NoRouteToHostException;
 import java.net.http.WebSocket;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -59,12 +60,23 @@ public class MainController {
    }
     @GetMapping("/")
     public String home(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
-
-        String sizeStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/size");
+        String sizeStr = "-1";
+        try {
+            sizeStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/size");
+        }catch (NoRouteToHostException e){
+            System.out.println("home page you cannot connect to global server," +
+                    "you can't give size global server");
+            sizeStr = "-1";
+        }
         Integer sizeG = Integer.valueOf(sizeStr);
         globalSize = sizeG;
         model.addAttribute("title", "Corporation International Trade Union.");
-        model.addAttribute("globalSize", globalSize);
+        if(sizeStr.isEmpty() || sizeStr.isBlank() || sizeStr.equals("-1")){
+            model.addAttribute("globalSize", "global server data was not received because the server was unable to connect");
+        }else {
+            model.addAttribute("globalSize", Integer.toString(globalSize));
+        }
+
 
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
