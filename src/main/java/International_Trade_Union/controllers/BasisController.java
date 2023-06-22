@@ -630,7 +630,7 @@ public class BasisController {
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
 
-                    if(response != 0){
+                    if(response != 0 || response != HttpStatus.OK.value()){
                         System.out.println("BasisController: sendAllBlocks: need change all: " + response);
                         //Test start algorithm
                         String original = s;
