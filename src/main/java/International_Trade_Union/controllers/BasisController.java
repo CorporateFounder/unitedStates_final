@@ -633,7 +633,7 @@ public class BasisController {
                 //если блокчейн текущей больше чем в хранилище, то
                 //отправить текущий блокчейн отправить в хранилище
                 if (size < blocks_current_size) {
-                    int response = 0;
+                    int response = -1;
                     //Test start algorithm
                     String originalF = s;
                     System.out.println("send resolve_from_to_block");
