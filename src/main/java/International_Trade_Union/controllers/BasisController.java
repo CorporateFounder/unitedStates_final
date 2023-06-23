@@ -861,7 +861,7 @@ public class BasisController {
     @GetMapping("testBlock1")
     @ResponseBody
     public String testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-
+        UtilsFileSaveRead.moveFile(Seting.ORIGINAL_BLOCKCHAIN_FILE, Seting.TEMPORARY_BLOCKCHAIN_FILE);
         return "good";
     }
 }

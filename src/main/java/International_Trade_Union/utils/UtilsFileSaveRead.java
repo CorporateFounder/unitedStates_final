@@ -12,6 +12,26 @@ import java.util.List;
 import java.util.Set;
 
 public class UtilsFileSaveRead {
+    public static void moveFile(String src, String dest ) {
+        File folder = new File(src);
+
+        for (File file : folder.listFiles()) {
+            if(!file.isDirectory()){
+                Path result = null;
+                try {
+                    result =  Files.move(Paths.get(file.getAbsolutePath()),
+                            Paths.get(dest + file.getName()));
+                } catch (IOException e) {
+                    System.out.println("Exception while moving file: " + e.getMessage());
+                }
+                if(result != null) {
+                    System.out.println("File moved successfully.");
+                }else{
+                    System.out.println("File movement failed.");
+                }
+            }
+        }
+    }
     public void write(MultipartFile file, Path dir) {
         Path filepath = Paths.get(dir.toString(), file.getOriginalFilename());
 
