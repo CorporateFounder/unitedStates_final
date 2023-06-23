@@ -445,6 +445,15 @@ public class BasisController {
 
     @RequestMapping("/sendBlocks")
     public String sending() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        if(blockchainValid == false || blockchainSize == 0){
+            blockchain = Mining.getBlockchain(
+                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                    BlockchainFactoryEnum.ORIGINAL);
+            shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            blockchainSize = (int) shortDataBlockchain.getSize();
+            blockchainValid = shortDataBlockchain.isValidation();
+        }
+        System.out.println("sendBlocks: size: " + blockchain.sizeBlockhain());
         sendAllBlocksToStorage(blockchain.getBlockchainList());
         return "redirect:/";
     }
@@ -615,6 +624,10 @@ public class BasisController {
                 if(Integer.valueOf(sizeStr) > 0)
                     size = Integer.valueOf(sizeStr);
                 System.out.println("BasisController: send size: " + size);
+                if(size > blocks.size()){
+                    System.out.println("your local chain less");
+                    return;
+                }
                 List<Block> fromToTempBlock = blocks.subList(size, blocks.size());
                 String jsonFromTo = UtilsJson.objToStringJson(fromToTempBlock);
                 //если блокчейн текущей больше чем в хранилище, то
@@ -623,40 +636,42 @@ public class BasisController {
                     int response = 0;
                     //Test start algorithm
                     String originalF = s;
+                    System.out.println("send resolve_from_to_block");
                     String urlFrom = s + "/nodes/resolve_from_to_block";
                     try {
                         response = UtilUrl.sendPost(jsonFromTo, urlFrom);
                     }catch (Exception e){
-                        System.out.println("exception discover: " + originalF);
-                        continue;
+                        System.out.println("exception resolve_from_to_block: " + originalF);
+
                     }
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
 
                     if(response != 0 || response != HttpStatus.OK.value()){
+                        System.out.println("not worked resolve_from_to_block");
                         System.out.println("BasisController: sendAllBlocks: need change all: " + response);
                         //Test start algorithm
                         String original = s;
                         String url = s + "/nodes/resolve_portion_block";
                         try {
+                            System.out.println(" start: resolve_portion_block");
                             List<Block> emptyList = new ArrayList<>();
-                            for (int i = blockchain.sizeBlockhain() - 1; i > 0; i--) {
-                                Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(i), s + "/block"));
-                                if (!blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
-                                    emptyList.add(block);
-                                } else {
-                                    emptyList.add(block);
-                                    emptyList.addAll(blockchain.getBlockchainList().subList(0, i));
-                                    emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+                            int countBreak = 100;
+                            for (int i = 0; i < 5; i++) {
+                                emptyList = Blockchain.clone(blocks.size()- countBreak, blocks.size(), blocks);
+                                String portion = UtilsJson.objToStringJson(emptyList);
+                                response = UtilUrl.sendPost(portion, url);
+                                if(response != HttpStatus.OK.value()){
+                                    countBreak = countBreak * 2;
+                                }else {
                                     break;
                                 }
                             }
-                            String portion = UtilsJson.objToStringJson(emptyList);
-                            UtilUrl.sendPost(portion, url);
+
+                            System.out.println("finish: ");
 
                         }catch (Exception e){
-                            System.out.println("exception discover: " + original);
-                            continue;
+                            System.out.println("exception resolve_portion_block: " + original);
 
                         }
                     }
@@ -667,10 +682,10 @@ public class BasisController {
                         String original = s;
                         String url = s + "/nodes/resolve_all_blocks";
                         try {
-                            UtilUrl.sendPost(jsonDto, url);
+                            response = UtilUrl.sendPost(jsonDto, url);
 
                         }catch (Exception e){
-                            System.out.println("exception discover: " + original);
+                            System.out.println("exception resolve_all_blocks: " + original);
                             continue;
 
                         }
