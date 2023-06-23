@@ -1,5 +1,6 @@
 package International_Trade_Union.utils;
 
+import International_Trade_Union.model.Mining;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -14,11 +15,12 @@ import java.util.Set;
 public class UtilsFileSaveRead {
     public static void moveFile(String src, String dest ) {
         File folder = new File(src);
-
+        Mining.deleteFiles(dest);
         for (File file : folder.listFiles()) {
             if(!file.isDirectory()){
                 Path result = null;
                 try {
+
                     result =  Files.move(Paths.get(file.getAbsolutePath()),
                             Paths.get(dest + file.getName()));
                 } catch (IOException e) {
@@ -31,6 +33,7 @@ public class UtilsFileSaveRead {
                 }
             }
         }
+        Mining.deleteFiles(src);
     }
     public void write(MultipartFile file, Path dir) {
         Path filepath = Paths.get(dir.toString(), file.getOriginalFilename());
