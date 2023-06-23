@@ -161,7 +161,7 @@ public class Blockchain implements Cloneable{
                     Block block = UtilsJson.jsonToBLock(s);
 
                     if(prevBlock == null){
-                        UtilsBlock.saveBLock(block, Seting.TEMPORARY_BLOCKCHAIN_FILE);
+                        UtilsBlock.saveBLock(block, fileSave);
                         prevBlock = block;
                         continue;
                     }
@@ -199,17 +199,20 @@ public class Blockchain implements Cloneable{
                     hashCount += UtilsUse.hashCount(block.getHashBlock());
 
                     prevBlock = block;
-                    UtilsBlock.saveBLock(block, Seting.TEMPORARY_BLOCKCHAIN_FILE);
-
+                    UtilsBlock.saveBLock(block, fileSave);
 
                 }
 
             }
         }
+        UtilsFileSaveRead.moveFile(fileSave, fileName);
+
+        //если блокчейн внеший выше текущего
+
+
 
         return new DataShortBlockchainInformation(size, valid, hashCount);
     }
-
     public static  DataShortBlockchainInformation checkEqualsFromToBlockFile(String fileName, List<Block> blocks) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         boolean valid = true;
         File folder = new File(fileName);

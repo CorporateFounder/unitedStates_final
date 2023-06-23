@@ -35,7 +35,7 @@ public class UtilsFileSaveRead {
         }
         Mining.deleteFiles(src);
     }
-    public void write(MultipartFile file, Path dir) {
+    public static void write(MultipartFile file, Path dir) {
         Path filepath = Paths.get(dir.toString(), file.getOriginalFilename());
 
         try (OutputStream os = Files.newOutputStream(filepath)) {
