@@ -846,20 +846,7 @@ public class BasisController {
 
     }
 
-    public static void addTest(List<Block> orignalBlocks) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
-//        UtilsBlock.deleteFiles();
-        System.out.println("addBlock start");
-        for (Block block : orignalBlocks) {
-            System.out.println("BasisController: addBlock: blockchain is being updated ");
-            UtilsBlock.saveBLock(block, Seting.temp);
-        }
 
-
-
-        //перерасчет после добычи
-
-        System.out.println("BasisController: addBlock: finish");
-    }
 
     @GetMapping("/testBlock")
     @ResponseBody
@@ -874,9 +861,7 @@ public class BasisController {
     @GetMapping("testBlock1")
     @ResponseBody
     public String testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        System.out.println("start test");
-        addTest(blockchain.getBlockchainList());
-        System.out.println("finish test");
+
         return "good";
     }
 }
