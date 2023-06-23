@@ -443,6 +443,11 @@ public class BasisController {
      * если, локальный блокчейн, меньше других */
 
 
+    @RequestMapping("/sendBlocks")
+    public String sending() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        sendAllBlocksToStorage(blockchain.getBlockchainList());
+        return "redirect:/";
+    }
     /**
      * Перезаписывает весь список блоков, и делает перерасчет баланса, а также других данных
      * таких как голоса, совет акционеров и т.д. заново записывает в файлы
