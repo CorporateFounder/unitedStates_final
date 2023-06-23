@@ -199,7 +199,7 @@ public interface Seting {
     String ORIGINAL_ALL_SENDED_TRANSACTION_FILE = "\\resources\\sendedTransaction\\";
     String ORIGINAL_POOL_URL_ADDRESS_FILE = "\\resources\\poolAddress\\";
     String ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE = "\\resources\\pooAddressBlocked\\";
-    String tem = "\\resources\\\\tempblockchain\\";
+
     String TEMPORARY_BLOCKCHAIN_FILE = "\\resources\\tempblockchain\\";
 
 
