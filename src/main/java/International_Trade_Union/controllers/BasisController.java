@@ -252,9 +252,7 @@ public class BasisController {
         System.out.println("resolve_conflicts: blocks_current_size: " + blocks_current_size);
         long hashCountZeroAll = 0;
         //count hash start with zero all
-//        for (Block block : blockchain.getBlockchainList()) {
-//            hashCountZeroAll += UtilsUse.hashCount(block.getHashBlock());
-//        }
+
         hashCountZeroAll =  shortDataBlockchain.getHashCount();
 
         Set<String> nodesAll = getNodes();
@@ -629,6 +627,34 @@ public class BasisController {
                     }
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
+
+                    if(response != 0 || response != HttpStatus.OK.value()){
+                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
+                        //Test start algorithm
+                        String original = s;
+                        String url = s + "/nodes/resolve_portion_block";
+                        try {
+                            List<Block> emptyList = new ArrayList<>();
+                            for (int i = blockchain.sizeBlockhain() - 1; i > 0; i--) {
+                                Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(i), s + "/block"));
+                                if (!blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
+                                    emptyList.add(block);
+                                } else {
+                                    emptyList.add(block);
+                                    emptyList.addAll(blockchain.getBlockchainList().subList(0, i));
+                                    emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+                                    break;
+                                }
+                            }
+                            String portion = UtilsJson.objToStringJson(emptyList);
+                            UtilUrl.sendPost(portion, url);
+
+                        }catch (Exception e){
+                            System.out.println("exception discover: " + original);
+                            continue;
+
+                        }
+                    }
 
                     if(response != 0 || response != HttpStatus.OK.value()){
                         System.out.println("BasisController: sendAllBlocks: need change all: " + response);
