@@ -33,6 +33,7 @@ import International_Trade_Union.vote.VoteEnum;
 
 import java.io.IOException;
 import java.net.NoRouteToHostException;
+import java.net.SocketException;
 import java.net.http.WebSocket;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -67,12 +68,16 @@ public class MainController {
             System.out.println("home page you cannot connect to global server," +
                     "you can't give size global server");
             sizeStr = "-1";
+        }catch (SocketException e){
+            System.out.println("home page you cannot connect to global server," +
+                    "you can't give size global server");
+            sizeStr = "-1";
         }
         Integer sizeG = Integer.valueOf(sizeStr);
         globalSize = sizeG;
         model.addAttribute("title", "Corporation International Trade Union.");
         if(sizeStr.isEmpty() || sizeStr.isBlank() || sizeStr.equals("-1")){
-            model.addAttribute("globalSize", "global server data was not received because the server was unable to connect");
+            model.addAttribute("globalSize", "global server data was not received because the server was unable to connect: " + sizeStr);
         }else {
             model.addAttribute("globalSize", Integer.toString(globalSize));
         }
