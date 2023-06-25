@@ -108,6 +108,18 @@ public class Blockchain implements Cloneable{
 
 
                     Block block = UtilsJson.jsonToBLock(s);
+                    if(block.getIndex() == 0){
+                        for (DtoTransaction transaction : block.getDtoTransactions()) {
+                            if(transaction.getSender().equals(Seting.BASIS_ADDRESS)
+                             && transaction.getCustomer().equals(Seting.ADDRESS_FOUNDER)){
+                                if(transaction.getDigitalDollar() != Seting.FOUNDERS_REMUNERATION_DIGITAL_DOLLAR){
+                                    valid =  false;
+                                    return new DataShortBlockchainInformation(size, valid, hashCount);
+                                }
+                            }
+                        }
+
+                    }
                     if(prevBlock == null){
                         prevBlock = block;
                         continue;
@@ -182,6 +194,18 @@ public class Blockchain implements Cloneable{
                     size += 1;
 
                     Block block = UtilsJson.jsonToBLock(s);
+                    if(block.getIndex() == 0){
+                        for (DtoTransaction transaction : block.getDtoTransactions()) {
+                            if(transaction.getSender().equals(Seting.BASIS_ADDRESS)
+                                    && transaction.getCustomer().equals(Seting.ADDRESS_FOUNDER)){
+                                if(transaction.getDigitalDollar() != Seting.FOUNDERS_REMUNERATION_DIGITAL_DOLLAR){
+                                    valid =  false;
+                                    return new DataShortBlockchainInformation(size, valid, hashCount);
+                                }
+                            }
+                        }
+
+                    }
                     if(prevBlock == null){
                         prevBlock = block;
                         continue;
@@ -267,6 +291,18 @@ public class Blockchain implements Cloneable{
 
 
                         Block block = UtilsJson.jsonToBLock(s);
+                        if(block.getIndex() == 0){
+                            for (DtoTransaction transaction : block.getDtoTransactions()) {
+                                if(transaction.getSender().equals(Seting.BASIS_ADDRESS)
+                                        && transaction.getCustomer().equals(Seting.ADDRESS_FOUNDER)){
+                                    if(transaction.getDigitalDollar() != Seting.FOUNDERS_REMUNERATION_DIGITAL_DOLLAR){
+                                        valid =  false;
+                                        return new DataShortBlockchainInformation(size, valid, hashCount);
+                                    }
+                                }
+                            }
+
+                        }
                         if (prevBlock == null) {
                             prevBlock = block;
                             UtilsBlock.saveBLock(block, fileSave);

@@ -306,10 +306,10 @@ public class BasisController {
                                 emptyList.add(block);
                             }
                             else if (
-                                    !blockchain.getBlock(i-3).getHashBlock().equals(block.getHashBlock())) {
+                                    !blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
                                 emptyList.add(block);
                                 System.out.println("dowdnload block index: " + i);
-                                System.out.println("block original index: " + blockchain.getBlock(i-3).getIndex());
+                                System.out.println("block original index: " + blockchain.getBlock(i).getIndex());
                                 System.out.println("block from index: " + block.getIndex());
                             } else {
                                 emptyList.add(block);
@@ -321,13 +321,13 @@ public class BasisController {
                             }
                         }
                     }
-                    if (!temporaryBlockchain.validatedBlockchain()) {
-                        System.out.println("download all blockchain");
-                        temporaryjson = UtilUrl.readJsonFromUrl(address);
-                        entityChain = UtilsJson.jsonToEntityChain(temporaryjson);
-                        temporaryBlockchain.setBlockchainList(
-                                entityChain.getBlocks().stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList()));
-                    }
+//                    if (!temporaryBlockchain.validatedBlockchain()) {
+//                        System.out.println("download all blockchain");
+//                        temporaryjson = UtilUrl.readJsonFromUrl(address);
+//                        entityChain = UtilsJson.jsonToEntityChain(temporaryjson);
+//                        temporaryBlockchain.setBlockchainList(
+//                                entityChain.getBlocks().stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList()));
+//                    }
                 } else {
                     System.out.println("BasisController: resove: size less: " + size + " address: " + address);
                     continue;
