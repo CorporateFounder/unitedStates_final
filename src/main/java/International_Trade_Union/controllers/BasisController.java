@@ -656,40 +656,33 @@ public class BasisController {
                         try {
                             System.out.println(" start: resolve_portion_block");
                             List<Block> emptyList = new ArrayList<>();
-                            int countBreak = 100;
-                            for (int i = 0; i < 5; i++) {
-                                emptyList = Blockchain.clone(blocks.size()- countBreak, blocks.size(), blocks);
-                                String portion = UtilsJson.objToStringJson(emptyList);
-                                response = UtilUrl.sendPost(portion, url);
-                                if(response != HttpStatus.OK.value()){
-                                    countBreak = countBreak * 2;
-                                }else {
-                                    break;
-                                }
-                            }
 
-                            System.out.println("finish: ");
+                            emptyList = Blockchain.clone(blocks.size()- Seting.PORTION_BLOCK_TO_SEND, blocks.size(), blocks);
+                            String portion = UtilsJson.objToStringJson(emptyList);
+                            response = UtilUrl.sendPost(portion, url);
+
+                            System.out.println("finish: " + response);
 
                         }catch (Exception e){
                             System.out.println("exception resolve_portion_block: " + original);
-
-                        }
-                    }
-
-                    if(response != 0 || response != HttpStatus.OK.value()){
-                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
-                        //Test start algorithm
-                        String original = s;
-                        String url = s + "/nodes/resolve_all_blocks";
-                        try {
-                            response = UtilUrl.sendPost(jsonDto, url);
-
-                        }catch (Exception e){
-                            System.out.println("exception resolve_all_blocks: " + original);
                             continue;
-
                         }
                     }
+//
+//                    if(response != 0 || response != HttpStatus.OK.value()){
+//                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
+//                        //Test start algorithm
+//                        String original = s;
+//                        String url = s + "/nodes/resolve_all_blocks";
+//                        try {
+//                            response = UtilUrl.sendPost(jsonDto, url);
+//
+//                        }catch (Exception e){
+//                            System.out.println("exception resolve_all_blocks: " + original);
+//                            continue;
+//
+//                        }
+//                    }
 
                 }
 
