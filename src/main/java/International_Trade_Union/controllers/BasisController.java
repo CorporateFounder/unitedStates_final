@@ -304,7 +304,7 @@ public class BasisController {
 
                             Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(i), s + "/block"));
 
-                            if(i > blockchainSize){
+                            if(i > blockchainSize -1){
                                 System.out.println("download blocks: " + block.getIndex()+
                                         " your block : " + (blockchainSize ));
                                 emptyList.add(block);
