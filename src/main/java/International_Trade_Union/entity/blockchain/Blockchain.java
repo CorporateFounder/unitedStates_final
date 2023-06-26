@@ -420,6 +420,7 @@ public class Blockchain implements Cloneable{
                         System.out.println("ERROR: UtilsBlock: validation: block.Hash():" + block.getHashBlock());
                         System.out.println("ERROR: UtilsBlock: validation: BLOCK_GENERATION_INTERVAL:" + Seting.BLOCK_GENERATION_INTERVAL);
                         System.out.println("ERROR: UtilsBlock: validation: DIFFICULTY_ADJUSTMENT_INTERVAL:" + Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
+                        size++;
                         return new DataShortBlockchainInformation(size, valid, hashCount);
                     }
 
@@ -430,7 +431,7 @@ public class Blockchain implements Cloneable{
             }
         }
 
-
+        size++;
         return new DataShortBlockchainInformation(size, valid, hashCount);
     }
 
