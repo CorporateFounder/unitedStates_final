@@ -1,6 +1,7 @@
 package International_Trade_Union.utils;
 
 
+import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
@@ -343,16 +344,23 @@ public class UtilsBlock {
     }
     public static boolean validation(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL ) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         boolean validated = true;
-
+        int size = 0;
         List<Block> temporary = new ArrayList<>();
         Block prevBlock  = null;
         for (int i = 1; i < blocks.size(); i++) {
+            size++;
             Block block = blocks.get(i);
-            if(i != block.getIndex()){
-                System.out.println("index error: " + i + " block index: " + block.getIndex());
-                System.out.println("ERROR: UtilsBlock: validation: block.Hash():" + block.getHashBlock());
 
-                return false;
+            boolean haveTwoIndexOne = false;
+            if(block.getIndex() == 1 && haveTwoIndexOne == false){
+                size = 1;
+                haveTwoIndexOne = true;
+                block.getHashBlock().equals(Seting.ORIGINAL_HASH);
+            }
+            if(size != block.getIndex()){
+                System.out.println("wrong blockchain missing block: " + size + " index: " + block.getIndex());
+                validated = false;
+                return validated;
             }
             if(prevBlock == null){
                 prevBlock = block;

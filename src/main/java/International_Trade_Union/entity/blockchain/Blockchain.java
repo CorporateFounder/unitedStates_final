@@ -386,13 +386,26 @@ public class Blockchain implements Cloneable{
             } else {
                 List<String> list = UtilsFileSaveRead.reads(fileEntry.getAbsolutePath());
                 for (String s : list) {
-                    size += 1;
 
+                    size += 1;
                     Block block = UtilsJson.jsonToBLock(s);
+                    boolean haveTwoIndexOne = false;
+                    if(block.getIndex() == 1 && haveTwoIndexOne == false){
+                        size = 1;
+                        haveTwoIndexOne = true;
+                        block.getHashBlock().equals(Seting.ORIGINAL_HASH);
+                    }
+                    if(size != block.getIndex()){
+                        System.out.println("wrong blockchain missing block: " + size + " index: " + block.getIndex());
+                        valid = false;
+                        return  new DataShortBlockchainInformation(size, valid, hashCount);
+                    }
+
                     if(prevBlock == null){
                         prevBlock = block;
                         continue;
                     }
+
                     hashCount += UtilsUse.hashCount(block.getHashBlock());
                     valid = UtilsBlock.validationOneBlock(Seting.ADDRESS_FOUNDER,
                             prevBlock,

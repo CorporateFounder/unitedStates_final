@@ -290,8 +290,8 @@ public class BasisController {
                     System.out.println("download sub block: " + subBlockchainJson);
                     List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
                     emptyList.addAll(subBlocks);
-                    if(blocks_current_size != 0)
-                        emptyList.addAll(blockchain.getBlockchainList());
+//                    if(blocks_current_size != 0)
+//                        emptyList.addAll(blockchain.getBlockchainList());
 
                     emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
                     temporaryBlockchain.setBlockchainList(emptyList);
@@ -920,8 +920,9 @@ public class BasisController {
     }
     @GetMapping("testBlock1")
     @ResponseBody
-    public String testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        return "good";
+    public boolean testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+
+        return blockchain.validatedBlockchain();
     }
 }
 
