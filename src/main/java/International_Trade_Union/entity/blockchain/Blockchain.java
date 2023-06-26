@@ -374,6 +374,7 @@ public class Blockchain implements Cloneable{
     }
 
     public static DataShortBlockchainInformation checkFromFile(
+
             String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         boolean valid = true;
         File folder = new File(filename);
