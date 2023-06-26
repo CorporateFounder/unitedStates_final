@@ -434,7 +434,6 @@ public class Blockchain implements Cloneable{
             }
         }
 
-        size++;
         return new DataShortBlockchainInformation(size, valid, hashCount);
     }
 

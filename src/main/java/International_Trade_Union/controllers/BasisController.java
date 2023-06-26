@@ -291,7 +291,7 @@ public class BasisController {
                     List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
                     emptyList.addAll(subBlocks);
                     if(blocks_current_size > 1)
-                        emptyList.addAll(blockchain.getBlockchainList());
+                        emptyList.addAll(blockchain.subBlock(0, blocks_current_size));
 
                     emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
                     temporaryBlockchain.setBlockchainList(emptyList);
@@ -346,6 +346,8 @@ public class BasisController {
 //                e.printStackTrace();
                 System.out.println("BasisController: resolve_conflicts: connect refused Error: " + s);
                 continue;
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
             }
 
 
