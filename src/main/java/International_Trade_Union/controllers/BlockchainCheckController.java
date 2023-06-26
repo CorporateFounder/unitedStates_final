@@ -2,6 +2,7 @@ package International_Trade_Union.controllers;
 
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.blockchain.Blockchain;
+import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.UtilsBlock;
@@ -32,7 +33,9 @@ public class BlockchainCheckController {
                     Seting.ORIGINAL_BLOCKCHAIN_FILE,
                     BlockchainFactoryEnum.ORIGINAL);
             System.out.println("BlockchainCheckController: checkValidation: size: " + blockchain.sizeBlockhain());
-            boolean check = blockchain.validatedBlockchain();
+//            boolean check = blockchain.validatedBlockchain();
+            DataShortBlockchainInformation data = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            boolean check = data.isValidation();
             if(check == false){
                 System.out.println("deleted blockchain files");
 

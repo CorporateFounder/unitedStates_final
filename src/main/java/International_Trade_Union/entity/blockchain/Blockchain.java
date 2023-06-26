@@ -379,7 +379,7 @@ public class Blockchain implements Cloneable{
         File folder = new File(filename);
         Block prevBlock = null;
         int size = 0;
-         long hashCount = 0;
+        long hashCount = 0;
         for (final File fileEntry : folder.listFiles()) {
             if (fileEntry.isDirectory()) {
                 System.out.println("is directory " + fileEntry.getAbsolutePath());
@@ -420,6 +420,7 @@ public class Blockchain implements Cloneable{
 
         return new DataShortBlockchainInformation(size, valid, hashCount);
     }
+
     public static boolean deletedLastStrFromFile(int index, String filename) throws IOException {
         boolean valid = false;
         File folder = new File(filename);
@@ -445,7 +446,7 @@ public class Blockchain implements Cloneable{
     public static Block indexFromFile(int index, String filename) throws JsonProcessingException {
         File folder = new File(filename);
         Block block = null;
-        int size = 0;
+        int size = 1;
 
 
         for (final File fileEntry : folder.listFiles()) {

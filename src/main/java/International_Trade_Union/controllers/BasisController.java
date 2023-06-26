@@ -193,14 +193,14 @@ public class BasisController {
     @GetMapping("/size")
     @ResponseBody
     public Integer sizeBlockchain() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-       if(blockchainValid == false || blockchainSize == 0){
+
            blockchain = Mining.getBlockchain(
                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
                    BlockchainFactoryEnum.ORIGINAL);
            shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
            blockchainSize = (int) shortDataBlockchain.getSize();
            blockchainValid = shortDataBlockchain.isValidation();
-       }
+        System.out.println("short: " + shortDataBlockchain);
 
         return blockchainSize;
     }
@@ -282,15 +282,16 @@ public class BasisController {
 
                     System.out.println("size from address: " + s + " upper than: " + size + ":blocks_current_size " + blocks_current_size);
                     //Test start algorithm
-                    SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(blocks_current_size-1, size);
+                    SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(blocks_current_size, size);
                     String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
 
                     List<Block> emptyList = new ArrayList<>();
 
-                    System.out.println("download sub block");
+                    System.out.println("download sub block: " + subBlockchainJson);
                     List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
                     emptyList.addAll(subBlocks);
-                    emptyList.addAll(blockchain.getBlockchainList());
+                    if(blocks_current_size != 0)
+                        emptyList.addAll(blockchain.getBlockchainList());
 
                     emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
                     temporaryBlockchain.setBlockchainList(emptyList);
@@ -298,12 +299,14 @@ public class BasisController {
                     if (!temporaryBlockchain.validatedBlockchain()) {
                         System.out.println("download blocks");
                         emptyList = new ArrayList<>();
-                        emptyList.addAll(subBlocks);
+
                         for (int i = size - 1; i > 0; i--) {
 
                             Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(i), s + "/block"));
 
-                            if(i > blockchainSize - 1){
+                            if(i > blockchainSize){
+                                System.out.println("download blocks: " + block.getIndex()+
+                                        " your block : " + (blockchainSize ));
                                 emptyList.add(block);
                             }
                             else if (
@@ -315,7 +318,10 @@ public class BasisController {
                             } else {
                                 emptyList.add(block);
                                 System.out.println("sub: " + 0 + " : " + i);
-                                emptyList.addAll(blockchain.getBlockchainList().subList(0, i));
+                                if(i != 0){
+                                    emptyList.addAll(blockchain.getBlockchainList().subList(0, i));
+                                }
+
                                 emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
                                 temporaryBlockchain.setBlockchainList(emptyList);
                                 break;
