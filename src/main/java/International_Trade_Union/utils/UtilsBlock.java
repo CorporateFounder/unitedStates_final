@@ -344,21 +344,21 @@ public class UtilsBlock {
     }
     public static boolean validation(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL ) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         boolean validated = true;
-        int size = 0;
+        int index = 0;
         List<Block> temporary = new ArrayList<>();
         Block prevBlock  = null;
         for (int i = 1; i < blocks.size(); i++) {
-            size++;
+            index++;
             Block block = blocks.get(i);
 
             boolean haveTwoIndexOne = false;
             if(block.getIndex() == 1 && haveTwoIndexOne == false){
-                size = 1;
+                index = 1;
                 haveTwoIndexOne = true;
                 block.getHashBlock().equals(Seting.ORIGINAL_HASH);
             }
-            if(size != block.getIndex()){
-                System.out.println("wrong blockchain missing block: " + size + " index: " + block.getIndex());
+            if(index != block.getIndex()){
+                System.out.println("wrong blockchain missing block: " + index + " index: " + block.getIndex());
                 validated = false;
                 return validated;
             }
