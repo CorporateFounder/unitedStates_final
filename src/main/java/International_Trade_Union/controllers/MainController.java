@@ -83,6 +83,21 @@ public class MainController {
         }
 
 
+        String versionStr = "-1";
+        try {
+            versionStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/version");
+        }catch (NoRouteToHostException e){
+            System.out.println("home page you cannot connect to global server," +
+                    "you can't give version global server");
+            versionStr = "-1";
+        }catch (SocketException e){
+            System.out.println("," +
+                    "you can't give version global server");
+            versionStr = "-1";
+        }
+
+        model.addAttribute("global_version", versionStr);
+
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
@@ -91,6 +106,13 @@ public class MainController {
 
         model.addAttribute("size", size);
         model.addAttribute("version", Seting.VERSION);
+        boolean validation = blockchain.validatedBlockchain();
+        if(validation == false){
+            System.out.println("deleted blockchain files");
+
+            UtilsBlock.deleteFiles();
+        }
+        model.addAttribute("validation", validation);
 
 
         //догрузить блокчейн
