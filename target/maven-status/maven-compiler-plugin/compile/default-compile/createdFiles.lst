@@ -86,6 +86,7 @@ International_Trade_Union\network\AllTransactions.class
 International_Trade_Union\UnitedStatesApplication.class
 International_Trade_Union\controllers\TransactionsController.class
 International_Trade_Union\controllers\CreateAccountController.class
+International_Trade_Union\entity\SendBlocksEndInfo.class
 International_Trade_Union\model\Account.class
 International_Trade_Union\utils\UtilsTransaction.class
 International_Trade_Union\utils\UtilsFileSaveRead.class

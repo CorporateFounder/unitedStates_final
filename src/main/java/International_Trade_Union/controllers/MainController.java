@@ -90,6 +90,7 @@ public class MainController {
         Map<String, Account> balances = new HashMap<>();
 
         model.addAttribute("size", size);
+        model.addAttribute("version", Seting.VERSION);
 
 
         //догрузить блокчейн
