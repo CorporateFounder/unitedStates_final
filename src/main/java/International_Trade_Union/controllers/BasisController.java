@@ -1,6 +1,7 @@
 package International_Trade_Union.controllers;
 
 import International_Trade_Union.entity.AddressUrl;
+import International_Trade_Union.entity.SendBlocksEndInfo;
 import International_Trade_Union.entity.SubBlockchainEntity;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -641,7 +642,8 @@ public class BasisController {
                     return;
                 }
                 List<Block> fromToTempBlock = blocks.subList(size, blocks.size());
-                String jsonFromTo = UtilsJson.objToStringJson(fromToTempBlock);
+                SendBlocksEndInfo infoBlocks = new SendBlocksEndInfo(Seting.VERSION, fromToTempBlock);
+                String jsonFromTo = UtilsJson.objToStringJson(infoBlocks);
                 //если блокчейн текущей больше чем в хранилище, то
                 //отправить текущий блокчейн отправить в хранилище
                 if (size < blocks_current_size) {
@@ -670,7 +672,8 @@ public class BasisController {
                             List<Block> emptyList = new ArrayList<>();
 
                             emptyList = Blockchain.clone(blocks.size()- Seting.PORTION_BLOCK_TO_SEND, blocks.size(), blocks);
-                            String portion = UtilsJson.objToStringJson(emptyList);
+                            SendBlocksEndInfo infoBlocksPortion = new SendBlocksEndInfo(Seting.VERSION, emptyList);
+                            String portion = UtilsJson.objToStringJson(infoBlocksPortion);
                             response = UtilUrl.sendPost(portion, url);
 
                             System.out.println("finish: " + response);

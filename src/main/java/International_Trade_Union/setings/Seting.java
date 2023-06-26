@@ -257,4 +257,6 @@ public interface Seting {
 
     int PORTION_BLOCK_TO_SEND = 300;
 
+    double VERSION = 2;
+
 }

@@ -346,7 +346,14 @@ public class UtilsBlock {
 
         List<Block> temporary = new ArrayList<>();
         Block prevBlock  = null;
-        for (Block block : blocks) {
+        for (int i = 1; i < blocks.size(); i++) {
+            Block block = blocks.get(i);
+            if(i != block.getIndex()){
+                System.out.println("index error: " + i + " block index: " + block.getIndex());
+                System.out.println("ERROR: UtilsBlock: validation: block.Hash():" + block.getHashBlock());
+
+                return false;
+            }
             if(prevBlock == null){
                 prevBlock = block;
                 temporary.add(block);

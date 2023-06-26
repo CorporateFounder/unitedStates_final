@@ -104,7 +104,7 @@ public class Blockchain implements Cloneable{
             } else {
                 List<String> list = UtilsFileSaveRead.reads(fileEntry.getAbsolutePath());
                 for (String s : list) {
-                    size += 1;
+
 
 
                     Block block = UtilsJson.jsonToBLock(s);
@@ -287,7 +287,6 @@ public class Blockchain implements Cloneable{
                 } else {
                     List<String> list = UtilsFileSaveRead.reads(fileEntry.getAbsolutePath());
                     for (String s : list) {
-                        size += 1;
 
 
                         Block block = UtilsJson.jsonToBLock(s);
@@ -303,9 +302,10 @@ public class Blockchain implements Cloneable{
                             }
 
                         }
+                        UtilsBlock.saveBLock(block, fileSave);
                         if (prevBlock == null) {
                             prevBlock = block;
-                            UtilsBlock.saveBLock(block, fileSave);
+
                             continue;
                         }
                         if (block.getIndex() != blocks.get(0).getIndex()) {
@@ -322,6 +322,7 @@ public class Blockchain implements Cloneable{
                                 size += 1;
                                 hashCount += UtilsUse.hashCount(block.getHashBlock());
                                 block = block1;
+                                UtilsBlock.saveBLock(block, fileSave);
                                 valid = UtilsBlock.validationOneBlock(Seting.ADDRESS_FOUNDER,
                                         prevBlock,
                                         block,
@@ -337,7 +338,7 @@ public class Blockchain implements Cloneable{
                                     return new DataShortBlockchainInformation(size, valid, hashCount);
                                 }
                                 prevBlock = block;
-                                UtilsBlock.saveBLock(block, fileSave);
+
 
                             }
                             break main;
@@ -354,7 +355,7 @@ public class Blockchain implements Cloneable{
                         }
 
                         prevBlock = block;
-                        UtilsBlock.saveBLock(block, fileSave);
+
                     }
 
                 }
@@ -444,11 +445,11 @@ public class Blockchain implements Cloneable{
     public static Block indexFromFile(int index, String filename) throws JsonProcessingException {
         File folder = new File(filename);
         Block block = null;
-        int size = 1;
+        int size = 0;
 
 
         for (final File fileEntry : folder.listFiles()) {
-            size++;
+
             if (fileEntry.isDirectory()) {
                 System.out.println("is directory " + fileEntry.getAbsolutePath());
             } else {
