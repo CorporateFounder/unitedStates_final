@@ -45,8 +45,8 @@ public class UtilsFileSaveRead {
         }
     }
     public static boolean deleted(int index, String fileName, String temp) throws IOException {
-        File inputFile = new File("myFile.txt");
-        File tempFile = new File("myTempFile.txt");
+        File inputFile = new File(fileName);
+        File tempFile = new File(temp);
 
         BufferedReader reader = new BufferedReader(new FileReader(inputFile));
         BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));

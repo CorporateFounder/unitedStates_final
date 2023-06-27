@@ -670,29 +670,43 @@ public class BasisController {
                     }
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
-
                     if(response != 0 || response != HttpStatus.OK.value()){
-                        System.out.println("not worked resolve_from_to_block");
-                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
-                        //Test start algorithm
-                        String original = s;
-                        String url = s + "/nodes/resolve_portion_block";
-                        try {
-                            System.out.println(" start: resolve_portion_block");
-                            List<Block> emptyList = new ArrayList<>();
-
-                            emptyList = Blockchain.clone(blocks.size()- Seting.PORTION_BLOCK_TO_SEND, blocks.size(), blocks);
-                            SendBlocksEndInfo infoBlocksPortion = new SendBlocksEndInfo(Seting.VERSION, emptyList);
-                            String portion = UtilsJson.objToStringJson(infoBlocksPortion);
-                            response = UtilUrl.sendPost(portion, url);
-
-                            System.out.println("finish: " + response);
-
-                        }catch (Exception e){
-                            System.out.println("exception resolve_portion_block: " + original);
-                            continue;
+                        while (size > blockchainSize){
+                            Blockchain.deletedLastStrFromFile(blockchainSize-1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                            blockchain = Mining.getBlockchain(
+                                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                                    BlockchainFactoryEnum.ORIGINAL);
+                            shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                            blockchainSize = (int) shortDataBlockchain.getSize();
+                            blockchainValid = shortDataBlockchain.isValidation();
                         }
+
+
+
                     }
+
+//                    if(response != 0 || response != HttpStatus.OK.value()){
+//                        System.out.println("not worked resolve_from_to_block");
+//                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
+//                        //Test start algorithm
+//                        String original = s;
+//                        String url = s + "/nodes/resolve_portion_block";
+//                        try {
+//                            System.out.println(" start: resolve_portion_block");
+//                            List<Block> emptyList = new ArrayList<>();
+//
+//                            emptyList = Blockchain.clone(blocks.size()- Seting.PORTION_BLOCK_TO_SEND, blocks.size(), blocks);
+//                            SendBlocksEndInfo infoBlocksPortion = new SendBlocksEndInfo(Seting.VERSION, emptyList);
+//                            String portion = UtilsJson.objToStringJson(infoBlocksPortion);
+//                            response = UtilUrl.sendPost(portion, url);
+//
+//                            System.out.println("finish: " + response);
+//
+//                        }catch (Exception e){
+//                            System.out.println("exception resolve_portion_block: " + original);
+//                            continue;
+//                        }
+//                    }
 //
 //                    if(response != 0 || response != HttpStatus.OK.value()){
 //                        System.out.println("BasisController: sendAllBlocks: need change all: " + response);
