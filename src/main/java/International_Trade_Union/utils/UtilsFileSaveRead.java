@@ -1,12 +1,19 @@
 package International_Trade_Union.utils;
 
+import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.model.Mining;
+import International_Trade_Union.setings.Seting;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -44,28 +51,36 @@ public class UtilsFileSaveRead {
             throw new RuntimeException(e);
         }
     }
-    public static boolean deleted(int index, String fileName, String temp) throws IOException {
+    public static boolean deleted( String fileName, String temp) throws IOException {
+        System.out.println("start deleted " + fileName);
         File inputFile = new File(fileName);
-        File tempFile = new File(temp);
-
+        System.out.println(" second file");
+        File tempFile = new File(Seting.TEMPORARY_BLOCKCHAIN_FILE +"myTempFile.txt");
+        boolean deleted = false;
+        System.out.println("read file first: " + fileName);
         BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+        System.out.println("read file second: " + tempFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
-
-        int number = 0;
+        int index = 0;
+        String lineToRemove = temp;
         String currentLine;
 
         while((currentLine = reader.readLine()) != null) {
-            number++;
+
             // trim newline when comparing with lineToRemove
             String trimmedLine = currentLine.trim();
-            if(index == number) continue;
+            if(trimmedLine.equals(lineToRemove)){
+                System.out.println("json delete: " + currentLine);
+                deleted = true;
+                continue;
+            }
             writer.write(currentLine + System.getProperty("line.separator"));
         }
         writer.close();
         reader.close();
         deleteFile(fileName);
         boolean successful = tempFile.renameTo(inputFile);
-        return successful;
+        return deleted;
     }
     public static void save(String object, String fileName) throws IOException {
        save(object, fileName, true);

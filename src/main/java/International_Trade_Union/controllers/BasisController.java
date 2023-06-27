@@ -620,13 +620,13 @@ public class BasisController {
     //должен отправлять блокчейн в хранилище блокчейна
     /**Отправляет список блоков в центральные хранилища (пример: http://194.87.236.238:80)*/
     public static void sendAllBlocksToStorage(List<Block> blocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        String jsonDto;
+//        String jsonDto;
         System.out.println("BasisController: sendAllBlocksToStorage: start: ");
-        try {
-            jsonDto = UtilsJson.objToStringJson(blocks);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+////            jsonDto = UtilsJson.objToStringJson(blocks);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
         int blocks_current_size = blocks.size();
         //отправка блокчейна на хранилище блокчейна
         System.out.println("BasisController: sendAllBlocksToStorage: ");
@@ -672,7 +672,8 @@ public class BasisController {
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
                     if(response != 0 || response != HttpStatus.OK.value()){
                         for (int i = 0; i < Seting.PORTION_BLOCK_TO_SEND; i++) {
-                            Blockchain.deletedLastStrFromFile(blockchainSize-1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                            String json = UtilsJson.objToStringJson(blockchain.getBlock(blockchainSize-1));
+                            Blockchain.deletedLastStrFromFile(json, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                             blockchain = Mining.getBlockchain(
                                     Seting.ORIGINAL_BLOCKCHAIN_FILE,
                                     BlockchainFactoryEnum.ORIGINAL);
@@ -680,7 +681,12 @@ public class BasisController {
                             blockchainSize = (int) shortDataBlockchain.getSize();
                             blockchainValid = shortDataBlockchain.isValidation();
                         }
-
+                        blockchain = Mining.getBlockchain(
+                                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                                BlockchainFactoryEnum.ORIGINAL);
+                        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                        blockchainSize = (int) shortDataBlockchain.getSize();
+                        blockchainValid = shortDataBlockchain.isValidation();
                         addBlock(blockchain.getBlockchainList());
                     }
 
@@ -927,11 +933,12 @@ public class BasisController {
 
     @GetMapping("/testBlock")
     @ResponseBody
-    public List<Block> testBlock() throws JsonProcessingException, CloneNotSupportedException {
-        List<List<Block>> list = new ArrayList<>();
-         List<Block> blocks = Blockchain.subFromFile(6, 8, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+    public boolean testBlock() throws IOException, CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        blockchainSize = (int) shortDataBlockchain.getSize();
+        blockchainValid = shortDataBlockchain.isValidation();
 
-        return blocks;
+        return true;
 //        list.add(blockList);
 
     }
@@ -939,6 +946,16 @@ public class BasisController {
     @ResponseBody
     public boolean testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
+            String json = UtilsJson.objToStringJson(blockchain.getBlock(blockchainSize-1));
+            Blockchain.deletedLastStrFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                    json);
+        System.out.println("json " + json);
+            blockchain = Mining.getBlockchain(
+                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                    BlockchainFactoryEnum.ORIGINAL);
+            shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            blockchainSize = (int) shortDataBlockchain.getSize();
+            blockchainValid = shortDataBlockchain.isValidation();
         return blockchain.validatedBlockchain();
     }
 }
