@@ -671,7 +671,7 @@ public class BasisController {
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
                     if(response != 0 || response != HttpStatus.OK.value()){
-                        while (size > blockchainSize){
+                        for (int i = 0; i < Seting.PORTION_BLOCK_TO_SEND; i++) {
                             Blockchain.deletedLastStrFromFile(blockchainSize-1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                             blockchain = Mining.getBlockchain(
                                     Seting.ORIGINAL_BLOCKCHAIN_FILE,
