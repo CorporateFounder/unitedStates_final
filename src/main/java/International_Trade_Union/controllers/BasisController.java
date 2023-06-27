@@ -681,8 +681,7 @@ public class BasisController {
                             blockchainValid = shortDataBlockchain.isValidation();
                         }
 
-
-
+                        addBlock(blockchain.getBlockchainList());
                     }
 
 //                    if(response != 0 || response != HttpStatus.OK.value()){
