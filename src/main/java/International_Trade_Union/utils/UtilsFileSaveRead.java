@@ -52,14 +52,12 @@ public class UtilsFileSaveRead {
         }
     }
     public static boolean deleted( String fileName, String temp) throws IOException {
-        System.out.println("start deleted " + fileName);
         File inputFile = new File(fileName);
-        System.out.println(" second file");
+
         File tempFile = new File(Seting.TEMPORARY_BLOCKCHAIN_FILE +"myTempFile.txt");
         boolean deleted = false;
-        System.out.println("read file first: " + fileName);
+
         BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-        System.out.println("read file second: " + tempFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
         int index = 0;
         String lineToRemove = temp;
@@ -70,7 +68,6 @@ public class UtilsFileSaveRead {
             // trim newline when comparing with lineToRemove
             String trimmedLine = currentLine.trim();
             if(trimmedLine.equals(lineToRemove)){
-                System.out.println("json delete: " + currentLine);
                 deleted = true;
                 continue;
             }
