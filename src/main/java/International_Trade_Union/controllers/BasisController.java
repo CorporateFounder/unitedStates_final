@@ -676,7 +676,7 @@ public class BasisController {
                     }
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);
-                    if(response != 0 || response != HttpStatus.OK.value()){
+                    if(response == HttpStatus.CONFLICT.value()){
                         for (int i = 0; i < Seting.PORTION_BLOCK_TO_SEND; i++) {
                             String json = UtilsJson.objToStringJson(blockchain.getBlock(blockchainSize-1));
                             Blockchain.deletedLastStrFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE,
