@@ -671,6 +671,7 @@ public class BasisController {
                     System.out.println("CONFLICT: " + HttpStatus.CONFLICT.value());
                     System.out.println("GOOD: " + HttpStatus.OK.value());
                     System.out.println("FAIL: " + HttpStatus.EXPECTATION_FAILED.value());
+                    System.out.println("CONFLICT VERSION: " + HttpStatus.FAILED_DEPENDENCY.value());
                     System.out.println("response: " + response);
 
                     System.out.println("BasisController: sendAllBlocksStorage: response: " + response);

@@ -257,6 +257,6 @@ public interface Seting {
 
     int PORTION_BLOCK_TO_SEND = 50;
 
-    double VERSION = 2.1;
+    int VERSION = 3;
     String ORIGINAL_HASH = "08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c";
 }

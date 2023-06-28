@@ -7,12 +7,12 @@ import java.util.List;
 
 @Data
 public class SendBlocksEndInfo {
-    private double version;
+    private int version;
     private List<Block> list;
     public SendBlocksEndInfo() {
     }
 
-    public SendBlocksEndInfo(double version, List<Block> list) {
+    public SendBlocksEndInfo(int version, List<Block> list) {
         this.version = version;
         this.list = list;
     }
