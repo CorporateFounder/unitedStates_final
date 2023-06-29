@@ -2,7 +2,8 @@
 ## Corporation International Trade Union
 (Corporation International Trade Union - CITU)
 
-my discord https://discord.gg/Mmwfec3E
+my discord  https://discord.gg/MqkvC3SGHH
+
 my telegram https://t.me/citu_coin
 ## Mission.
 Using a new economic model that is resistant to deflationary and inflationary crises,
