@@ -63,6 +63,7 @@ public class BasisController {
         Assert.state(requestAttributes != null, "Could not find current request via RequestContextHolder");
         Assert.isInstanceOf(ServletRequestAttributes.class, requestAttributes);
         HttpServletRequest servletRequest = ((ServletRequestAttributes) requestAttributes).getRequest();
+
         Assert.state(servletRequest != null, "Could not find current HttpServletRequest");
         return servletRequest;
     }
