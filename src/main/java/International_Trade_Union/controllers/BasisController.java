@@ -69,6 +69,7 @@ public class BasisController {
     }
 
     public static Set<String> getExcludedAddresses() {
+
         HttpServletRequest request = getCurrentRequest();
         if(request == null)
             return excludedAddresses;
