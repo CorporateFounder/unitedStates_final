@@ -730,7 +730,7 @@ public class BasisController {
     public synchronized String mining() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
         String text = "";
         //нахождение адрессов
-        findAddresses();
+//        findAddresses();
         resolve_conflicts();
 
         if(blockchainSize % (576 * 2) == 0){
