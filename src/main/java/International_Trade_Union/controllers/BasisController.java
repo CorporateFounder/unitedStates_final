@@ -541,22 +541,22 @@ public class BasisController {
         for (String s : Seting.ORIGINAL_ADDRESSES) {
             Set<String> addressesSet = new HashSet<>();
             try {
+                register_node(new AddressUrl(s));
                 System.out.println(":start download addressses");
                 System.out.println("trying to connect to the server:"+ s +" timeout 45 seconds");
-                String addresses = UtilUrl.readJsonFromUrl(s + "/getDiscoveryAddresses");
-                addressesSet = UtilsJson.jsonToSetAddresses(addresses);
+//                String addresses = UtilUrl.readJsonFromUrl(s + "/getDiscoveryAddresses");
+//                addressesSet = UtilsJson.jsonToSetAddresses(addresses);
                 System.out.println(":finish download addreses");
             } catch (IOException e) {
                 System.out.println(":BasisController: findAddress: error");
                 continue;
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
             }
 
-            for (String s1 : addressesSet) {
 
-                register_node(new AddressUrl(s1));
-            }
+//            for (String s1 : addressesSet) {
+//
+//                register_node(new AddressUrl(s1));
+//            }
 
         }
 
@@ -730,7 +730,7 @@ public class BasisController {
     public synchronized String mining() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
         String text = "";
         //нахождение адрессов
-//        findAddresses();
+        findAddresses();
         resolve_conflicts();
 
         if(blockchainSize % (576 * 2) == 0){
