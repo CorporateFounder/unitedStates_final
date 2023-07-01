@@ -1,8 +1,5 @@
 package International_Trade_Union.setings;
 
-import International_Trade_Union.about_usDraft.AboutUsDraft;
-import International_Trade_Union.about_us_engDraft.AboutUsEngDraft;
-import International_Trade_Union.CorporateCharterEngDraft.CorporateCharter;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.utils.UtilsUse;
@@ -255,7 +252,7 @@ public interface Seting {
 
     //каким количеством порций отправлять блоки
 
-    int PORTION_BLOCK_TO_SEND = 50;
+    int DELETED_PORTION = 50;
 
     int VERSION = 3;
     String ORIGINAL_HASH = "08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c";

@@ -93,7 +93,7 @@ public class Blockchain implements Cloneable{
     public static DataShortBlockchainInformation shortCheck(Block prevBlock, List<Block> blocks, DataShortBlockchainInformation data) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         int size = (int) data.getSize();
         if(size >= blocks.get(0).getIndex() + 1 || prevBlock == null){
-            return data;
+            return new DataShortBlockchainInformation(size, false, 0);
         }
         long hashcount = data.getHashCount();
         boolean validation = false;
@@ -109,12 +109,15 @@ public class Blockchain implements Cloneable{
             prev = block;
             size++;
             hashcount += UtilsUse.hashCount(block.getHashBlock());
+            if(validation == false){
+                System.out.println("false shorkCheck");
+                return new DataShortBlockchainInformation(size, validation, hashcount);
+            }
 
         }
         return new DataShortBlockchainInformation(size, validation, hashcount);
 
     }
-
 
     public static  DataShortBlockchainInformation checkEqualsFromToBlockFile(String fileName, List<Block> blocks) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         boolean valid = true;

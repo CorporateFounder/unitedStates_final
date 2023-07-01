@@ -347,11 +347,12 @@ public class UtilsBlock {
         int index = 0;
         List<Block> temporary = new ArrayList<>();
         Block prevBlock  = null;
+        boolean haveTwoIndexOne = false;
         for (int i = 1; i < blocks.size(); i++) {
             index++;
             Block block = blocks.get(i);
 
-            boolean haveTwoIndexOne = false;
+
             if(block.getIndex() == 1 && haveTwoIndexOne == false){
                 index = 1;
                 haveTwoIndexOne = true;

@@ -4,8 +4,6 @@ import International_Trade_Union.entity.AddressUrl;
 import International_Trade_Union.entity.SendBlocksEndInfo;
 import International_Trade_Union.entity.SubBlockchainEntity;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.bouncycastle.math.raw.Mod;
 import org.json.JSONException;
 
 import org.springframework.http.MediaType;
@@ -24,7 +22,6 @@ import International_Trade_Union.utils.*;
 import International_Trade_Union.vote.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
@@ -32,17 +29,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.text.Document;
-import java.io.File;
 import java.io.IOException;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 
@@ -314,8 +304,7 @@ public class BasisController {
                                        " your block : " + (blockchainSize ));
                                emptyList.add(block);
                            }
-                           else if (
-                                   !blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
+                           else if (!blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
                                emptyList.add(block);
                                System.out.println("********************************");
                                System.out.println(":dowdnload block index: " + i);
@@ -331,7 +320,7 @@ public class BasisController {
 
                                emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
                                temporaryBlockchain.setBlockchainList(emptyList);
-                               System.out.println(new Date()+":resolve_conflicts: temporaryBlockchain: " + temporaryBlockchain.validatedBlockchain());
+                               System.out.println(":resolve_conflicts: temporaryBlockchain: " + temporaryBlockchain.validatedBlockchain());
                                break;
                            }
                        }
@@ -667,6 +656,11 @@ public class BasisController {
                     String urlFrom = s + "/nodes/resolve_from_to_block";
                     try {
                         response = UtilUrl.sendPost(jsonFromTo, urlFrom);
+                        System.out.println(":CONFLICT: " + HttpStatus.CONFLICT.value());
+                        System.out.println(":GOOD: " + HttpStatus.OK.value());
+                        System.out.println(":FAIL: " + HttpStatus.EXPECTATION_FAILED.value());
+                        System.out.println(":CONFLICT VERSION: " + HttpStatus.FAILED_DEPENDENCY.value());
+                        System.out.println(":response: " + response);
                     }catch (Exception e){
                         System.out.println(":exception resolve_from_to_block: " + originalF);
 
@@ -681,8 +675,8 @@ public class BasisController {
                     if(response == HttpStatus.CONFLICT.value()){
                         System.out.println(":BasisController: sendAllBlocksStorage: start deleted 50 blocks:" );
                         System.out.println(":size before delete: " + blockchainSize);
-                        for (int i = 0; i < Seting.PORTION_BLOCK_TO_SEND; i++) {
-                            String json = UtilsJson.objToStringJson(blockchain.getBlock(blockchainSize-1));
+
+                            String json = UtilsJson.objToStringJson(Blockchain.indexFromFile(blockchainSize-Seting.DELETED_PORTION, Seting.ORIGINAL_BLOCKCHAIN_FILE));
                             Blockchain.deletedLastStrFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE,
                                     json);
                             blockchain = Mining.getBlockchain(
@@ -691,8 +685,8 @@ public class BasisController {
                             shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
                             blockchainSize = (int) shortDataBlockchain.getSize();
                             blockchainValid = shortDataBlockchain.isValidation();
-                        }
-                        addBlock(blockchain.getBlockchainList());
+
+                        addBlock(Blockchain.subFromFile(0, blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE));
                         System.out.println(":size after delete: " + blockchainSize);
 
 
