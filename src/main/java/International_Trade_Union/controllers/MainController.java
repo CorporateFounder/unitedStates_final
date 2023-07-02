@@ -3,6 +3,7 @@ package International_Trade_Union.controllers;
 import International_Trade_Union.about_us_engDraft.AboutUsEngDraft;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.blockchain.Blockchain;
+import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import International_Trade_Union.governments.Director;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
@@ -107,6 +108,7 @@ public class MainController {
         model.addAttribute("size", size);
         model.addAttribute("version", Seting.VERSION);
         boolean validation = blockchain.validatedBlockchain();
+
         if(validation == false){
             System.out.println("deleted blockchain files");
 
