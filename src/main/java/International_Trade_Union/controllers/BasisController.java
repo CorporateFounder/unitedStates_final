@@ -268,14 +268,14 @@ public class BasisController {
                    continue;;
 
 
-               System.out.println(new Date()+"start:BasisController:resolve conflicts: address: " + s + "/size");
+               System.out.println("start:BasisController:resolve conflicts: address: " + s + "/size");
                String sizeStr = UtilUrl.readJsonFromUrl(s + "/size");
                Integer size = Integer.valueOf(sizeStr);
                MainController.setGlobalSize(size);
                System.out.println(" :resolve_conflicts: finish /size: " + size);
                if (size > blocks_current_size) {
 
-                   System.out.println(new Date()+":size from address: " + s + " upper than: " + size + ":blocks_current_size " + blocks_current_size);
+                   System.out.println(":size from address: " + s + " upper than: " + size + ":blocks_current_size " + blocks_current_size);
                    //Test start algorithm
                    SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(blocks_current_size, size);
                    String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
@@ -285,23 +285,35 @@ public class BasisController {
                    System.out.println(":download sub block: " + subBlockchainJson);
                    List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
                    emptyList.addAll(subBlocks);
-                   if(blocks_current_size > 1)
-                       emptyList.addAll(blockchain.subBlock(0, blocks_current_size));
+                   System.out.println("blocks_current_size: " + blocks_current_size);
+                   System.out.println("sub: " + subBlocks.get(0).getIndex() + ":" + subBlocks.get(0).getHashBlock()+":"
+                   +"prevHash: " + subBlocks.get(0).getPreviousHash());
+                   if(blocks_current_size > 0){
+
+                       List<Block> temp =Blockchain.subFromFile(0, blocks_current_size, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                       List<Block> tempBlockchain = blockchain.subBlock(0, blocks_current_size);
+                       System.out.println("sub from file: " + temp.get(blocks_current_size-1).getIndex() + ":"
+                       + temp.get(blocks_current_size-1).getHashBlock());
+                       System.out.println("sub blockchain: " + tempBlockchain.get(blocks_current_size-1).getIndex() + ":"
+                               + tempBlockchain.get(blocks_current_size-1).getHashBlock());
+                       emptyList.addAll(temp);
+                   }
+
 
                    emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
                    temporaryBlockchain.setBlockchainList(emptyList);
 
                    if (!temporaryBlockchain.validatedBlockchain()) {
-                       System.out.println(new Date()+":download blocks");
+                       System.out.println(":download blocks");
                        emptyList = new ArrayList<>();
 
                        for (int i = size - 1; i > 0; i--) {
 
                            Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(i), s + "/block"));
 
-                           if(i > blockchainSize -1){
+                           if(i >  blocks_current_size-1){
                                System.out.println(":download blocks: " + block.getIndex()+
-                                       " your block : " + (blockchainSize ));
+                                       " your block : " + (blocks_current_size ));
                                emptyList.add(block);
                            }
                            else if (!blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
@@ -313,9 +325,10 @@ public class BasisController {
                                System.out.println("---------------------------------");
                            } else {
                                emptyList.add(block);
-                               System.out.println(":sub: " + 0 + " : " + i);
+
                                if(i != 0){
-                                   emptyList.addAll(blockchain.getBlockchainList().subList(0, i));
+                                   System.out.println("portion:sub: " + 0 + " : " + i + " block index: " + block.getIndex());
+                                   emptyList.addAll(Blockchain.subFromFile(0, i, Seting.ORIGINAL_BLOCKCHAIN_FILE));
                                }
 
                                emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
@@ -334,9 +347,9 @@ public class BasisController {
 //                e.printStackTrace();
                System.out.println(":BasisController: resolve_conflicts: connect refused Error: " + s);
                continue;
-           } catch (CloneNotSupportedException e) {
-               throw new RuntimeException(e);
            } catch (JSONException e) {
+               throw new RuntimeException(e);
+           } catch (CloneNotSupportedException e) {
                throw new RuntimeException(e);
            }
 
@@ -612,13 +625,9 @@ public class BasisController {
     //должен отправлять блокчейн в хранилище блокчейна
     /**Отправляет список блоков в центральные хранилища (пример: http://194.87.236.238:80)*/
     public static void sendAllBlocksToStorage(List<Block> blocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-//        String jsonDto;
+
         System.out.println(new Date()+":BasisController: sendAllBlocksToStorage: start: ");
-//        try {
-////            jsonDto = UtilsJson.objToStringJson(blocks);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
+
         int blocks_current_size = blocks.size();
         //отправка блокчейна на хранилище блокчейна
         System.out.println(":BasisController: sendAllBlocksToStorage: ");
@@ -757,8 +766,6 @@ public class BasisController {
             return "wrong blockchain";
         }
 
-        //Прежде чем добыть новый блок сначала в сети ищет самый длинный блокчейн
-        resolve_conflicts();
 
         //если размер блокчейна меньше или равно единице, сохранить в файл генезис блок
         long index = blockchain.sizeBlockhain();
@@ -881,7 +888,7 @@ public class BasisController {
         //отправляет блокчейн во внешние сервера
         sendAllBlocksToStorage(blockchain.getBlockchainList());
         //отправить адресса
-        sendAddress();
+//        sendAddress();
         text = "success: блок успешно добыт";
 //        model.addAttribute("text", text);
         return "ok";
