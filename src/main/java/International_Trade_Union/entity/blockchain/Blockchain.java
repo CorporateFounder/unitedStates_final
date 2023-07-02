@@ -276,7 +276,7 @@ public class Blockchain implements Cloneable{
         return new DataShortBlockchainInformation(size, valid, hashCount);
     }
 
-    public static boolean deletedLastStrFromFile(String temp, String object) throws IOException {
+    public static boolean deletedLastStrFromFile(String temp, int index) throws IOException {
         boolean valid = false;
         File folder = new File(temp);
 
@@ -286,12 +286,13 @@ public class Blockchain implements Cloneable{
                 System.out.println("is directory " + fileEntry.getAbsolutePath());
             } else {
 
-                    valid =  UtilsFileSaveRead.deleted( fileEntry.getAbsolutePath(), object);
+                    valid =  UtilsFileSaveRead.deleted(fileEntry.getAbsolutePath(), index);
+                System.out.println("deletedLastStrFromFile: " + valid + " index: " + index +
+                        " :" + fileEntry.getName());
                     if (valid){
+                        System.out.println("deletedLastStrFromFile: " + valid);
                         break;
                     }
-
-
             }
         }
 

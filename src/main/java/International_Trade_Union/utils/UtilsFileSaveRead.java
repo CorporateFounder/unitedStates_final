@@ -51,27 +51,27 @@ public class UtilsFileSaveRead {
             throw new RuntimeException(e);
         }
     }
-    public static boolean deleted( String fileName, String temp) throws IOException {
+    public static boolean deleted( String fileName, int index) throws IOException {
         File inputFile = new File(fileName);
 
-        File tempFile = new File(Seting.TEMPORARY_BLOCKCHAIN_FILE +"myTempFile.txt");
+        File tempFile = new File(Seting.ORIGINAL_BLOCKCHAIN_FILE +"myTempFile.txt");
         boolean deleted = false;
 
         BufferedReader reader = new BufferedReader(new FileReader(inputFile));
         BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
-        int index = 0;
-        String lineToRemove = temp;
+        int innerIndex = 0;
+
         String currentLine;
 
         while((currentLine = reader.readLine()) != null) {
 
-            // trim newline when comparing with lineToRemove
-            String trimmedLine = currentLine.trim();
-            if(trimmedLine.equals(lineToRemove)){
+            if(innerIndex == index){
+                System.out.println("deleted: " + index);
                 deleted = true;
                 return deleted;
             }
             writer.write(currentLine + System.getProperty("line.separator"));
+            innerIndex++;
         }
         writer.close();
         reader.close();

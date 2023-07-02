@@ -289,13 +289,9 @@ public class BasisController {
                    System.out.println("sub: " + subBlocks.get(0).getIndex() + ":" + subBlocks.get(0).getHashBlock()+":"
                    +"prevHash: " + subBlocks.get(0).getPreviousHash());
                    if(blocks_current_size > 0){
+                       System.out.println("sub: from 0 " + ":" + blocks_current_size );
+                       List<Block> temp =blockchain.subBlock(0, blocks_current_size);
 
-                       List<Block> temp =Blockchain.subFromFile(0, blocks_current_size, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-                       List<Block> tempBlockchain = blockchain.subBlock(0, blocks_current_size);
-                       System.out.println("sub from file: " + temp.get(blocks_current_size-1).getIndex() + ":"
-                       + temp.get(blocks_current_size-1).getHashBlock());
-                       System.out.println("sub blockchain: " + tempBlockchain.get(blocks_current_size-1).getIndex() + ":"
-                               + tempBlockchain.get(blocks_current_size-1).getHashBlock());
                        emptyList.addAll(temp);
                    }
 
@@ -328,7 +324,7 @@ public class BasisController {
 
                                if(i != 0){
                                    System.out.println("portion:sub: " + 0 + " : " + i + " block index: " + block.getIndex());
-                                   emptyList.addAll(Blockchain.subFromFile(0, i, Seting.ORIGINAL_BLOCKCHAIN_FILE));
+                                   emptyList.addAll(blockchain.subBlock(0, i));
                                }
 
                                emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
@@ -684,18 +680,23 @@ public class BasisController {
                     if(response == HttpStatus.CONFLICT.value()){
                         System.out.println(":BasisController: sendAllBlocksStorage: start deleted 50 blocks:" );
                         System.out.println(":size before delete: " + blockchainSize);
+                        blockchain = Mining.getBlockchain(
+                                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                                BlockchainFactoryEnum.ORIGINAL);
+                        List<Block> temporary = blockchain.subBlock(0, blockchainSize-Seting.DELETED_PORTION);
+                        UtilsBlock.deleteFiles();
+                        blockchain.setBlockchainList(temporary);
+                        UtilsBlock.saveBlocks(blockchain.getBlockchainList(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                        blockchain = Mining.getBlockchain(
+                                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                                BlockchainFactoryEnum.ORIGINAL);
 
-                            String json = UtilsJson.objToStringJson(Blockchain.indexFromFile(blockchainSize-Seting.DELETED_PORTION, Seting.ORIGINAL_BLOCKCHAIN_FILE));
-                            Blockchain.deletedLastStrFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                                    json);
-                            blockchain = Mining.getBlockchain(
-                                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                                    BlockchainFactoryEnum.ORIGINAL);
-                            shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-                            blockchainSize = (int) shortDataBlockchain.getSize();
-                            blockchainValid = shortDataBlockchain.isValidation();
+                        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                        blockchainSize = (int) shortDataBlockchain.getSize();
+                        blockchainValid = shortDataBlockchain.isValidation();
 
-                        addBlock(Blockchain.subFromFile(0, blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE));
+                        UtilsBlock.deleteFiles();
+                        addBlock(blockchain.getBlockchainList());
                         System.out.println(":size after delete: " + blockchainSize);
 
 
@@ -713,6 +714,8 @@ public class BasisController {
             } catch (IOException e) {
                 e.printStackTrace();
                 continue;
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
             }
 
         }
@@ -918,19 +921,23 @@ public class BasisController {
     }
     @GetMapping("testBlock1")
     @ResponseBody
-    public boolean testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public Integer testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
-            String json = UtilsJson.objToStringJson(blockchain.getBlock(blockchainSize-1));
-            Blockchain.deletedLastStrFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                    json);
-        System.out.println("json " + json);
             blockchain = Mining.getBlockchain(
                     Seting.ORIGINAL_BLOCKCHAIN_FILE,
                     BlockchainFactoryEnum.ORIGINAL);
+            List<Block> temporary = blockchain.subBlock(0, blockchainSize-Seting.DELETED_PORTION);
+            UtilsBlock.deleteFiles();
+            blockchain.setBlockchainList(temporary);
+            UtilsBlock.saveBlocks(blockchain.getBlockchainList(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                blockchain = Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
+
             shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
             blockchainSize = (int) shortDataBlockchain.getSize();
             blockchainValid = shortDataBlockchain.isValidation();
-        return blockchain.validatedBlockchain();
+        return blockchain.sizeBlockhain();
     }
 }
 
