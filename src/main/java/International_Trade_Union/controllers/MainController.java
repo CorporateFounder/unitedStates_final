@@ -112,6 +112,7 @@ public class MainController {
         if(validation == false){
             System.out.println("deleted blockchain files");
 
+//            System.exit(1);
             UtilsBlock.deleteFiles();
         }
         model.addAttribute("validation", validation);

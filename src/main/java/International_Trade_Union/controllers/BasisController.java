@@ -329,7 +329,12 @@ public class BasisController {
 
                                emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
                                temporaryBlockchain.setBlockchainList(emptyList);
+                               System.out.println("<><><<><><><>><><><><><><><<>><><><><>");
                                System.out.println(":resolve_conflicts: temporaryBlockchain: " + temporaryBlockchain.validatedBlockchain());
+                               System.out.println(":dowdnload block index: " + i);
+                               System.out.println(":block original index: " + blockchain.getBlock(i).getIndex());
+                               System.out.println(":block from index: " + block.getIndex());
+                               System.out.println("<><><<><><><>><><><><><><><<>><><><><>");
                                break;
                            }
                        }
@@ -369,7 +374,7 @@ public class BasisController {
        }
 
 
-       if (bigBlockchain.sizeBlockhain() > blockchainSize && hashCountZeroBigBlockchain > hashCountZeroAll)
+       if (bigBlockchain.validatedBlockchain() && bigBlockchain.sizeBlockhain() > blockchainSize && hashCountZeroBigBlockchain > hashCountZeroAll)
        {
 
            blockchain = bigBlockchain;
@@ -378,16 +383,18 @@ public class BasisController {
            System.out.println(":BasisController: resolve: bigblockchain size: " + bigBlockchain.sizeBlockhain());
            System.out.println(":BasisController: resolve: validation bigblochain: " + bigBlockchain.validatedBlockchain());
 
+           if(blockchainSize > bigSize){
+               return 1;
+           }
+           else if(blockchainSize < bigSize){
+               return -1;
+           }
+           else {
+               return 0;
+           }
        }
-       if(blockchainSize > bigSize){
-           return 1;
-       }
-       else if(blockchainSize < bigSize){
-           return -1;
-       }
-       else {
-           return 0;
-       }
+       return -4;
+
    }
 
     public static void addBlock(List<Block> orignalBlocks) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
@@ -620,10 +627,10 @@ public class BasisController {
 
     //должен отправлять блокчейн в хранилище блокчейна
     /**Отправляет список блоков в центральные хранилища (пример: http://194.87.236.238:80)*/
-    public static void sendAllBlocksToStorage(List<Block> blocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public static int sendAllBlocksToStorage(List<Block> blocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
         System.out.println(new Date()+":BasisController: sendAllBlocksToStorage: start: ");
-
+        int bigsize = 0;
         int blocks_current_size = blocks.size();
         //отправка блокчейна на хранилище блокчейна
         System.out.println(":BasisController: sendAllBlocksToStorage: ");
@@ -646,7 +653,7 @@ public class BasisController {
                 System.out.println(":BasisController: send: local size: " + blocks_current_size + " global size: " + size);
                 if(size > blocks.size()){
                     System.out.println(":your local chain less");
-                    return;
+                    return -1;
                 }
                 List<Block> fromToTempBlock = blocks.subList(size, blocks.size());
                 SendBlocksEndInfo infoBlocks = new SendBlocksEndInfo(Seting.VERSION, fromToTempBlock);
@@ -654,6 +661,9 @@ public class BasisController {
                 //если блокчейн текущей больше чем в хранилище, то
                 //отправить текущий блокчейн отправить в хранилище
                 if (size < blocks_current_size) {
+                    if(bigsize < size){
+                        bigsize = size;
+                    }
                     int response = -1;
                     //Test start algorithm
                     String originalF = s;
@@ -707,6 +717,7 @@ public class BasisController {
 
                 }
 
+
             } catch (JSONException e) {
                 e.printStackTrace();
                 continue;
@@ -719,7 +730,15 @@ public class BasisController {
             }
 
         }
-
+        if(blockchainSize > bigsize){
+            return 1;
+        }else if(blockchainSize < bigsize){
+            return -1;
+        }else if(blockchainSize == bigsize){
+            return 0;
+        }else {
+            return -4;
+        }
     }
     @GetMapping("/constantMining")
     public String alwaysMining() throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
@@ -743,7 +762,11 @@ public class BasisController {
         String text = "";
         //нахождение адрессов
         findAddresses();
-        resolve_conflicts();
+        while (resolve_conflicts() == -1){
+            System.out.println("inner blockchain less then globlal");
+        }
+
+
 
         if(blockchainSize % (576 * 2) == 0){
             System.out.println("clear storage transaction because is old");
@@ -889,7 +912,10 @@ public class BasisController {
         UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
         //отправляет блокчейн во внешние сервера
-        sendAllBlocksToStorage(blockchain.getBlockchainList());
+//        sendAllBlocksToStorage(blockchain.getBlockchainList());
+        while (sendAllBlocksToStorage(blockchain.getBlockchainList()) == 1){
+            System.out.println("your blockchain upper than global server, waiting update global");
+        }
         //отправить адресса
 //        sendAddress();
         text = "success: блок успешно добыт";
