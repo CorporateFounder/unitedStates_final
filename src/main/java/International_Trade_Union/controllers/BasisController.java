@@ -762,9 +762,8 @@ public class BasisController {
         String text = "";
         //нахождение адрессов
         findAddresses();
-        while (resolve_conflicts() == -1){
-            System.out.println("inner blockchain less then globlal");
-        }
+        resolve_conflicts();
+
 
 
 
@@ -912,10 +911,9 @@ public class BasisController {
         UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
         //отправляет блокчейн во внешние сервера
-//        sendAllBlocksToStorage(blockchain.getBlockchainList());
-        while (sendAllBlocksToStorage(blockchain.getBlockchainList()) == 1){
-            System.out.println("your blockchain upper than global server, waiting update global");
-        }
+        sendAllBlocksToStorage(blockchain.getBlockchainList());
+
+
         //отправить адресса
 //        sendAddress();
         text = "success: блок успешно добыт";
