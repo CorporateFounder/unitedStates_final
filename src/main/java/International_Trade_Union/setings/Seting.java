@@ -4,7 +4,7 @@ import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.utils.UtilsUse;
 
-import java.util.List;
+
 import java.util.Set;
 
 public interface Seting {
@@ -17,9 +17,6 @@ public interface Seting {
     Directors directors = new Directors();
 
 
-    //используется для очистки из файла, где хранятся отправленные транзакции,
-    //чтобы предотвратить добавление повторно уже отправленных транзакций
-    int DAY_DELETED_SENDED_FILE = 3;
 
 
 
@@ -55,31 +52,17 @@ public interface Seting {
     //голос Генерального Исполнительного Директора
     int ORIGINAL_LIMIT_MIN_VOTE_GENERAL_EXECUTIVE_DIRECTOR = 1;
 
-    //фракционный голос минимум 10.0
-    double ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS = 10.0;
+    //фракционный голос минимум 15.0
+    double ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS = 15.0;
 
     //голос Верховного Судьи
     int ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE = 1;
 
-    //для преодоления верховного судьи, если Верховный Судья не одобрил закон
-    //то нужно получить в два раза больше голосов, чтобы преодолеть вето Верховного Судьи
-    int POWERFUL_VOTE = 2;
-
-    //данная мера нужна чтобы если один счет голосует за несколько кандидатов,
-    //его голос не делился равномерно, а становился значительно сильнее,
-    //чтобы не допустить монополии, если очень богатый человек захочет должностные лица поставить к власти
-    //то он не сможет пример: счет X проголосовал ЗА = 2 закона и ПРОТИВ = 3 закона
-    //100 = voteYES, 100 = voteNO, voteYES / (2^3) = 12.5 , voteNO / (3^3) = 3.7
-    //таким образом чем больше голосует, тем меньше голосов остается для избрания
-    //должностных лиц, это защита от сверхбогатых участников Совета Акционеров
-    int POWERING_FOR_VOTING = 3;
 
 
     //голос должностных лиц,
     int VOTE_GOVERNMENT = 1;
-    //голос должностных лиц вместо акций учитывается только один
-    //голос, как будто у них одна акция
-    double STOCK_VOTE_GOVERNMENT = 1;
+
 
     //    процент который получает основатель от добычи
     Double FOUNDERS_REWARD = 2.0;
@@ -93,7 +76,7 @@ public interface Seting {
     int DIFFICULTY_ADJUSTMENT_INTERVAL_TEST = 10;
 
     long BLOCK_GENERATION_INTERVAL = Seting.BLOCK_TIME * 1000;// after Seting.BLOCK_TIME
-    long BLOCK_GENERATION_INTERVAL_TEST = 0 * 1000;
+    long BLOCK_GENERATION_INTERVAL_TEST = 0;
 
 
     long INTERVAL_TARGET = 600000;
@@ -236,19 +219,6 @@ public interface Seting {
     double DIGITAL_DOLLAR_FOUNDER_REWARDS_BEFORE = Math.round(UtilsUse.countPercents(Seting.DIGITAL_DOLLAR_REWARDS_BEFORE, Seting.FOUNDERS_REWARD));
     double DIGITAL_REPUTATION_FOUNDER_REWARDS_BEFORE = Math.round(UtilsUse.countPercents(Seting.DIGITAL_STOCK_REWARDS_BEFORE, Seting.FOUNDERS_REWARD));
 
-
-    List<String> firstTestingPeople = List.of(
-            "25TzGfMpAygvuFvXujL4seof4LHpzC92crCTydGC9RmZP",
-            "25YfXizU2SpF75tDoqyn11HWaXyq5tKWKk87NSwhbBW5C",
-            "27MkHGZZnYkNtQMevRqBfAU2Pnu7LJEWC61AzMvAC31V3",
-            "zA6pF1vGFqWNjnnP5XWcFodxfkZUX1VoyRgyZnaYrryo",
-            "22a5XcurUDGGhJ3JncMnRS4Ka8LDRf7tpb6YJMjvTJFZr",
-            "2BN56XDUzKW5NxWJvULr13ks78eJmXt59mtowomy6N9Ed",
-            "s4rRNaA7HtoTtxCiseibvhpzoiqMozm9LrtWZ33jvi5q"
-    );
-
-    double digDollarRewTeam = 100000.0;
-    double digStockRewTeam = 100000.0;
 
     //каким количеством порций отправлять блоки
 

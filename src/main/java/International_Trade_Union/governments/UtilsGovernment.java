@@ -147,12 +147,12 @@ public class UtilsGovernment {
         Map<String, Double> fractions = new HashMap<>();
 
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance: current) {
-            if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString())){
-                if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
-                    houseOfRepresentativies.add(currentLawVotesEndBalance.getLaws().get(0));
-                }
-
-            }
+//            if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString())){
+//                if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
+//                    houseOfRepresentativies.add(currentLawVotesEndBalance.getLaws().get(0));
+//                }
+//
+//            }
             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.CORPORATE_COUNCIL_OF_REFEREES.toString())){
                 if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
                     chamberOfSumpremeJudges.add(currentLawVotesEndBalance.getLaws().get(0));
@@ -161,11 +161,11 @@ public class UtilsGovernment {
             }
 
 
-//            if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.FRACTION.toString())){
-//                if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
-//                    fractions.put(currentLawVotesEndBalance.getLaws().get(0), currentLawVotesEndBalance.getVotes());
-//                }
-//            }
+            if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.FRACTION.toString())){
+                if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
+                    fractions.put(currentLawVotesEndBalance.getLaws().get(0), currentLawVotesEndBalance.getVotes());
+                }
+            }
 
         }
 
@@ -193,7 +193,7 @@ public class UtilsGovernment {
         List<String> hightJudge = new ArrayList<>();
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : current) {
             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString())){
-                if(currentLawVotesEndBalance.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
+                if(currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                 && currentLawVotesEndBalance.getVotes() >= Seting.ALL_STOCK_VOTE){
                     primeMinister.add(currentLawVotesEndBalance.getLaws().get(0));
                 }

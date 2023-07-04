@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header "></header>
+<div class="container mt-5">
+    <h3 th:text="${title}"/>
+
+
+    <div th:each="el : ${currentLaw}" class="alert alert-info mt-2">
+        <h4 th:text="'law address: '+${el.addressLaw}"/>
+        <p th:text="'votes equal to shares: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'(CorporateCouncilOfReferee)votes of the Council of Chief Justices: '+${el.votesCorporateCouncilOfReferees}"/>
+        <p th:text="'votes of the fractions: '+${el.fractionVote}"/>
+        <p th:text="'votes of the Board of Shareholders: '+${el.votesBoardOfShareholders}"/>
+        <p th:text="'Voice of the CEO: '+${el.voteGeneralExecutiveDirector}"/>
+        <p th:text="'the voice of the supreme judge: '+${el.voteHightJudge}"/>
+        <p th:text="'founder voice: '+${el.founderVote}"/>
+        <p th:text="'power this fraction: '+${el.fractionPower}"/>
+        <!--        <p th:text="'fraction-leader voice: '+${el.fractionVote}"/>-->
+        <p th:text="'Name of the package of laws: '+${el.packageName}"/>
+
+        <a th:href="'/detail-laws-current/' + ${el.addressLaw}" class="btn btn-warning">View in detail the list of laws in the package</a>
+    </div>
+
+</div>
+<footer th:insert="blocks/footer :: footer"></footer>
+
+</body>
+</html>
