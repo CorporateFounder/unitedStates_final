@@ -98,7 +98,7 @@
 ````
 
 Какие должности здесь есть,
-- Совет Директоров [BOARD_OF_DIRECTORS]
+- Фракцийй[FRACTION]
 - Совет Акционеров [BOARD_OF_SHAREHOLDERS]
 - Совет Корпоративных Судей [CORPORATE_COUNCIL_OF_REFEREES]
 - Генеральный Исполнительный Директор [GENERAL_EXECUTIVE_DIRECTOR]

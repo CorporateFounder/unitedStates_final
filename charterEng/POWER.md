@@ -1,7 +1,7 @@
 #LEGISLATURE.
-Power consists of 4 groups in this system.
+Power consists of 3 groups in this system.
 1. Board of Shareholders
-2. Board of Directors
+2. Fractions
 3. Independent members of the network.
 
 All participants must participate in the vote for the law adopted by the system to be valid
@@ -10,19 +10,18 @@ only in the approval of amendments to the Charter).
 For all votes, only votes cast in the last four years count.
 All members may hold multiple positions from different groups, but may not
 hold more than one position in the same category.
-Example: One account can be both ***Member of the Network*** and ***Member of the Board of Directors***
-and ***Member of the Board of Shareholders***, but one account cannot hold multiple seats on the Board of Directors
+Example: One account can be both ***Independent Network Member*** and ***Be like a faction***
+and ***Member of the Board of Shareholders***, but one account cannot occupy several seats in fractions
 or in the Board of Shareholders.
 
-It is this part of the vote that is taken into account when electing the Board of Directors and Fractions.
-![stock_vote](../screenshots/stock_vote.png)
+It is the votes from the Shares that are taken into account when electing Fractions and Corporate Judges
 ## Board of Shareholders
 The Board of Shareholders is automatically appointed by the system.
 The Board of Shareholders consists of 1500 accounts with the largest number of shares,
 but only those accounts are selected that have either been mining in the last year,
 either sent digital dollars or digital shares, or participated in voting.
 A member of one Board of Shareholders has one vote. One score equals one vote.
-The voting system described in [ONE_VOTE](../charter/ONE_VOTE.md) is used
+The voting system described in [ONE_VOTE](../charterEng/ONE_VOTE.md) is used
 
 ````
    //determining the board of shareholders
@@ -45,36 +44,17 @@ The voting system described in [ONE_VOTE](../charter/ONE_VOTE.md) is used
          }
 ````
 
-## Board of Directors
-The Board of Directors is elected by the members of the network.
-The Board of Directors consists of 601 accounts that received the most votes
-according to the system described in [VOTE_STOCK](../charter/VOTE_STOCK.md). Each score is equal to one vote, described
-in [ONE_VOTE](../charter/ONE_VOTE.md).
-
-````
-  //minimum value for the number of positive votes for the law to be valid,
-         //positions elected by shares of the board of directors
-         List<CurrentLawVotesEndBalance> electedByStockBoardOfDirectors = current.stream()
-                 .filter(t -> directors.isElectedByStocks(t.getPackageName()))
-                 .filter(t -> t.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString()))
-                 .filter(t -> t.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE)
-                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
-                 .limit(directors.getDirector(NamePOSITION.BOARD_OF_DIRECTORS.toString()).getCount())
-                 .collect(Collectors.toList());
-````
-
-### How to apply for a board position
-First you need to go to the tab in ***apply for a position*** Select BOARD_OF_DIRECTORS
-and fill in all the lines with the required data.
-![apply_board_of_directors](../screenshots/apply_board_or_directors.png)
-
-
-
+## Fractions
+Fractions are elected in the same way as corporate judges, their number is 200 seats.
+The peculiarity of factions is that their votes are equal to the share of support relative to other factions.
+When we say faction, we always mean a legal or natural person who, on behalf of
+of his group votes and because of this, one account may have more votes than when voting judges.
+This is how faction votes are counted [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md)
 
 ## Independent Network Members.
 All network members who have shares and are not included in the first three categories listed above,
 are ***independent members of the network***. The votes of each such participant are equal to
-to the number of shares at the moment and is described in detail in [VOTE_STOCK](../charter/VOTE_STOCK.md).
+to the number of shares at the moment and is described in detail in [VOTE_STOCK](../charterEng/VOTE_STOCK.md).
 
 
-[Exit to home](../documentation/documentationEng.md)
+[Exit to home](../documentationEng/documentationEng.md)

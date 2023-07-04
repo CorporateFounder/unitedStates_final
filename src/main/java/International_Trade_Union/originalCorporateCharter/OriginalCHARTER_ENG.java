@@ -30,8 +30,8 @@ public interface OriginalCHARTER_ENG {
             "### REGULAR LAWS\n" +
             "To establish ordinary laws,\n" +
             "1. The name of the package of law should not match the highlighted keywords.\n" +
-            "2. The law must receive more than 1 vote according to the scoring system described by [VOTE_STOCK](../charter/VOTE_STOCK.md)\n" +
-            "3. Must receive 10 or more votes of the Board of Directors according to the scoring system described in [ONE_VOTE](../charter/ONE_VOTE.md)\n" +
+            "2. The law must receive more than 1 vote according to the scoring system described by [VOTE_STOCK](../charterEng/VOTE_STOCK.md)\n" +
+            "3. Must receive 15% or more votes from factions according to the scoring system described in [VOTE_FFRACTION](../charterEng/VOTE_FRACTION.md)\n" +
             "\n" +
             "\n" +
             "Sample code in LawsController current law:\n" +
@@ -44,7 +44,7 @@ public interface OriginalCHARTER_ENG {
             "                 .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))\n" +
             "                 .filter(t->!Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))\n" +
             "                 .filter(t ->\n" +
-            "                  t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS\n" +
+            "                  t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
             "                 && t.getVotes() >= Seting.ALL_STOCK_VOTE\n" +
             "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());\n" +
             "   \n" +
@@ -57,7 +57,7 @@ public interface OriginalCHARTER_ENG {
             "1. The strategic plan package should be called STRATEGIC_PLAN\n" +
             "2. All plans that have been approved are sorted from highest to lowest by the number of votes,\n" +
             "   received from the Board of Directors.\n" +
-            "3. After Sorting, only one PLAN with the highest number of votes received from the Board of Directors is selected.\n" +
+            "3. After Sorting, only one PLAN with the most votes received from shares is selected.\n" +
             "\n" +
             "````\n" +
             "//the plan is approved by everyone\n" +
@@ -65,11 +65,11 @@ public interface OriginalCHARTER_ENG {
             "                 .filter(t->!directors.contains(t.getPackageName()))\n" +
             "                 .filter(t->Seting.STRATEGIC_PLAN.equals(t.getPackageName()))\n" +
             "                 .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
-            "                 .filter(t->t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS\n" +
+            "                 .filter(t->t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
             "                       \n" +
             "                       \n" +
             "                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)\n" +
-            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())\n" +
+            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())\n" +
             "                 .limit(1)\n" +
             "                 .collect(Collectors.toList());\n" +
             "````\n" +
@@ -85,11 +85,11 @@ public interface OriginalCHARTER_ENG {
             "                 .filter(t->Seting.BUDGET.equals(t.getPackageName()))\n" +
             "                 .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
             "                 .filter(t->\n" +
-            "                         t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS\n" +
+            "                         t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
             "                       \n" +
             "                       \n" +
             "                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)\n" +
-            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())\n" +
+            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())\n" +
             "                 .limit(1)\n" +
             "                 .collect(Collectors.toList());\n" +
             "````\n" +
@@ -97,24 +97,23 @@ public interface OriginalCHARTER_ENG {
             "### POSTS THAT ARE APPOINTED ONLY BY THE LEGISLATIVE AUTHORITY\n" +
             "There are positions that are appointed only by the Legislature and such positions include\n" +
             "General Executive Director. This position is similar to the Prime Minister and is\n" +
-            "Ispoexercising power in this system.\n" +
-            "Each such position can be limited to the number that is defined in this system.\n" +
+            "Executive Power in this system.\n" +
+            "Each such position may be limited to the number, which is defined in this system\n" +
             "for this position. Example: There is only one CEO position.\n" +
             "Elected in the same way as ***strategic plan*** and ***budget***.\n" +
             "But the number is determined for each position separately.\n" +
             "````\n" +
-            "   //positions elected only by all participants\n" +
-            "         List<CurrentLawVotesEndBalance> electedByBoardOfDirectors = current.stream()\n" +
+            "  //positions elected only by all participants\n" +
+            "         List<CurrentLawVotesEndBalance> electedByFractions = current.stream()\n" +
             "                 .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))\n" +
-            "                 .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS\n" +
-            "                \n" +
-            "              \n" +
+            "                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
             "                 && t.getVotes() >= Seting.ALL_STOCK_VOTE)\n" +
-            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())\n" +
+            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())\n" +
             "                 .collect(Collectors.toList());\n" +
-            "                \n" +
-            "                   //group by list\n" +
-            "         Map<String, List<CurrentLawVotesEndBalance>> group = electedByBoardOfDirectors.stream()\n" +
+            "\n" +
+            "\n" +
+            "         //group by list\n" +
+            "         Map<String, List<CurrentLawVotesEndBalance>> group = electedFraction.stream()\n" +
             "                 .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));\n" +
             "\n" +
             "         Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();\n" +
@@ -123,7 +122,7 @@ public interface OriginalCHARTER_ENG {
             "         for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {\n" +
             "             List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();\n" +
             "             temporary = temporary.stream()\n" +
-            "                     .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors))\n" +
+            "                     .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))\n" +
             "                     .limit(directors.getDirector(stringListEntry.getKey()).getCount())\n" +
             "                     .collect(Collectors.toList());\n" +
             "             original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);\n" +
@@ -138,12 +137,12 @@ public interface OriginalCHARTER_ENG {
             "### CHARTER AMENDMENTS\n" +
             "To amend the charter, the law package must be named AMENDMENT_TO_THE_CHARTER.\n" +
             "For an amendment to be valid\n" +
-            "1. It is necessary that 20% or more of the votes received from the Council of Shareholders by the counting system [ONE_VOTE](../charter/ONE_VOTE.md).\n" +
-            "2. Need to get 20% or more votes from the Board of Directors by the [ONE_VOTE] counting system (../charter/ONE_VOTE.md).\n" +
+            "1. It is necessary that 20% or more of the votes received from the Council of Shareholders by the counting system [ONE_VOTE](../charterEng/VOTE_FRACTION.md).\n" +
+            "2. Need to get 15% or more votes from factions by counting system [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md).\n" +
             "3. Need to get 5 or more votes from the Legislative Branch of the Corporate Chief Justices.\n" +
             "\n" +
             "\n" +
-            "![Charter amendments](../screenshots/amendment-chapter.png)\n" +
+            "\n" +
             "````\n" +
             "    //introduction of amendments to the charter\n" +
             "         List<CurrentLawVotesEndBalance> chapter_amendment = current.stream()\n" +
@@ -151,10 +150,9 @@ public interface OriginalCHARTER_ENG {
             "                 .filter(t-> Seting.AMENDMENT_TO_THE_CHARTER.equals(t.getPackageName()))\n" +
             "                 .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
             "                 .filter(t -> t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MINT_VOTE_BOARD_OF_SHAREHOLDERS_AMENDMENT\n" +
-            "                 && t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_AMENDMENT\n" +
-            "                 && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES_AMENDMENT\n" +
-            "                )\n" +
-            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed()).collect(Collectors.toList());\n" +
+            "                 && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "                 && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES_AMENDMENT)\n" +
+            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());\n" +
             "\n" +
             "````\n" +
             "\n" +
@@ -177,7 +175,8 @@ public interface OriginalCHARTER_ENG {
             "         // SOURCE CODE CREATED BY THE FOUNDER\n" +
             "         List<CurrentLawVotesEndBalance> CHARTER_ORIGINAL_CODE = current.stream()\n" +
             "                 .filter(t -> !directors.contains(t.getPackageName()) && Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))\n" +
-            "                 .filter(t->!directors.isCabinets(t.getPackageName())).filter(t->t.getFounderVote()>=1)\n" +
+            "                 .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
+            "                 .filter(t->t.getFounderVote()>=1)\n" +
             "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())\n" +
             "                 .limit(1)\n" +
             "                 .collect(Collectors.toList());\n" +
@@ -252,7 +251,7 @@ public interface OriginalCHARTER_ENG {
             "\n" +
             "When these positions are voted count as one score = one vote\n" +
             "(CORPORATE_COUNCIL_OF_REFEREES-Council of Corporate Judges,\n" +
-            "BOARD_OF_DIRECTORS-Board of Directors, GENERAL_EXECUTIVE_DIRECTOR-General Executive Director,\n" +
+            "GENERAL_EXECUTIVE_DIRECTOR-General Executive Director,\n" +
             "HIGH_JUDGE - Supreme Judge and Board of Shareholders).\n" +
             "Each score that starts with LIBER counts all votes FOR (VoteEnum.YES) and AGAINST (VoteEnum.NO) for it\n" +
             "further deducted from FOR - AGAINST = if the balances are above the threshold, then it becomes the current law. But if a position is elected,\n" +
@@ -261,8 +260,8 @@ public interface OriginalCHARTER_ENG {
             "\n" +
             "After voting, the vote can only be changed to the opposite one.\n" +
             "There is no limit on the number of times you can change your vote. Only those votes that are given by accounts are taken into account\n" +
-            "in office, for example, if the account ceases to be on the Board of Directors, his vote as\n" +
-            "The Board of Directors does not, and will not, count in voting. All votes are valid until the bills\n" +
+            "in his position, for example, if the account ceased to be in CORPORATE_COUNCIL_OF_REFEREES, his vote as\n" +
+            "CORPORATE_COUNCIL_OF_REFEREES does not count and will not count in voting. All votes are valid until the bills\n" +
             "voters are in their positions. Only those votes from which no more than\n" +
             "four years, but each participant may at any time renew their vote.\n" +
             "\n" +
@@ -293,18 +292,22 @@ public interface OriginalCHARTER_ENG {
             "    }\n" +
             "\n" +
             "````\n" +
-            "\n" +
             "[back to home](../documentationEng/documentationEng.md)";
 
-    String VOTE_FRACTION_4 = "#VOTE_FRACTION\n" +
+    String VOTE_FRACTION_4 = "# FAVORITE_FRACTION\n" +
+            "The faction is extracted like the chief judges, 200 scores received by the maximum number of votes\n" +
+            "from a unique electoral one, as previously and an observed share equal to one vote of the described\n" +
+            "in VOTE_STOCK\n" +
+            "\n" +
+            "#VOTE_FRACTION\n" +
             "This voting system is used only for factions.\n" +
-            "First, 100 factions are selected that have become legitimate.\n" +
-            "Then all the votes given to 100 selected factions are summed up.\n" +
+            "First, 200 factions are selected that have become legitimate.\n" +
+            "Then all the votes given to 200 selected factions are summed up.\n" +
             "After that, the share of each fraction from the total amount is determined.\n" +
             "votes cast for this faction.\n" +
             "The number of votes of each faction is equal to its percentage shares.\n" +
             "Thus, if a faction has 23% of the votes of all votes, out of\n" +
-            "100 factions, then her vote is equal to 23%.\n" +
+            "200 factions, then her vote is equal to 23%.\n" +
             "On behalf of the factions, the leaders always act and because of this it is\n" +
             "First of all, the leader system. Identical factions with ideological\n" +
             "system here can be represented by different leaders, even\n" +
@@ -360,11 +363,10 @@ public interface OriginalCHARTER_ENG {
             "recipient's digital shares are reduced by the amount sent by the share sender.\n" +
             "Example account A sent to account B 100 digital shares with VoteEnum.NO, then account A and account B both lose 100\n" +
             "digital shares. This measure is needed so that there is a mechanism to dismiss the Board of Shareholders and also allows you to lower your votes\n" +
-            "destructive accounts, since the number of votes is equal to the number of shares in the Election of the Board of Directors and\n" +
-            "when electing CORPORATE_COUNCIL_OF_REFEREES.\n" +
+            "destructive accounts, since the number of votes is equal to the number of shares,\n" +
+            "when electing CORPORATE_COUNCIL_OF_REFEREES, Fractions and other positions that are elected by shares.\n" +
             "This mechanism only works on digital shares and only if the sender has made a transaction with\n" +
             "VoteEnum.NO.\n" +
-            "\n" +
             "[exit to home](../documentationEng/documentationEng.md)";
 
     String WHO_HAS_THE_RIGHT_TO_CREATE_LAWS_6 ="# WHO_HAS_THE_RIGHT_TO_CREATE_LAWS Who has the right to create laws\n" +
@@ -467,26 +469,23 @@ public interface OriginalCHARTER_ENG {
             "\n" +
             "## How the CEO is elected\n" +
             "This director is elected by the Legislature\n" +
-            "1. The Board of Directors must give more than 10 or more votes using the [ONE_VOTE](../charterEng/ONE_VOTE.md) method\n" +
-            "2. The Board of Shareholders must give more than 10 or more votes using the [ONE_VOTE](../charterEng/ONE_VOTE.md) method\n" +
-            "3. Fractions must give 10% or more votes using the [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md) method\n" +
+            "3. Fractions must give 15% or more votes using the method [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md)\n" +
             "4. Network participants must give more than one vote using the [VOTE_STOCK](../charterEng/VOTE_STOCK.md) method\n" +
-            "5. Next comes the sorting from highest to lowest received votes from the Board of Directors and\n" +
+            "5. Next comes the sorting from the highest to the lowest received votes from the shares and\n" +
             "6. One account with the most votes from the Board of Directors is selected\n" +
             "\n" +
             "````\n" +
-            "  //positions elected only by all participants\n" +
-            "         List<CurrentLawVotesEndBalance> electedByBoardOfDirectors = current.stream()\n" +
+            "   //positions elected only by all participants\n" +
+            "         List<CurrentLawVotesEndBalance> electedByFractions = current.stream()\n" +
             "                 .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))\n" +
-            "                 .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS\n" +
-            "                 && t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS\n" +
-            "                 && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
             "                 && t.getVotes() >= Seting.ALL_STOCK_VOTE)\n" +
-            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())\n" +
+            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())\n" +
             "                 .collect(Collectors.toList());\n" +
-            "                \n" +
-            "                  //group by list\n" +
-            "         Map<String, List<CurrentLawVotesEndBalance>> group = electedByBoardOfDirectors.stream()\n" +
+            "\n" +
+            "\n" +
+            "         //group by list\n" +
+            "         Map<String, List<CurrentLawVotesEndBalance>> group = electedFraction.stream()\n" +
             "                 .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));\n" +
             "\n" +
             "         Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();\n" +
@@ -495,7 +494,7 @@ public interface OriginalCHARTER_ENG {
             "         for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {\n" +
             "             List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();\n" +
             "             temporary = temporary.stream()\n" +
-            "                     .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors))\n" +
+            "                     .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))\n" +
             "                     .limit(directors.getDirector(stringListEntry.getKey()).getCount())\n" +
             "                     .collect(Collectors.toList());\n" +
             "             original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);\n" +
@@ -538,7 +537,7 @@ public interface OriginalCHARTER_ENG {
             "                 int boafdOfShareholderVotes = 0;\n" +
             "                 int houseOfRepresentativiesVotes = 0;\n" +
             "                 int primeMinisterVotes = 0;\n" +
-            "                 int-highhtJudgesVotes = 0;\n" +
+            "                 int hightJudgesVotes = 0;\n" +
             "                 int founderVote = 0;\n" +
             "                 double fraction = 0;\n" +
             "\n" +
@@ -571,12 +570,12 @@ public interface OriginalCHARTER_ENG {
             "         Map<String, Double> fractions = new HashMap<>();\n" +
             "\n" +
             "         for (CurrentLawVotesEndBalance currentLawVotesEndBalance: current) {\n" +
-            "             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString())){\n" +
-            "                 if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){\n" +
-            "                     houseOfRepresentativies.add(currentLawVotesEndBalance.getLaws().get(0));\n" +
-            "                 }\n" +
-            "\n" +
-            "             }\n" +
+            "// if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString())){\n" +
+            "// if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){\n" +
+            "// houseOfRepresentativies.add(currentLawVotesEndBalance.getLaws().get(0));\n" +
+            "// }\n" +
+            "//\n" +
+            "// }\n" +
             "             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.CORPORATE_COUNCIL_OF_REFEREES.toString())){\n" +
             "                 if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){\n" +
             "                     chamberOfSumpremeJudges.add(currentLawVotesEndBalance.getLaws().get(0));\n" +
@@ -617,9 +616,7 @@ public interface OriginalCHARTER_ENG {
             "         List<String> hightJudge = new ArrayList<>();\n" +
             "         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : current) {\n" +
             "             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString())){\n" +
-            "                 if(currentLawVotesEndBalance.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS\n" +
-            "                 && currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
-            "                 && currentLawVotesEndBalance.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS\n" +
+            "                 if(currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
             "                 && currentLawVotesEndBalance.getVotes() >= Seting.ALL_STOCK_VOTE){\n" +
             "                     primeMinister.add(currentLawVotesEndBalance.getLaws().get(0));\n" +
             "                 }\n" +
@@ -717,23 +714,55 @@ public interface OriginalCHARTER_ENG {
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
 
-    String FREEDOM_OF_SPEECH_12 = "FREEDOM_OF_SPEECH The right to free speech\n" +
-            "No body of this corporation or entity shall prohibit free practice any religion; or restrict freedom of speech, conscience or the press or the right of people to peacefully assemble or associate with one another, or not associate with one another, and apply to the management of the Corporation of the International Trade Union and to this corporation with a petition for satisfaction of complaints; + or violate the right to the fruits of one's labor or the right to a peaceful life of their choice. Freedoms of speech and conscience include the freedom to contribute to political campaigns or nominations for corporate office and shall be construed as extending equally to any means of communication.";
-
-    String RIGHTS_13 = "RIGHTS Natural Rights\n" +
-            "All members of the network must respect the Natural Human Rights and not violate them. \"The presumption of innocence must also be respected and every member of the network must have the right to a fair and independent trial. Each participant has the right to a lawyer or to be his own lawyer.\n" +
+    String FREEDOM_OF_SPEECH_12 = "# FREEDOM_OF_SPEECH The right to free speech\n" +
+            "No body of this corporation or entity shall prohibit free practice\n" +
+            "any religion; or restrict freedom of speech, conscience or the press\n" +
+            "or the right of people to peacefully assemble or associate with one another, or not associate with one another, and\n" +
+            "apply to the management of the Corporation of the International Trade Union and to this corporation with a petition for satisfaction of complaints; +\n" +
+            "or violate the right to the fruits of one's labor or\n" +
+            "the right to a peaceful life of their choice.\n" +
+            "Freedoms of speech and conscience include the freedom to contribute to\n" +
+            "political campaigns or nominations for corporate office and shall be construed as\n" +
+            "extending equally to any means of communication.\n" +
             "\n" +
-            "The International Trade Union Corporation shall not regulate the cost of goods and services of network members that sell through this platform. Also, the Corporation should not ban individual brands on its site, but may prohibit the sale of entire groups of goods that fall within the characteristics described by applicable laws, if this prohibition does not violate Natural Human Rights. As a source of rights, you can take as a precedent Countries recognized as democratic countries.\n" +
+            "[Exit to home](../documentationEng/documentationEng.md)";
+
+    String RIGHTS_13 = "# RIGHTS Natural Rights\n" +
+            "All members of the network must respect the Natural Human Rights and not violate them.\n" +
+            "\"The presumption of innocence must also be respected and every member of the network must have the right to a fair and independent\n" +
+            "trial.\n" +
+            "Each participant has the right to a lawyer or to be his own lawyer.\n" +
+            "\n" +
+            "The International Trade Union Corporation shall not regulate the cost of goods and services of network members that\n" +
+            "sell through this platform.\n" +
+            "Also, the Corporation should not ban individual brands on its site, but may\n" +
+            "prohibit the sale of entire groups of goods that fall within the characteristics described by applicable laws, if\n" +
+            "this prohibition does not violate Natural Human Rights. As a source of rights, you can take\n" +
+            "as a precedent Countries recognized as democratic countries.\n" +
             "\n" +
             "A detailed list is at the United Nations (UN)\n" +
             "\n" +
-            "The right to live Right to liberty and security of person Right to privacy The right to determine and indicate one's nationality The right to use one's native language The right to freedom of movement and choice of place of stay and residence Right to freedom of conscience\n" +
+            "The right to live\n" +
+            "Right to liberty and security of person\n" +
+            "Right to privacy\n" +
+            "The right to determine and indicate one's nationality\n" +
+            "The right to use one's native language\n" +
+            "The right to freedom of movement and choice of place of stay and residence\n" +
+            "Right to freedom of conscience\n" +
             "\n" +
-            "Freedom of thought and speech Freedom of Information The right to form public associations The right to hold public events The right to participate in the management of the affairs of the Corporation of the International Trade Union The right to appeal to the bodies of the Corporation of the International Trade Union and local governments.";
+            "Freedom of thought and speech\n" +
+            "Freedom of Information\n" +
+            "The right to form public associations\n" +
+            "The right to hold public events\n" +
+            "The right to participate in the management of the affairs of the Corporation of the International Trade Union\n" +
+            "The right to appeal to the bodies of the Corporation of the International Trade Union and local governments.\n" +
+            "\n" +
+            "\n" +
+            "[Exit to home](../documentationEng/documentationEng.md)";
     String LEGISLATURE_14 = "#LEGISLATURE.\n" +
-            "Power consists of 4 groups in this system.\n" +
+            "Power consists of 3 groups in this system.\n" +
             "1. Board of Shareholders\n" +
-            "2. Board of Directors\n" +
+            "2. Fractions\n" +
             "3. Independent members of the network.\n" +
             "\n" +
             "All participants must participate in the vote for the law adopted by the system to be valid\n" +
@@ -742,19 +771,18 @@ public interface OriginalCHARTER_ENG {
             "For all votes, only votes cast in the last four years count.\n" +
             "All members may hold multiple positions from different groups, but may not\n" +
             "hold more than one position in the same category.\n" +
-            "Example: One account can be both ***Member of the Network*** and ***Member of the Board of Directors***\n" +
-            "and ***Member of the Board of Shareholders***, but one account cannot hold multiple seats on the Board of Directors\n" +
+            "Example: One account can be both ***Independent Network Member*** and ***Be like a faction***\n" +
+            "and ***Member of the Board of Shareholders***, but one account cannot occupy several seats in fractions\n" +
             "or in the Board of Shareholders.\n" +
             "\n" +
-            "It is this part of the vote that is taken into account when electing the Board of Directors and Fractions.\n" +
-            "![stock_vote](../screenshots/stock_vote.png)\n" +
+            "It is the votes from the Shares that are taken into account when electing Fractions and Corporate Judges\n" +
             "## Board of Shareholders\n" +
             "The Board of Shareholders is automatically appointed by the system.\n" +
             "The Board of Shareholders consists of 1500 accounts with the largest number of shares,\n" +
             "but only those accounts are selected that have either been mining in the last year,\n" +
             "either sent digital dollars or digital shares, or participated in voting.\n" +
             "A member of one Board of Shareholders has one vote. One score equals one vote.\n" +
-            "The voting system described in [ONE_VOTE](../charter/ONE_VOTE.md) is used\n" +
+            "The voting system described in [ONE_VOTE](../charterEng/ONE_VOTE.md) is used\n" +
             "\n" +
             "````\n" +
             "   //determining the board of shareholders\n" +
@@ -777,39 +805,20 @@ public interface OriginalCHARTER_ENG {
             "         }\n" +
             "````\n" +
             "\n" +
-            "## Board of Directors\n" +
-            "The Board of Directors is elected by the members of the network.\n" +
-            "The Board of Directors consists of 601 accounts that received the most votes\n" +
-            "according to the system described in [VOTE_STOCK](../charter/VOTE_STOCK.md). Each score is equal to one vote, described\n" +
-            "in [ONE_VOTE](../charter/ONE_VOTE.md).\n" +
-            "\n" +
-            "````\n" +
-            "  //minimum value for the number of positive votes for the law to be valid,\n" +
-            "         //positions elected by shares of the board of directors\n" +
-            "         List<CurrentLawVotesEndBalance> electedByStockBoardOfDirectors = current.stream()\n" +
-            "                 .filter(t -> directors.isElectedByStocks(t.getPackageName()))\n" +
-            "                 .filter(t -> t.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString()))\n" +
-            "                 .filter(t -> t.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE)\n" +
-            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())\n" +
-            "                 .limit(directors.getDirector(NamePOSITION.BOARD_OF_DIRECTORS.toString()).getCount())\n" +
-            "                 .collect(Collectors.toList());\n" +
-            "````\n" +
-            "\n" +
-            "### How to apply for a board position\n" +
-            "First you need to go to the tab in ***apply for a position*** Select BOARD_OF_DIRECTORS\n" +
-            "and fill in all the lines with the required data.\n" +
-            "![apply_board_of_directors](../screenshots/apply_board_or_directors.png)\n" +
-            "\n" +
-            "\n" +
-            "\n" +
+            "## Fractions\n" +
+            "Fractions are elected in the same way as corporate judges, their number is 200 seats.\n" +
+            "The peculiarity of factions is that their votes are equal to the share of support relative to other factions.\n" +
+            "When we say faction, we always mean a legal or natural person who, on behalf of\n" +
+            "of his group votes and because of this, one account may have more votes than when voting judges.\n" +
+            "This is how faction votes are counted [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md)\n" +
             "\n" +
             "## Independent Network Members.\n" +
             "All network members who have shares and are not included in the first three categories listed above,\n" +
             "are ***independent members of the network***. The votes of each such participant are equal to\n" +
-            "to the number of shares at the moment and is described in detail in [VOTE_STOCK](../charter/VOTE_STOCK.md).\n" +
+            "to the number of shares at the moment and is described in detail in [VOTE_STOCK](../charterEng/VOTE_STOCK.md).\n" +
             "\n" +
             "\n" +
-            "[Exit to home](../documentation/documentationEng.md)";
+            "[Exit to home](../documentationEng/documentationEng.md)";
 
 
 

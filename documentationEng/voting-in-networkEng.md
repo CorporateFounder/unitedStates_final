@@ -3,7 +3,7 @@ Sign in at http://localhost:8082/voting
 There you must enter the sender's address, legal address and position which always begins
 with LIBER. The amount you want to give to the miner and press the button. ***Submit vote***
 But everywhere one of two types of voting is used, depending on whether
-what you vote for ONE_VOTE or VOTE_STOCK.
+what you vote for ONE_VOTE or VOTE_STOCK VOTE_FRACTION.
 
 Law addresses can be taken from http://localhost:8082/current-laws or http://localhost:8082/all-laws
 

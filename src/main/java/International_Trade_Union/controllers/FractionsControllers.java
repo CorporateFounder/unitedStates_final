@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 @Controller
 public class FractionsControllers {
-    @GetMapping("fractions")
+    @GetMapping("/fractions")
     public String fraction(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Directors directors = new Directors();
         Blockchain blockchain = Mining.getBlockchain(

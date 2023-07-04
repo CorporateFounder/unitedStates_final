@@ -38,7 +38,6 @@ login to main page http://localhost:8082
 
 # STEP BY STEP WITH PHOTO
 ![step 1](../screenshots/step-1-install.png)
-
 ![step 2](../screenshots/step-2-install.png)
 ![step 3](../screenshots/step-3-install.png)
 ![step 4](../screenshots/step-4-install.png)

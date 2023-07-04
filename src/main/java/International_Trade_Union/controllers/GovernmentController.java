@@ -134,16 +134,16 @@ public class GovernmentController {
         }
 
         //позиции избираемые только всеми участниками
-        List<CurrentLawVotesEndBalance> electedByBoardOfDirectors = current.stream()
+        List<CurrentLawVotesEndBalance> electedByFraction = current.stream()
                 .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
-                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                 .collect(Collectors.toList());
 
 
         //групируем по списку
-        Map<String, List<CurrentLawVotesEndBalance>> group = electedByBoardOfDirectors.stream()
+        Map<String, List<CurrentLawVotesEndBalance>> group = electedByFraction.stream()
                 .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));
 
         Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();
@@ -152,7 +152,7 @@ public class GovernmentController {
         for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {
             List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();
             temporary = temporary.stream()
-                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors))
+                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))
                     .limit(directors.getDirector(stringListEntry.getKey()).getCount())
                     .collect(Collectors.toList());
             original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);
@@ -168,11 +168,11 @@ public class GovernmentController {
 
 
         //избираемые GENERAL_EXECUTIVE_DIRECTOR
-        List<CurrentLawVotesEndBalance> electedByGeneralExecutiveDirector = electedByBoardOfDirectors.stream()
+        List<CurrentLawVotesEndBalance> electedByGeneralExecutiveDirector = electedByFraction.stream()
                 .filter(t -> directors.isElectedCEO(t.getPackageName()))
                 .filter(t -> NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString().equals(t.getPackageName()))
                 .filter(t -> t.getVoteGeneralExecutiveDirector() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_GENERAL_EXECUTIVE_DIRECTOR)
-                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVoteGeneralExecutiveDirector))
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))
                 .collect(Collectors.toList());
 
         //голос верховного судьи
@@ -203,7 +203,7 @@ public class GovernmentController {
         current.addAll(addDirectors);
         current.addAll(electedFraction);
         current.addAll(electedByStockCorporateCouncilOfReferees);
-        current.addAll(electedByBoardOfDirectors);
+        current.addAll(electedByFraction);
         current.addAll(electedByCorporateCouncilOfReferees);
         current.addAll(electedByGeneralExecutiveDirector);
         current.addAll(electedByHightJudge);

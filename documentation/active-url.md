@@ -34,12 +34,12 @@
     public synchronized void register_node(@RequestBody AddressUrl urlAddrress)***
   - В качестве Аргумента берет класс AddressUrl
 - http://localhost:8082/addBlock
-  - Пересохраняет весь список блоков, предварительно заново пересчитывав,
+  - сохраняет заново сделав перерасчет весь список блоков, предварительно заново пересчитывав,
   баланс, голоса и другие данные, так же все эти данные заново сохраняет
   ***@GetMapping("/addBlock")
     public boolean getBLock()***
 - http://localhost:8082/getNodes
-  Возвращяет список хостов, сохраненных на локальном сервере
+  Возвращает список хостов, сохраненных на локальном сервере
   ***@GetMapping("/getNodes")
   public Set<String> getAllNodes()***
 - http://localhost:8082/moreMining

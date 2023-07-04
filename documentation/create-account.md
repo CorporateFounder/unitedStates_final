@@ -1,16 +1,16 @@
-# Открыть счет
+# Open an account
 
-После того как правильно был запушен сервер, зайдите в http://localhost:8082/create-account
-Там нужно скопировать ***Новый Адрес*** это и есть ваш ***Логин*** и ***публичный ключ***.
-Так же вам нужно скопировать ***пароль*** это и есть ваш ***приватный ключ***.
-Скопируйте логин и пароль, и храните в безопасном месте.
+Once the server has been properly started, go to http://localhost:8082/create-account
+There you need to copy *** New Address *** this is your *** Login *** and *** public key ***.
+You also need to copy ***password*** this is your ***private key***.
+Copy your username and password and keep it in a safe place.
 
-![как создать акаунт](../screenshots/create-account.png)
+![how to create an account](../screenshots/create-accountEng.png)
 
-После нужно сменить адрес майнера, войдите в настройки http://localhost:8082/seting
+After you need to change the address of the miner, enter the settings http://localhost:8082/seting
 
-введите там ваш логин в pubkey, и нажмите кнопку ***сменить адрес майнера***
-![сменить адрес майнера](../screenshots/change-miner.png)
+enter your pubkey login there, and click the button ***change miner address***
+![change miner address](../screenshots/change-minerEng.png)
 ____
 
 код 

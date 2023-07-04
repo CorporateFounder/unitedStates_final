@@ -61,7 +61,7 @@ public class ConstitutionController {
         rus.add("OriginalCHARTER.ONE_VOTE_3:\n"+ OriginalCHARTER.ONE_VOTE_3);
         rus.add("OriginalCHARTER.VOTE_FRACTION_4:\n"+ OriginalCHARTER.VOTE_FRACTION_4);
         rus.add("OriginalCHARTER.Penalty_mechanism_5:\n"+ OriginalCHARTER.Penalty_mechanism_5);
-        rus.add("OriginalCHARTER.WHO_HAS_THE_RIGHT_TO_CREATE_LAWS_6:\n"+ OriginalCHARTER.WHO_HAS_THE_RIGHT_TO_CREATE_LAWS_6);
+        rus.add("OriginalCHARTER.WHO_HAS_THE_RIGHT_TO_CREATE_LAWS_6:\n"+ OriginalCHARTER.WHO_HAS_THE_RIGHT_TO_CREATE_LAWS);
         rus.add("OriginalCHARTER.POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES_7:\n"+ OriginalCHARTER.POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES_7);
         rus.add("OriginalCHARTER.HOW_THE_CHIEF_JUDGE_IS_CHOSEN_8:\n"+ OriginalCHARTER.HOW_THE_CHIEF_JUDGE_IS_CHOSEN_8);
         rus.add("OriginalCHARTER.PROPERTY_OF_THE_CORPORATION_9:\n"+ OriginalCHARTER.PROPERTY_OF_THE_CORPORATION_9);

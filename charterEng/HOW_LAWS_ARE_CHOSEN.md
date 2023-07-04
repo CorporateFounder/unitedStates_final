@@ -27,8 +27,8 @@ NOTHING removes the vote from the candidate when voting.
 ### REGULAR LAWS
 To establish ordinary laws,
 1. The name of the package of law should not match the highlighted keywords.
-2. The law must receive more than 1 vote according to the scoring system described by [VOTE_STOCK](../charter/VOTE_STOCK.md)
-3. Must receive 10 or more votes of the Board of Directors according to the scoring system described in [ONE_VOTE](../charter/ONE_VOTE.md)
+2. The law must receive more than 1 vote according to the scoring system described by [VOTE_STOCK](../charterEng/VOTE_STOCK.md)
+3. Must receive 15% or more votes from factions according to the scoring system described in [VOTE_FFRACTION](../charterEng/VOTE_FRACTION.md)
 
 
 Sample code in LawsController current law:
@@ -41,7 +41,7 @@ Sample code in LawsController current law:
                  .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))
                  .filter(t->!Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))
                  .filter(t ->
-                  t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
+                  t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                  && t.getVotes() >= Seting.ALL_STOCK_VOTE
                  .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());
    
@@ -54,7 +54,7 @@ but there are some differences from ordinary laws.
 1. The strategic plan package should be called STRATEGIC_PLAN
 2. All plans that have been approved are sorted from highest to lowest by the number of votes,
    received from the Board of Directors.
-3. After Sorting, only one PLAN with the highest number of votes received from the Board of Directors is selected.
+3. After Sorting, only one PLAN with the most votes received from shares is selected.
 
 ````
 //the plan is approved by everyone
@@ -62,11 +62,11 @@ but there are some differences from ordinary laws.
                  .filter(t->!directors.contains(t.getPackageName()))
                  .filter(t->Seting.STRATEGIC_PLAN.equals(t.getPackageName()))
                  .filter(t->!directors.isCabinets(t.getPackageName()))
-                 .filter(t->t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
+                 .filter(t->t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                        
                        
                          && t.getVotes() >= Seting.ALL_STOCK_VOTE)
-                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
+                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                  .limit(1)
                  .collect(Collectors.toList());
 ````
@@ -82,11 +82,11 @@ but the name of the package should be BUDGET and it is also in a single copy.
                  .filter(t->Seting.BUDGET.equals(t.getPackageName()))
                  .filter(t->!directors.isCabinets(t.getPackageName()))
                  .filter(t->
-                         t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
+                         t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                        
                        
                          && t.getVotes() >= Seting.ALL_STOCK_VOTE)
-                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
+                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                  .limit(1)
                  .collect(Collectors.toList());
 ````
@@ -94,24 +94,23 @@ but the name of the package should be BUDGET and it is also in a single copy.
 ### POSTS THAT ARE APPOINTED ONLY BY THE LEGISLATIVE AUTHORITY
 There are positions that are appointed only by the Legislature and such positions include
 General Executive Director. This position is similar to the Prime Minister and is
-Ispoexercising power in this system.
-Each such position can be limited to the number that is defined in this system.
+Executive Power in this system.
+Each such position may be limited to the number, which is defined in this system
 for this position. Example: There is only one CEO position.
 Elected in the same way as ***strategic plan*** and ***budget***.
 But the number is determined for each position separately.
 ````
-   //positions elected only by all participants
-         List<CurrentLawVotesEndBalance> electedByBoardOfDirectors = current.stream()
+  //positions elected only by all participants
+         List<CurrentLawVotesEndBalance> electedByFractions = current.stream()
                  .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
-                 .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
-                
-              
+                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                  && t.getVotes() >= Seting.ALL_STOCK_VOTE)
-                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
+                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                  .collect(Collectors.toList());
-                
-                   //group by list
-         Map<String, List<CurrentLawVotesEndBalance>> group = electedByBoardOfDirectors.stream()
+
+
+         //group by list
+         Map<String, List<CurrentLawVotesEndBalance>> group = electedFraction.stream()
                  .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));
 
          Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();
@@ -120,7 +119,7 @@ But the number is determined for each position separately.
          for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {
              List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();
              temporary = temporary.stream()
-                     .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors))
+                     .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))
                      .limit(directors.getDirector(stringListEntry.getKey()).getCount())
                      .collect(Collectors.toList());
              original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);
@@ -135,12 +134,12 @@ With the obligatory underscore.
 ### CHARTER AMENDMENTS
 To amend the charter, the law package must be named AMENDMENT_TO_THE_CHARTER.
 For an amendment to be valid
-1. It is necessary that 20% or more of the votes received from the Council of Shareholders by the counting system [ONE_VOTE](../charter/ONE_VOTE.md).
-2. Need to get 20% or more votes from the Board of Directors by the [ONE_VOTE] counting system (../charter/ONE_VOTE.md).
+1. It is necessary that 20% or more of the votes received from the Council of Shareholders by the counting system [ONE_VOTE](../charterEng/VOTE_FRACTION.md).
+2. Need to get 15% or more votes from factions by counting system [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md).
 3. Need to get 5 or more votes from the Legislative Branch of the Corporate Chief Justices.
 
 
-![Charter amendments](../screenshots/amendment-chapter.png)
+
 ````
     //introduction of amendments to the charter
          List<CurrentLawVotesEndBalance> chapter_amendment = current.stream()
@@ -148,10 +147,9 @@ For an amendment to be valid
                  .filter(t-> Seting.AMENDMENT_TO_THE_CHARTER.equals(t.getPackageName()))
                  .filter(t->!directors.isCabinets(t.getPackageName()))
                  .filter(t -> t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MINT_VOTE_BOARD_OF_SHAREHOLDERS_AMENDMENT
-                 && t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_AMENDMENT
-                 && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES_AMENDMENT
-                )
-                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed()).collect(Collectors.toList());
+                 && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                 && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES_AMENDMENT)
+                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());
 
 ````
 
@@ -174,7 +172,8 @@ the principles described in CHARTER_ORIGINAL.
          // SOURCE CODE CREATED BY THE FOUNDER
          List<CurrentLawVotesEndBalance> CHARTER_ORIGINAL_CODE = current.stream()
                  .filter(t -> !directors.contains(t.getPackageName()) && Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))
-                 .filter(t->!directors.isCabinets(t.getPackageName())).filter(t->t.getFounderVote()>=1)
+                 .filter(t->!directors.isCabinets(t.getPackageName()))
+                 .filter(t->t.getFounderVote()>=1)
                  .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                  .limit(1)
                  .collect(Collectors.toList());

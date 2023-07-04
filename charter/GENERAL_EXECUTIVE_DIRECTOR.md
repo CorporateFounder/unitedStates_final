@@ -6,26 +6,23 @@
 
 ## Как избирается Генеральный Исполнительный Директор
 Данный директор избирается Законодательной властью
-1. Совет Директоров должен дать больше 10 или больше голосов методом [ONE_VOTE](../charter/ONE_VOTE.md)
-2. Совет Акционеров должен дать больше 10 или больше голосов методом [ONE_VOTE](../charter/ONE_VOTE.md)
-3. Фракции должны дать 10% или больше голосов методом [VOTE_FRACTION](../charter/VOTE_FRACTION.md)
+3. Фракции должны дать 15% или больше голосов методом [VOTE_FRACTION](../charter/VOTE_FRACTION.md)
 4. Участники сети должны дать больше одного голоса методом [VOTE_STOCK](../charter/VOTE_STOCK.md)
-5. Дальше происходит сортировка от наибольшего к наименьшему полученых голосов от Совета Директоров и
+5. Дальше происходит сортировка от наибольшего к наименьшему полученных голосов от акций и
 6. Отбирается один счет с наибольшим количеством голосов от Совета Директоров
 
 ````
- //позиции избираемые только всеми участниками
-        List<CurrentLawVotesEndBalance> electedByBoardOfDirectors = current.stream()
+  //позиции избираемые только всеми участниками
+        List<CurrentLawVotesEndBalance> electedByFractions = current.stream()
                 .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
-                .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
-                && t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS
-                && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                 && t.getVotes() >= Seting.ALL_STOCK_VOTE)
-                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                 .collect(Collectors.toList());
-                
-                 //групируем по списку
-        Map<String, List<CurrentLawVotesEndBalance>> group = electedByBoardOfDirectors.stream()
+
+
+        //групируем по списку
+        Map<String, List<CurrentLawVotesEndBalance>> group = electedFraction.stream()
                 .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));
 
         Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();
@@ -34,7 +31,7 @@
         for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {
             List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();
             temporary = temporary.stream()
-                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors))
+                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))
                     .limit(directors.getDirector(stringListEntry.getKey()).getCount())
                     .collect(Collectors.toList());
             original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);
@@ -110,12 +107,12 @@
         Map<String, Double> fractions = new HashMap<>();
 
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance: current) {
-            if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString())){
-                if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
-                    houseOfRepresentativies.add(currentLawVotesEndBalance.getLaws().get(0));
-                }
-
-            }
+//            if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString())){
+//                if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
+//                    houseOfRepresentativies.add(currentLawVotesEndBalance.getLaws().get(0));
+//                }
+//
+//            }
             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.CORPORATE_COUNCIL_OF_REFEREES.toString())){
                 if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
                     chamberOfSumpremeJudges.add(currentLawVotesEndBalance.getLaws().get(0));
@@ -156,9 +153,7 @@
         List<String> hightJudge = new ArrayList<>();
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : current) {
             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString())){
-                if(currentLawVotesEndBalance.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
-                && currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
-                && currentLawVotesEndBalance.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS
+                if(currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                 && currentLawVotesEndBalance.getVotes() >= Seting.ALL_STOCK_VOTE){
                     primeMinister.add(currentLawVotesEndBalance.getLaws().get(0));
                 }
@@ -185,7 +180,6 @@
         return current;
 
     }
-
 ````
 
 [Выход на главную](../documentation/documentationRus.md)

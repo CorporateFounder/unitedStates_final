@@ -27,7 +27,7 @@ network members will instantly be able to see what decisions have been made.
 The system also implements direct democracy, which allows you to directly vote for the rules of the network (laws).
 
 
-Also, this coin implements the Demurrage mechanism, 0.1% every six months, a digital dollar and
+This coin also implements the Cambridge mechanism, 0.1% every six months, a digital dollar and
 0.2% for a digital share.
 Demurrage is a service fee, this mechanism is used in many countries,
 and it's called a negative rate, but the most direct application was
@@ -41,7 +41,7 @@ I will give a real example from cryptocurrencies and you will understand why you
 1. Bitcoin. Bitcoin is still debating whether to increase the block size or not.
    This task cannot be solved within the framework of bitcoin, since there is no voting mechanism in bitcoin.
    You cannot make a single decision in bitcoin because there is no legitimate decision making mechanism.
-2. Imagine that you have purchased mining equipment, and tomorrow the development team without
+2. Imagine that you have purchased mining equipment, and tomorrow the development team will
    your consent will cancel the mining, and go to the POS. Do you think this is impossible? Look at ethereum.
 3. You want to buy goods with cryptocurrency, but you know that if you transfer money to a scammer,
    then you won't be able to get your money back. How are you going to find out which of the sellers of goods is
@@ -55,49 +55,51 @@ I will give a real example from cryptocurrencies and you will understand why you
    In this package they are
    ***src/main/java/International_Trade_Union/utils/UtilsBlock.java***
 
-Difficulty is determined by the formula and is corrected every half a day.
+Difficulty is determined by a formula and adjusted every half a day.
 ````
-  /**get complexity*/
-     private static int getAdjustedDifficulty(Block latestBlock, List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL){
-         Block prevAdjustmentBlock = blocks.get(blocks.size() - DIFFICULTY_ADJUSTMENT_INTERVAL);
+ /**получить сложность*/
+    private static int getAdjustedDifficulty(Block latestBlock, List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL){
+        Block prevAdjustmentBlock = blocks.get(blocks.size() - DIFFICULTY_ADJUSTMENT_INTERVAL);
 
-         long timeExpected = BLOCK_GENERATION_INTERVAL * DIFFICULTY_ADJUSTMENT_INTERVAL;
-         long timeTaken = latestBlock.getTimestamp().getTime() - prevAdjustmentBlock.getTimestamp().getTime();
+        long timeExpected = BLOCK_GENERATION_INTERVAL * DIFFICULTY_ADJUSTMENT_INTERVAL;
+        long timeTaken = latestBlock.getTimestamp().getTime() - prevAdjustmentBlock.getTimestamp().getTime();
 
-         if(timeTaken < timeExpected / 2){
+        if(timeTaken < timeExpected / 2){
 
-             return prevAdjustmentBlock.getHashCompexity() + 1;
-         }else if(timeTaken > timeExpected * 2){
+            return prevAdjustmentBlock.getHashCompexity() + 1;
+        }else if(timeTaken > timeExpected * 2){
 
-             return prevAdjustmentBlock.getHashCompexity() - 1;
-         } else {
-             return prevAdjustmentBlock.getHashCompexity();
-         }
-     }
+            return prevAdjustmentBlock.getHashCompexity() - 1;
+        }else {
+            return prevAdjustmentBlock.getHashCompexity();
+        }
+    }
 ````
-
-````
-    /**determines the difficulty, since half a day adjusts the difficulty. There are 576 blocks per day.
-  * each block is mined in approximately 2.3 minutes*/
-     public static int difficulty(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL ){
-
-         //seconds how often blocks are created
-         int difficulty = 1;
-         Block latestBlock = blocks.get(blocks.size() -1);
-         if(latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0){
-         difficulty = getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
-         System.out.println("difficulty: change dificulty: " + difficulty);
-         }
-         else {
-         difficulty = latestBlock.getHashCompexity();
-         }
-
-         return difficulty == 0? 1: difficulty;}
 
 ````
+   /**определяет сложность, раз пол дня корректирует сложность. В сутках 576 блоков. 
+ * каждый блок добывается примерно 2.3 минуты*/
+    public static int difficulty(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int  DIFFICULTY_ADJUSTMENT_INTERVAL ){
+
+        //секунды как часто создается блоки
+        int difficulty = 1;
+        Block latestBlock = blocks.get(blocks.size() -1);
+        if(latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0){
+        difficulty = getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
+        System.out.println("difficulty: change dificulty: " + difficulty);
+        }
+        else {
+        difficulty =  latestBlock.getHashCompexity();
+        }
+
+        return difficulty == 0? 1: difficulty;
+        }
+
+````
+
 
 What positions are there?
-- Board of Directors [BOARD_OF_DIRECTORS]
+- Fraction [FRACTION]
 - Board of Shareholders [BOARD_OF_SHAREHOLDERS]
 - Council of Corporate Judges [CORPORATE_COUNCIL_OF_REFEREES]
 - General Executive Director [GENERAL_EXECUTIVE_DIRECTOR]

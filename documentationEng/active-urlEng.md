@@ -4,7 +4,7 @@
 ## Local urls
 
 
-- http://localhost:8082/miningblock creates a block
+- http://localhost:8082/mine creates a block
     - ***@GetMapping("/mine")
       public synchronized ResponseEntity<String> mine()***
 - http://localhost:8082/chain
@@ -34,7 +34,7 @@
       public synchronized void register_node(@RequestBody AddressUrl urlAddrress)***
     - Takes the AddressUrl class as an Argument
 - http://localhost:8082/addBlock
-    - Resaves the entire list of blocks, previously recalculating,
+    - saves recalculating the entire list of blocks, after recalculating,
       balance, votes and other data, it also saves all this data again
       ***@GetMapping("/addBlock")
       public boolean getBLock()***

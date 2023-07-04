@@ -1,12 +1,17 @@
+# FAVORITE_FRACTION
+The faction is extracted like the chief judges, 200 scores received by the maximum number of votes
+from a unique electoral one, as previously and an observed share equal to one vote of the described
+in VOTE_STOCK
+
 #VOTE_FRACTION
 This voting system is used only for factions.
-First, 100 factions are selected that have become legitimate.
-Then all the votes given to 100 selected factions are summed up.
+First, 200 factions are selected that have become legitimate.
+Then all the votes given to 200 selected factions are summed up.
 After that, the share of each fraction from the total amount is determined.
 votes cast for this faction.
 The number of votes of each faction is equal to its percentage shares.
 Thus, if a faction has 23% of the votes of all votes, out of
-100 factions, then her vote is equal to 23%.
+200 factions, then her vote is equal to 23%.
 On behalf of the factions, the leaders always act and because of this it is
 First of all, the leader system. Identical factions with ideological
 system here can be represented by different leaders, even

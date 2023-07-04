@@ -1,66 +1,53 @@
-# Installation
-If you have windows, then you need to download from the folder target unitedStates-0.0.1-SHAPSHOT.jar
-in the search for windows, enter cmd open the command line and enter java -jar there (where the file is located) / unitedStates-0.0.1-SNAPSHOT.jar
-example: java -jar C://unitedStates-0.0.1-SNAPSHOT.jar.
-But the resources folder also needs to be copied as described below.
+# Монтаж
+Если у вас windows, то вам нужно скачать из папки target UnitedStates-0.0.1-SHAPSHOT.jar
+в поиске windows введите cmd откройте командную строку и введите туда java -jar (там, где находится файл) /unitedStates-0.0.1-SNAPSHOT.jar
+пример: java -jar C://unitedStates-0.0.1-SNAPSHOT.jar.
 
-To work properly you need to download and install jre https://www.java.com/ru/download/manual.jsp
+Для корректной работы необходимо скачать и установить jre https://www.java.com/en/download/manual.jsp
 https://www.oracle.com/cis/java/technologies/downloads/,
-and jdk 19 or higher
+и jdk 19 или выше
 
-now jar file created disc automatically
-Download the jar file, run it, then be sure to click update.
-The program itself should create all the necessary folders on one of your disks.
+после запуска jar автоматически создастся папка ресурсов где windows, затем
+перейти на локальный хост: 8082 перейти вниз кнопка обновить блок-цепочку
 
-
-the resources folder is in ***src/main/java/resources***
-after which you need to copy the resources folder to drive C:
-there are stored
-- blockchain files in the ***/blockchain*** folder
-- balance files in the folder ***/balance***
-- rules files voted for with their votes ***/allLawsWithBalance***
-- files all rules without votes in ***/federalLaws***
-- account files that have been elected as guide ***/federalLaws***
-- file storing miner account ***/minerAccount***
-- host address files ***/poolAddress***
-- files sent by transaction ***/sentTransaction***
-- transaction list files to send ***/transactions***
+папка ресурсов находится в ***src/main/java/resources***
+там хранятся
+- файлы блокчейна в папке ***/blockchain***
+- файлы баланса в папке ***/balance***
+- файлы правил, за которые проголосовали их голоса ***/allLawsWithBalance***
+- файлы всех правил без голосов в ***/federalLaws***
+- файлы учетных записей, которые были выбраны в качестве руководства ***/federalLaws***
+- файл для хранения учетной записи майнера ***/minerAccount***
+- файлы адресов хостов ***/poolAddress***
+- файлы, отправленные транзакцией ***/sentTransaction***
+- файлы списка транзакций для отправки ***/транзакций***
 
 
 
-## IF NO DISK C:
-If you do not have a C: drive or want to change the location of the files where they should
-be stored then in src/main/java/International_Trade_Union/setings/Seting.java
-You can change there code settings should be changed according to your settings,
-then build the application, for example, using intellij idea, and rebuild the jar file.
-
+## куда сервер подключается
+Запустить jar-файл
+Локальный сервер http://localhost:8082/ подключен к готовому серверу
+https://github.com/CorporateFounder/unitedStates_storage
+какой поднять на хосте http://194.87.236.238:80
 ````
-     String ORIGINAL_BLOCKCHAIN_FILE = "C:\\resources\\blockchain\\";
-     String ORIGINAL_BALANCE_FILE = "C:\\resources\\balance\\";
-     String ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE = "C:\\resources\\federalGovernment\\federalGovernment.txt";
-     String ORIGINAL_ALL_CORPORATION_LAWS_FILE = "C:\\resources\\federalLaws\\";
-     String ORIGINAL_ACCOUNT = "C:\\resources\\minerAccount\\minerAccount.txt";
-     String ORIGINAL_CORPORATE_VOTE_FILE = "C:\\resources\\vote\\";
-
-     String ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE = "C:\\resources\\allLawsWithBalance\\";
-     String ORGINAL_ALL_TRANSACTION_FILE = "C:\\resources\\transactions\\";
-     String ORIGINAL_ALL_SENDED_TRANSACTION_FILE = "C:\\resources\\sendedTransaction\\";
-     String ORIGINAL_POOL_URL_ADDRESS_FILE = "C:\\resources\\poolAddress\\";
+      Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");
 ````
 
-## where the Server connects to
-Run jar file
-Local Server http://localhost:8082/ is connected to a ready server
-https://github.com/CorporateFounder/unitedStates_duplicates_original_storage
-which to raise on the host http://194.87.236.238:80
+После запуска локального сервера в браузере
+войти на главную страницу http://localhost:8082
 
-````
-     Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");
-````
+# ШАГ ЗА ШАГОМ С ФОТО
+![step 1](../screenshots/step-1-install.png)
+![step 2](../screenshots/step-2-install.png)
+![step 3](../screenshots/step-3-install.png)
+![step 4](../screenshots/step-4-install.png)
+![step 5](../screenshots/step5-instatll.png)
+![step 6](../screenshots/step-6-install.png)
+![step 7](../screenshots/step-7-install.png)
+![step 8](../screenshots/step-8-install.png)
 
-After the local server is up, in the browser
-login to main page http://localhost:8082
+
 
 This is what ![main menu](../screenshots/main-menuEng.png) looks like
 
-[back to home](../documentationEng/documentationEng.md)
+[back to home](./documentationRus.md)

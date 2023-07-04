@@ -1,135 +1,135 @@
-# Транзакция 
+# Транзакция
 
 ## Как отправить транзакцию
-Как отправить деньги, 
+Как отправить деньги
 
-войдите в http://localhost:8082/
-Введите адрес отправителя, адрес получателя, сколько цифровых 
-долларов хотите отправить, сколько цифровых акций хотите отправить,
-вознаграждение майнеру
+войти на http://localhost:8082/
+Введите адрес отправителя, адрес получателя, сколько цифровых
+долларов, которые вы хотите отправить, сколько цифровых акций вы хотите отправить,
+вознаграждение майнера
 
-Перед отправкой обновите локальный блокчейн, но актуального.
-Перед голосованием, и другими действиями можно обновлять блокчейн, 
-но перед голосованием не обязательно, так как никакая сумма не отправляется.
-Также чтобы видит актуальные должности, стоит обновлять блокчейн.
+Перед отправкой обновите локальный блокчейн, но актуальный.
+Перед голосованием и другими действиями вы можете обновить блокчейн,
+но перед голосованием не стоит, так как сумма не высылается.
+Также, чтобы видеть текущие позиции, стоит обновить блокчейн.
 Перед майнингом происходит автоматически.
-Для этого вам нужно на главном меню и в самом низу нажать кнопку ***обновить блокчейн***
-![обновить блокчейн](../screenshots/update_blockchain.png)
+Для этого нужно нажать кнопку ***обновить блокчейн*** в главном меню и в самом низу
+![обновить блокчейн](../screenshots/update_blockchainEng.png)
 
-И введите пароль, после нажмите кнопку отправить деньги
-![транзакция](../screenshots/send-money.png)
+И введите пароль, затем нажмите кнопку отправить деньги
+![транзакция](../скриншоты/send-moneyEng.png)
 
-в localhost:8082/ 
-нужно вести данные в 
-- input address sender публичный ключ отправителя
-- input address recipient публичный ключ получателя
-- input digital dollar to send сумму цифровых долларов для отправки
-- input digital stock to send сумму цифрвых акций для отправки
-- send reward for miner вознаграждение майнера
+на локальном хосте: 8082/
+необходимо хранить данные в
+- ввод адреса отправителя открытый ключ отправителя
+- ввод адреса получателя открытый ключ получателя
+- введите цифровой доллар, чтобы отправить сумму цифровых долларов для отправки
+- введите цифровой запас, чтобы отправить количество цифрового запаса для отправки
+- отправить вознаграждение для майнера
 
-- input password вести private key
-- и нажать отправить деньги
+- вводите пароль, сохраняйте приватный ключ
+- и нажмите отправить деньги
 
-## Из чего состоит класс транзакция
+## Из чего состоит класс транзакции
 
 ````
-    src/main/java/entity/blockchain/DtoTransaction/DtoTransaction.java
+      src/main/java/entity/blockchain/DtoTransaction/DtoTransaction.java
 ````
 
-Конструктор транзакции.
-- sender (отправителя)
-- customer (получателя)
-- digitalDollar (цифрового доллара)
-- digitalStock (цифровых акций)
-- laws (Пакета законов)
-- bonusMiner (вознаграждение майнера)
-- VoteEnum (голоса отправителя, который может быть YES или NO)
-- sign (подписи отправителя)
+Конструктор транзакций.
+- отправитель (отправитель)
+- заказчик (получатель)
+- digitalDollar (цифровой доллар)
+- digitalStock (цифровые акции)
+- законы (Пакет законов)
+- BonusMiner (награда майнерам)
+- VoteEnum (голос отправителя, который может быть ДА или НЕТ)
+- подпись (подпись отправителя)
 
 
-проверяет целостность транзакции, что транзакцию подписали правильно
-Метод находится в классе DtoTransaction.java
+проверяет целостность транзакции, чтобы транзакция была подписана правильно
+Метод находится в классе DtoTransaction.java.
 ````
-    public boolean verify() throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
-    Base base = new Base58();
-    byte[] pub = base.decode(sender);
-    BCECPublicKey publicKey = (BCECPublicKey) UtilsSecurity.decodeKey(pub);
-    //        PublicKey publicKey = UtilsSecurity.publicByteToPublicKey(pub);
-    String sha = sender + customer + digitalDollar + digitalStockBalance + laws + bonusForMiner;
-    sha = UtilsUse.sha256hash(sha);
-    if(sender.isBlank() || customer.isBlank() || digitalDollar < 0 || digitalStockBalance < 0 || bonusForMiner < 0 || laws == null){
-    System.out.println("wrong dto transaction sender or customer blank? or dollar, reputation or reward less then 0");
-    return false;
-    }
-    if(Seting.BASIS_ADDRESS.equals(publicKey))
-    return true;
-    return UtilsSecurity.verify(sha, sign, publicKey);
-    }
+      public boolean verify() выдает IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+      Базовая база = новая Base58();
+      byte[]pub = base.decode(отправитель);
+      BCECPublicKey publicKey = (BCECPublicKey) UtilsSecurity.decodeKey(pub);
+      // PublicKey publicKey = UtilsSecurity.publicByteToPublicKey(pub);
+      Строка sha = отправитель + клиент + цифровой доллар + цифровой баланс акций + законы + бонус для майнера;
+      ша = UtilsUse.sha256hash(sha);
+      if(sender.isBlank() || customer.isBlank() || digitalDollar < 0 || digitalStockBalance < 0 || bonusForMiner < 0 || law == null){
+      System.out.println("неверный dto отправитель транзакции или клиент пустой? или доллар, репутация или вознаграждение меньше 0");
+      вернуть ложь;
+      }
+      если (Настройка.BASIS_ADDRESS.equals(publicKey))
+      вернуть истину;
+      return UtilsSecurity.verify(sha, sign, publicKey);
+      }
 ````
 
 создает sha256 для подписи
 
 ````
-    public String toSign(){
-    String sha = sender + customer + digitalDollar + digitalStockBalance + laws + bonusForMiner;
-    return UtilsUse.sha256hash(sha);
-    }
+      общедоступная строка toSign () {
+      Строка sha = отправитель + клиент + цифровой доллар + цифровой баланс акций + законы + бонус для майнера;
+      вернуть UtilsUse.sha256hash(sha);
+      }
 ````
 
-делает из объекта строку json
+делает строку json из объекта
 
 ````
-    public String jsonString() throws IOException {
-    return UtilsJson.objToStringJson(this);
-    }
+      public String jsonString() выдает IOException {
+      вернуть UtilsJson.objToStringJson (это);
+      }
 ````
 
 
-## КАК ПРОИСХОДИТ ОТПРАВКА
-После того как вы нажали кнопку send
-сработает метод в контроллере класса MainController.java
+## КАК ПРОИСХОДИТ ДОСТАВКА
+После того, как вы нажали кнопку отправки
+метод в контроллере класса MainController.java будет работать
 
 ````
-    расположенного в src/main/java/controllers/MainController.java
+      расположен в src/main/java/controllers/MainController.java
 ````
 
 метод
 
 ````
-    @PostMapping("/")
-    public String new_transaction(
-    @RequestParam  String sender,
-    @RequestParam  String recipient,
-    Double dollar,
-    Double stock,
-    Double reward,
-    @RequestParam  String password,
-    RedirectAttributes redirectAttrs)
+      @PostMapping("/")
+      публичная строка new_transaction(
+      @RequestParam Отправитель строки,
+      @RequestParam Строковый получатель,
+      двойной доллар,
+      двойной запас,
+      двойная награда,
+      @RequestParam Строковый пароль,
+      redirectAttributes redirectAttrs)
 ````
 
-сначала происходит проверка что транзакция правильно подписана
+во-первых, он проверяет, правильно ли подписана транзакция
 
 ````
-    if(dtoTransaction.verify())
+      если (dtoTransaction.verify())
 ````
 
-если проверка правильно подписана
-то сначала проверяется являться ли данная транзакция созданием закона,
-если является и одновременно является созданием закона которая создает должность
-то, проверяется, совпадает ли адрес отправителя с первой строкой пакета закона,
-если проверка проходит то транзакция отправляется в сеть
+если чек правильно подписан
+то сначала проверяется, не является ли эта сделка созданием закона,
+если это и в то же время создание закона, который создает офис
+затем он проверяет, совпадает ли адрес отправителя с первой строкой юридического пакета,
+если проверка проходит, то транзакция отправляется в сеть
 ````
-      //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
-            //отправитель совпадает с законом
-            List<String> corporateSeniorPositions = directors.getDirectors().stream()
-                    .map(t->t.getName()).collect(Collectors.toList());
-            System.out.println("LawsController: create_law: " + laws.getPacketLawName() + "contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
-            if(corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(sender, laws)){
-                redirectAttrs.addFlashAttribute("sending", "wrong transaction: Position to be equals whith send");
-                return "redirect:/result-sending";
-            }
-            redirectAttrs.addFlashAttribute("sending", "success");
-            System.out.println("dto MainController: " + dtoTransaction);
+        //если название закона совпадает с корпоративными позициями, то закон действует только тогда, когда
+              //отправитель соответствует закону
+              List<String> CorporateSeniorPositions = Directors.getDirectors().stream()
+                      .map(t->t.getName()).collect(Collectors.toList());
+              System.out.println("LawsController: create_law: " + law.getPacketLawName() + "contains:" + CorporateSeniorPositions.contains(laws.getPacketLawName()));
+              if(corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(отправитель, законы)){
+                  redirectAttrs.addFlashAttribute("отправка", "неправильная транзакция: позиция должна быть равна отправке");
+                  вернуть "перенаправление:/отправка результата";
+              }
+              redirectAttrs.addFlashAttribute («отправка», «успешно»);
+              System.out.println("dto MainController: " + dtoTransaction);
 ````
 
 
@@ -137,91 +137,91 @@
 
 ````
 
-             AllTransactions.addTransaction(dtoTransaction);
-            String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
-            for (String s : Seting.ORIGINAL_ADDRESSES) {
+               AllTransactions.addTransaction(dtoТяга);
+              Строка jsonDto = UtilsJson.objToStringJson(dtoTransaction);
+              for (String s : Setting.ORIGINAL_ADDRESSES) {
 
-                String original = s;
-                String url = s +"/addTransaction";
-                //если адресс совпадает с внутреним хостом, то не отправляет самому себе
-                if(BasisController.getExcludedAddresses().contains(url)){
-                    System.out.println("MainController: its your address or excluded address: " + url);
-                    continue;
-                }
-                try {
-                    //отправка в сеть 
-                    UtilUrl.sendPost(jsonDto, url);
+                  Исходная строка = s;
+                  URL-адрес строки = s +"/addTransaction";
+                  //если адрес совпадает с внутренним хостом, то не отправлять на себя
+                  если (BasisController.getExcludedAddresses (). Содержит (url)) {
+                      System.out.println("MainController: это ваш адрес или исключенный адрес: " + url);
+                      продолжать;
+                  }
+                  пытаться {
+                      //отправляем в сеть
+                      UtilUrl.sendPost (jsonDto, URL);
 
-                }catch (Exception e){
-                    System.out.println("exception discover: " + original);
+                  }поймать (Исключение e){
+                      System.out.println("обнаружение исключения: " + оригинал);
 
-                }
-            }
-
-````
-
-Класс AllTransaction.java хранит в файлах как уже добавленные в блок транзакции,
-так и транзакции которые еще не добыты данным локальным сервером.
-
-Класс рассоложен в 
+                  }
+              }
 
 ````
-    src/main/java/network/AllTransaction.java
-````
 
-Метод, который добавляет в файл транзакцию
+Класс AllTransaction.java сохраняет в файлах транзакции, уже добавленные в блок,
+и транзакции, которые еще не были обработаны этим локальным сервером.
 
-````
-      public static synchronized void addTransaction(DtoTransaction transaction) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-
-        instance = getInstance();
-        instance.add(transaction);
-        Mining.deleteFiles(Seting.ORGINAL_ALL_TRANSACTION_FILE);
-        //берет только уникальные транзакции
-        instance = instance.stream().filter(UtilsUse.distinctByKey(DtoTransaction::toSign)).collect(Collectors.toList());
-        for (DtoTransaction dtoTransaction : instance) {
-            UtilsTransaction.saveAllTransaction(dtoTransaction, Seting.ORGINAL_ALL_TRANSACTION_FILE);
-        }
-
-
-    }
-````
-
-За отправку отвечает класс UtilUrl.java 
-расположенный 
+Класс делится на
 
 ````
-    src/main/java/utils/UtilUrl.java
+      источник/главная/java/сеть/AllTransaction.java
 ````
 
-Метод отправки
+Метод, добавляющий транзакцию в файл
 
 ````
-    public static int sendPost(String jsonObject, String requestStr) throws IOException {
-        int response;
-        URL url = new URL(requestStr);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-    //        conn.connect();
-    conn.setReadTimeout(10000);
-    conn.setConnectTimeout(15000);
-    conn.setRequestMethod("POST");
-    conn.setRequestProperty("Content-Type", "application/json; utf-8");
-    conn.setRequestProperty("Accept", "application/json");
-    conn.setDoOutput(true);
+        общедоступная статическая синхронизированная пустота addTransaction (транзакция DtoTransaction) выдает IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+
+          экземпляр = получить экземпляр ();
+          instance.add (транзакция);
+          Mining.deleteFiles(Setting.ORGINAL_ALL_TRANSACTION_FILE);
+          //принимает только уникальные транзакции
+          instance = instance.stream().filter(UtilsUse.distinctByKey(DtoTransaction::toSign)).collect(Collectors.toList());
+          for (DtoTransaction dtoTransaction: экземпляр) {
+              UtilsTransaction.saveAllTransaction(dtoTransaction, Setting.ORGINAL_ALL_TRANSACTION_FILE);
+          }
 
 
-
-        try(OutputStream outputStream = conn.getOutputStream()) {
-            byte[] input = jsonObject.getBytes("utf-8");
-            outputStream.write(input, 0, input.length);
-             response = conn.getResponseCode();
-
-        }
-
-
-        conn.connect();
-        return response;
-    }
+      }
 ````
 
-[Возврат на главную](./documentationRus.md)
+Класс UtilUrl.java отвечает за отправку
+располагается
+
+````
+      src/main/java/utils/UtilUrl.java
+````
+
+Способ отправки
+
+````
+      public static int sendPost (String jsonObject, String requestStr) выдает IOException {
+          внутренний ответ;
+          URL-адрес = новый URL-адрес (requestStr);
+          HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+      // соединение.connect();
+      conn.setReadTimeout (10000);
+      conn.setConnectTimeout (15000);
+      conn.setRequestMethod("POST");
+      conn.setRequestProperty("Content-Type", "application/json; utf-8");
+      conn.setRequestProperty("Принять", "приложение/json");
+      conn.setDoOutput (истина);
+
+
+
+          try(OutputStream outputStream = conn.getOutputStream()) {
+              байт [] ввод = jsonObject.getBytes ("utf-8");
+              outputStream.write(вход, 0, input.length);
+               ответ = conn.getResponseCode();
+
+          }
+
+
+          соединять();
+          ответный ответ;
+      }
+````
+
+[Вернуться на главную](./documentationRus.md)

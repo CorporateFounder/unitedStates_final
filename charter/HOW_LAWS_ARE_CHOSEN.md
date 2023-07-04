@@ -28,7 +28,7 @@ NOTHING снимает голос с кандидата при голосова�
 Чтобы утвердить обычные законы, 
 1. название пакета закона не должно совпадать с выделенными ключевыми словами.
 2. Закон должен получить больше 1 голоса по системе подсчета описанной [VOTE_STOCK](../charter/VOTE_STOCK.md)
-3. Должен получить 10 или больше голосов Совета Директоров по системе подсчета описанной в [ONE_VOTE](../charter/ONE_VOTE.md)
+3. Должен получить 15% или больше голосов от фракций по системе подсчета описанной в [VOTE_FFRACTION](../charter/VOTE_FRACTION.md)
 
 
 Пример кода в LawsController current law:
@@ -41,7 +41,7 @@ NOTHING снимает голос с кандидата при голосова�
                 .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))
                 .filter(t->!Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))
                 .filter(t -> 
-                 t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
+                 t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                 && t.getVotes() >= Seting.ALL_STOCK_VOTE
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());
    
@@ -54,7 +54,7 @@ NOTHING снимает голос с кандидата при голосова�
 1. Пакет стратегического плана должен называться STRATEGIC_PLAN
 2. Все планы которые прошли одобрение, сортируется от наибольшего к наименьшему по количеству голосов,
 полученных от Совета Директоров.
-3. После Сортировки отбираются только один ПЛАН с наибольшим количеством голосов полученных от Совета Директоров.
+3. После Сортировки отбираются только один ПЛАН с наибольшим количеством голосов полученных от акций.
 
 ````
 //план утверждается всеми
@@ -62,11 +62,11 @@ NOTHING снимает голос с кандидата при голосова�
                 .filter(t->!directors.contains(t.getPackageName()))
                 .filter(t->Seting.STRATEGIC_PLAN.equals(t.getPackageName()))
                 .filter(t->!directors.isCabinets(t.getPackageName()))
-                .filter(t->t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
+                .filter(t->t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                        
                        
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
-                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                 .limit(1)
                 .collect(Collectors.toList());
 ````
@@ -82,11 +82,11 @@ NOTHING снимает голос с кандидата при голосова�
                 .filter(t->Seting.BUDGET.equals(t.getPackageName()))
                 .filter(t->!directors.isCabinets(t.getPackageName()))
                 .filter(t->
-                        t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
+                        t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                        
                        
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
-                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                 .limit(1)
                 .collect(Collectors.toList());
 ````
@@ -100,18 +100,17 @@ NOTHING снимает голос с кандидата при голосова�
 Избирается аналогично как ***стратегический план*** и ***бюджет***.
 Но количество определяется для каждой должности отдельно.
 ````
-  //позиции избираемые только всеми участниками
-        List<CurrentLawVotesEndBalance> electedByBoardOfDirectors = current.stream()
+ //позиции избираемые только всеми участниками
+        List<CurrentLawVotesEndBalance> electedByFractions = current.stream()
                 .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
-                .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
-                
-              
+                .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                 && t.getVotes() >= Seting.ALL_STOCK_VOTE)
-                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                 .collect(Collectors.toList());
-                
-                  //групируем по списку
-        Map<String, List<CurrentLawVotesEndBalance>> group = electedByBoardOfDirectors.stream()
+
+
+        //групируем по списку
+        Map<String, List<CurrentLawVotesEndBalance>> group = electedFraction.stream()
                 .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));
 
         Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();
@@ -120,7 +119,7 @@ NOTHING снимает голос с кандидата при голосова�
         for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {
             List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();
             temporary = temporary.stream()
-                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors))
+                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))
                     .limit(directors.getDirector(stringListEntry.getKey()).getCount())
                     .collect(Collectors.toList());
             original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);
@@ -136,11 +135,11 @@ NOTHING снимает голос с кандидата при голосова�
 Чтобы внести поправки в устав, нужно чтобы пакет закона должен называться AMENDMENT_TO_THE_CHARTER.
 Для того чтобы поправка считалась действующей
 1. Нужно чтобы 20% или больше голосов получила от Совета Акционеров системой подсчета [ONE_VOTE](../charter/ONE_VOTE.md).
-2. Нужно, чтобы получить 20% или больше голосов от Совета Директоров системой подсчета [ONE_VOTE](../charter/ONE_VOTE.md).
+2. Нужно, чтобы получить 15% или больше голосов от фракций системой подсчета [VOTE_FRACTION](../charter/VOTE_FRACTION.md).
 3. Нужно, чтобы получить 5 или больше голосов от Законодательной Власти Корпоративных Верховных Судей.
 
 
-![поправки в устав](../screenshots/amendment-chapter.png)
+
 ````
    //внедрение поправок в устав
         List<CurrentLawVotesEndBalance> chapter_amendment = current.stream()
@@ -148,10 +147,9 @@ NOTHING снимает голос с кандидата при голосова�
                 .filter(t-> Seting.AMENDMENT_TO_THE_CHARTER.equals(t.getPackageName()))
                 .filter(t->!directors.isCabinets(t.getPackageName()))
                 .filter(t -> t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MINT_VOTE_BOARD_OF_SHAREHOLDERS_AMENDMENT
-                && t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_AMENDMENT
-                && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES_AMENDMENT
-               )
-                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed()).collect(Collectors.toList());
+                && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES_AMENDMENT)
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());
 
 ````
 

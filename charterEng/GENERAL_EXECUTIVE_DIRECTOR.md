@@ -6,26 +6,23 @@ This is the highest position elected by the Corporation and is essentially the a
 
 ## How the CEO is elected
 This director is elected by the Legislature
-1. The Board of Directors must give more than 10 or more votes using the [ONE_VOTE](../charterEng/ONE_VOTE.md) method
-2. The Board of Shareholders must give more than 10 or more votes using the [ONE_VOTE](../charterEng/ONE_VOTE.md) method
-3. Fractions must give 10% or more votes using the [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md) method
+3. Fractions must give 15% or more votes using the method [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md)
 4. Network participants must give more than one vote using the [VOTE_STOCK](../charterEng/VOTE_STOCK.md) method
-5. Next comes the sorting from highest to lowest received votes from the Board of Directors and
+5. Next comes the sorting from the highest to the lowest received votes from the shares and
 6. One account with the most votes from the Board of Directors is selected
 
 ````
-  //positions elected only by all participants
-         List<CurrentLawVotesEndBalance> electedByBoardOfDirectors = current.stream()
+   //positions elected only by all participants
+         List<CurrentLawVotesEndBalance> electedByFractions = current.stream()
                  .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
-                 .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
-                 && t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS
-                 && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                  && t.getVotes() >= Seting.ALL_STOCK_VOTE)
-                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
+                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                  .collect(Collectors.toList());
-                
-                  //group by list
-         Map<String, List<CurrentLawVotesEndBalance>> group = electedByBoardOfDirectors.stream()
+
+
+         //group by list
+         Map<String, List<CurrentLawVotesEndBalance>> group = electedFraction.stream()
                  .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));
 
          Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();
@@ -34,7 +31,7 @@ This director is elected by the Legislature
          for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {
              List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();
              temporary = temporary.stream()
-                     .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors))
+                     .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))
                      .limit(directors.getDirector(stringListEntry.getKey()).getCount())
                      .collect(Collectors.toList());
              original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);
@@ -77,7 +74,7 @@ This director is elected by the Legislature
                  int boafdOfShareholderVotes = 0;
                  int houseOfRepresentativiesVotes = 0;
                  int primeMinisterVotes = 0;
-                 int-highhtJudgesVotes = 0;
+                 int hightJudgesVotes = 0;
                  int founderVote = 0;
                  double fraction = 0;
 
@@ -110,12 +107,12 @@ This director is elected by the Legislature
          Map<String, Double> fractions = new HashMap<>();
 
          for (CurrentLawVotesEndBalance currentLawVotesEndBalance: current) {
-             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString())){
-                 if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
-                     houseOfRepresentativies.add(currentLawVotesEndBalance.getLaws().get(0));
-                 }
-
-             }
+// if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString())){
+// if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
+// houseOfRepresentativies.add(currentLawVotesEndBalance.getLaws().get(0));
+// }
+//
+// }
              if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.CORPORATE_COUNCIL_OF_REFEREES.toString())){
                  if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
                      chamberOfSumpremeJudges.add(currentLawVotesEndBalance.getLaws().get(0));
@@ -156,9 +153,7 @@ This director is elected by the Legislature
          List<String> hightJudge = new ArrayList<>();
          for (CurrentLawVotesEndBalance currentLawVotesEndBalance : current) {
              if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString())){
-                 if(currentLawVotesEndBalance.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
-                 && currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
-                 && currentLawVotesEndBalance.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS
+                 if(currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                  && currentLawVotesEndBalance.getVotes() >= Seting.ALL_STOCK_VOTE){
                      primeMinister.add(currentLawVotesEndBalance.getLaws().get(0));
                  }
