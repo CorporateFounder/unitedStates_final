@@ -13,8 +13,8 @@ clicking on it will automatically produce a block.
 ![mining block](../screenshots/mineEng.png)
 
 ### OPTION 2
-push button ***Constant mining 100 block in while***
-there will be a cycle of 100 attempts to find blocks
+push button ***Constant mining 576 block in while***
+there will be a cycle of 576 attempts to find blocks
 
 
 ### OPTION 3.

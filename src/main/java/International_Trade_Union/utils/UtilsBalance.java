@@ -3,8 +3,10 @@ package International_Trade_Union.utils;
 
 
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
+import International_Trade_Union.entity.InfoDemerageMoney;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.model.User;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.utils.base.Base;
@@ -89,11 +91,24 @@ public class UtilsBalance {
 
 
         if (i != 0 && i / Seting.COUNT_BLOCK_IN_DAY % (Seting.YEAR / Seting.HALF_YEAR) == 0.0) {
-
+            InfoDemerageMoney demerageMoney = new InfoDemerageMoney();
             for (Map.Entry<String, Account> changeBalance : balances.entrySet()) {
                 Account change = changeBalance.getValue();
+
+                if(changeBalance.getValue().getAccount().equals(User.getUserAddress())){
+                    demerageMoney.setAddress(User.getUserAddress());
+                    demerageMoney.setBeforeDollar(changeBalance.getValue().getDigitalDollarBalance());
+                    demerageMoney.setBeforeStock(changeBalance.getValue().getDigitalStockBalance());
+                }
                 change.setDigitalStockBalance(change.getDigitalStockBalance() - UtilsUse.countPercents(change.getDigitalStockBalance(), digitalReputationPercent));
                 change.setDigitalDollarBalance(change.getDigitalDollarBalance() - UtilsUse.countPercents(change.getDigitalDollarBalance(), percent));
+
+                if(changeBalance.getValue().getAccount().equals(User.getUserAddress())){
+                    demerageMoney.setAfterDollar(changeBalance.getValue().getDigitalDollarBalance());
+                    demerageMoney.setAfterStock(changeBalance.getValue().getDigitalStockBalance());
+                    String json = UtilsJson.objToStringJson(demerageMoney);
+                    UtilsFileSaveRead.save(json, Seting.BALANCE_REPORT_ON_DESTROYED_COINS);
+                }
             }
         }
 

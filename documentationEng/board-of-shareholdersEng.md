@@ -4,19 +4,18 @@ To see the Board of Shareholders and how many are currently active, please login
 
 ![Board of Shareholders](../screenshots/board-of-shareholdersEng.png)
 OriginalCHARTER.POWERS_OF_THE_BOARD_OF_SHAREHOLDERS: Powers of the board of shareholders.
-The Council of Shareholders Participates in the approval of the Laws (network rules that all members of this Corporation must comply with).
-The Council of Shareholders also participates in the approval of amendments to the charter of the Corporation of the International Trade Union AMENDMENT_TO_THE_CHARTER.
-The Council of Shareholders can also participate in voting when electing candidates CORPORATE_COUNCIL_OF_REFEREES and BOARD_OF_DIRECTORS using
-these rules for voting for VOTE_STOCK candidates.
+Council of Shareholders Participates in the approval of Laws (Amendments to the Articles of Association).
+The Board of Shareholders also participates in the approval of amendments to the Charter of the International Trade Union Corporation AMENDMENT_TO_THE_CHARTER.
+The Board of Shareholders can also participate in voting when electing CORPORATE_COUNCIL_OF_REFEREES and FRACTIONS candidates using
+real voting rules for VOTE_STOCK candidates.
 
 OriginalCHARTER.HOW_SHAREHOLDERS_BOARD_IS_ELECTED: HOW SHAREHOLDERS ARE ELECTED.
 The Board of Shareholders consists of one thousand five hundred accounts (1500) with the largest number of shares,
-but only those accounts are taken into account from whose activity more than a year has not passed (Activity is mining or sending money, creating a law, sending fines,
-Applying for a position and Creating a new position).
-formula: the current year is one year, and if the account was active in this range, it is taken into account.
-All accounts are sorted in descending order of the number of digital shares, and 1500 accounts with the most shares are selected. Recalculation occurs every block.
-An example of a section of code how the Board of Shareholders is elected:
-
+but only those accounts are taken into account, from the activity of which more than a year has not passed (Activity - mining or sending money, creating a law, sending fines,
+Applying for a position and creating a new position).
+Formula: The current year is equal to one year, and if the account was active in this range, it is taken into account.
+All accounts are sorted in descending order of the number of digital shares, and the 1500 accounts with the most shares are selected. Recalculation occurs every block.
+An example of a section of the code on the election of the Board of Shareholders:
 
 ## How the Board of Shareholders is determined,
 

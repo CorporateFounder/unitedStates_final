@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header "></header>
+<div class="container mt-5">
+    <h3 th:text="${title}"/>
+
+
+    <div th:each="el : ${infoDemerageMonies}" class="alert alert-info mt-2">
+        <h4 th:text="'law address: '+${el.address}"/>
+        <p th:text="'before dollar: '+${#numbers.formatDecimal(el.beforeDollar, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'before stock: '+${#numbers.formatDecimal(el.beforeStock, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'after dollar: '+${#numbers.formatDecimal(el.afterDollar, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'after stock: '+${#numbers.formatDecimal(el.afterStock, 1, 'COMMA', 16, 'POINT')}"/>
+
+
+    </div>
+
+</div>
+<footer th:insert="blocks/footer :: footer"></footer>
+
+</body>
+</html>

@@ -4,13 +4,6 @@
 ## Local urls
 
 
-- http://localhost:8082/mine creates a block
-    - ***@GetMapping("/mine")
-      public synchronized ResponseEntity<String> mine()***
-- http://localhost:8082/chain
-    - ***@GetMapping("/chain")
-      @ResponseBody
-      public EntityChain full_chain()*** returns the blockchain given the class ***EntityChain***
 - http://localhost:8082/sub-blocks
     - returns a list of blocks in the range from start to finish
       ***@PostMapping("/sub-blocks")

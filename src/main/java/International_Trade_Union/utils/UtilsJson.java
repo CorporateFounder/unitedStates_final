@@ -1,5 +1,6 @@
 package International_Trade_Union.utils;
 
+import International_Trade_Union.entity.InfoDemerageMoney;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,6 +52,11 @@ public class UtilsJson {
     public static Laws jsonToLaw(String json) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, Laws.class);
+    }
+
+    public static InfoDemerageMoney jsonInfoDemerageMoney(String json) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(json, InfoDemerageMoney.class);
     }
 
     public static CurrentLawVotes jsonToVote(String json) throws  JsonProcessingException{

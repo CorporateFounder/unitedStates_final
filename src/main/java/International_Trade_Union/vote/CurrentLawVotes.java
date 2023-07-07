@@ -90,16 +90,11 @@ public class CurrentLawVotes {
         //
         for (String s : YES) {
 
-            int count = 1;
-            count = yesAverage.get(s) > 0 ? yesAverage.get(s) : 1;
-            yes += balances.get(s).getDigitalStockBalance() / count;
-
+            yes += balances.get(s).getDigitalStockBalance();
         }
         //
         for (String s : NO) {
-            int count = 1;
-            count = noAverage.get(s) > 0 ? noAverage.get(s) : 1;
-            no += balances.get(s).getDigitalStockBalance() / count;
+            no += balances.get(s).getDigitalStockBalance();
 
         }
 
@@ -113,15 +108,10 @@ public class CurrentLawVotes {
         double yes = 0.0;
         double no = 0.0;
         for (String s : YES) {
-            int count = 1;
-            count = yesAverage.get(s) > 0 ? yesAverage.get(s) : 1;
-            yes += balances.get(s).getDigitalStockBalance() / count;
-
+            yes += balances.get(s).getDigitalStockBalance();
         }
         for (String s : NO) {
-            int count = 1;
-            count = noAverage.get(s) > 0 ? noAverage.get(s) : 1;
-            no += balances.get(s).getDigitalStockBalance() / count;
+            no += balances.get(s).getDigitalStockBalance();
 
         }
 

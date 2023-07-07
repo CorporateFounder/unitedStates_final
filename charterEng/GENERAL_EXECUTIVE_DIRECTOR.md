@@ -6,11 +6,10 @@ This is the highest position elected by the Corporation and is essentially the a
 
 ## How the CEO is elected
 This director is elected by the Legislature
-3. Fractions must give 15% or more votes using the method [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md)
-4. Network participants must give more than one vote using the [VOTE_STOCK](../charterEng/VOTE_STOCK.md) method
+3. Fractions must give 15% or more votes using the [VOTE_FRACTION] method (../charter/VOTE_FRACTION.md)
+4. Network participants must give more than one vote using the [VOTE_STOCK](../charter/VOTE_STOCK.md) method
 5. Next comes the sorting from the highest to the lowest received votes from the shares and
-6. One account with the most votes from the Board of Directors is selected
-
+6. One account with the largest number of votes received from factions is selected.
 ````
    //positions elected only by all participants
          List<CurrentLawVotesEndBalance> electedByFractions = current.stream()

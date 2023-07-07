@@ -4,6 +4,7 @@ import International_Trade_Union.about_us_engDraft.AboutUsEngDraft;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
+import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.governments.Director;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
@@ -124,6 +125,17 @@ public class MainController {
 
         Account account = UtilsBalance.getBalance(User.getUserAddress(), balances);
         model.addAttribute("account", account);
+
+        //дата сколько осталось до уничтожения монет
+        Block block =  blockchain.getBlock(blockchain.sizeBlockhain()-1);
+        model.addAttribute("info", "In this system, a year is 360 days, and a day is 576 blocks.");
+        model.addAttribute("info2", "every 180 days, 0.1% of digital dollars and 0.2% of digital shares" +
+                " are withdrawn from the account.");
+        model.addAttribute("demerage", "now is the day: ");
+        if(block.getIndex() != 0){
+           int day = (int) (block.getIndex() / Seting.COUNT_BLOCK_IN_DAY % (Seting.YEAR / Seting.HALF_YEAR));
+            model.addAttribute("demerage", "now is the day: " + day);
+        }
 
         return "home";
     }

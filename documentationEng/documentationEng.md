@@ -4,7 +4,7 @@
 
 ## Contacts
 my discord https://discord.gg/MqkvC3SGHH
-
+my web http://194.87.236.238/
 my telegram https://t.me/citu_coin
 
 ## Mission.
@@ -29,9 +29,11 @@ There are three groups of people who are elected and vote differently.
 1. Independent members, each time you mine a block you are given 400 digital dollars and 400 digital shares.
    Every time you vote for a law, the law gets as many votes as you have shares, but with some nuances.
    Imagine you voted YES for 2 laws and NO for 4 laws and you have 100 shares. Then the laws you voted YES
-   will receive 50 votes according to the formula (YES/2), the same for NO/4=25. But it doesn't end there.
+   will receive 100 votes, the same for NO. But it doesn't end there.
    Next, we summarize the votes of all participants cast for a particular law.
    We separately sum YES and separately NO and subtract from YES - NO and the result should be greater than 1.
+   This is the rating of the law, and if the rating is positive, and if factions also approved it, then the law
+   will act
 
 2. Board of Shareholders. The Board of Shareholders consists of 1500 members with the largest number of shares.
    But only those accounts that were active during the year are taken into account.
@@ -40,30 +42,18 @@ There are three groups of people who are elected and vote differently.
    The Board of Shareholders may participate in the voting of laws, but then their votes will be counted as
    Independent Members.
 
-
 3. And the last group is the leader factions, the leader factions consist of 200 accounts and are elected in the same way as the Board of Directors, but their
    votes are equal to shares. Example if the Leading Faction received 23% of the votes from 200 participants, then its vote is 23%.
    So, every time a faction votes for a law, we go through the same procedure as for the others. Namely, we summarize separately
-   all YES and NO and subtract from YES - NO and the result should be more than 15%.
+   all YES and NO and subtract from YES - NO and the result should be more than 15%. Example one faction gave 23% FOR, and the other 13% against,
+   thus the rating will be 10% < 15% which does not allow the adoption of the law.
 
 For all participants, only votes from which no more than four years have passed are taken into account. Votes dynamically change with each block
 taking into account how many shares are held by independent participants or retains or officials of their positions. A law is valid if it
 more than 1 vote from Independents and 15% from factions.
 
-
-
-
-The system also has a negative rate.
-Why is she needed? Let's imagine that you mine a coin, every four years it reduces your mining. This means that you remain profitable,
-the value of the coin should double every four years and this is simply not possible mathematically, since you do not affect the value of the coin
-and this can eventually ruin the system. There are other coins that have lifted the mining cap, but they are subject to high inflation.
-So that the total number of coins does not grow, I
-made such a system. If every six months from all accounts destroy 0.1% of digital dollars and 0.2% of digital shares, at some point
-we will come to
-that the created coins will be equal to the destroyed ones and this will limit the total number of coins.
-Unlike other systems, we reduce production once every half a year, destroying coins on all accounts, 0.1% for digital
-dollars and 0.2% of digital stocks, and this money does not return to the economy, so we save
-money supply without letting it grow.
+There is no halving (reduction in production) in this system, but the total number of coins does not increase, since every six months from all accounts
+0.1% of digital dollars and 0.2% of digital shares are burned.
 
 ## CONTENT
 - [short description](../documentationEng/preambleEng.md)

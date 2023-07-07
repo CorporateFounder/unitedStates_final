@@ -182,6 +182,8 @@ public interface Seting {
 
     String TEMPORARY_BLOCKCHAIN_FILE = "\\resources\\tempblockchain\\";
 
+    String BALANCE_REPORT_ON_DESTROYED_COINS = "\\resources\\balanceReportOnDestroyedCoins\\";
+
 
     //адресса внешних сервисов
     Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");
