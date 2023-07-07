@@ -29,7 +29,7 @@ There are three groups of people who are elected and vote differently.
 1. Independent members, each time you mine a block you are given 400 digital dollars and 400 digital shares.
    Every time you vote for a law, the law gets as many votes as you have shares, but with some nuances.
    Imagine you voted YES for 2 laws and NO for 4 laws and you have 100 shares. Then the laws you voted YES
-   will receive 100 votes, the same for NO. But it doesn't end there.
+   will receive 50 votes, for NO 25 votes (details are described in VOTE_STOCK). But it doesn't end there.
    Next, we summarize the votes of all participants cast for a particular law.
    We separately sum YES and separately NO and subtract from YES - NO and the result should be greater than 1.
    This is the rating of the law, and if the rating is positive, and if factions also approved it, then the law
@@ -40,7 +40,7 @@ There are three groups of people who are elected and vote differently.
    One score equals one vote. We also summarize for each law separately
    all YES and all NO and also subtract from YES - NO (participates only in the approval of amendments.)
    The Board of Shareholders may participate in the voting of laws, but then their votes will be counted as
-   Independent Members.
+   Independent members (details are described in ONE_VOTE).
 
 3. And the last group is the leader factions, the leader factions consist of 200 accounts and are elected in the same way as the Board of Directors, but their
    votes are equal to shares. Example if the Leading Faction received 23% of the votes from 200 participants, then its vote is 23%.

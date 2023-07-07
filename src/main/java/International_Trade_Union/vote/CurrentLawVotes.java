@@ -81,6 +81,7 @@ public class CurrentLawVotes {
     }
 
     //для избрания должностных лиц
+    //для избрания должностных лиц
     public double votesLaw(Map<String, Account> balances,
                            Map<String, Integer> yesAverage, Map<String, Integer> noAverage) {
         double yes = 0.0;
@@ -90,11 +91,16 @@ public class CurrentLawVotes {
         //
         for (String s : YES) {
 
-            yes += balances.get(s).getDigitalStockBalance();
+            int count = 1;
+            count = yesAverage.get(s) > 0 ? yesAverage.get(s) : 1;
+            yes += balances.get(s).getDigitalStockBalance() / count;
+
         }
         //
         for (String s : NO) {
-            no += balances.get(s).getDigitalStockBalance();
+            int count = 1;
+            count = noAverage.get(s) > 0 ? noAverage.get(s) : 1;
+            no += balances.get(s).getDigitalStockBalance() / count;
 
         }
 
@@ -108,16 +114,22 @@ public class CurrentLawVotes {
         double yes = 0.0;
         double no = 0.0;
         for (String s : YES) {
-            yes += balances.get(s).getDigitalStockBalance();
+            int count = 1;
+            count = yesAverage.get(s) > 0 ? yesAverage.get(s) : 1;
+            yes += balances.get(s).getDigitalStockBalance() / count;
+
         }
         for (String s : NO) {
-            no += balances.get(s).getDigitalStockBalance();
+            int count = 1;
+            count = noAverage.get(s) > 0 ? noAverage.get(s) : 1;
+            no += balances.get(s).getDigitalStockBalance() / count;
 
         }
 
 
         return yes - no;
     }
+
 
     @Override
     public boolean equals(Object o) {

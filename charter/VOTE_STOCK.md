@@ -6,11 +6,16 @@
 или увеличиваете ваши акции, то ваши отданные голоса также изменяются
 в соответствии с количеством акций.
 3. За каждый закон который вы проголосовали, для данного закона подсчитываются все 
-ЗА и ПРОТИВ и после чего с ЗА отнимается ПРОТИВ и это и есть рейтинг закона.
+ЗА и ПРОТИВ и после чего с ЗА минус ПРОТИВ и это и есть рейтинг закона.
+4. Ваши голоса делятся отдельно за все законы которые вы проголосовали ЗА и отдельно ПРОТИВ
+Пример: у вас 100 акций и вы проголосовали ЗА одного кандидата и за один закон,
+также вы проголосовали ПРОТИВ двух кандидатов и двух законов.
+Теперь каждый ваш кандидат и закон за которых вы проголосовали ЗА-получат по 50 голосов.
+а за которых вы проголосовали ПРОТИВ, получат по 25 голосов ПРОТИВ.
+формула простая ЗА/количество законов и ПРОТИВ/количество законов против которых вы.
 ______
 
 ````
-//код находится в классе class CurrentLawVotes method: votesLaw 
 public double votesLaw(Map<String, Account> balances,
                            Map<String, Integer> yesAverage, Map<String, Integer> noAverage) {
         double yes = 0.0;
@@ -20,11 +25,16 @@ public double votesLaw(Map<String, Account> balances,
         //
         for (String s : YES) {
 
-            yes += balances.get(s).getDigitalStockBalance();
+            int count = 1;
+            count = yesAverage.get(s) > 0 ? yesAverage.get(s) : 1;
+            yes += balances.get(s).getDigitalStockBalance() / count;
+
         }
         //
         for (String s : NO) {
-            no += balances.get(s).getDigitalStockBalance();
+            int count = 1;
+            count = noAverage.get(s) > 0 ? noAverage.get(s) : 1;
+            no += balances.get(s).getDigitalStockBalance() / count;
 
         }
 

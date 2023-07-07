@@ -45,6 +45,7 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\vote
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsSecurity.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterEngDraft\ArticleSixBillOfRightsEngDraft.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\SubBlockchainEntity.java
+D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\DemerageControlller.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\governments\FractionPower.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\governments\UtilsGovernment.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\base\Base.java
@@ -55,6 +56,7 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\cont
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\model\Account.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\sheduled\SchedulerConfig.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\simulation\AccountSimulation.java
+D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsDemerage.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\BasisController.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\BlockchainCheckController.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\FractionsControllers.java
@@ -81,6 +83,7 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\gove
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\network\Transactions.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\node\Nodes.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilUrl.java
+D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\InfoDemerageMoney.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterDraft\ArticleOneLegistratureDraft.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\TransactionController.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsCheckDtoTransaction.java
