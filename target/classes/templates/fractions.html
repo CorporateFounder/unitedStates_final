@@ -13,10 +13,10 @@
 
     <div th:each="el : ${currentLaw}" class="alert alert-info mt-2">
         <h4 th:text="'law address: '+${el.addressLaw}"/>
-        <p th:text="'votes equal to shares: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
-        <p th:text="'(CorporateCouncilOfReferee)votes of the Council of Chief Justices: '+${el.votesCorporateCouncilOfReferees}"/>
-        <p th:text="'votes of the fractions: '+${el.fractionVote}"/>
-        <p th:text="'votes of the Board of Shareholders: '+${el.votesBoardOfShareholders}"/>
+        <p th:text="'votes equal to shares raiting: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'(CorporateCouncilOfReferee)votes of the Council of Chief Justices raiting: '+${el.votesCorporateCouncilOfReferees}"/>
+        <p th:text="'votes of the fractions raiting: '+${el.fractionVote}"/>
+        <p th:text="'votes of the Board of Shareholders rating: '+${el.votesBoardOfShareholders}"/>
         <p th:text="'Voice of the CEO: '+${el.voteGeneralExecutiveDirector}"/>
         <p th:text="'the voice of the supreme judge: '+${el.voteHightJudge}"/>
         <p th:text="'founder voice: '+${el.founderVote}"/>

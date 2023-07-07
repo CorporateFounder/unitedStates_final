@@ -298,7 +298,7 @@ public class BasisController {
 
                    emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
                    temporaryBlockchain.setBlockchainList(emptyList);
-
+                   System.out.println("resolve: temporaryBlockchain: " + temporaryBlockchain.validatedBlockchain());
                    if (!temporaryBlockchain.validatedBlockchain()) {
                        System.out.println(":download blocks");
                        emptyList = new ArrayList<>();
@@ -307,6 +307,7 @@ public class BasisController {
 
                            Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(i), s + "/block"));
 
+                           System.out.println("block index: " + block.getIndex());
                            if(i >  blocks_current_size-1){
                                System.out.println(":download blocks: " + block.getIndex()+
                                        " your block : " + (blocks_current_size ));
@@ -373,10 +374,10 @@ public class BasisController {
 
        }
 
-
+       System.out.println("bigBlockchain: " + bigBlockchain.validatedBlockchain() + " : " + bigBlockchain.sizeBlockhain());
        if (bigBlockchain.validatedBlockchain() && bigBlockchain.sizeBlockhain() > blockchainSize && hashCountZeroBigBlockchain > hashCountZeroAll)
        {
-
+           System.out.println("resolve start addBlock start: ");
            blockchain = bigBlockchain;
            UtilsBlock.deleteFiles();
            addBlock(bigBlockchain.getBlockchainList());

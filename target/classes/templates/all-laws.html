@@ -14,10 +14,10 @@
     <h3 th:text="${title}"/>
     <div th:each="el : ${allLaws}" class="alert alert-info mt-2">
         <h4 th:text="'address package law: '+${el.addressLaw}"/>
-        <p th:text="'stock votes: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
-        <p th:text="'votesCorporateCouncilOfReferees: '+${el.votesCorporateCouncilOfReferees}"/>
-        <p th:text="'votes of the fractions: '+${el.fractionVote}"/>
-        <p th:text="'votesBoardOfShareholders: '+${el.votesBoardOfShareholders}"/>
+        <p th:text="'stock votes raiting: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'votesCorporateCouncilOfReferees raiting: '+${el.votesCorporateCouncilOfReferees}"/>
+        <p th:text="'votes of the fractions raitng: '+${el.fractionVote}"/>
+        <p th:text="'votesBoardOfShareholders raiting: '+${el.votesBoardOfShareholders}"/>
         <p th:text="'voteGeneralExecutiveDirector: '+${el.voteGeneralExecutiveDirector}"/>
         <p th:text="'voteHightJudge: '+${el.voteHightJudge}"/>
         <p th:text="'founderVote: '+${el.founderVote}"/>
