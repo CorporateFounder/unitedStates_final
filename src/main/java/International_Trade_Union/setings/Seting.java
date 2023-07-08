@@ -40,10 +40,7 @@ public interface Seting {
     //Минимальное значение чтобы Совет Корпоративных Верховных Судей могла избрать Верховного Судью
     int ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES = 2;
 
-    //Минимальное значение остатка голосов чтобы Совет директоров утверждал бюджет,
-    //стратегический план, в создании новых должностей и назначении новых должностей,
-    //и т.д. Также участвовал в утверждении законов, вместе с другими участниками.
-    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS = 10;
+
 
     //Минимальное количество остатка голосов чтобы Совет Акционеров
     //утверждал вместе с остальными участниками в утверждении законов.
@@ -126,7 +123,7 @@ public interface Seting {
 //           directors.getDirector(NamePOSITION.BOARD_OF_DIRECTORS.toString()).getCount() * 20 / 100;
 
     //Совет акционеров минимум 20% голосов
-    int ORIGINAL_LIMIT_MINT_VOTE_BOARD_OF_SHAREHOLDERS_AMENDMENT = BOARD_OF_SHAREHOLDERS * 20 / 100;
+    int ORIGINAL_LIMIT_MINT_VOTE_BOARD_OF_SHAREHOLDERS_AMENDMENT = BOARD_OF_SHAREHOLDERS * 35 / 100;
 
 
 

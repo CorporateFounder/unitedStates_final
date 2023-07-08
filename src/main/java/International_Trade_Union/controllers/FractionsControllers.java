@@ -2,14 +2,12 @@ package International_Trade_Union.controllers;
 
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.blockchain.Blockchain;
-import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.governments.*;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.FIndPositonHelperData;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.SaveBalances;
-import International_Trade_Union.utils.UtilsUse;
 import International_Trade_Union.vote.CurrentLawVotesEndBalance;
 import International_Trade_Union.vote.LawEligibleForParliamentaryApproval;
 import International_Trade_Union.vote.UtilsLaws;
@@ -54,7 +52,7 @@ public class FractionsControllers {
             if (higherSpecialPositions.isElectedByCEO()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, true, false, false));
-            } else if (higherSpecialPositions.isElectedByBoardOfDirectors()) {
+            } else if (higherSpecialPositions.isElectedByFractions()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, false, true, false));
             } else if (higherSpecialPositions.isElectedByCorporateCouncilOfReferees()) {

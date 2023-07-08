@@ -1,6 +1,5 @@
 package International_Trade_Union.controllers;
 
-import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
@@ -293,7 +292,7 @@ public class LawsController {
             if (higherSpecialPositions.isElectedByCEO()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, true, false, false));
-            } else if (higherSpecialPositions.isElectedByBoardOfDirectors()) {
+            } else if (higherSpecialPositions.isElectedByFractions()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, false, true, false));
             } else if (higherSpecialPositions.isElectedByCorporateCouncilOfReferees()) {
@@ -350,7 +349,7 @@ public class LawsController {
 
         //позиции избираемые только всеми участниками
         List<CurrentLawVotesEndBalance> electedByFractions = current.stream()
-                .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
+                .filter(t -> directors.isElectedByFractions(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                 && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
@@ -566,7 +565,7 @@ public class LawsController {
             if (higherSpecialPositions.isElectedByCEO()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, true, false, false));
-            } else if (higherSpecialPositions.isElectedByBoardOfDirectors()) {
+            } else if (higherSpecialPositions.isElectedByFractions()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, false, true, false));
             } else if (higherSpecialPositions.isElectedByCorporateCouncilOfReferees()) {

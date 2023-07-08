@@ -4,11 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -20,7 +16,7 @@ public class Director {
     private  int count;
 
     private boolean electedByCEO;
-    private boolean electedByBoardOfDirectors;
+    private boolean electedByFractions;
 
 
     private boolean electedByCorporateCouncilOfReferees;
@@ -42,7 +38,7 @@ public class Director {
     }
 
     public boolean isAppointedByTheGovernment(){
-        if(electedByCEO || electedByBoardOfDirectors || electedByCorporateCouncilOfReferees)
+        if(electedByCEO || electedByFractions || electedByCorporateCouncilOfReferees)
             return true;
         else return false;
     }

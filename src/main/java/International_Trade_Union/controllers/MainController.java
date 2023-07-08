@@ -1,11 +1,9 @@
 package International_Trade_Union.controllers;
 
-import International_Trade_Union.about_us_engDraft.AboutUsEngDraft;
 import International_Trade_Union.config.BlockchainFactoryEnum;
+import International_Trade_Union.entity.InfoDificultyBlockchain;
 import International_Trade_Union.entity.blockchain.Blockchain;
-import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import International_Trade_Union.entity.blockchain.block.Block;
-import International_Trade_Union.governments.Director;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Mining;
@@ -13,8 +11,6 @@ import International_Trade_Union.originalCorporateCharter.OriginalPreamble;
 import International_Trade_Union.originalCorporateCharter.OriginalPreambleEng;
 
 import org.json.JSONException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +32,6 @@ import International_Trade_Union.vote.VoteEnum;
 import java.io.IOException;
 import java.net.NoRouteToHostException;
 import java.net.SocketException;
-import java.net.http.WebSocket;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
@@ -98,7 +93,28 @@ public class MainController {
             versionStr = "-1";
         }
 
+        InfoDificultyBlockchain infoDificultyBlockchain = new InfoDificultyBlockchain(-1, -1);
+        String difficultOneBlock =  ":";
+        String difficultAllBlockchain = ":";
+        try {
+            String json = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/difficultyBlockchain");
+             infoDificultyBlockchain = UtilsJson.jsonToInfoDifficulty(json);
+
+        }catch (NoRouteToHostException e){
+            System.out.println("home page you cannot connect to global server," +
+                    "you can't give difficulty global server");
+
+        }catch (SocketException e){
+            System.out.println("," +
+                    "you can't give difficulty global server");
+        }
+
+        difficultOneBlock = Long.toString(infoDificultyBlockchain.getDiffultyOneBlock());
+        difficultAllBlockchain = Long.toString(infoDificultyBlockchain.getDifficultyAllBlockchain());
+
         model.addAttribute("global_version", versionStr);
+        model.addAttribute("difficultOneBlock",difficultOneBlock);
+        model.addAttribute("difficultAllBlockchain",  difficultAllBlockchain);
 
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,

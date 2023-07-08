@@ -3,18 +3,15 @@ package unitted_states_of_mankind;
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.controllers.BasisController;
-import International_Trade_Union.controllers.MainController;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.UtilUrl;
-import International_Trade_Union.utils.UtilsFileSaveRead;
 import org.json.JSONException;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -22,9 +19,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 @SpringBootTest
 public class Testing {
@@ -50,7 +44,7 @@ public class Testing {
     @Test
     public void testSorted(){
         Directors directors = new Directors();
-        System.out.println(directors.isElectedByBoardOfDirectors(NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString()));
+        System.out.println(directors.isElectedByFractions(NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString()));
     }
 
     @Test

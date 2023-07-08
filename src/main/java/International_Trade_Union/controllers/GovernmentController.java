@@ -3,7 +3,6 @@ package International_Trade_Union.controllers;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
-import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.governments.Director;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
@@ -66,7 +65,7 @@ public class GovernmentController {
             if (higherSpecialPositions.isElectedByCEO()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, true, false, false));
-            } else if (higherSpecialPositions.isElectedByBoardOfDirectors()) {
+            } else if (higherSpecialPositions.isElectedByFractions()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, false, true, false));
             } else if (higherSpecialPositions.isElectedByCorporateCouncilOfReferees()) {
@@ -135,7 +134,7 @@ public class GovernmentController {
 
         //позиции избираемые только всеми участниками
         List<CurrentLawVotesEndBalance> electedByFraction = current.stream()
-                .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
+                .filter(t -> directors.isElectedByFractions(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
@@ -249,8 +248,8 @@ public class GovernmentController {
         //позиции утвержденные всеми
         List<CurrentLawVotesEndBalance> createdByBoardOfDirectors = current.stream()
                 .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
-                .filter(t->t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
-                        && t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS
+                .filter(t->
+                         t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS
                         && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .collect(Collectors.toList());

@@ -104,9 +104,9 @@ public class Directors {
         return list.contains(str.toUpperCase(Locale.ROOT));
     }
 
-    public  boolean isElectedByBoardOfDirectors(String  str){
+    public  boolean isElectedByFractions(String  str){
         List<String> list = directors.stream()
-                .filter(t->t.isElectedByBoardOfDirectors())
+                .filter(t->t.isElectedByFractions())
                 .map(t->t.getName())
                 .collect(Collectors.toList());
 

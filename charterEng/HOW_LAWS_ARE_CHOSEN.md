@@ -26,9 +26,10 @@ All laws are divided into several groups.
 NOTHING removes the vote from the candidate when voting.
 ### REGULAR LAWS
 To establish ordinary laws,
+The position must pass at least four weeks after the vote for the amendment to be legitimate.
 1. The name of the package of law should not match the highlighted keywords.
 2. The law must receive more than 1 vote according to the scoring system described by [VOTE_STOCK](../charterEng/VOTE_STOCK.md)
-3. Must receive 15% or more votes from factions according to the scoring system described in [VOTE_FFRACTION](../charterEng/VOTE_FRACTION.md)
+3. Must receive 35% or more votes from factions according to the scoring system described in [VOTE_FFRACTION](../charterEng/VOTE_FRACTION.md)
 
 
 Sample code in LawsController current law:
