@@ -71,6 +71,7 @@ my telegram https://t.me/citu_coin
 - [как создаются правила сети](../documentation/create-law.md)
 - [как происходит голосование в сети](../documentation/voting-in-network.md)
 - [создание должности](../documentation/create-postion.md)
+- [Решения проблем](../documentation/solving-common-problems.md)
 
 [//]: # (- [создание фракции]&#40;../documentation/create-fraction.md&#41;)
 ## Корпоративный устав

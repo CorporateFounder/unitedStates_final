@@ -68,6 +68,7 @@ There is no halving (reduction in production) in this system, but the total numb
 - [how network rules are created](../documentationEng/create-lawEng.md)
 - [how voting works in the network](../documentationEng/voting-in-networkEng.md)
 - [post creation](../documentationEng/create-positionEng.md)
+- [resolve problems](../documentationEng/solving-common-problems.md)
 
 [//]: # (- [create fraction]&#40;../documentationEng/create-fractionEng.md&#41;)
 ## Corporate Charter
