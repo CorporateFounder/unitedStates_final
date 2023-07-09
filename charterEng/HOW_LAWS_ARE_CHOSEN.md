@@ -29,7 +29,7 @@ To establish ordinary laws,
 The position must pass at least four weeks after the vote for the amendment to be legitimate.
 1. The name of the package of law should not match the highlighted keywords.
 2. The law must receive more than 1 vote according to the scoring system described by [VOTE_STOCK](../charterEng/VOTE_STOCK.md)
-3. Must receive 35% or more votes from factions according to the scoring system described in [VOTE_FFRACTION](../charterEng/VOTE_FRACTION.md)
+3. Must receive 15% or more votes from factions according to the scoring system described in [VOTE_FFRACTION](../charterEng/VOTE_FRACTION.md)
 
 
 Sample code in LawsController current law:
@@ -135,7 +135,7 @@ With the obligatory underscore.
 ### CHARTER AMENDMENTS
 To amend the charter, the law package must be named AMENDMENT_TO_THE_CHARTER.
 For an amendment to be valid
-1. It is necessary that 20% or more of the votes received from the Council of Shareholders by the counting system [ONE_VOTE](../charterEng/VOTE_FRACTION.md).
+1. It is necessary that 35% or more of the votes received from the Council of Shareholders by the counting system [ONE_VOTE](../charterEng/VOTE_FRACTION.md).
 2. Need to get 15% or more votes from factions by counting system [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md).
 3. Need to get 5 or more votes from the Legislative Branch of the Corporate Chief Justices.
 
