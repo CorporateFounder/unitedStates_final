@@ -13,6 +13,7 @@ International_Trade_Union\vote\CurrentLawVotes.class
 International_Trade_Union\utils\UtilsAllAddresses.class
 International_Trade_Union\entity\EntityChain.class
 International_Trade_Union\config\BlockchainFactoryEnum.class
+International_Trade_Union\entity\InfoDificultyBlockchain.class
 International_Trade_Union\entity\DataForTransaction.class
 International_Trade_Union\about_us_engDraft\AboutUsEngDraft.class
 International_Trade_Union\vote\CurrentLawVotesAverage.class
