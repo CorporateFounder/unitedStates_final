@@ -13,7 +13,7 @@
     <h3 th:text="'balance budget digital dollar: ' +${#numbers.formatDecimal(dollar, 1, 'COMMA', 16, 'POINT')}"/>
     <h3 th:text="'balance budget digital stock: ' +${#numbers.formatDecimal(stock, 1, 'COMMA', 16, 'POINT')}"/>
     <h3 th:text="'emission limit: ' +${#numbers.formatDecimal(emission, 1, 'COMMA', 16, 'POINT')}"/>
-    <h3 th:text="'will be approved at the end of the 15th day, now is the day: ' + ${day}"/>
+    <h3 th:text="'will be approved at the end of the 5640 block(day), now is the block: ' + ${day}"/>
 
 
     <div th:each="el : ${currentLaw}" class="alert alert-info mt-2">
