@@ -13,8 +13,7 @@ import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
-import International_Trade_Union.vote.Laws;
-import International_Trade_Union.vote.VoteEnum;
+import International_Trade_Union.vote.*;
 import International_Trade_Union.utils.*;
 
 import java.io.File;
@@ -23,6 +22,8 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static International_Trade_Union.utils.UtilsBalance.calculateBalanceFromLaw;
 
 public class Mining {
 
@@ -67,8 +68,16 @@ public class Mining {
         if(blockchain != null && blockchain.sizeBlockhain() > 0){
             block = blockchain.getBlock(blockchain.sizeBlockhain() - 1);
             balances = UtilsBalance.calculateBalance(balances, block, signs);
+            //test
+//получает все созданные когда либо законы
+            Map<String, Laws> allLaws = UtilsLaws.getLaws(blockchain.getBlockchainList().subList(
+                    blockchain.sizeBlockhain()-Seting.LAW_MONTH_VOTE, blockchain.sizeBlockhain()
+            ), Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
 
-
+            //возвращает все законы с голосами проголосовавшими за них
+            List<LawEligibleForParliamentaryApproval> allLawsWithBalance =
+                    UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+           balances = UtilsBalance.calculateBalanceFromLaw(balances, block, allLaws, allLawsWithBalance);
         }
 
 

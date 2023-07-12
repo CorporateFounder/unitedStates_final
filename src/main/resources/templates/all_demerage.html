@@ -13,6 +13,7 @@
 
     <div th:each="el : ${infoDemerageMonies}" class="alert alert-info mt-2">
         <h4 th:text="'law address: '+${el.address}"/>
+        <p th:text="'index block: '+${el.indexBlock}"/>
         <p th:text="'before dollar: '+${#numbers.formatDecimal(el.beforeDollar, 1, 'COMMA', 16, 'POINT')}"/>
         <p th:text="'before stock: '+${#numbers.formatDecimal(el.beforeStock, 1, 'COMMA', 16, 'POINT')}"/>
         <p th:text="'after dollar: '+${#numbers.formatDecimal(el.afterDollar, 1, 'COMMA', 16, 'POINT')}"/>

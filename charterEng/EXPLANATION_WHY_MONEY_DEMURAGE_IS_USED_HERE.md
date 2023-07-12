@@ -1,4 +1,4 @@
-# EXPLANATION WHY MONEY DEMURAGE IS USED HERE
+## EXPLANATION WHY MONEY DEMURAGE IS USED HERE
 How does the negative rate work here? Every six months we burn 0.1% of digital dollars from all accounts
 and 0.2% of digital shares, which allows us to keep the money supply unchanged, preventing it from growing,
 for the new money created and the money destroyed come into parity.
@@ -15,7 +15,7 @@ will equal GDP, there is a high probability of Hyperinflation, since GDP does no
 Money must be solid so that a business can predict its long-term investments and from monetarism, only the part that
 the money supply should grow linearly, but in general there is a mix of different economic schools, including the Austrian School of Economics.
 
-With a negative rate of 0.1% every six months for digital dollars and 0.2% for digital stocks, we avoid the consequences of a severe economic crisis for this currency.
+With a negative rate of 0.2% every six months for digital dollars and 0.4% for digital stocks, we avoid the consequences of a severe economic crisis for this currency.
 
 Such a mechanism creates a price corridor where the lower limit of the value of these digital currencies is the total number of issued digital currencies.
 dollars and digital stocks, and the upper limit is the real value. Since as soon as the value becomes higher than the real value,
@@ -60,6 +60,5 @@ years after the first production adjustment)
 With a lack of money supply, if the number of mined coins has not been changed through an amendment, you can add a few
 additional zeros after the decimal point, so it will simply increase the value of the coins, without increasing the total money supply.
 
-Negative rates should not be higher than 0.5% per annum and lower than 0.2% per annum. Negative rates can only be changed through amendments.
-
+Negative rates should not be higher than 1% per annum and lower than 0.2% per annum. Negative rates can only be changed through amendments.
 [Exit to home](../documentationEng/documentationEng.md)

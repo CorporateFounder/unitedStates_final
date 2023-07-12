@@ -1,7 +1,6 @@
 package International_Trade_Union.setings;
 
 import International_Trade_Union.governments.Directors;
-import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.utils.UtilsUse;
 
 
@@ -13,6 +12,8 @@ public interface Seting {
     // значение используется как константа года,
     // в данной системе отсутствует високосный год
     int YEAR = 360;
+    int FIFTEEN_DAYS = 15;
+
 
     Directors directors = new Directors();
 
@@ -80,9 +81,9 @@ public interface Seting {
     long INTERVAL_TARGET_TEST = 25000;
 
     // плата за обслуживание каждые 6 месяцев.
-    Double ANNUAL_MAINTENANCE_FREE_DIGITAL_DOLLAR_YEAR = 0.2;
+    Double ANNUAL_MAINTENANCE_FREE_DIGITAL_DOLLAR_YEAR = 0.4;
     //отрицательная ставка для цифровой акции
-    double ANNUAL_MAINTENANCE_FREE_DIGITAL_STOCK_YEAR = 0.4;
+    double ANNUAL_MAINTENANCE_FREE_DIGITAL_STOCK_YEAR = 0.8;
     //каждые сколько месяцев снимать
     int HALF_YEAR = 2;
 
@@ -108,6 +109,10 @@ public interface Seting {
 
     //бюджет должен формировать только палата представителей
     String BUDGET = "BUDGET";
+    String EMISSION = "EMISSION";
+    //сколько голосов нужно
+    int LIMIT_VOTING_FOR_BUDJET_END_EMISSION = 1;
+    double EMISSION_BUDGET = 100000.0;
 
     //план также утверждается на четыре года и утверждается только палатой представителей
     //каждый план обязан содержать дату начала планирования с какого числа вступает в силу.
@@ -160,11 +165,14 @@ public interface Seting {
     //которые не позже четырех лет для законов и должностей,
     //голоса отданные за законы должны обновляться каждые четыре года
     //как и за должности
-    int POSITION_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 4;
+    int POSITION_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 1;
     //подсчет голосов для законов в годах
-    int LAW_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 4;
+    int LAW_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 1;
 
-    String ORIGINAL_BLOCKCHAIN_FILE = "\\resources\\blockchain\\";
+    //используется для утверждения бюджета и эмиссии
+    int LAW_MONTH_VOTE = (int) (FIFTEEN_DAYS * Seting.COUNT_BLOCK_IN_DAY);
+
+            String ORIGINAL_BLOCKCHAIN_FILE = "\\resources\\blockchain\\";
     String ORIGINAL_BALANCE_FILE = "\\resources\\balance\\";
     String ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE = "\\resources\\federalGovernment\\federalGovernment.txt";
     String ORIGINAL_ALL_CORPORATION_LAWS_FILE = "\\resources\\federalLaws\\";
@@ -179,7 +187,9 @@ public interface Seting {
 
     String TEMPORARY_BLOCKCHAIN_FILE = "\\resources\\tempblockchain\\";
 
+    //отчет об уничтоженных монетах
     String BALANCE_REPORT_ON_DESTROYED_COINS = "\\resources\\balanceReportOnDestroyedCoins\\";
+    String CURRENT_BUDGET_END_EMISSION = "\\resources\\budgetEndEmission\\";
 
 
     //адресса внешних сервисов
@@ -223,6 +233,6 @@ public interface Seting {
 
     int DELETED_PORTION = 150;
 
-    int VERSION = 3;
+    int VERSION = 4;
     String ORIGINAL_HASH = "08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c";
 }

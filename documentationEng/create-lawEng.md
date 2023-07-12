@@ -19,7 +19,7 @@ Once it is added to the block and added to the blockchain, it will be able to be
 Sample code in LawsController current law:
 
 ````
-      @GetMapping("/current-laws")
+    @GetMapping("/current-laws")
     public String currentLaw(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         Directors directors = new Directors();
         Blockchain blockchain = Mining.getBlockchain(
@@ -45,7 +45,7 @@ Sample code in LawsController current law:
             if (higherSpecialPositions.isElectedByCEO()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, true, false, false));
-            } else if (higherSpecialPositions.isElectedByBoardOfDirectors()) {
+            } else if (higherSpecialPositions.isElectedByFractions()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, false, true, false));
             } else if (higherSpecialPositions.isElectedByCorporateCouncilOfReferees()) {
@@ -67,17 +67,11 @@ Sample code in LawsController current law:
                 Seting.LAW_YEAR_VOTE);
 
 
-
-
-        //минимальное значение количество положительных голосов для того чтобы закон действовал,
-        //позиции избираемые акциями совета директоров
-//        List<CurrentLawVotesEndBalance> electedByStockBoardOfDirectors = current.stream()
-//                .filter(t -> directors.isElectedByStocks(t.getPackageName()))
-//                .filter(t -> t.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString()))
-//                .filter(t -> t.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE)
-//                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
-//                .limit(directors.getDirector(NamePOSITION.BOARD_OF_DIRECTORS.toString()).getCount())
-//                .collect(Collectors.toList());
+        //убрать появление всех бюджет и эмиссий из отображения в действующих законах
+        current = current.stream()
+                .filter(t->!t.getPackageName().equals(Seting.EMISSION) ||
+                        t.getPackageName().equals(Seting.BUDGET))
+                .collect(Collectors.toList());
 
 //        избранные фракции
         List<CurrentLawVotesEndBalance> electedFraction = current.stream()
@@ -100,19 +94,19 @@ Sample code in LawsController current law:
 
 
         //позиции созданные всеми участниками
-        List<CurrentLawVotesEndBalance> createdByBoardOfDirectors = current.stream()
+        List<CurrentLawVotesEndBalance> createdByFraction = current.stream()
                 .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
                 .filter(t->t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                 && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .collect(Collectors.toList());
         //добавление позиций созданных советом директоров
-        for (CurrentLawVotesEndBalance currentLawVotesEndBalance : createdByBoardOfDirectors) {
+        for (CurrentLawVotesEndBalance currentLawVotesEndBalance : createdByFraction) {
             directors.addAllByBoardOfDirectors(currentLawVotesEndBalance.getLaws());
         }
 
         //позиции избираемые только всеми участниками
         List<CurrentLawVotesEndBalance> electedByFractions = current.stream()
-                .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
+                .filter(t -> directors.isElectedByFractions(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                 && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
@@ -181,19 +175,6 @@ Sample code in LawsController current law:
                 && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                 && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES_AMENDMENT)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());
-
-        //бюджет утверждается всеми
-        List<CurrentLawVotesEndBalance> budjet = current.stream()
-                .filter(t-> !directors.contains(t.getPackageName()))
-                .filter(t->Seting.BUDGET.equals(t.getPackageName()))
-                .filter(t->!directors.isCabinets(t.getPackageName()))
-                .filter(t->
-                        t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
-                        && t.getVotes() >= Seting.ALL_STOCK_VOTE)
-                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
-                .limit(1)
-                .collect(Collectors.toList());
-
 
         //добавляет законы, которые создают новые должности утверждается всеми
         List<CurrentLawVotesEndBalance> addDirectors = current.stream()
@@ -275,7 +256,7 @@ Sample code in LawsController current law:
 
         current = new ArrayList<>();
         current.addAll(addDirectors);
-        current.addAll(budjet);
+
         current.addAll(electedFraction);
         current.addAll(planFourYears);
 
@@ -298,7 +279,7 @@ Sample code in LawsController current law:
         model.addAttribute("currentLaw", current);
         return "current-laws";
     }
-        
+
 ````
 
 [back to home](./documentationEng.md)

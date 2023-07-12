@@ -1,7 +1,7 @@
 package International_Trade_Union.originalCorporateCharter;
 
 public interface OriginalCHARTER_ENG {
-    String HOW_LAWS_ARE_CHOSEN_1 = "# HOW THE LAWS ARE CHOSEN.\n" +
+    String LAW_1 = "# HOW THE LAWS ARE CHOSEN.\n" +
             "\n" +
             "## Approval of the law\n" +
             "_____\n" +
@@ -16,19 +16,19 @@ public interface OriginalCHARTER_ENG {
             "which were adopted earlier, but should be taken into account precisely from the last date of adoption of the law.\n" +
             "The law is in force as long as it satisfies the conditions for the adoption of the law and as soon as the condition\n" +
             "violated, the law loses its force until the law is re-adopted.\n" +
-            "In the voting of all laws, only the votes given in the last four years are taken into account.\n" +
+            "In the voting of all laws, only votes cast in the last year are taken into account.\n" +
             "All laws are divided into several groups.\n" +
             "1. Ordinary laws\n" +
             "2. Strategic Plan\n" +
-            "3. Budget\n" +
-            "4. Appointed by the Legislature\n" +
-            "6. Laws that create new positions. These positions are approved only by the Legislative Power.\n" +
-            "7. Amendments to the Charter\n" +
-            "8. The charter itself\n" +
+            "3. Appointed by the Legislature\n" +
+            "4. Laws that create new positions. These positions are approved only by the Legislative Power.\n" +
+            "5. Amendments to the Charter\n" +
+            "6. The charter itself\n" +
             "\n" +
             "NOTHING removes the vote from the candidate when voting.\n" +
             "### REGULAR LAWS\n" +
             "To establish ordinary laws,\n" +
+            "The position must pass at least four weeks after the vote for the amendment to be legitimate.\n" +
             "1. The name of the package of law should not match the highlighted keywords.\n" +
             "2. The law must receive more than 1 vote according to the scoring system described by [VOTE_STOCK](../charterEng/VOTE_STOCK.md)\n" +
             "3. Must receive 15% or more votes from factions according to the scoring system described in [VOTE_FFRACTION](../charterEng/VOTE_FRACTION.md)\n" +
@@ -74,33 +74,14 @@ public interface OriginalCHARTER_ENG {
             "                 .collect(Collectors.toList());\n" +
             "````\n" +
             "\n" +
-            "### BUDGET\n" +
-            "The budget is the overall cost for the system and is approved similarly to the Strategic Plan,\n" +
-            "but the name of the package should be BUDGET and it is also in a single copy.\n" +
-            "\n" +
-            "````\n" +
-            "  //budget approved by everyone\n" +
-            "         List<CurrentLawVotesEndBalance> budjet = current.stream()\n" +
-            "                 .filter(t-> !directors.contains(t.getPackageName()))\n" +
-            "                 .filter(t->Seting.BUDGET.equals(t.getPackageName()))\n" +
-            "                 .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
-            "                 .filter(t->\n" +
-            "                         t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
-            "                       \n" +
-            "                       \n" +
-            "                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)\n" +
-            "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())\n" +
-            "                 .limit(1)\n" +
-            "                 .collect(Collectors.toList());\n" +
-            "````\n" +
             "\n" +
             "### POSTS THAT ARE APPOINTED ONLY BY THE LEGISLATIVE AUTHORITY\n" +
             "There are positions that are appointed only by the Legislature and such positions include\n" +
             "General Executive Director. This position is similar to the Prime Minister and is\n" +
             "Executive Power in this system.\n" +
-            "Each such position may be limited to the number, which is defined in this system\n" +
+            "Each such position can be limited to the number that is defined in this system.\n" +
             "for this position. Example: There is only one CEO position.\n" +
-            "Elected in the same way as ***strategic plan*** and ***budget***.\n" +
+            "Elected in the same way as ***strategic plan***\n" +
             "But the number is determined for each position separately.\n" +
             "````\n" +
             "  //positions elected only by all participants\n" +
@@ -137,7 +118,7 @@ public interface OriginalCHARTER_ENG {
             "### CHARTER AMENDMENTS\n" +
             "To amend the charter, the law package must be named AMENDMENT_TO_THE_CHARTER.\n" +
             "For an amendment to be valid\n" +
-            "1. It is necessary that 20% or more of the votes received from the Council of Shareholders by the counting system [ONE_VOTE](../charterEng/VOTE_FRACTION.md).\n" +
+            "1. It is necessary that 35% or more of the votes received from the Council of Shareholders by the counting system [ONE_VOTE](../charterEng/VOTE_FRACTION.md).\n" +
             "2. Need to get 15% or more votes from factions by counting system [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md).\n" +
             "3. Need to get 5 or more votes from the Legislative Branch of the Corporate Chief Justices.\n" +
             "\n" +
@@ -182,72 +163,53 @@ public interface OriginalCHARTER_ENG {
             "                 .collect(Collectors.toList());\n" +
             "````\n" +
             "[Return to main page](../documentation/documentationEng.md)";
-    String VOTE_STOCK_2 = "# VOTE_STOCK (How shares are voted.)\n" +
-            "\n" +
+    String LAW_2 = "# VOTE_STOCK (How shares are voted.)\n" +
             "How shares are voted.\n" +
-            "All shares held by the account are equal to the same number of votes.\n" +
-            "Every time someone makes a transaction to the account, is the packet address that starts with\n" +
-            "LIBER he votes on this package. Only those votes from which no more than four years have passed are taken into account.\n" +
-            "If the transaction was made ***VoteEnum.YES,*** then this account receives votes ***for***, formula\n" +
-            "yesV = number of votes equal to the sender's shares.\n" +
-            "yesN = how many laws this account voted for with VoteEnum.YES\n" +
-            "resultYES = yesV / yesN). Example: an account voted for three accounts that start with LIBER,\n" +
-            "100 shares, 100 votes. 100 / 3 = 33.3 means each account will receive 33.3 votes.\n" +
-            "\n" +
-            "If the transaction was made with VoteEnum.NO,\n" +
-            "then the same formula is used, but now all bills for which he voted against are taken into account\n" +
-            "example the same account voted for two accounts against, it has the same one hundred shares.\n" +
-            "resultNO = noV / noN = 50 = 50 means every bill he voted for,\n" +
-            "against will receive 50 votes against.\n" +
-            "Further, each score that starts with LIBER counts and sums up all the votes given to it ***FOR*** (VoteEnum.YES)\n" +
-            "and ***NO*** (VoteEnum.NO).\n" +
-            "Then this formula is used remainder = resultYES - resultNO.\n" +
-            "It is this result that is displayed as votes cast.\n" +
-            "At any time you can change your voice, but only to the opposite, which means if\n" +
-            "If you voted for a YES candidate then you can only change to NO and back.\n" +
-            "The number of times you can change your voice is not limited.\n" +
-            "With each block there is a recalculation of votes, if you lose your shares, your candidates\n" +
-            "also lose their votes. This measure is specifically implemented so that elected positions\n" +
-            "were interested in the fact that those who vote for them prospered and did not lose their shares.\n" +
-            "Only CORPORATE_COUNCIL_OF_REFEREES and BOARD_OF_DIRECTORS are elected this way\n" +
-            "Only the last transaction given for each account counts, unless you have updated your vote,\n" +
-            "then after four years it will be cancelled.\n" +
-            "100,000 votes are needed to approve the law\n" +
+            "1. The number of shares is equal to the number of votes.\n" +
+            "2. Your votes are recounted every block and if you lose your shares,\n" +
+            "   or increase your shares, your cast votes also change\n" +
+            "   according to the number of shares.\n" +
+            "3. For each law that you voted, for this law, all\n" +
+            "   FOR and AGAINST and after that with FOR minus AGAINST and this is the rating of the law.\n" +
+            "4. Your votes are divided separately for all the laws that you voted FOR and separately AGAINST\n" +
+            "   Example: you have 100 shares and you voted FOR one candidate and for one law,\n" +
+            "   you also voted AGAINST two candidates and two laws.\n" +
+            "   Now each of your candidates and the law for which you voted FOR will receive 50 votes.\n" +
+            "   and for which you voted AGAINST will receive 25 votes AGAINST.\n" +
+            "   the formula is simple FOR/number of laws and AGAINST/number of laws you are against.\n" +
             "\n" +
             "______\n" +
             "\n" +
             "````\n" +
-            "//code is in class class CurrentLawVotes method: votesLaw\n" +
             "public double votesLaw(Map<String, Account> balances,\n" +
-            "      Map<String, Integer> yesAverage, Map<String, Integer> noAverage) {\n" +
-            "         double yes = 0.0;\n" +
-            "         double no = 0.0;\n" +
-            "       \n" +
-            "              \n" +
+            "                           Map<String, Integer> yesAverage, Map<String, Integer> noAverage) {\n" +
+            "        double yes = 0.0;\n" +
+            "        double no = 0.0;\n" +
+            "\n" +
+            "\n" +
+            "        //\n" +
             "        for (String s : YES) {\n" +
             "\n" +
-            "             int count = 1;\n" +
-            "           count = yesAverage.get(s) > 0 ? yesAverage.get(s) : 1;\n" +
-            "           yes += balances.get(s).getDigitalStockBalance() / count;\n" +
+            "            int count = 1;\n" +
+            "            count = yesAverage.get(s) > 0 ? yesAverage.get(s) : 1;\n" +
+            "            yes += balances.get(s).getDigitalStockBalance() / count;\n" +
             "\n" +
             "        }\n" +
-            "        \n" +
-            "         for (String s : NO) {\n" +
+            "        //\n" +
+            "        for (String s : NO) {\n" +
             "            int count = 1;\n" +
-            "             count = noAverage.get(s) > 0 ? noAverage.get(s) : 1;\n" +
-            "            no += balances.get(s).getDigitalStockBalance() / count);\n" +
+            "            count = noAverage.get(s) > 0 ? noAverage.get(s) : 1;\n" +
+            "            no += balances.get(s).getDigitalStockBalance() / count;\n" +
             "\n" +
-            "         }\n" +
+            "        }\n" +
             "\n" +
             "\n" +
-            "         return yes - no;\n" +
+            "        return yes - no;\n" +
             "    }\n" +
-            "\n" +
             "````\n" +
             "\n" +
             "[back to home](../documentationEng/documentationEng.md)";
-
-    String ONE_VOTE_3 = "# ONE_VOTE (One Voice)\n" +
+    String LAW_3 = "# ONE_VOTE (One Voice)\n" +
             "\n" +
             "When these positions are voted count as one score = one vote\n" +
             "(CORPORATE_COUNCIL_OF_REFEREES-Council of Corporate Judges,\n" +
@@ -293,8 +255,7 @@ public interface OriginalCHARTER_ENG {
             "\n" +
             "````\n" +
             "[back to home](../documentationEng/documentationEng.md)";
-
-    String VOTE_FRACTION_4 = "# FAVORITE_FRACTION\n" +
+    String LAW_4 = "# FAVORITE_FRACTION\n" +
             "The faction is extracted like the chief judges, 200 scores received by the maximum number of votes\n" +
             "from a unique electoral one, as previously and an observed share equal to one vote of the described\n" +
             "in VOTE_STOCK\n" +
@@ -348,8 +309,7 @@ public interface OriginalCHARTER_ENG {
             "````\n" +
             "\n" +
             "[Return to main page](../documentationEng/documentationEng.md)";
-
-    String Penalty_mechanism_5 = "# Penalty mechanism\n" +
+    String LAW_5 = "# Penalty mechanism\n" +
             "\n" +
             "You make a transaction in which you lose this amount of shares, but\n" +
             "and the account to which the penalty is directed loses such an amount of shares.\n" +
@@ -368,8 +328,7 @@ public interface OriginalCHARTER_ENG {
             "This mechanism only works on digital shares and only if the sender has made a transaction with\n" +
             "VoteEnum.NO.\n" +
             "[exit to home](../documentationEng/documentationEng.md)";
-
-    String WHO_HAS_THE_RIGHT_TO_CREATE_LAWS_6 ="# WHO_HAS_THE_RIGHT_TO_CREATE_LAWS Who has the right to create laws\n" +
+    String LAW_6 = "# WHO_HAS_THE_RIGHT_TO_CREATE_LAWS Who has the right to create laws\n" +
             "\n" +
             "String WHO_HAS_THE_RIGHT_TO_CREATE_LAWS = Who has the right to make laws.\n" +
             "Create Laws in Cryptocurrency International Trade Union Corporations Have the Rights\n" +
@@ -383,8 +342,7 @@ public interface OriginalCHARTER_ENG {
             "The number of lines in a package of laws can be as many as needed and there are no restrictions.\n" +
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
-
-    String POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES_7 = "# POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES Judicial Power.\n" +
+    String LAW_7 = "# POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES Judicial Power.\n" +
             "Approves the Chief Justice.\n" +
             "Participates in the voting on the introduction of amendments.\n" +
             "\n" +
@@ -424,8 +382,7 @@ public interface OriginalCHARTER_ENG {
             "Each score of such a judge is equal to one vote, similar to [ONE_VOTE](../charterEng/ONE_VOTE.md)\n" +
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
-
-    String HOW_THE_CHIEF_JUDGE_IS_CHOSEN_8 = "# String HOW_THE_CHIEF_JUDGE_IS_CHOSEN HOW HIGH_JUDGE IS CHOSEN.\n" +
+    String LAW_8 = "# String HOW_THE_CHIEF_JUDGE_IS_CHOSEN HOW HIGH_JUDGE IS CHOSEN.\n" +
             "The Chief Justice is elected by CORPORATE_COUNCIL_OF_REFEREES.\n" +
             "Each member of the network can apply for the position of Chief Justice by creating a law called\n" +
             "package that matches HIGH_JUDGE\n" +
@@ -450,8 +407,7 @@ public interface OriginalCHARTER_ENG {
             "but his vote is higher than that of CORPORATE_COUNCIL_OF_REFEREES.\n" +
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
-
-    String PROPERTY_OF_THE_CORPORATION_9 = "# PROPERTY_OF_THE_CORPORATION PROPERTY OF THE CORPORATION.\n" +
+    String LAW_9 = "# PROPERTY_OF_THE_CORPORATION PROPERTY OF THE CORPORATION.\n" +
             "All property owned by the International Trade Union Corporation,\n" +
             "cannot be sold without a valid law,\n" +
             "where the sale process will be described and at what price the property will be sold.\n" +
@@ -460,8 +416,7 @@ public interface OriginalCHARTER_ENG {
             "will be budgeted and managed only by members of the current members of the Board of Directors.\n" +
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
-
-    String GENERAL_EXECUTIVE_DIRECTOR_10 = "# GENERAL_EXECUTIVE_DIRECTOR General Executive Director\n" +
+    String LAW_10 = "# GENERAL_EXECUTIVE_DIRECTOR General Executive Director\n" +
             "This Director coordinates the actions of the other senior directors to implement the strategic plan or\n" +
             "the tasks assigned to it by the laws in force.\n" +
             "All powers must be given to him through existing laws.\n" +
@@ -469,11 +424,10 @@ public interface OriginalCHARTER_ENG {
             "\n" +
             "## How the CEO is elected\n" +
             "This director is elected by the Legislature\n" +
-            "3. Fractions must give 15% or more votes using the method [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md)\n" +
-            "4. Network participants must give more than one vote using the [VOTE_STOCK](../charterEng/VOTE_STOCK.md) method\n" +
+            "3. Fractions must give 15% or more votes using the [VOTE_FRACTION] method (../charter/VOTE_FRACTION.md)\n" +
+            "4. Network participants must give more than one vote using the [VOTE_STOCK](../charter/VOTE_STOCK.md) method\n" +
             "5. Next comes the sorting from the highest to the lowest received votes from the shares and\n" +
-            "6. One account with the most votes from the Board of Directors is selected\n" +
-            "\n" +
+            "6. One account with the largest number of votes received from factions is selected.\n" +
             "````\n" +
             "   //positions elected only by all participants\n" +
             "         List<CurrentLawVotesEndBalance> electedByFractions = current.stream()\n" +
@@ -647,8 +601,7 @@ public interface OriginalCHARTER_ENG {
             "````\n" +
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
-
-    String EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE_11 = "# EXPLANATION WHY MONEY DEMURAGE IS USED HERE\n" +
+    String LAW_11 = "## EXPLANATION WHY MONEY DEMURAGE IS USED HERE\n" +
             "How does the negative rate work here? Every six months we burn 0.1% of digital dollars from all accounts\n" +
             "and 0.2% of digital shares, which allows us to keep the money supply unchanged, preventing it from growing,\n" +
             "for the new money created and the money destroyed come into parity.\n" +
@@ -665,7 +618,7 @@ public interface OriginalCHARTER_ENG {
             "Money must be solid so that a business can predict its long-term investments and from monetarism, only the part that\n" +
             "the money supply should grow linearly, but in general there is a mix of different economic schools, including the Austrian School of Economics.\n" +
             "\n" +
-            "With a negative rate of 0.1% every six months for digital dollars and 0.2% for digital stocks, we avoid the consequences of a severe economic crisis for this currency.\n" +
+            "With a negative rate of 0.2% every six months for digital dollars and 0.4% for digital stocks, we avoid the consequences of a severe economic crisis for this currency.\n" +
             "\n" +
             "Such a mechanism creates a price corridor where the lower limit of the value of these digital currencies is the total number of issued digital currencies.\n" +
             "dollars and digital stocks, and the upper limit is the real value. Since as soon as the value becomes higher than the real value,\n" +
@@ -710,11 +663,9 @@ public interface OriginalCHARTER_ENG {
             "With a lack of money supply, if the number of mined coins has not been changed through an amendment, you can add a few\n" +
             "additional zeros after the decimal point, so it will simply increase the value of the coins, without increasing the total money supply.\n" +
             "\n" +
-            "Negative rates should not be higher than 0.5% per annum and lower than 0.2% per annum. Negative rates can only be changed through amendments.\n" +
-            "\n" +
+            "Negative rates should not be higher than 1% per annum and lower than 0.2% per annum. Negative rates can only be changed through amendments.\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
-
-    String FREEDOM_OF_SPEECH_12 = "# FREEDOM_OF_SPEECH The right to free speech\n" +
+    String LAW_12 = "# FREEDOM_OF_SPEECH The right to free speech\n" +
             "No body of this corporation or entity shall prohibit free practice\n" +
             "any religion; or restrict freedom of speech, conscience or the press\n" +
             "or the right of people to peacefully assemble or associate with one another, or not associate with one another, and\n" +
@@ -726,8 +677,7 @@ public interface OriginalCHARTER_ENG {
             "extending equally to any means of communication.\n" +
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
-
-    String RIGHTS_13 = "# RIGHTS Natural Rights\n" +
+    String LAW_13 = "# RIGHTS Natural Rights\n" +
             "All members of the network must respect the Natural Human Rights and not violate them.\n" +
             "\"The presumption of innocence must also be respected and every member of the network must have the right to a fair and independent\n" +
             "trial.\n" +
@@ -759,7 +709,7 @@ public interface OriginalCHARTER_ENG {
             "\n" +
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
-    String LEGISLATURE_14 = "#LEGISLATURE.\n" +
+    String LAW_14 = "#LEGISLATURE.\n" +
             "Power consists of 3 groups in this system.\n" +
             "1. Board of Shareholders\n" +
             "2. Fractions\n" +
@@ -819,8 +769,31 @@ public interface OriginalCHARTER_ENG {
             "\n" +
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
-
-
-
+    String LAW_15 = "# BUDGET AND EMISSION.\n" +
+            "\n" +
+            "## BUDGET\n" +
+            "The company's budget is the BUDGET address. You can both send money and withdraw money to this address.\n" +
+            "How to withdraw money from this account.\n" +
+            "1. First, a Law (Document) is created with the name budget and in this package,\n" +
+            "   in the form of lists, addresses should be written and, separated by a space, the amount of the digital dollar and digital shares.\n" +
+            "2. Next, the participants vote for one of these packages using the VOTE_STOCK method.\n" +
+            "3. Packages are taken into account, from which the time of creation of these laws has not gone more than 15 days.\n" +
+            "4. The one package that receives the most votes becomes valid, and\n" +
+            "   amounts are withdrawn from him.\n" +
+            "5. You can spend from the budget balance once every 15 days. A digital year is 360 days, and there are 576 blocks in one day.\n" +
+            "\n" +
+            "\n" +
+            "## ISSUE\n" +
+            "The issue allows you to create up to one hundred thousand digital dollars every fifteen days.\n" +
+            "An issue is created in the same way as a budget, with the only difference that the name of the package must\n" +
+            "be EMISSION.\n" +
+            "\n" +
+            "The budget and Emission are primarily intended for spending public goods and developing the system.\n" +
+            "This includes judges and other employees.\n" +
+            "Also, you cannot spend more than the amount from the budget than it is, and you cannot spend\n" +
+            "more than one hundred thousand digital dollars for issue in one document.\n" +
+            "Every 15 days for the issue of no more than one hundred thousand digital dollars.\n" +
+            "\n" +
+            "[Exit to home](../documentationEng/documentationEng.md)";
 
 }

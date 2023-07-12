@@ -9,7 +9,6 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\util
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\vote\UtilsLaws.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterDraft\CorporateCharter.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterDraft\ArticleThreeJudiciaryDraft.java
-D:\unitedStates duplicates original\src\main\java\International_Trade_Union\vote\CurrentLawVotesAverage.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\blockchain\Blockchain.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\governments\CompareObject.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\DtoTransaction\DtoTransaction.java
@@ -42,6 +41,7 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\mode
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterDraft\ArticleFourAmendmentProcessDraft.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\governments\Director.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\network\Transactions.java
+D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsCurrentLawVotesEndBalance.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilUrl.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\InfoDemerageMoney.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterDraft\ArticleOneLegistratureDraft.java

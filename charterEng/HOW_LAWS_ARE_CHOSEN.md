@@ -13,15 +13,14 @@ In the event of a conflict between several laws in force, the Judiciary shall gi
 which were adopted earlier, but should be taken into account precisely from the last date of adoption of the law.
 The law is in force as long as it satisfies the conditions for the adoption of the law and as soon as the condition
 violated, the law loses its force until the law is re-adopted.
-In the voting of all laws, only the votes given in the last four years are taken into account.
+In the voting of all laws, only votes cast in the last year are taken into account.
 All laws are divided into several groups.
 1. Ordinary laws
 2. Strategic Plan
-3. Budget
-4. Appointed by the Legislature
-6. Laws that create new positions. These positions are approved only by the Legislative Power.
-7. Amendments to the Charter
-8. The charter itself
+3. Appointed by the Legislature
+4. Laws that create new positions. These positions are approved only by the Legislative Power.
+5. Amendments to the Charter
+6. The charter itself
 
 NOTHING removes the vote from the candidate when voting.
 ### REGULAR LAWS
@@ -72,33 +71,14 @@ but there are some differences from ordinary laws.
                  .collect(Collectors.toList());
 ````
 
-### BUDGET
-The budget is the overall cost for the system and is approved similarly to the Strategic Plan,
-but the name of the package should be BUDGET and it is also in a single copy.
-
-````
-  //budget approved by everyone
-         List<CurrentLawVotesEndBalance> budjet = current.stream()
-                 .filter(t-> !directors.contains(t.getPackageName()))
-                 .filter(t->Seting.BUDGET.equals(t.getPackageName()))
-                 .filter(t->!directors.isCabinets(t.getPackageName()))
-                 .filter(t->
-                         t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
-                       
-                       
-                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
-                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
-                 .limit(1)
-                 .collect(Collectors.toList());
-````
 
 ### POSTS THAT ARE APPOINTED ONLY BY THE LEGISLATIVE AUTHORITY
 There are positions that are appointed only by the Legislature and such positions include
 General Executive Director. This position is similar to the Prime Minister and is
 Executive Power in this system.
-Each such position may be limited to the number, which is defined in this system
+Each such position can be limited to the number that is defined in this system.
 for this position. Example: There is only one CEO position.
-Elected in the same way as ***strategic plan*** and ***budget***.
+Elected in the same way as ***strategic plan***
 But the number is determined for each position separately.
 ````
   //positions elected only by all participants

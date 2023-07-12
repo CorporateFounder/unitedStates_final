@@ -31,6 +31,7 @@ public class UtilsCreatedDirectory {
         files.add(Seting.ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE);
         files.add(Seting.TEMPORARY_BLOCKCHAIN_FILE);
         files.add(Seting.BALANCE_REPORT_ON_DESTROYED_COINS);
+        files.add(Seting.CURRENT_BUDGET_END_EMISSION);
 
         for (String s : files) {
             // specify an abstract pathname in the File object

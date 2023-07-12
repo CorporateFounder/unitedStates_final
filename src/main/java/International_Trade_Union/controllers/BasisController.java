@@ -1,8 +1,6 @@
 package International_Trade_Union.controllers;
 
-import International_Trade_Union.entity.AddressUrl;
-import International_Trade_Union.entity.SendBlocksEndInfo;
-import International_Trade_Union.entity.SubBlockchainEntity;
+import International_Trade_Union.entity.*;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import org.json.JSONException;
 
@@ -12,7 +10,6 @@ import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
-import International_Trade_Union.entity.EntityChain;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.model.User;
@@ -46,6 +43,11 @@ public class BasisController {
     private static int blockchainSize = 0;
     private static boolean blockchainValid = false;
     private static Set<String> excludedAddresses = new HashSet<>();
+
+    public static int getBlockchainSize() {
+        return blockchainSize;
+    }
+
     public static HttpServletRequest getCurrentRequest() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if(requestAttributes == null)
@@ -434,6 +436,9 @@ public class BasisController {
         Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
         UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
+//        balances = UtilsBalance.calculateBalances(blockchain.getBlockchainList());
+//        Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
+//        SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
         System.out.println(":BasisController: addBlock: finish");
     }
     @GetMapping("/addBlock")
@@ -504,16 +509,16 @@ public class BasisController {
             String original = s;
             String url = s + "/nodes/register";
 
-            try {
-                UtilUrl.sendPost(urlAddrress.getAddress(), url);
-                sendAddress();
-
-
-            } catch (Exception e) {
-                System.out.println(":BasisController: register node: wrong node: " + original);
-                BasisController.getNodes().remove(original);
-                continue;
-            }
+//            try {
+//                UtilUrl.sendPost(urlAddrress.getAddress(), url);
+//                sendAddress();
+//
+//
+//            } catch (Exception e) {
+//                System.out.println(":BasisController: register node: wrong node: " + original);
+//                BasisController.getNodes().remove(original);
+//                continue;
+//            }
         }
 
         Set<String> nodes = BasisController.getNodes();
@@ -763,7 +768,8 @@ public class BasisController {
         String text = "";
         //нахождение адрессов
         findAddresses();
-        resolve_conflicts();
+        if(blockchainSize % 5 == 0)
+            resolve_conflicts();
 
 
 
@@ -905,14 +911,16 @@ public class BasisController {
         Map<String, Laws> allLaws = UtilsLaws.getLaws(blockchain.getBlockchainList(), Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
 
         //возвращает все законы с голосами проголосовавшими за них
-        List<LawEligibleForParliamentaryApproval> allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+        List<LawEligibleForParliamentaryApproval> allLawsWithBalance =
+                UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
         //удаление устаревних законов
         Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
         //записывает все законы в файл с их голосами.
         UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
         //отправляет блокчейн во внешние сервера
-        sendAllBlocksToStorage(blockchain.getBlockchainList());
+        if(blockchainSize % 5 == 0)
+            sendAllBlocksToStorage(blockchain.getBlockchainList());
 
 
         //отправить адресса
@@ -948,21 +956,15 @@ public class BasisController {
     @ResponseBody
     public Integer testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
-            blockchain = Mining.getBlockchain(
-                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                    BlockchainFactoryEnum.ORIGINAL);
-            List<Block> temporary = blockchain.subBlock(0, blockchainSize-Seting.DELETED_PORTION);
-            UtilsBlock.deleteFiles();
-            blockchain.setBlockchainList(temporary);
-            UtilsBlock.saveBlocks(blockchain.getBlockchainList(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
-                blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
-
-            shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-            blockchainSize = (int) shortDataBlockchain.getSize();
-            blockchainValid = shortDataBlockchain.isValidation();
-        return blockchain.sizeBlockhain();
+        InfoDemerageMoney demerageMoney = new InfoDemerageMoney();
+        demerageMoney.setAddress(User.getUserAddress());
+        demerageMoney.setBeforeDollar(100);
+        demerageMoney.setBeforeStock(100);
+        demerageMoney.setAfterDollar(50);
+        demerageMoney.setAfterStock(50);
+        demerageMoney.setIndexBlock(1);
+        UtilsDemerage.saveDemarege(demerageMoney, Seting.BALANCE_REPORT_ON_DESTROYED_COINS);
+        return 0;
     }
 }
 

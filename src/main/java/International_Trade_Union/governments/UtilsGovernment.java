@@ -80,6 +80,68 @@ public class UtilsGovernment {
     }
 
 
+    public static List<CurrentLawVotesEndBalance>filtersVotesOnlyStock(
+            List<LawEligibleForParliamentaryApproval> approvalList,
+            Map<String, Account> balances,
+            List<Block> blocks,
+            int limitBlocks
+    ) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        List<CurrentLawVotesEndBalance> current = new ArrayList<>();
+        Map<String, CurrentLawVotes> votesMap = null;
+        List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
+        if (blocks.size() > limitBlocks) {
+            votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks.subList(blocks.size() - limitBlocks, blocks.size()));
+        } else {
+            votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks);
+        }
+
+        //подсчитать средннее количество раз сколько он проголосовал за
+        Map<String, Integer> yesAverage = UtilsCurrentLaw.calculateAverageVotesYes(votesMap);
+        //подсчитать среднее количество раз сколько он проголосовал против
+        Map<String, Integer> noAverage = UtilsCurrentLaw.calculateAverageVotesNo(votesMap);
+
+
+        //подсчитываем голоса для для обычных законов и законов позиций
+        for (LawEligibleForParliamentaryApproval lawEligibleForParliamentaryApproval : approvalList) {
+            if (votesMap.containsKey(lawEligibleForParliamentaryApproval.getLaws().getHashLaw())) {
+                String address = lawEligibleForParliamentaryApproval.getLaws().getHashLaw();
+                String packageName = lawEligibleForParliamentaryApproval.getLaws().getPacketLawName();
+                List<String> laws = lawEligibleForParliamentaryApproval.getLaws().getLaws();
+                double vote = 0;
+                int supremeVotes = 0;
+                int boafdOfShareholderVotes = 0;
+                int houseOfRepresentativiesVotes = 0;
+                int primeMinisterVotes = 0;
+                int hightJudgesVotes = 0;
+                int founderVote = 0;
+                double fraction = 0;
+
+                //для законов подсчитываем специальные голоса
+                vote = votesMap.get(lawEligibleForParliamentaryApproval.getLaws().getHashLaw()).votesLaw(balances, yesAverage, noAverage);
+
+                List<String> founder = List.of(Seting.ADDRESS_FOUNDER);
+                founderVote = votesMap.get(lawEligibleForParliamentaryApproval.getLaws().getHashLaw()).voteGovernment(balances, founder);
+                CurrentLawVotesEndBalance currentLawVotesEndBalance = new CurrentLawVotesEndBalance(
+                        address,
+                        packageName,
+                        vote,
+                        supremeVotes,
+                        houseOfRepresentativiesVotes,
+                        boafdOfShareholderVotes,
+                        primeMinisterVotes,
+                        hightJudgesVotes,
+                        founderVote,
+                        fraction,
+                        laws);
+                current.add(currentLawVotesEndBalance);
+
+            }
+        }
+
+
+        return current;
+
+    }
     public static List<CurrentLawVotesEndBalance> filtersVotes(
             List<LawEligibleForParliamentaryApproval> approvalList,
             Map<String, Account> balances,

@@ -19,7 +19,7 @@ public class User {
         addressMiner = UtilsFileSaveRead.read(Seting.ORIGINAL_ACCOUNT);
         System.out.println("user: " + addressMiner);
         if(addressMiner.isEmpty() || addressMiner == null)
-            addressMiner = "empty ";
+            addressMiner = Seting.BUDGET;
         return addressMiner;
     }
 }

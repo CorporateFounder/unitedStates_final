@@ -16,7 +16,6 @@ International_Trade_Union\config\BlockchainFactoryEnum.class
 International_Trade_Union\entity\InfoDificultyBlockchain.class
 International_Trade_Union\entity\DataForTransaction.class
 International_Trade_Union\about_us_engDraft\AboutUsEngDraft.class
-International_Trade_Union\vote\CurrentLawVotesAverage.class
 International_Trade_Union\governments\Directors.class
 International_Trade_Union\controllers\GovernmentController.class
 International_Trade_Union\vote\UtilsCurrentLaw.class
@@ -99,5 +98,6 @@ International_Trade_Union\CorporateCharterEngDraft\ArticleFourAmendmentProcessEn
 International_Trade_Union\about_usDraft\AboutUsDraft.class
 International_Trade_Union\utils\base\Base.class
 International_Trade_Union\utils\UtilsJson$2.class
+International_Trade_Union\utils\UtilsCurrentLawVotesEndBalance.class
 International_Trade_Union\entity\SubBlockchainEntity.class
 International_Trade_Union\vote\VoteEnum.class

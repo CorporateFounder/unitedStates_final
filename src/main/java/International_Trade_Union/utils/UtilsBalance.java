@@ -6,21 +6,225 @@ import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.InfoDemerageMoney;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.governments.Director;
+import International_Trade_Union.governments.Directors;
+import International_Trade_Union.governments.UtilsGovernment;
+import International_Trade_Union.model.FIndPositonHelperData;
 import International_Trade_Union.model.User;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
-import International_Trade_Union.vote.VoteEnum;
+import International_Trade_Union.vote.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import jdk.swing.interop.SwingInterOpUtils;
 
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class UtilsBalance {
 
+    //подсчет по штучно баланса из закона, который позволяет тратить деньги с помощью голосования.
+
+    public static Map<String, Account> calculateBalanceFromLaw(Map<String, Account> balances,
+                                                               Block block, Map<String, Laws> allLaws,
+                                                               List<LawEligibleForParliamentaryApproval> allLawsWithBalance ) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        //подсчет всех законов за 30 дней
+        for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
+            if (dtoTransaction.verify()) {
+                if (dtoTransaction.getCustomer().startsWith(Seting.NAME_LAW_ADDRESS_START) && dtoTransaction.getBonusForMiner() >= Seting.COST_LAW) {
+                    if(dtoTransaction.getLaws() != null && !allLaws.containsKey(dtoTransaction.getCustomer())){
+                        allLaws.put(dtoTransaction.getCustomer(), dtoTransaction.getLaws());
+                    }
+
+                }
+            }
+        }
+        List<Account> lawsBalances = UtilsLaws.allPackegeLaws(balances);
+        //подсчет действующих законов
+        List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals = new ArrayList<>();
+        List<LawEligibleForParliamentaryApproval> temporary = new ArrayList<>();
+        for (Account account : lawsBalances) {
+            LawEligibleForParliamentaryApproval lawEligibleForParliamentaryApproval = new LawEligibleForParliamentaryApproval(account, allLaws.get(account.getAccount()));
+            temporary.add(lawEligibleForParliamentaryApproval);
+        }
+
+
+        lawEligibleForParliamentaryApprovals.addAll(temporary);
+
+
+        lawEligibleForParliamentaryApprovals = lawEligibleForParliamentaryApprovals.stream()
+                .filter(t->Objects.nonNull(t.getLaws()))
+                .filter(t->Objects.nonNull(t.getAccount()))
+                .filter(t->Objects.nonNull(t.getLaws().getHashLaw()))
+                .filter(t->Objects.nonNull(t.getLaws().getLaws()))
+                .filter(t->Objects.nonNull(t.getName()))
+                .filter(t->Objects.nonNull(t.getLaws().getPacketLawName()))
+                .filter(t->t != null).
+                filter(UtilsUse.distinctByKey(LawEligibleForParliamentaryApproval::getName)).collect(Collectors.toList());
+
+//**************************************
+        ////
+        if(block.getIndex() > Seting.LAW_MONTH_VOTE && block.getIndex() % Seting.LAW_MONTH_VOTE == 0
+               ){
+            Directors directors = new Directors();
+            Map<Director, FIndPositonHelperData> fIndPositonHelperDataMap = new HashMap<>();
+            for (Director higherSpecialPositions : directors.getDirectors()) {
+                if (higherSpecialPositions.isElectedByCEO()) {
+                    fIndPositonHelperDataMap.put(higherSpecialPositions,
+                            new FIndPositonHelperData(higherSpecialPositions, false, false, true, false, false));
+                } else if (higherSpecialPositions.isElectedByFractions()) {
+                    fIndPositonHelperDataMap.put(higherSpecialPositions,
+                            new FIndPositonHelperData(higherSpecialPositions, false, false, false, true, false));
+                } else if (higherSpecialPositions.isElectedByCorporateCouncilOfReferees()) {
+                    fIndPositonHelperDataMap.put(higherSpecialPositions,
+                            new FIndPositonHelperData(higherSpecialPositions, false, false, false, false, true));
+                } else {
+                    fIndPositonHelperDataMap.put(higherSpecialPositions,
+                            new FIndPositonHelperData(higherSpecialPositions, true, true, false, false, false));
+
+                }
+
+            }
+//            List<Block> blocks = blockchain.getBlockchainList().subList(blockchain.sizeBlockhain()-Seting.LAW_MONTH_VOTE, blockchain.sizeBlockhain());
+           long size = block.getIndex()+1;
+           List<Block> blocks = Blockchain.subFromFile((int) (size-Seting.LAW_MONTH_VOTE), (int) size, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+
+            //подсчитать голоса за все проголосованные заканы
+            List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotesOnlyStock(
+                    lawEligibleForParliamentaryApprovals,
+                    balances,
+                    blocks,
+                    Seting.LAW_MONTH_VOTE);
+
+            List<CurrentLawVotesEndBalance> budget = current.stream().
+                    filter(t->t.getPackageName().equals(Seting.BUDGET))
+                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                    .limit(1)
+                    .collect(Collectors.toList());
+
+
+            List<CurrentLawVotesEndBalance> emission = current.stream().
+                    filter(t->t.getPackageName().equals(Seting.EMISSION))
+                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                    .limit(1)
+                    .collect(Collectors.toList());
+            budget.addAll(emission);
+
+            System.out.println("calculateBalanceFromLaw: ");
+            for (CurrentLawVotesEndBalance voting : budget) {
+
+                //траты с бюджета собственных бюджетов
+                if(voting.getPackageName().equals(Seting.BUDGET)){
+
+                    UtilsCurrentLawVotesEndBalance.saveBudget(voting, Seting.CURRENT_BUDGET_END_EMISSION);
+
+                    System.out.println("BUDGET: " + voting.getPackageName());
+                    if(voting.getVotes() >= Seting.LIMIT_VOTING_FOR_BUDJET_END_EMISSION){
+                        System.out.println("BUDGET: votes: " + voting.getVotes());
+                        for (String s : voting.getLaws()) {
+                            Account sender = getBalance(voting.getPackageName(), balances);
+                            String[] account = s.split(" ");
+                            double sendDollar = 0;
+                            double sendStock = 0;
+                            Account customer = new Account("emtpy", 0, 0);
+                            try {
+                             customer = getBalance(account[0], balances);
+
+                                sendDollar = Double.parseDouble(account[1]);
+                                sendStock = Double.parseDouble(account[2]);
+                            }catch (Exception e){
+                                System.out.println("UtilsBalance: calculateBalanceFromLaw: error: Budget");
+                                System.out.println("Number format exception");
+                                continue;
+                            }
+                            System.out.println("calculateBalanceFromLaw: BUDGET: sender before dollar:  "
+                                    + sender.getDigitalDollarBalance());
+                            System.out.println("calculateBalanceFromLaw: BUDGET: sender before stock:  "
+                                    + sender.getDigitalStockBalance());
+
+                            System.out.println("calculateBalanceFromLaw: BUDGET: customer before dollar:  "
+                                    + customer.getDigitalDollarBalance());
+                            System.out.println("calculateBalanceFromLaw: BUDGET: customer before stock:  "
+                                    + customer.getDigitalStockBalance());
+                            if(sender.getDigitalDollarBalance() >= sendDollar){
+                                sender.setDigitalDollarBalance(sender.getDigitalDollarBalance()-sendDollar);
+                                customer.setDigitalDollarBalance(customer.getDigitalDollarBalance()+sendDollar);
+                            }
+                            if(sender.getDigitalStockBalance() >= sendStock){
+                                sender.setDigitalStockBalance(sender.getDigitalStockBalance()-sendStock);
+                                customer.setDigitalStockBalance(customer.getDigitalStockBalance()+sendStock);
+                            }
+
+                            balances.put(sender.getAccount(), sender);
+                            balances.put(customer.getAccount(), customer);
+
+                            System.out.println("calculateBalanceFromLaw: BUDGET: sender after dollar:  "
+                                    + sender.getDigitalDollarBalance());
+                            System.out.println("calculateBalanceFromLaw: BUDGET: sender after stock:  "
+                                    + sender.getDigitalStockBalance());
+
+                            System.out.println("calculateBalanceFromLaw: BUDGET: customer after dollar:  "
+                                    + customer.getDigitalDollarBalance());
+                            System.out.println("calculateBalanceFromLaw: BUDGET: customer after stock:  "
+                                    + customer.getDigitalStockBalance());
+                        }
+
+                    }
+                }
+
+                //эмиссия денег
+                if(voting.getPackageName().equals(Seting.EMISSION)){
+                    UtilsCurrentLawVotesEndBalance.saveBudget(voting, Seting.CURRENT_BUDGET_END_EMISSION);
+
+                    Account sender = new Account(Seting.EMISSION,
+                            Seting.EMISSION_BUDGET, 0);
+                    if(voting.getVotes() >= Seting.LIMIT_VOTING_FOR_BUDJET_END_EMISSION){
+
+                        for (String s : voting.getLaws()) {
+
+                            String[] account = s.split(" ");
+                            double sendDollar = 0;
+                            Account customer = new Account("empty", 0, 0);
+                            try {
+                                customer = getBalance(account[0], balances);
+                                sendDollar = Double.parseDouble(account[1]);
+
+                            }catch (Exception e){
+                                System.out.println("UtilsBalance: calculateBalanceFromLaw: error");
+                                continue;
+                            }
+                            if(sender.getDigitalDollarBalance() >= sendDollar){
+                                sender.setDigitalDollarBalance(sender.getDigitalDollarBalance()-sendDollar);
+                                customer.setDigitalDollarBalance(customer.getDigitalDollarBalance()+sendDollar);
+                            }
+
+
+                            balances.put(sender.getAccount(), sender);
+                            balances.put(customer.getAccount(), customer);
+                        }
+
+                    }
+                    sender = new Account(Seting.EMISSION,
+                            0, 0);
+                    balances.put(sender.getAccount(), sender);
+                }
+
+            }
+
+        }
+
+        //**************************************
+
+
+
+
+        return balances;
+    }
     //подсчет по штучно баланса
     public  static Map<String, Account> calculateBalance(Map<String, Account> balances, Block block, List<String> sign) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
@@ -106,8 +310,8 @@ public class UtilsBalance {
                 if(changeBalance.getValue().getAccount().equals(User.getUserAddress())){
                     demerageMoney.setAfterDollar(changeBalance.getValue().getDigitalDollarBalance());
                     demerageMoney.setAfterStock(changeBalance.getValue().getDigitalStockBalance());
-                    String json = UtilsJson.objToStringJson(demerageMoney);
-                    UtilsFileSaveRead.save(json, Seting.BALANCE_REPORT_ON_DESTROYED_COINS);
+                    demerageMoney.setIndexBlock(i);
+                   UtilsDemerage.saveDemarege(demerageMoney, Seting.BALANCE_REPORT_ON_DESTROYED_COINS);
                 }
             }
         }
@@ -120,9 +324,12 @@ public class UtilsBalance {
     public static Map<String, Account> calculateBalances(List<Block> blocks) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balances = new HashMap<>();
         List<String> signs = new ArrayList<>();
+        Map<String, Laws> allLaws = new HashMap<>();
+        List<LawEligibleForParliamentaryApproval> allLawsWithBalance = new ArrayList<>();
         for (Block block :  blocks) {
             calculateBalance(balances, block, signs);
-        }
+            balances = UtilsBalance.calculateBalanceFromLaw(balances, block, allLaws, allLawsWithBalance);
+            }
 
         return balances;
 

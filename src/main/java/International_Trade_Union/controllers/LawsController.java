@@ -314,7 +314,11 @@ public class LawsController {
                 Seting.LAW_YEAR_VOTE);
 
 
-
+        //убрать появление всех бюджет и эмиссий из отображения в действующих законах
+        current = current.stream()
+                .filter(t->!t.getPackageName().equals(Seting.EMISSION) ||
+                        t.getPackageName().equals(Seting.BUDGET))
+                .collect(Collectors.toList());
 
 //        избранные фракции
         List<CurrentLawVotesEndBalance> electedFraction = current.stream()
@@ -419,19 +423,6 @@ public class LawsController {
                 && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES_AMENDMENT)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());
 
-        //бюджет утверждается всеми
-        List<CurrentLawVotesEndBalance> budjet = current.stream()
-                .filter(t-> !directors.contains(t.getPackageName()))
-                .filter(t->Seting.BUDGET.equals(t.getPackageName()))
-                .filter(t->!directors.isCabinets(t.getPackageName()))
-                .filter(t->
-                        t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
-                        && t.getVotes() >= Seting.ALL_STOCK_VOTE)
-                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
-                .limit(1)
-                .collect(Collectors.toList());
-
-
         //добавляет законы, которые создают новые должности утверждается всеми
         List<CurrentLawVotesEndBalance> addDirectors = current.stream()
                 .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
@@ -512,7 +503,7 @@ public class LawsController {
 
         current = new ArrayList<>();
         current.addAll(addDirectors);
-        current.addAll(budjet);
+
         current.addAll(electedFraction);
         current.addAll(planFourYears);
 
@@ -536,6 +527,69 @@ public class LawsController {
         return "current-laws";
     }
 
+    /**Отображается в браузере список всех принятых бюджетов и эмиссий*/
+    @GetMapping("/budget_end_emission")
+    public String allBudgetEndEmission(Model model) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        int index = BasisController.getBlockchainSize();
+
+        int day = index % Seting.LAW_MONTH_VOTE;
+        Map<String, Account> balances = new HashMap<>();
+        //считывать баланс
+        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        Account Budget = balances.get(Seting.BUDGET);
+        if(Budget == null)
+            Budget = new Account(Seting.BUDGET, 0, 0);
+        model.addAttribute("dollar", Budget.getDigitalDollarBalance());
+        model.addAttribute("stock", Budget.getDigitalStockBalance());
+        model.addAttribute("emission", Seting.EMISSION_BUDGET);
+        model.addAttribute("day", day);
+        List<CurrentLawVotesEndBalance> current =
+                UtilsCurrentLawVotesEndBalance.readLine(Seting.CURRENT_BUDGET_END_EMISSION);
+        model.addAttribute("title", "adopted budgets and emissions");
+        model.addAttribute("currentLaw", current);
+        return "budget_end_emission.html";
+    }
+
+    @GetMapping("/budget_end_emission_15_day")
+    public String budgetEndEmissision15day(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        Directors directors = new Directors();
+        Blockchain blockchain = Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
+
+         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        //считывать баланс
+
+
+        List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
+                UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+
+        //получить совет акционеров из файла
+        List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blockchain.getBlockchainList(), Seting.BOARDS_BLOCK);
+
+        //подсчитать голоса за все проголосованные заканы
+        List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
+                lawEligibleForParliamentaryApprovals,
+                balances,
+                boardOfShareholders,
+                blockchain.getBlockchainList(),
+                Seting.LAW_MONTH_VOTE);
+
+
+        List<CurrentLawVotesEndBalance> budget = current.stream()
+                .filter(t->t.getPackageName().equals(Seting.BUDGET))
+                .collect(Collectors.toList());
+
+        List<CurrentLawVotesEndBalance> emission = current.stream()
+                .filter(t->t.getPackageName().equals(Seting.EMISSION))
+                .collect(Collectors.toList());
+
+        budget.addAll(emission);
+        model.addAttribute("title", "budgets and issues for which you can vote now.");
+        model.addAttribute("currentLaw", budget);
+        return "budget_end_emission_15_day";
+
+    }
     /**Отображается в браузере, список всех пакета законов*/
     @GetMapping("/all-laws")
     public String allLaws(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -586,6 +640,7 @@ public class LawsController {
                 boardOfShareholders,
                 blockchain.getBlockchainList(),
                 Seting.LAW_YEAR_VOTE);
+
 
 
         current = current.stream().distinct().collect(Collectors.toList());
@@ -688,7 +743,17 @@ public class LawsController {
 
     /**Отображается в браузере, позволяет создать новый пакет законов*/
     @GetMapping("/create-law")
-    public String createLawsShow(Model model) {
+    public String createLawsShow(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        model.addAttribute("title", "create law");
+        Map<String, Account> balances = new HashMap<>();
+        //считывать баланс
+        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        Account Budget = balances.get(Seting.BUDGET);
+        if(Budget == null)
+            Budget = new Account(Seting.BUDGET, 0, 0);
+        model.addAttribute("dollar", Budget.getDigitalDollarBalance());
+        model.addAttribute("stock", Budget.getDigitalStockBalance());
+        model.addAttribute("emission", Seting.EMISSION_BUDGET);
         return "create-law";
     }
 

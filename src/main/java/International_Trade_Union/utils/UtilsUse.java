@@ -132,6 +132,31 @@ public class UtilsUse {
         }
         return hash;
     }
+    //определяет соответствовать ли документ ли сумме денег.
+    public static boolean sumTrue(List<String> laws, double moneyD, double moneyS, boolean isStock){
+        double sumD = 0;
+        double sumS = 0;
+        boolean isTrue = false;
+        for (String s : laws) {
+            try {
+                String[] dollarEndStockStr =
+                        s.split(" ");
+                sumD += Double.parseDouble(dollarEndStockStr[1]);
+                if (isStock) {
+                    sumS += Double.parseDouble(dollarEndStockStr[2]);
+                }
+            }catch (Exception e){
+                System.out.println("sumException");
+                return isTrue;
+            }
+        }
+
+
+        if(sumD <= moneyD && sumS <= moneyS)
+            isTrue = true;
+
+        return isTrue;
+    }
 
     //для филтрации в стриме, чтобы получить уникальные обекты по полям
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {

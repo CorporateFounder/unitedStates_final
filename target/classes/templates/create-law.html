@@ -14,6 +14,9 @@
 </div>
 <h3>The cost of creating a law is five digital dollars, details are described in the charter.</h3>
 <h3>If the reward is less than five, then the law will not be added to the list.</h3>
+<h3 th:text="'balance budget digital dollar: ' +${#numbers.formatDecimal(dollar, 1, 'COMMA', 16, 'POINT')}"/>
+<h3 th:text="'balance budget digital stock: ' +${#numbers.formatDecimal(stock, 1, 'COMMA', 16, 'POINT')}"/>
+<h3 th:text="'emission limit: ' +${#numbers.formatDecimal(emission, 1, 'COMMA', 16, 'POINT')}"/>
 
 
   <form action="/create-law" method="post">
