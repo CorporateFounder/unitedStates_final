@@ -779,21 +779,19 @@ public interface OriginalCHARTER_ENG {
             "2. Next, the participants vote for one of these packages using the VOTE_STOCK method.\n" +
             "3. Packages are taken into account, from which the time of creation of these laws has not gone more than 15 days.\n" +
             "4. The one package that receives the most votes becomes valid, and\n" +
-            "   amounts are withdrawn from him.\n" +
+            "   amounts are withdrawn from it (only those packages in which at least 300,000 votes are taken into account).\n" +
             "5. You can spend from the budget balance once every 15 days. A digital year is 360 days, and there are 576 blocks in one day.\n" +
             "\n" +
             "\n" +
             "## ISSUE\n" +
-            "The issue allows you to create up to one hundred thousand digital dollars every fifteen days.\n" +
+            "The issue allows you to create up to 25 thousand digital dollars every fifteen days.\n" +
             "An issue is created in the same way as a budget, with the only difference that the name of the package must\n" +
             "be EMISSION.\n" +
             "\n" +
             "The budget and Emission are primarily intended for spending public goods and developing the system.\n" +
             "This includes judges and other employees.\n" +
             "Also, you cannot spend more than the amount from the budget than it is, and you cannot spend\n" +
-            "more than one hundred thousand digital dollars for issue in one document.\n" +
-            "Every 15 days for the issue of no more than one hundred thousand digital dollars.\n" +
-            "\n" +
-            "[Exit to home](../documentationEng/documentationEng.md)";
+            "more than 25 thousand digital dollars for issue in one document.\n" +
+            "Every 15 days for the issue of no more than one hundred thousand digital dollars.\n";
 
 }

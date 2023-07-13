@@ -111,8 +111,8 @@ public interface Seting {
     String BUDGET = "BUDGET";
     String EMISSION = "EMISSION";
     //сколько голосов нужно
-    int LIMIT_VOTING_FOR_BUDJET_END_EMISSION = 1;
-    double EMISSION_BUDGET = 100000.0;
+    int LIMIT_VOTING_FOR_BUDJET_END_EMISSION = 300000;
+    double EMISSION_BUDGET = 25000;
 
     //план также утверждается на четыре года и утверждается только палатой представителей
     //каждый план обязан содержать дату начала планирования с какого числа вступает в силу.
@@ -233,6 +233,6 @@ public interface Seting {
 
     int DELETED_PORTION = 150;
 
-    int VERSION = 4;
+    int VERSION = 5;
     String ORIGINAL_HASH = "08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c";
 }
