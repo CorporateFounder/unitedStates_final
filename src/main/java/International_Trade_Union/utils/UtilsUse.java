@@ -11,15 +11,14 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 public class UtilsUse {
     private static MessageDigest digest;
@@ -184,5 +183,22 @@ public class UtilsUse {
         return block / period * period;
     }
 
+
+    //медиана
+    public static double median(List<Double> arr){
+        ArrayList<Double> list = new ArrayList(arr);
+        System.out.println("UtilsUse start median");
+        Collections.sort(list);
+
+        double length = (double) list.size();
+        System.out.println("length: " + length);
+        int med = (int) Math.ceil(length / 2);
+
+        System.out.println("med: " + med);
+
+        double result = list.get(med-1);
+        System.out.println("result: " + result);
+        return result;
+    }
 
 }

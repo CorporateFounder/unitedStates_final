@@ -226,7 +226,10 @@ public class UtilsBalance {
         return balances;
     }
     //подсчет по штучно баланса
-    public  static Map<String, Account> calculateBalance(Map<String, Account> balances, Block block, List<String> sign) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public  static Map<String, Account> calculateBalance(
+            Map<String, Account> balances,
+            Block block,
+            List<String> sign) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
         Base base = new Base58();
         System.out.println("start calculateBalance");

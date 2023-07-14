@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header "></header>
+<div class="container mt-5">
+    <h3 th:text="${title}"/>
+    <form action="/statistics" method="post">
+
+        <select  name="periudStr" class="form-control">
+            <option value="DAY" >DAY</option>
+            <option value="WEEK">WEEK</option>
+            <option value="MONTH">MONTH</option>
+            <option value="YEAR">YEAR</option>
+
+        </select><br>
+
+        <button type="submit" class="btn btn-success">choose periud</button><br>
+    </form>
+
+    <div th:each="el : ${statistics}" class="alert alert-info mt-2">
+        <h4 th:text="'index block: '+${el.indexBlock}"/>
+        <h4 th:text="'periud: '+${el.periud}"/>
+        <p th:text="'all digital dollar: '+${#numbers.formatDecimal(el.allDigitalDollars, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'all digital stock: '+${#numbers.formatDecimal(el.allDigitalStocks, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'velocity of money dollar: '+${#numbers.formatDecimal(el.velocity_of_money_dollar, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'velocity of money stock: '+${#numbers.formatDecimal(el.velocity_of_money_stock, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'count transactions: '+${el.transactions}"/>
+        <p th:text="'sum transactions dollar: '+${#numbers.formatDecimal(el.sumTransactionsDollar, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'sum transactions stock: '+${#numbers.formatDecimal(el.sumTransactionsStock, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'median transactions dollar: '+${#numbers.formatDecimal(el.medianTransactionsDollar, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'median transactions stock: '+${#numbers.formatDecimal(el.medianTransactionsStock, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'count unique miner in days: '+${el.uniqueMinerInDays}"/>
+    </div>
+
+</div>
+<footer th:insert="blocks/footer :: footer"></footer>
+
+</body>
+</html>
