@@ -35,6 +35,7 @@
         <p th:text="'median transactions dollar: '+${#numbers.formatDecimal(el.medianTransactionsDollar, 1, 'COMMA', 16, 'POINT')}"/>
         <p th:text="'median transactions stock: '+${#numbers.formatDecimal(el.medianTransactionsStock, 1, 'COMMA', 16, 'POINT')}"/>
         <p th:text="'count unique miner in days: '+${el.uniqueMinerInDays}"/>
+        <p th:text="'all account balance upper zero: '+${el.uniqueAddressBalanceUpperZero}"/>
     </div>
 
 </div>

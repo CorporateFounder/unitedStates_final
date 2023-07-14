@@ -27,11 +27,13 @@ public class Statistic {
     private double medianTransactionsStock;
 
     private int uniqueMinerInDays;
+    private int uniqueAddressBalanceUpperZero;
     //сколько добыто цифровых долларов за день
 
 
     public Statistic() {
     }
+
 
     public Statistic(int indexBlock,
                      int periud,
@@ -44,7 +46,8 @@ public class Statistic {
                      double sumTransactionsStock,
                      double medianTransactionsDollar,
                      double medianTransactionsStock,
-                     int uniqueMinerInDays) {
+                     int uniqueMinerInDays,
+                     int uniqueAddressBalanceUpperZero) {
         this.indexBlock = indexBlock;
         this.periud = periud;
         this.allDigitalDollars = allDigitalDollars;
@@ -57,5 +60,6 @@ public class Statistic {
         this.medianTransactionsDollar = medianTransactionsDollar;
         this.medianTransactionsStock = medianTransactionsStock;
         this.uniqueMinerInDays = uniqueMinerInDays;
+        this.uniqueAddressBalanceUpperZero = uniqueAddressBalanceUpperZero;
     }
 }

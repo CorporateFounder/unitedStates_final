@@ -88,7 +88,9 @@ public class UtilsStatistics {
 
 
 
-
+        int accountsSize = (int) balances.entrySet().stream()
+                .map(t->t.getValue().getDigitalDollarBalance() > 0 || t.getValue().getDigitalStockBalance() > 0)
+                .count();
         Statistic statistic = new Statistic(
                 indexBlock,
                 thisPeriud,
@@ -101,7 +103,8 @@ public class UtilsStatistics {
                 sumTransactionsStock,
                 medianDollar,
                 medianStock,
-                uniqueMinerDaySize
+                uniqueMinerDaySize,
+                accountsSize
 
         );
         return statistic;
