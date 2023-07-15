@@ -312,7 +312,7 @@ public class BasisController {
                            System.out.println("block index: " + block.getIndex());
                            if(i >  blocks_current_size-1){
                                System.out.println(":download blocks: " + block.getIndex()+
-                                       " your block : " + (blocks_current_size ));
+                                       " your block : " + (blocks_current_size ) + ":wating need downoad blocks: "  + (block.getIndex()- blocks_current_size));
                                emptyList.add(block);
                            }
                            else if (!blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
