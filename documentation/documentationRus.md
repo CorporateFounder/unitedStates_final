@@ -50,6 +50,21 @@ https://bitcointalk.org/index.php?topic=5459876.new#new
 и устранить такие проблемы как финансовые кризисы (Дефляционная Спираль, Стагфляция, Галопирующая инфляция и т.д.)
 Пандемии, Космические Угрозы, Экологические проблемы и снизит возникновение военных конфликтов.
 
+## Благодарность всему сообществу bitcointalks и дискорд
+В особенности
+- Utopia-legend
+- zhizhentaiyangshuori
+- Solomonk4
+- cryptohuy
+- gameparadise007
+- Victor
+- Sparks60
+- stray
+- weiwei
+- Kinger
+- richman
+- и многих других, чьи имена я не смог написать, так как не знаю китайский
+
 ## СОДЕРЖАНИЕ
 - [краткое описание](../documentation/preamble.md)
 - [активные url](../documentation/active-url.md)

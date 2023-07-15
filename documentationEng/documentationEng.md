@@ -46,6 +46,22 @@ Ultimately, this system will be able to function as a Confederation or Federatio
 and eliminate such problems as financial crises (Deflationary Spiral, Stagflation, Galloping inflation, etc.)
 Pandemics, Space Threats, Environmental Issues and will reduce the occurrence of military conflicts.
 
+## Благодарность всему сообществу bitcointalks и дискорд
+В особенности
+- Utopia-legend
+- zhizhentaiyangshuori
+- Solomonk4
+- cryptohuy
+- gameparadise007
+- Victor
+- Sparks60
+- stray
+- weiwei
+- Kinger
+- richman
+- и многих других, чьи имена я не смог написать, так как не знаю китайский
+
+
 
 ## CONTENT
 - [short description](../documentationEng/preambleEng.md)
