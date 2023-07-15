@@ -24,12 +24,16 @@
 
     <div th:each="el : ${statistics}" class="alert alert-info mt-2">
         <h4 th:text="'index block: '+${el.indexBlock}"/>
-        <h4 th:text="'periud: '+${el.periud}"/>
+        <h4 th:text="'period: '+${el.periud}"/>
         <p th:text="'all digital dollar: '+${#numbers.formatDecimal(el.allDigitalDollars, 1, 'COMMA', 16, 'POINT')}"/>
         <p th:text="'all digital stock: '+${#numbers.formatDecimal(el.allDigitalStocks, 1, 'COMMA', 16, 'POINT')}"/>
         <p th:text="'velocity of money dollar: '+${#numbers.formatDecimal(el.velocity_of_money_dollar, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'velocity of money dollar model 2: '+${#numbers.formatDecimal(el.velocity_of_money_dollar_model2, 1, 'COMMA', 16, 'POINT')}"/>
         <p th:text="'velocity of money stock: '+${#numbers.formatDecimal(el.velocity_of_money_stock, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'velocity of money stock model 2: '+${#numbers.formatDecimal(el.velocity_of_money_stock_model2, 1, 'COMMA', 16, 'POINT')}"/>
         <p th:text="'count transactions: '+${el.transactions}"/>
+        <p th:text="'count transactions dollar: '+${el.countDollarTransactions}"/>
+        <p th:text="'count transactions stock: '+${el.countStocktransactions}"/>
         <p th:text="'sum transactions dollar: '+${#numbers.formatDecimal(el.sumTransactionsDollar, 1, 'COMMA', 16, 'POINT')}"/>
         <p th:text="'sum transactions stock: '+${#numbers.formatDecimal(el.sumTransactionsStock, 1, 'COMMA', 16, 'POINT')}"/>
         <p th:text="'median transactions dollar: '+${#numbers.formatDecimal(el.medianTransactionsDollar, 1, 'COMMA', 16, 'POINT')}"/>

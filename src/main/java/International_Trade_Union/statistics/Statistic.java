@@ -15,12 +15,16 @@ public class Statistic {
     //velocity of money
     //скорость обращения
     private double velocity_of_money_dollar;
+    private double velocity_of_money_dollar_model2;
     private double velocity_of_money_stock;
+    private double velocity_of_money_stock_model2;
 
 
 
     //количество транзакций в сутках
     private int transactions;
+    private int countDollarTransactions;
+    private int countStocktransactions;
     private double sumTransactionsDollar;
     private double sumTransactionsStock;
     private double medianTransactionsDollar;
@@ -40,8 +44,12 @@ public class Statistic {
                      double allDigitalDollars,
                      double allDigitalStocks,
                      double velocity_of_money_dollar,
+                     double velocity_of_money_dollar_model2,
                      double velocity_of_money_stock,
+                     double velocity_of_money_stock_model2,
                      int transactions,
+                     int countDollarTransactions,
+                     int countStocktransactions,
                      double sumTransactionsDollar,
                      double sumTransactionsStock,
                      double medianTransactionsDollar,
@@ -53,8 +61,12 @@ public class Statistic {
         this.allDigitalDollars = allDigitalDollars;
         this.allDigitalStocks = allDigitalStocks;
         this.velocity_of_money_dollar = velocity_of_money_dollar;
+        this.velocity_of_money_dollar_model2 = velocity_of_money_dollar_model2;
         this.velocity_of_money_stock = velocity_of_money_stock;
+        this.velocity_of_money_stock_model2 = velocity_of_money_stock_model2;
         this.transactions = transactions;
+        this.countDollarTransactions = countDollarTransactions;
+        this.countStocktransactions = countStocktransactions;
         this.sumTransactionsDollar = sumTransactionsDollar;
         this.sumTransactionsStock = sumTransactionsStock;
         this.medianTransactionsDollar = medianTransactionsDollar;

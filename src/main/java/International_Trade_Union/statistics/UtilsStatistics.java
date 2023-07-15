@@ -17,18 +17,27 @@ public class UtilsStatistics {
         int thisPeriud = indexBlock / periud.getPeriud();
         double allDigitalDollar = 0;
         double allDigitalStock = 0;
+
         double velocity_of_money_dollar = 0;
+        double velocity_of_money_dollar_model2 = 0;
+
         double velocity_of_money_stock = 0;
+        double velocity_of_money_stock_model2 = 0;
+
         int transactions = 0;
+        int countDollarTransactions = 0;
+        int countStocktransactions = 0;
+
         double sumTransactionsDollar = 0;
         double sumTransactionsStock = 0;
         double medianDollar = 0;
         double medianStock = 0;
         int uniqueMinerDaySize = 0;
         System.out.println("start method Utils statistic: ");
+        double sumDollarSender = 0;
+        double sumStockSender = 0;
 
-
-        System.out.println("calculate all digital dollars end stocks");
+                System.out.println("calculate all digital dollars end stocks");
         for (Map.Entry<String, Account> accountEntry : balances.entrySet()) {
             allDigitalDollar += accountEntry.getValue().getDigitalDollarBalance();
             allDigitalStock += accountEntry.getValue().getDigitalStockBalance();
@@ -50,10 +59,17 @@ public class UtilsStatistics {
                   sumTransactionsDollar += dtoTransaction.getDigitalDollar();
                   sumTransactionsStock += dtoTransaction.getDigitalStockBalance();
 
-                  if(dtoTransaction.getDigitalDollar() > 0)
-                        dollarsList.add(dtoTransaction.getDigitalDollar());
-                  if(dtoTransaction.getDigitalStockBalance() > 0)
-                        stocksList.add(dtoTransaction.getDigitalStockBalance());
+                  if(dtoTransaction.getDigitalDollar() > 0){
+                      dollarsList.add(dtoTransaction.getDigitalDollar());
+                      sumDollarSender += balances.get(dtoTransaction.getSender())
+                              .getDigitalDollarBalance();
+                  }
+
+                  if(dtoTransaction.getDigitalStockBalance() > 0){
+                      stocksList.add(dtoTransaction.getDigitalStockBalance());
+                      sumStockSender += balances.get(dtoTransaction.getSender())
+                              .getDigitalStockBalance();
+                  }
 
                 }
             }
@@ -81,10 +97,20 @@ public class UtilsStatistics {
              medianStock = UtilsUse.median(stocksList);
         System.out.println("medianStock: " + medianStock);
         //скорость обращения денег
-        if(medianDollar > 0 && dollarsList.size() > 3)
+
+        //сумма всех счетов отправителей за периуд
+
+
+        if(medianDollar > 0 && dollarsList.size() > 3){
             velocity_of_money_dollar = (medianDollar * dollarsList.size())/ allDigitalDollar;
-        if(medianStock > 0 && stocksList.size() > 3)
+            velocity_of_money_dollar_model2 = (medianDollar * dollarsList.size())/ sumDollarSender;
+        }
+
+        if(medianStock > 0 && stocksList.size() > 3){
             velocity_of_money_stock = (medianStock * stocksList.size())/ allDigitalStock;
+            velocity_of_money_dollar_model2 = (medianStock * stocksList.size())/sumStockSender;
+        }
+
 
 
 
@@ -97,8 +123,12 @@ public class UtilsStatistics {
                 allDigitalDollar,
                 allDigitalStock,
                 velocity_of_money_dollar,
+                velocity_of_money_dollar_model2,
                 velocity_of_money_stock,
+                velocity_of_money_stock_model2,
                 transactions,
+                dollarsList.size(),
+                stocksList.size(),
                 sumTransactionsDollar,
                 sumTransactionsStock,
                 medianDollar,

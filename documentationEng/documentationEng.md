@@ -6,7 +6,10 @@
 my discord https://discord.gg/MqkvC3SGHH
 my web http://194.87.236.238/
 my telegram https://t.me/citu_coin
+
 https://bitcointalk.org/index.php?topic=5459836.new#new
+
+https://bitcointalk.org/index.php?topic=5459876.new#new
 
 ## Mission.
 Using a new economic model that is resistant to deflationary and inflationary crises,
@@ -59,6 +62,7 @@ Pandemics, Space Threats, Environmental Issues and will reduce the occurrence of
 - [post creation](../documentationEng/create-positionEng.md)
 - [resolve problems](../documentationEng/solving-common-problems.md)
 - [BUDGET AND EMISSION](../documentationEng/how_to_create_a_budget_and_emission.md)
+- [statistic](../documentationEng/statistics.md)
 
 [//]: # (- [create fraction]&#40;../documentationEng/create-fractionEng.md&#41;)
 ## Corporate Charter

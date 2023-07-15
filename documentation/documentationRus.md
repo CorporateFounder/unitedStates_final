@@ -9,7 +9,10 @@
 my discord https://discord.gg/MqkvC3SGHH
 my web http://194.87.236.238/
 my telegram https://t.me/citu_coin
+
 https://bitcointalk.org/index.php?topic=5459836.new#new
+
+https://bitcointalk.org/index.php?topic=5459876.new#new
 
 ## Миссия. 
 Используя новую экономическую модель, которая устойчива к дефляционным и инфляционным кризисам,
@@ -62,6 +65,7 @@ https://bitcointalk.org/index.php?topic=5459836.new#new
 - [создание должности](../documentation/create-postion.md)
 - [Решения проблем](../documentation/solving-common-problems.md)
 - [БЮДЖЕТ И ЭМИССИЯ](../documentation/how_to_create_a_budget_and_emission.md)
+- [статистика](../documentation/statistics.md)
 
 [//]: # (- [создание фракции]&#40;../documentation/create-fraction.md&#41;)
 ## Корпоративный устав
