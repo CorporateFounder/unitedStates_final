@@ -63,6 +63,7 @@ https://bitcointalk.org/index.php?topic=5459876.new#new
 - weiwei
 - Kinger
 - richman
+- just_mine_it
 - и многих других, чьи имена я не смог написать, так как не знаю китайский
 
 ## СОДЕРЖАНИЕ

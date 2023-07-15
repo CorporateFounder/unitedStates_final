@@ -59,7 +59,8 @@ Pandemics, Space Threats, Environmental Issues and will reduce the occurrence of
 - weiwei
 - Kinger
 - richman
-- и многих других, чьи имена я не смог написать, так как не знаю китайский
+- just_mine_it
+- and many others whose names I could not write because I do not know Chinese
 
 
 
