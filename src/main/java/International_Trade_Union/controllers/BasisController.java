@@ -279,17 +279,53 @@ public class BasisController {
 
                    System.out.println(":size from address: " + s + " upper than: " + size + ":blocks_current_size " + blocks_current_size);
                    //Test start algorithm
-                   SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(blocks_current_size, size);
-                   String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
-
                    List<Block> emptyList = new ArrayList<>();
+                   SubBlockchainEntity subBlockchainEntity = null;
+                   String subBlockchainJson = null;
+                   if(size - blocks_current_size > Seting.PORTION_DOWNLOAD){
+                       boolean downloadPortion = true;
+                       int finish = blocks_current_size + Seting.PORTION_DOWNLOAD;
+                       int start = blocks_current_size;
+                       while (downloadPortion){
 
-                   System.out.println(":download sub block: " + subBlockchainJson);
-                   List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
-                   emptyList.addAll(subBlocks);
-                   System.out.println("blocks_current_size: " + blocks_current_size);
-                   System.out.println("sub: " + subBlocks.get(0).getIndex() + ":" + subBlocks.get(0).getHashBlock()+":"
-                   +"prevHash: " + subBlocks.get(0).getPreviousHash());
+                           subBlockchainEntity = new SubBlockchainEntity(start, finish);
+
+                           System.out.println("downloadPortion: " + subBlockchainEntity.getStart() +
+                                   ": " + subBlockchainEntity.getFinish());
+                           subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
+                           List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
+                           finish = (int) subBlocks.get(subBlocks.size()-1).getIndex() + Seting.PORTION_DOWNLOAD;
+                           start = (int) subBlocks.get(subBlocks.size()-1).getIndex()+1;
+                           emptyList.addAll(subBlocks);
+                           System.out.println("subblocks: " + subBlocks.get(0).getIndex() + ":"
+                                   + subBlocks.get(subBlocks.size()-1).getIndex());
+                           if(size -emptyList.get(emptyList.size()-1).getIndex() < Seting.PORTION_DOWNLOAD){
+                               downloadPortion = false;
+                               finish = size;
+                               subBlockchainEntity = new SubBlockchainEntity(start, finish);
+                               subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
+                               subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
+                               System.out.println("subblocks: " + subBlocks.get(0).getIndex() + ":"
+                               + subBlocks.get(subBlocks.size()-1).getIndex());
+                               emptyList.addAll(subBlocks);
+                           }
+                       }
+                   }else {
+                       subBlockchainEntity = new SubBlockchainEntity(blocks_current_size, size);
+                       subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
+                       System.out.println(":download sub block: " + subBlockchainJson);
+                       List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
+                       emptyList.addAll(subBlocks);
+                       System.out.println("subblocks: " + subBlocks.get(0).getIndex() + ":"
+                               + subBlocks.get(subBlocks.size()-1).getIndex());
+                       System.out.println("blocks_current_size: " + blocks_current_size);
+                       System.out.println("sub: " + subBlocks.get(0).getIndex() + ":" + subBlocks.get(0).getHashBlock()+":"
+                               +"prevHash: " + subBlocks.get(0).getPreviousHash());
+                   }
+
+
+
+
                    if(blocks_current_size > 0){
                        System.out.println("sub: from 0 " + ":" + blocks_current_size );
                        List<Block> temp =blockchain.subBlock(0, blocks_current_size);
@@ -300,6 +336,9 @@ public class BasisController {
 
                    emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
                    temporaryBlockchain.setBlockchainList(emptyList);
+
+
+                   System.out.println("size temporaryBlockchain: " + temporaryBlockchain.sizeBlockhain());
                    System.out.println("resolve: temporaryBlockchain: " + temporaryBlockchain.validatedBlockchain());
                    if (!temporaryBlockchain.validatedBlockchain()) {
                        System.out.println(":download blocks");

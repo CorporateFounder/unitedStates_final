@@ -3,7 +3,7 @@
 (Corporation International Trade Union - CITU)
 
 ## Contacts
-my discord https://discord.gg/MqkvC3SGHH
+my discord https://discord.gg/MqkvC3SGHH  https://discord.gg/czzQfKDy
 my web http://194.87.236.238/
 my telegram https://t.me/citu_coin
 
