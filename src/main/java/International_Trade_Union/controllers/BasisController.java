@@ -30,6 +30,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+import java.net.NoRouteToHostException;
+import java.net.SocketException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 
@@ -39,6 +41,7 @@ import java.util.stream.Collectors;
 @Controller
 public class BasisController {
     private static DataShortBlockchainInformation shortDataBlockchain = null;
+    private static Blockchain tempBlockchain;
     private static Blockchain blockchain;
     private static int blockchainSize = 0;
     private static boolean blockchainValid = false;
@@ -804,10 +807,35 @@ public class BasisController {
     }
 
     public synchronized String mining() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
+        if(tempBlockchain == null ||
+        tempBlockchain.getBlockchainList() == null
+        || tempBlockchain.getBlockchainList().isEmpty()){
+            tempBlockchain = Mining.getBlockchain(
+                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                    BlockchainFactoryEnum.ORIGINAL);
+
+        }
+
+        String sizeStr = "-1";
+        try {
+            sizeStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/size");
+        }catch (NoRouteToHostException e){
+            System.out.println("home page you cannot connect to global server," +
+                    "you can't give size global server");
+            sizeStr = "-1";
+        }catch (SocketException e){
+            System.out.println("home page you cannot connect to global server," +
+                    "you can't give size global server");
+            sizeStr = "-1";
+        }
+        Integer sizeG = Integer.valueOf(sizeStr);
         String text = "";
         //нахождение адрессов
         findAddresses();
-        if(blockchainSize % 5 == 0)
+        if(blockchainSize % 5 == 0
+                || tempBlockchain.getBlock(tempBlockchain.sizeBlockhain()-1).getIndex() % 5 == 0
+                || sizeG % 5 == 0
+        )
             resolve_conflicts();
 
 
@@ -831,7 +859,7 @@ public class BasisController {
 
 
         //если блокчейн работает то продолжить
-        if (!blockchainValid) {
+        if (!tempBlockchain.validatedBlockchain()) {
             text = "wrong chain: неправильный блокчейн, добыча прекращена";
 //            model.addAttribute("text", text);
             return "wrong blockchain";
@@ -839,7 +867,7 @@ public class BasisController {
 
 
         //если размер блокчейна меньше или равно единице, сохранить в файл генезис блок
-        long index = blockchain.sizeBlockhain();
+        long index = tempBlockchain.sizeBlockhain();
         if (blockchain.sizeBlockhain() <= 1) {
             System.out.println("save genesis block");
             //сохранение генезис блока
@@ -876,7 +904,7 @@ public class BasisController {
         //транзакции которые мы добавили в блок и теперь нужно удалить из файла, в папке resources/transactions
         List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
         //отказ от дублирующих транзакций
-        temporaryDtoList = UtilsBlock.validDto(blockchain.getBlockchainList(),temporaryDtoList);
+        temporaryDtoList = UtilsBlock.validDto(tempBlockchain.getBlockchainList(),temporaryDtoList);
 
 
         //раз в три для очищяет файлы в папке resources/sendedTransaction данная папка
@@ -892,7 +920,7 @@ public class BasisController {
         //temporaryDtoList добавляет транзакции в блок
         Block block = Mining.miningDay(
                 miner,
-                blockchain,
+                tempBlockchain,
                 Seting.BLOCK_GENERATION_INTERVAL,
                 Seting.DIFFICULTY_ADJUSTMENT_INTERVAL,
                 temporaryDtoList,
@@ -910,16 +938,16 @@ public class BasisController {
         //Тестирование блока
         List<Block> testingValidationsBlock = null;
 
-        if (blockchain.sizeBlockhain() > diff) {
+        if (tempBlockchain.sizeBlockhain() > diff) {
 
-            testingValidationsBlock = blockchain.subBlock(blockchain.sizeBlockhain() - diff, blockchain.sizeBlockhain());
+            testingValidationsBlock = tempBlockchain.subBlock(tempBlockchain.sizeBlockhain() - diff, tempBlockchain.sizeBlockhain());
         } else {
-            testingValidationsBlock = blockchain.clone();
+            testingValidationsBlock = tempBlockchain.clone();
         }
         //проверяет последние 288 блоков на валидность.
         if (testingValidationsBlock.size() > 1) {
             boolean validationTesting = UtilsBlock.validationOneBlock(
-                    blockchain.genesisBlock().getFounderAddress(),
+                    tempBlockchain.genesisBlock().getFounderAddress(),
                     testingValidationsBlock.get(testingValidationsBlock.size() - 1),
                     block,
                     Seting.BLOCK_GENERATION_INTERVAL,
@@ -935,31 +963,36 @@ public class BasisController {
         }
 
         //добавляет последний блок в блокчейн
-        blockchain.addBlock(block);
+        tempBlockchain.addBlock(block);
         //сохраняет последний блок в файл
-        UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+//        UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
         //перерасчет балансов, подсчитывает какие изменения произошли в балансах
-        List<String> signs = new ArrayList<>();
-        balances = Mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain, balances, signs);
-        Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
+//        List<String> signs = new ArrayList<>();
+//        balances = Mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain, balances, signs);
+//        Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
         //сохраняет в файл уже заново посчитанные балансы.
-        SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
+//        SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
 
-        //получает все созданные когда либо законы
-        Map<String, Laws> allLaws = UtilsLaws.getLaws(blockchain.getBlockchainList(), Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
+//        получает все созданные когда либо законы
+//        Map<String, Laws> allLaws = UtilsLaws.getLaws(blockchain.getBlockchainList(), Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
 
         //возвращает все законы с голосами проголосовавшими за них
-        List<LawEligibleForParliamentaryApproval> allLawsWithBalance =
-                UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+//        List<LawEligibleForParliamentaryApproval> allLawsWithBalance =
+//                UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
         //удаление устаревних законов
-        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+//        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
         //записывает все законы в файл с их голосами.
-        UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+//        UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
         //отправляет блокчейн во внешние сервера
-        if(blockchainSize % 5 == 0)
-            sendAllBlocksToStorage(blockchain.getBlockchainList());
+        if(blockchainSize % 5 == 0
+                || tempBlockchain.getBlock(tempBlockchain.sizeBlockhain()-1).getIndex() % 5 == 0
+                || sizeG % 5 == 0){
+            sendAllBlocksToStorage(tempBlockchain.getBlockchainList());
+            tempBlockchain.setBlockchainList(new ArrayList<>());
+        }
+
 
 
         //отправить адресса
