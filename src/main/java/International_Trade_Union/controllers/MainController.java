@@ -112,6 +112,7 @@ public class MainController {
         difficultOneBlock = Long.toString(infoDificultyBlockchain.getDiffultyOneBlock());
         difficultAllBlockchain = Long.toString(infoDificultyBlockchain.getDifficultyAllBlockchain());
 
+
         model.addAttribute("global_version", versionStr);
         model.addAttribute("difficultOneBlock",difficultOneBlock);
         model.addAttribute("difficultAllBlockchain",  difficultAllBlockchain);
