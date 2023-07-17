@@ -10,6 +10,9 @@ my telegram https://t.me/citu_coin
 https://bitcointalk.org/index.php?topic=5459836.new#new
 
 https://bitcointalk.org/index.php?topic=5459876.new#new
+# Important
+If your version is lower than the global one, be sure to download the new version,
+otherwise you will not be able to mine coins. Versions must match
 
 ## Mission.
 Using a new economic model that is resistant to deflationary and inflationary crises,
