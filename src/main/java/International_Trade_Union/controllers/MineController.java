@@ -46,6 +46,10 @@ public class MineController {
 
     @RequestMapping("/mining")
     public String miming(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+
         model.addAttribute("title", "Corporation International Trade Union.");
 
         return "mining";

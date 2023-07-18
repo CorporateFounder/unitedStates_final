@@ -51,6 +51,10 @@ public class TransactionsController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/transactions")
     public String transactions(Model model) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+
         blockchain= Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);

@@ -58,6 +58,10 @@ public class MainController {
    }
     @GetMapping("/")
     public String home(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+
         String sizeStr = "-1";
         try {
             sizeStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/size");
@@ -160,6 +164,10 @@ public class MainController {
 
     @PostMapping("/setMinner")
     public String setMinnerAddress(@RequestParam(value = "setMinner") String setMinner, RedirectAttributes redirectAttrs){
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+
         System.out.println("MainController:  " + setMinner);
         UtilsFileSaveRead.save(setMinner, Seting.ORIGINAL_ACCOUNT, false);
         return "redirect:/seting";

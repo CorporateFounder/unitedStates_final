@@ -20,6 +20,10 @@ import java.util.List;
 public class DemerageControlller {
     @GetMapping("/all_demerage")
     public String allDemerage(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+
         List<InfoDemerageMoney> infoDemerageMonies = new ArrayList<>();
         infoDemerageMonies = UtilsDemerage.readDemerage(Seting.BALANCE_REPORT_ON_DESTROYED_COINS);
         model.addAttribute("title", "demerage");

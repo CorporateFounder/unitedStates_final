@@ -41,6 +41,10 @@ public class GovernmentController {
     /**Отображает в браузере список действующих должностей*/
     @GetMapping("/governments")
     public String corporateSeniorpositions(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+
         Directors directors = new Directors();
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
@@ -221,6 +225,10 @@ public class GovernmentController {
 
     @GetMapping("/create-position")
     public String createPositionShow(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);

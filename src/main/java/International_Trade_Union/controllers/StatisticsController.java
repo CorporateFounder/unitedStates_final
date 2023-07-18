@@ -32,6 +32,10 @@ public class StatisticsController {
 
     @PostMapping("/statistics")
     public String setStatistics(@RequestParam String periudStr, RedirectAttributes redirectAttrs) {
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+
         periud = Periud.valueOf(periudStr);
         redirectAttrs.addAttribute("title statistics: " + periud);
         return "redirect:/statistics";

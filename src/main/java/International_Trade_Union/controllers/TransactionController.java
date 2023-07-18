@@ -25,6 +25,7 @@ import java.util.List;
 public class TransactionController {
     @RequestMapping(method = RequestMethod.POST, value = "/addTransaction", consumes = MediaType.APPLICATION_JSON_VALUE)
     public  void add(@RequestBody DtoTransaction data) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+
         System.out.println("add transaction: " + data);
         AllTransactions.getInstance();
         AllTransactions.addTransaction(data);

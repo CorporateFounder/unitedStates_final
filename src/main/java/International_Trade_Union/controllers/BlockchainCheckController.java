@@ -28,6 +28,7 @@ public class BlockchainCheckController {
     /**Проверяет целостность блокчейна*/
     @GetMapping("/checkValidation")
     public boolean checkValidation() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+
         try{
             Blockchain blockchain = Mining.getBlockchain(
                     Seting.ORIGINAL_BLOCKCHAIN_FILE,

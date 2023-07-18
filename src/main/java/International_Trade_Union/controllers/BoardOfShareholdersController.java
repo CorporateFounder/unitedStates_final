@@ -29,6 +29,9 @@ public class BoardOfShareholdersController {
     /**отображает список Совета Акционеров, отображается в браузере*/
     @GetMapping("board-of-shareholders")
     public String boardOfShareHolders(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
 
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
