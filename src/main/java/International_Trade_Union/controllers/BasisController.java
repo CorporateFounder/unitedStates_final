@@ -947,7 +947,7 @@ public class BasisController {
             //раз в три для очищяет файлы в папке resources/sendedTransaction данная папка
             //хранит уже добавленые в блокчейн транзации, чтобы повторно не добавлять в
             //в блок уже добавленные транзакции
-//        AllTransactions.clearAllSendedTransaction(index);
+
             AllTransactions.clearUsedTransaction(AllTransactions.getInsanceSended());
             System.out.println("BasisController: start mine:");
 
@@ -968,7 +968,7 @@ public class BasisController {
             //save sended transaction
             //сохранить уже добавленные в блок транзакции,
             //чтобы избежать повторного добавления
-            AllTransactions.addSendedTransaction(temporaryDtoList);
+//            AllTransactions.addSendedTransaction(temporaryDtoList);
 
             //нужна для корректировки сложности
             int diff = Seting.DIFFICULTY_ADJUSTMENT_INTERVAL;
@@ -1030,29 +1030,21 @@ public class BasisController {
 
     @GetMapping("/testBlock")
     @ResponseBody
-    public boolean testBlock() throws IOException, CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-        blockchainSize = (int) shortDataBlockchain.getSize();
-        blockchainValid = shortDataBlockchain.isValidation();
+    public List<DtoTransaction> testBlock() throws IOException, CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
 
-        return true;
+        //отказ от дублирующих транзакций
+        temporaryDtoList = UtilsBlock.validDto(blockchain.getBlockchainList(), temporaryDtoList);
+        System.out.println("after: " + temporaryDtoList);
 //        list.add(blockList);
-
+        return temporaryDtoList;
     }
 
     @GetMapping("testBlock1")
     @ResponseBody
-    public Integer testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public List<DtoTransaction> testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
-        InfoDemerageMoney demerageMoney = new InfoDemerageMoney();
-        demerageMoney.setAddress(User.getUserAddress());
-        demerageMoney.setBeforeDollar(100);
-        demerageMoney.setBeforeStock(100);
-        demerageMoney.setAfterDollar(50);
-        demerageMoney.setAfterStock(50);
-        demerageMoney.setIndexBlock(1);
-        UtilsDemerage.saveDemarege(demerageMoney, Seting.BALANCE_REPORT_ON_DESTROYED_COINS);
-        return 0;
+        return  AllTransactions.getInstance();
     }
 
     @GetMapping("/processUpdating")
