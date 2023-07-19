@@ -1,5 +1,5 @@
 # Installation
-Victor https://www.youtube.com/watch?v=BR626p7G86k
+Victor https://youtu.be/i7b-8lfIueI
 If you have windows, then you need to download from the folder target unitedStates-0.0.1-SHAPSHOT.jar
 in the search for windows, enter cmd open the command line and enter java -jar there (where the file is located) / unitedStates-0.0.1-SNAPSHOT.jar
 example: java -jar C://unitedStates-0.0.1-SNAPSHOT.jar.

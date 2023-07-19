@@ -968,7 +968,7 @@ public class BasisController {
             //save sended transaction
             //сохранить уже добавленные в блок транзакции,
             //чтобы избежать повторного добавления
-            AllTransactions.addSendedTransaction(UtilsBlock.validDto(tempBlockchain.getBlockchainList(), temporaryDtoList));
+            AllTransactions.addSendedTransaction(temporaryDtoList);
 
             //нужна для корректировки сложности
             int diff = Seting.DIFFICULTY_ADJUSTMENT_INTERVAL;
@@ -1028,6 +1028,33 @@ public class BasisController {
     }
 
 
+    @GetMapping("/testBlock")
+    @ResponseBody
+    public boolean testBlock() throws IOException, CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        blockchainSize = (int) shortDataBlockchain.getSize();
+        blockchainValid = shortDataBlockchain.isValidation();
+
+        return true;
+//        list.add(blockList);
+
+    }
+
+    @GetMapping("testBlock1")
+    @ResponseBody
+    public Integer testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+
+        InfoDemerageMoney demerageMoney = new InfoDemerageMoney();
+        demerageMoney.setAddress(User.getUserAddress());
+        demerageMoney.setBeforeDollar(100);
+        demerageMoney.setBeforeStock(100);
+        demerageMoney.setAfterDollar(50);
+        demerageMoney.setAfterStock(50);
+        demerageMoney.setIndexBlock(1);
+        UtilsDemerage.saveDemarege(demerageMoney, Seting.BALANCE_REPORT_ON_DESTROYED_COINS);
+        return 0;
+    }
+
     @GetMapping("/processUpdating")
     public String processUpdating(Model model) {
         model.addAttribute("isMining", isMining());
@@ -1048,28 +1075,6 @@ public class BasisController {
 
         return "processUpdating";
     }
-
-    @GetMapping("/testBlock")
-    @ResponseBody
-    public boolean testBlock() throws IOException, CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-        blockchainSize = (int) shortDataBlockchain.getSize();
-        blockchainValid = shortDataBlockchain.isValidation();
-
-        return true;
-//        list.add(blockList);
-
-    }
-
-    @GetMapping("testBlock1")
-    @ResponseBody
-    public List<DtoTransaction> testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
-
-        String json = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/getTransactions");
-        List<DtoTransaction> list = UtilsJson.jsonToDtoTransactionList(json);
-        return list;
-    }
-
 }
 
 
