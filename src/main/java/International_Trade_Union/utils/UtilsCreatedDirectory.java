@@ -12,7 +12,7 @@ import java.util.List;
 public class UtilsCreatedDirectory {
     public static void createPackages() throws IOException {
         List<String> files = new ArrayList<>();
-//        files.add("C:/resources");
+
         files.add(Seting.ORIGINAL_BLOCKCHAIN_FILE);
         files.add(Seting.ORIGINAL_BALANCE_FILE);
 
