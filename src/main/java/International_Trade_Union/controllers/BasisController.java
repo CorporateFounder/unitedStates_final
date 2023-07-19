@@ -821,14 +821,12 @@ public class BasisController {
     public synchronized String mining() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
         mining = true;
         try {
-            if (tempBlockchain == null ||
-                    tempBlockchain.getBlockchainList() == null
-                    || tempBlockchain.getBlockchainList().isEmpty()) {
+
                 tempBlockchain = Mining.getBlockchain(
                         Seting.ORIGINAL_BLOCKCHAIN_FILE,
                         BlockchainFactoryEnum.ORIGINAL);
 
-            }
+
 
             String sizeStr = "-1";
             try {
@@ -999,12 +997,10 @@ public class BasisController {
 //        UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
             //отправляет блокчейн во внешние сервера
-            if (blockchainSize % 5 == 0
-                    || tempBlockchain.getBlock(tempBlockchain.sizeBlockhain() - 1).getIndex() % 5 == 0
-                    || sizeG % 5 == 0) {
+
                 sendAllBlocksToStorage(tempBlockchain.getBlockchainList());
                 tempBlockchain.setBlockchainList(new ArrayList<>());
-            }
+
 
 
             //отправить адресса
