@@ -968,7 +968,7 @@ public class BasisController {
             //save sended transaction
             //сохранить уже добавленные в блок транзакции,
             //чтобы избежать повторного добавления
-
+            AllTransactions.addSendedTransaction(UtilsBlock.validDto(tempBlockchain.getBlockchainList(), temporaryDtoList));
 
             //нужна для корректировки сложности
             int diff = Seting.DIFFICULTY_ADJUSTMENT_INTERVAL;
@@ -1036,13 +1036,15 @@ public class BasisController {
             model.addAttribute("address", "balance has not loaded yet");
             model.addAttribute("dollar", "balance has not loaded yet");
             model.addAttribute("stock", "balance has not loaded yet");
+        }else {
+            DecimalFormat decimalFormat = new DecimalFormat("#.################");
+            String dollar = decimalFormat.format(minerShow.getDigitalDollarBalance());
+            String stock = decimalFormat.format(minerShow.getDigitalStockBalance());
+            model.addAttribute("address", minerShow.getAccount());
+            model.addAttribute("dollar", dollar);
+            model.addAttribute("stock", stock);
         }
-        DecimalFormat decimalFormat = new DecimalFormat("#.################");
-        String dollar = decimalFormat.format(minerShow.getDigitalDollarBalance());
-        String stock = decimalFormat.format(minerShow.getDigitalStockBalance());
-        model.addAttribute("address", minerShow.getAccount());
-        model.addAttribute("dollar", dollar);
-        model.addAttribute("stock", stock);
+
 
         return "processUpdating";
     }

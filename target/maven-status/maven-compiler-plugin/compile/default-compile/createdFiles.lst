@@ -98,6 +98,7 @@ International_Trade_Union\model\Account.class
 International_Trade_Union\utils\UtilsTransaction.class
 International_Trade_Union\utils\UtilsFileSaveRead.class
 International_Trade_Union\statistics\Periud.class
+International_Trade_Union\controllers\AccountController.class
 International_Trade_Union\CorporateCharterEngDraft\ArticleFourAmendmentProcessEngDraft.class
 International_Trade_Union\about_usDraft\AboutUsDraft.class
 International_Trade_Union\utils\base\Base.class

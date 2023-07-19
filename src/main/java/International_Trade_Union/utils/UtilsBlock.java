@@ -340,7 +340,7 @@ public class UtilsBlock {
             }
 
         }
-
+        transactions.removeAll(transactionArrayList);
         return transactions;
 
 
