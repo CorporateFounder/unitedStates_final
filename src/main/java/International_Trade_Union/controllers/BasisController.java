@@ -1070,6 +1070,7 @@ public class BasisController {
             model.addAttribute("address", minerShow.getAccount());
             model.addAttribute("dollar", dollar);
             model.addAttribute("stock", stock);
+
         }
 
 
