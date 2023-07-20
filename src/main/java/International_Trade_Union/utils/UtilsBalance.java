@@ -16,8 +16,7 @@ import International_Trade_Union.model.Account;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import jdk.swing.interop.SwingInterOpUtils;
+
 
 import java.io.IOException;
 import java.security.*;

@@ -1,49 +1,176 @@
 package International_Trade_Union.controllers;
 
 import International_Trade_Union.config.BlockchainFactoryEnum;
+import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
+import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.governments.Directors;
+import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.CreateAccount;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.model.User;
+import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
-import International_Trade_Union.utils.SaveBalances;
-import International_Trade_Union.utils.UtilsBalance;
+import International_Trade_Union.utils.*;
+import International_Trade_Union.utils.base.Base;
+import International_Trade_Union.utils.base.Base58;
+import International_Trade_Union.vote.Laws;
+import International_Trade_Union.vote.VoteEnum;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-@Controller
+@RestController
 public class AccountController {
-    @GetMapping("keys")
+    /**
+     * created account
+     */
+    @GetMapping("/keys")
     public Map<String, String> keys() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         return CreateAccount.create();
     }
 
-    @GetMapping("account")
+    /**
+     * get find end get account
+     */
+    @GetMapping("/account")
     public Account account(@RequestBody String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
         Account account = UtilsBalance.getBalance(address, balances);
         return account;
     }
 
-    @GetMapping("dollar")
+    /**
+     * get dollar balance
+     */
+    @GetMapping("/dollar")
     public double dollar(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
         Account account = UtilsBalance.getBalance(address, balances);
         return account.getDigitalDollarBalance();
     }
 
-    @GetMapping("stock")
+    /**
+     * get stock balance
+     */
+    @GetMapping("/stock")
     public double stock(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
         Account account = UtilsBalance.getBalance(address, balances);
         return account.getDigitalStockBalance();
+    }
+
+    /**
+     * send dollar or stock (if return wrong-its not sending if return sign its success)
+     */
+    @GetMapping("/sendCoin")
+    public String send(@RequestParam String sender,
+                       @RequestParam String recipient,
+                       Double dollar,
+                       Double stock,
+                       Double reward,
+
+                       @RequestParam String password) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+        Base base = new Base58();
+        String result = "wrong";
+        if (dollar == null)
+            dollar = 0.0;
+
+        if (stock == null)
+            stock = 0.0;
+
+        if (reward == null)
+            reward = 0.0;
+
+        Laws laws = new Laws();
+        laws.setLaws(new ArrayList<>());
+        laws.setHashLaw("");
+        laws.setPacketLawName("");
+        DtoTransaction dtoTransaction = new DtoTransaction(
+                sender,
+                recipient,
+                dollar,
+                stock,
+                laws,
+                reward,
+                VoteEnum.YES);
+        PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));
+        byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
+        System.out.println("Main Controller: new transaction: vote: " + VoteEnum.YES);
+        dtoTransaction.setSign(sign);
+        Directors directors = new Directors();
+        if (dtoTransaction.verify()) {
+
+            //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
+            //отправитель совпадает с законом
+            List<String> corporateSeniorPositions = directors.getDirectors().stream()
+                    .map(t -> t.getName()).collect(Collectors.toList());
+            System.out.println("LawsController: create_law: " + laws.getPacketLawName() + "contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
+            if (corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(sender, laws)) {
+                System.out.println("sending" + "wrong transaction: Position to be equals whith send");
+                return result;
+            }
+            result = dtoTransaction.toSign();
+
+            String str = base.encode(dtoTransaction.getSign());
+            System.out.println("sign: " + str);
+            AllTransactions.addTransaction(dtoTransaction);
+            String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
+            for (String s : Seting.ORIGINAL_ADDRESSES) {
+
+                String original = s;
+                String url = s + "/addTransaction";
+                //если адресс совпадает с внутреним хостом, то не отправляет самому себе
+                if (BasisController.getExcludedAddresses().contains(url)) {
+                    System.out.println("MainController: its your address or excluded address: " + url);
+                    continue;
+                }
+                try {
+                    //отправка в сеть
+                    UtilUrl.sendPost(jsonDto, url);
+
+                } catch (Exception e) {
+                    System.out.println("exception discover: " + original);
+
+                }
+            }
+
+
+        } else
+            return result;
+        return result;
+
+    }
+
+    /**
+     * whether the transaction was added to the blockchain, find with sign
+     */
+    @GetMapping("/isTransactionAdd")
+    public boolean isTransactionGet(@RequestParam String sign) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        boolean result = false;
+        Blockchain blockchain = Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
+        for (Block block : blockchain.getBlockchainList()) {
+            for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
+                if (dtoTransaction.toSign().equals(sign)) {
+                    result = true;
+                    return result;
+                }
+            }
+
+        }
+        return result;
     }
 }
