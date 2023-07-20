@@ -108,7 +108,7 @@ public class UtilsStatistics {
 
         if(medianStock > 0 && stocksList.size() > 3){
             velocity_of_money_stock = (medianStock * stocksList.size())/ allDigitalStock;
-            velocity_of_money_dollar_model2 = (medianStock * stocksList.size())/sumStockSender;
+            velocity_of_money_stock_model2 = (medianStock * stocksList.size())/sumStockSender;
         }
 
 

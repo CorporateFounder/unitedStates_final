@@ -55,10 +55,11 @@ public class BasisController {
         return blockchainSize;
     }
 
+    /**informs if mining is happening now. информирует, происходит ли сейчас майнинг.*/
     public static boolean isMining() {
         return mining;
     }
-
+    /**Informs whether the files are currently being updated. информирует, происходит ли сейчас обновление файлов.*/
     public static boolean isUpdating() {
         return updating;
     }
@@ -104,7 +105,8 @@ public class BasisController {
     }
 
     /**
-     * Возвращает список хостов
+     * returns a list of hosts to which you can connect automatically.
+     *  возвращает список хостов которому можно подключиться автоматически.
      */
     public static Set<String> getNodes() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
@@ -122,12 +124,16 @@ public class BasisController {
                 .collect(Collectors.toSet());
         nodes = nodes.stream().map(t -> t.replaceAll("\"", "")).collect(Collectors.toSet());
         Set<String> bloked = UtilsAllAddresses.readLineObject(Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
+        //removes blocked hosts. удаляет заблокированные хосты
         nodes.removeAll(bloked);
         nodes.removeAll(Seting.ORIGINAL_BLOCKED_ADDRESS);
+
+        //adds preset hosts. добавляет предустановные хосты
         nodes.addAll(Seting.ORIGINAL_ADDRESSES);
         return nodes;
     }
 
+    /**similar to getNodes. аналогичен getNodes*/
     @GetMapping("/getNodes")
     public Set<String> getAllNodes() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Set<String> temporary = UtilsAllAddresses.readLineObject(Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
@@ -142,7 +148,7 @@ public class BasisController {
     }
 
     /**
-     * Возвращяет действующий блокчейн
+     * Возвращает действующий блокчейн. Returns a valid blockchain
      */
     public static Blockchain getBlockchain() {
         return blockchain;
@@ -154,11 +160,19 @@ public class BasisController {
 
     static {
         try {
+            //creates all resource folders to work with
+            //создает все папки ресурсов для работы
             UtilsCreatedDirectory.createPackages();
+
+            //downloads from a blockchain file
+            //загрузки из файла блокчейна
             blockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
             blockchain = Mining.getBlockchain(
                     Seting.ORIGINAL_BLOCKCHAIN_FILE,
                     BlockchainFactoryEnum.ORIGINAL);
+
+            //a shorthand object that stores information about the blockchain
+            //сокращенный объект, который хранит информацию о блокчейне
             shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
             blockchainSize = (int) shortDataBlockchain.getSize();
             blockchainValid = shortDataBlockchain.isValidation();
@@ -188,7 +202,8 @@ public class BasisController {
     //TODO otherwise there will be a discrepancy in the balance file
 
     /**
-     * Возвращает EntityChain который хранит в себе размер блокчейна и список блоков
+     * Returns an EntityChain which stores the size of the blockchain and the list of blocks
+     * Возвращает EntityChain который, хранит в себе размер блокчейна и список блоков
      */
     @GetMapping("/chain")
     @ResponseBody
@@ -206,7 +221,8 @@ public class BasisController {
     }
 
     /**
-     * возвращяет размер локального блокчейна
+     * returns the size of the local blockchain
+     * возвращает размер локального блокчейна
      */
     @GetMapping("/size")
     @ResponseBody
@@ -224,6 +240,7 @@ public class BasisController {
     }
 
     /**
+     * Returns a list of blocks from to to,
      * Возвращает список блоков ОТ до ДО,
      */
     @PostMapping("/sub-blocks")
@@ -235,12 +252,12 @@ public class BasisController {
                     BlockchainFactoryEnum.ORIGINAL);
         }
 
-//        return blockchain.getBlockchainList().subList(entity.getStart(), entity.getFinish());
         return Blockchain.subFromFile(entity.getStart(), entity.getFinish(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
     }
 
     /**
-     * Возвращяет блок по индексу
+     * Returns a block by index
+     * Возвращает блок по индексу
      */
     @PostMapping("/block")
     @ResponseBody
@@ -255,12 +272,23 @@ public class BasisController {
         return Blockchain.indexFromFile(index, Seting.ORIGINAL_BLOCKCHAIN_FILE);
     }
 
+    /**
+     * connects to the storage and updates its internal blockchain.
+     * подключается к хранилищу и обновляет свой внутренний блокчейн*/
     @GetMapping("/nodes/resolve")
     public synchronized int resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         System.out.println(":resolve_conflicts");
         return resolve();
     }
 
+    //TODO need to improve the code, at the moment even if you download one block,
+    //TODO have to recalculate the entire blockchain again to get the current balance
+    //TODO нужно улучшить код, на данный момент даже если вы скачиваете один блок,
+    //TODO приходиться пересчитывать весь блокчейн заново, чтобы получить актуальный баланс
+    /**
+     * Updates the blockchain. Connects to the storage host and downloads if the host has a more up-to-date blockchain.
+     * Обновляет блокчейн. Подключается к хосту хранилища и скачивает, если в на хосте более актуальный блокчейн.
+*/
     public static int resolve() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
         updating = true;
         try {
@@ -276,39 +304,65 @@ public class BasisController {
                 blockchainValid = shortDataBlockchain.isValidation();
             }
 
+            //size of the most recent long blockchain downloaded from hosts (storage)
+            //размер самого актуального длинного блокчейна, скачанного из хостов (хранилище)
             int bigSize = 0;
+
+            //local blockchain size
+            //размер локального блокчейна
             int blocks_current_size = blockchainSize;
+
+            //the sum of the complexity (all zeros) of the temporary blockchain, needed to select the most complex blockchain
+            //сумма сложности (всех нулей) временного блокчейна, нужна чтобы отобрать самый сложный блокчейн
             long hashCountZeroTemporary = 0;
+
+            //the sum of the complexity (all zeros) of the longest downloaded blockchain is needed to select the most complex blockchain
+            //сумма сложности (всех нулей) самого длинного блокчейна из скачанных, нужна чтобы отобрать самый сложный блокчейн
             long hashCountZeroBigBlockchain = 0;
+
             EntityChain entityChain = null;
             System.out.println(" :resolve_conflicts: blocks_current_size: " + blocks_current_size);
-            long hashCountZeroAll = 0;
-            //count hash start with zero all
 
+            //the sum of the complexity (all zeros) of the local blockchain
+            //сумма сложности (всех нулей) локального блокчейна
+            long hashCountZeroAll = 0;
+
+            //get the total complexity of the local blockchain
+            //получить общую сложность локального блокчейна
             hashCountZeroAll = shortDataBlockchain.getHashCount();
 
             Set<String> nodesAll = getNodes();
 
             System.out.println(":BasisController: resolve_conflicts: size nodes: " + getNodes().size());
+
+            //goes through all hosts (repositories) in search of the most up-to-date blockchain
+            //проходит по всем хостам(хранилищам) в поисках самого актуального блокчейна
             for (String s : nodesAll) {
                 System.out.println(":while resolve_conflicts: node address: " + s);
                 String temporaryjson = null;
 
+                //if the local address matches the host address, it skips
+                //если локальный адрес совпадает с адресом хоста, он пропускает
                 if (BasisController.getExcludedAddresses().contains(s)) {
                     System.out.println(":its your address or excluded address: " + s);
                     continue;
                 }
                 try {
+                    //if the address is localhost, it skips
+                    //если адрес локального хоста, он пропускает
                     if (s.contains("localhost") || s.contains("127.0.0.1"))
                         continue;
-                    ;
+
 
 
                     System.out.println("start:BasisController:resolve conflicts: address: " + s + "/size");
+
                     String sizeStr = UtilUrl.readJsonFromUrl(s + "/size");
                     Integer size = Integer.valueOf(sizeStr);
-                    MainController.setGlobalSize(size);
+//                    MainController.setGlobalSize(size);
                     System.out.println(" :resolve_conflicts: finish /size: " + size);
+                    //if the size from the storage is larger than on the local server, start checking
+                    //если размер с хранилища больше чем на локальном сервере, начать проверку
                     if (size > blocks_current_size) {
 
                         System.out.println(":size from address: " + s + " upper than: " + size + ":blocks_current_size " + blocks_current_size);
@@ -316,10 +370,15 @@ public class BasisController {
                         List<Block> emptyList = new ArrayList<>();
                         SubBlockchainEntity subBlockchainEntity = null;
                         String subBlockchainJson = null;
+
+                        //if the local one lags behind the global one by more than PORTION_DOWNLOAD, then you need to download in portions from the storage
+                        //если локальный отстает от глобального больше чем PORTION_DOWNLOAD, то нужно скачивать порциями из хранилища
                         if (size - blocks_current_size > Seting.PORTION_DOWNLOAD) {
                             boolean downloadPortion = true;
                             int finish = blocks_current_size + Seting.PORTION_DOWNLOAD;
                             int start = blocks_current_size;
+                            //while the difference in the size of the local blockchain is greater than from the host, it will continue to download in portions to download the entire blockchain
+                            //пока разница размера локального блокчейна больше чем с хоста будет продожаться скачивать порциями, чтобы скачать весь блокчейн
                             while (downloadPortion) {
 
                                 subBlockchainEntity = new SubBlockchainEntity(start, finish);
@@ -327,12 +386,15 @@ public class BasisController {
                                 System.out.println("downloadPortion: " + subBlockchainEntity.getStart() +
                                         ": " + subBlockchainEntity.getFinish());
                                 subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
+
                                 List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
                                 finish = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + Seting.PORTION_DOWNLOAD;
                                 start = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + 1;
+
                                 emptyList.addAll(subBlocks);
                                 System.out.println("subblocks: " + subBlocks.get(0).getIndex() + ":"
                                         + subBlocks.get(subBlocks.size() - 1).getIndex());
+
                                 if (size - emptyList.get(emptyList.size() - 1).getIndex() < Seting.PORTION_DOWNLOAD) {
                                     downloadPortion = false;
                                     finish = size;
@@ -345,11 +407,16 @@ public class BasisController {
                                 }
                             }
                         } else {
+                            //If the difference is not greater than PORTION_DOWNLOAD, then downloads once a portion of this difference
+                            //Если разница не больше PORTION_DOWNLOAD, то скачивает один раз порцию эту разницу
                             subBlockchainEntity = new SubBlockchainEntity(blocks_current_size, size);
                             subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
+
                             System.out.println(":download sub block: " + subBlockchainJson);
+
                             List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
                             emptyList.addAll(subBlocks);
+
                             System.out.println("subblocks: " + subBlocks.get(0).getIndex() + ":"
                                     + subBlocks.get(subBlocks.size() - 1).getIndex());
                             System.out.println("blocks_current_size: " + blocks_current_size);
@@ -357,7 +424,8 @@ public class BasisController {
                                     + "prevHash: " + subBlocks.get(0).getPreviousHash());
                         }
 
-
+                        //if the local blockchain was originally greater than 0, then add part of the missing list of blocks to the list.
+                        //если локальный блокчейн изначально был больше 0, то добавить в список часть недостающего списка блоков.
                         if (blocks_current_size > 0) {
                             System.out.println("sub: from 0 " + ":" + blocks_current_size);
                             List<Block> temp = blockchain.subBlock(0, blocks_current_size);
@@ -372,6 +440,15 @@ public class BasisController {
 
                         System.out.println("size temporaryBlockchain: " + temporaryBlockchain.sizeBlockhain());
                         System.out.println("resolve: temporaryBlockchain: " + temporaryBlockchain.validatedBlockchain());
+
+                        //if the global blockchain is larger but there is a branching in the blockchain, for example, the global size is 25,
+                        // the local size is 20,
+                        //but from block 15 they differ, then you need to remove all blocks from the local block from block 15
+                        // and add 15-25 blocks from the global blockchain there
+                        //если глобальный блокчейн больше но есть развлетление в блокчейне, к примеру глобальный размер 25,
+                        // локальный 20,
+                        //но с 15 блока они отличаются, то нужно удалить из локального с
+                        // 15 все блоки и добавить туда 15-25 с глобального блокчейна
                         if (!temporaryBlockchain.validatedBlockchain()) {
                             System.out.println(":download blocks");
                             emptyList = new ArrayList<>();
@@ -418,7 +495,6 @@ public class BasisController {
                     }
                 } catch (IOException e) {
 
-//                e.printStackTrace();
                     System.out.println(":BasisController: resolve_conflicts: connect refused Error: " + s);
                     continue;
                 } catch (JSONException e) {
@@ -427,7 +503,8 @@ public class BasisController {
                     throw new RuntimeException(e);
                 }
 
-
+                //if the global blockchain is correct and it is larger than the longest previous temporary blockchain, then make it a contender as a future local blockchain
+                //если глобальный блокчейн верный и он больше самого длиного предыдущего временного блокчейна, то сделать его претендентом в качестве будущего локального блокчейна
                 if (temporaryBlockchain.validatedBlockchain()) {
                     if (bigSize < temporaryBlockchain.sizeBlockhain()) {
                         bigSize = temporaryBlockchain.sizeBlockhain();
@@ -447,6 +524,8 @@ public class BasisController {
             }
 
             System.out.println("bigBlockchain: " + bigBlockchain.validatedBlockchain() + " : " + bigBlockchain.sizeBlockhain());
+            //Only the blockchain that is not only the longest but also the most complex will be accepted.
+            //Будет принять только тот блокчейн который является не только самым длинным, но и самым сложным.
             if (bigBlockchain.validatedBlockchain() && bigBlockchain.sizeBlockhain() > blockchainSize && hashCountZeroBigBlockchain > hashCountZeroAll) {
                 System.out.println("resolve start addBlock start: ");
                 blockchain = bigBlockchain;
@@ -470,13 +549,21 @@ public class BasisController {
 
     }
 
+    /**rewrites the blockchain to files
+     * производит перезапись блокчейна в файлы*/
+
     public static void addBlock(List<Block> orignalBlocks) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
         Map<String, Account> balances = new HashMap<>();
         Blockchain temporaryForValidation = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
         temporaryForValidation.setBlockchainList(orignalBlocks);
+        //delete all files from resources folder
+        //удалить все файлы из папки resources
         UtilsBlock.deleteFiles();
         System.out.println(" addBlock start: ");
+
+        //write a new blockchain from scratch to the resources folder
+        //записать с нуля новый блокчейн в папку resources
         for (Block block : orignalBlocks) {
             System.out.println(" :BasisController: addBlock: blockchain is being updated: ");
             UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
@@ -489,7 +576,8 @@ public class BasisController {
         blockchainSize = (int) shortDataBlockchain.getSize();
         blockchainValid = shortDataBlockchain.isValidation();
 
-        //перерасчет после добычи
+        //recalculation of the balance
+        //перерасчет баланса
         balances = UtilsBalance.calculateBalances(blockchain.getBlockchainList());
         Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
         SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
@@ -499,19 +587,22 @@ public class BasisController {
         //и изменение действующих законов
         Map<String, Laws> allLaws = UtilsLaws.getLaws(blockchain.getBlockchainList(), Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
 
-
         //возвращает все законы с балансом
-        List<LawEligibleForParliamentaryApproval> allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-        //удаление устаревних законов
+        List<LawEligibleForParliamentaryApproval> allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances,
+                Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+
+        //removal of obsolete laws
+        //удаление устаревших законов
         Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+        //rewriting all existing laws
+        //перезапись всех действующих законов
         UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
-//        balances = UtilsBalance.calculateBalances(blockchain.getBlockchainList());
-//        Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
-//        SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
         System.out.println(":BasisController: addBlock: finish");
     }
 
+    /**overwrites the current blockchain in the resources folder.
+     * производит перезапись текущего блокчейна в папку ресурсы*/
     @GetMapping("/addBlock")
     public ResponseEntity getBLock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
@@ -526,6 +617,8 @@ public class BasisController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+
+    /**get a block. добыть блок*/
     @GetMapping("/miningblock")
     public synchronized ResponseEntity minings() throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         mining();
@@ -533,6 +626,7 @@ public class BasisController {
     }
 
 
+    /**get a block. добыть блок*/
     @GetMapping("/process-mining")
     public synchronized String proccessMining(Model model, Integer number) throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         mining();
@@ -541,18 +635,15 @@ public class BasisController {
     }
 
 
+    /**blockchain update. обновление блокчейна*/
     @RequestMapping("/resolving")
     public String resolving() throws JSONException, NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
         resolve_conflicts();
         return "redirect:/";
     }
 
-    /**
-     * соединяется к внешним хостам, и скачивает самый длинный блокчейн,
-     * если, локальный блокчейн, меньше других
-     */
 
-
+    /**sends the mined block to the storage server.  отправляет добытый блок на сервер хранилища*/
     @RequestMapping("/sendBlocks")
     public String sending() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         if (blockchainValid == false || blockchainSize == 0) {
@@ -567,14 +658,9 @@ public class BasisController {
         sendAllBlocksToStorage(blockchain.getBlockchainList());
         return "redirect:/";
     }
-    /**
-     * Перезаписывает весь список блоков, и делает перерасчет баланса, а также других данных
-     * таких как голоса, совет акционеров и т.д. заново записывает в файлы
-     */
-
 
     /**
-     * Регистрирует новый внешний хост
+     *Registers a new external host. Регистрирует новый внешний хост
      */
     @RequestMapping(method = RequestMethod.POST, value = "/nodes/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public synchronized void register_node(@RequestBody AddressUrl urlAddrress) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -625,16 +711,14 @@ public class BasisController {
 
     }
 
-    //TODO если происходить майнинг, то он возвращает false, пока не прекратиться майнинг.
-    //TODO if mining occurs, it returns false until mining stops.
-    /** выззывает метод addBlock который перезаписывает весь список блоков, и другие данные*/
-
-    /**Возвращяет список хостов, сохраненных на локальном сервере*/
 
     /**
-     * подключается к другим узлам и у них берет их списки хостов, которые храняться у них,
-     * и сохраняет эти списки у себя
+     * connects to other nodes and takes their lists of hosts that are stored by them,
+     *       and keeps these lists at home. (currently partially disabled).
+     * подключается к другим узлам и у них берет их списки хостов, которые хранятся у них,
+     *       и сохраняет эти списки у себя. (на данный момент частично отключен).
      */
+
     @GetMapping("/findAddresses")
     public void findAddresses() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         for (String s : Seting.ORIGINAL_ADDRESSES) {
@@ -651,17 +735,12 @@ public class BasisController {
                 continue;
             }
 
-
-//            for (String s1 : addressesSet) {
-//
-//                register_node(new AddressUrl(s1));
-//            }
-
         }
 
     }
 
     /**
+     * Starts an automatic mining cycle, the cycle will go 2000 steps
      * Запускает автоматический цикл майнинга, цикл будет идти 2000 шагов
      */
     @GetMapping("/moreMining")
@@ -676,6 +755,7 @@ public class BasisController {
 
 
     /**
+     * Sends its list of hosts to other nodes and tries to automatically register with them
      * Отправляет свой список хостов, другим узлам, и пытается автоматически регистрировать у них
      */
     public static void sendAddress() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -709,12 +789,9 @@ public class BasisController {
         System.out.println(":finish send addressess");
     }
 
-    //должен отправлять блокчейн в хранилище блокчейна
-    /**Отправляет список блоков в центральные хранилища (пример: http://194.87.236.238:80)*/
-
-    //должен отправлять блокчейн в хранилище блокчейна
 
     /**
+     * Sends a list of blocks to central stores (example: http://194.87.236.238:80)
      * Отправляет список блоков в центральные хранилища (пример: http://194.87.236.238:80)
      */
     public static int sendAllBlocksToStorage(List<Block> blocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -748,6 +825,8 @@ public class BasisController {
                 List<Block> fromToTempBlock = blocks.subList(size, blocks.size());
                 SendBlocksEndInfo infoBlocks = new SendBlocksEndInfo(Seting.VERSION, fromToTempBlock);
                 String jsonFromTo = UtilsJson.objToStringJson(infoBlocks);
+                //if the current blockchain is larger than the storage, then
+                //send current blockchain send to storage
                 //если блокчейн текущей больше чем в хранилище, то
                 //отправить текущий блокчейн отправить в хранилище
                 if (size < blocks_current_size) {
@@ -761,22 +840,25 @@ public class BasisController {
                     String urlFrom = s + "/nodes/resolve_from_to_block";
                     try {
                         response = UtilUrl.sendPost(jsonFromTo, urlFrom);
-                        System.out.println(":CONFLICT: " + HttpStatus.CONFLICT.value());
-                        System.out.println(":GOOD: " + HttpStatus.OK.value());
-                        System.out.println(":FAIL: " + HttpStatus.EXPECTATION_FAILED.value());
+                        System.out.println(":CONFLICT TREE, IN GLOBAL DIFFERENT TREE " + HttpStatus.CONFLICT.value());
+                        System.out.println(":GOOD: SUCCESS  " + HttpStatus.OK.value());
+                        System.out.println(":FAIL BAD BLOCKCHAIN: " + HttpStatus.EXPECTATION_FAILED.value());
                         System.out.println(":CONFLICT VERSION: " + HttpStatus.FAILED_DEPENDENCY.value());
                         System.out.println(":response: " + response);
                     } catch (Exception e) {
                         System.out.println(":exception resolve_from_to_block: " + originalF);
 
                     }
-                    System.out.println(":CONFLICT: " + HttpStatus.CONFLICT.value());
-                    System.out.println(":GOOD: " + HttpStatus.OK.value());
-                    System.out.println(":FAIL: " + HttpStatus.EXPECTATION_FAILED.value());
+                    System.out.println(":CONFLICT TREE, IN GLOBAL DIFFERENT TREE: " + HttpStatus.CONFLICT.value());
+                    System.out.println(":GOOD SUCCESS: " + HttpStatus.OK.value());
+                    System.out.println(":FAIL BAD BLOCKHAIN: " + HttpStatus.EXPECTATION_FAILED.value());
                     System.out.println(":CONFLICT VERSION: " + HttpStatus.FAILED_DEPENDENCY.value());
                     System.out.println(":response: " + response);
 
                     System.out.println(":BasisController: sendAllBlocksStorage: response: " + response);
+
+                    //there is an up-to-date branch on the global server, download it and delete the obsolete branch.
+                    //на глобальном сервере есть актуальная ветка, скачать ее и удалить устревшую ветку.
                     if (response == HttpStatus.CONFLICT.value()) {
                         System.out.println(":BasisController: sendAllBlocksStorage: start deleted 50 blocks:");
                         System.out.println(":size before delete: " + blockchainSize);
@@ -831,6 +913,7 @@ public class BasisController {
         }
     }
 
+    /**mine every 576 blocks. добывать каждые 576 блоков*/
     @GetMapping("/constantMining")
     public String alwaysMining() throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
 
