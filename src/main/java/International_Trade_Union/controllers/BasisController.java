@@ -965,10 +965,6 @@ public class BasisController {
                     index
             );
             System.out.println("BasisController: finish mine:");
-            //save sended transaction
-            //сохранить уже добавленные в блок транзакции,
-            //чтобы избежать повторного добавления
-//            AllTransactions.addSendedTransaction(temporaryDtoList);
 
             //нужна для корректировки сложности
             int diff = Seting.DIFFICULTY_ADJUSTMENT_INTERVAL;
