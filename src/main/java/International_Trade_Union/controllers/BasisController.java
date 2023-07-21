@@ -548,6 +548,7 @@ public class BasisController {
                     System.out.println("temp size: " + temp.size());
 
                 }else {
+
                     UtilsBlock.deleteFiles();
                     addBlock(bigBlockchain.getBlockchainList());
                 }
