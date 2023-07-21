@@ -549,6 +549,7 @@ public class BasisController {
 
                 }else {
 
+
                     UtilsBlock.deleteFiles();
                     addBlock(bigBlockchain.getBlockchainList());
                 }

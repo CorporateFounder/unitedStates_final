@@ -181,6 +181,7 @@ public interface Seting {
 
     String ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE = "\\resources\\allLawsWithBalance\\";
     String ORGINAL_ALL_TRANSACTION_FILE = "\\resources\\transactions\\";
+
     String ORIGINAL_ALL_SENDED_TRANSACTION_FILE = "\\resources\\sendedTransaction\\";
     String ORIGINAL_POOL_URL_ADDRESS_FILE = "\\resources\\poolAddress\\";
     String ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE = "\\resources\\pooAddressBlocked\\";
