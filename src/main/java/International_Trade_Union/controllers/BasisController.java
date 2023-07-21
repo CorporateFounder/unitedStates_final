@@ -39,6 +39,8 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static International_Trade_Union.utils.UtilsBalance.calculateBalance;
+
 @Controller
 public class BasisController {
     private static Account minerShow = null;
@@ -291,6 +293,8 @@ public class BasisController {
 */
     public static int resolve() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
         updating = true;
+        boolean isPortion = false;
+        boolean isBigPortion = false;
         try {
             System.out.println(" :start resolve");
             Blockchain temporaryBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
@@ -449,6 +453,12 @@ public class BasisController {
                         // локальный 20,
                         //но с 15 блока они отличаются, то нужно удалить из локального с
                         // 15 все блоки и добавить туда 15-25 с глобального блокчейна
+
+                        if(temporaryBlockchain.validatedBlockchain() && blockchainSize > 1){
+                            isPortion = true;
+                        }else {
+                            isPortion = false;
+                        }
                         if (!temporaryBlockchain.validatedBlockchain()) {
                             System.out.println(":download blocks");
                             emptyList = new ArrayList<>();
@@ -507,6 +517,7 @@ public class BasisController {
                 //если глобальный блокчейн верный и он больше самого длиного предыдущего временного блокчейна, то сделать его претендентом в качестве будущего локального блокчейна
                 if (temporaryBlockchain.validatedBlockchain()) {
                     if (bigSize < temporaryBlockchain.sizeBlockhain()) {
+                        isBigPortion = isPortion;
                         bigSize = temporaryBlockchain.sizeBlockhain();
                     }
                     for (Block block : temporaryBlockchain.getBlockchainList()) {
@@ -529,11 +540,24 @@ public class BasisController {
             if (bigBlockchain.validatedBlockchain() && bigBlockchain.sizeBlockhain() > blockchainSize && hashCountZeroBigBlockchain > hashCountZeroAll) {
                 System.out.println("resolve start addBlock start: ");
                 blockchain = bigBlockchain;
-                UtilsBlock.deleteFiles();
-                addBlock(bigBlockchain.getBlockchainList());
+                if(isBigPortion){
+                    List<Block> temp = bigBlockchain.subBlock(blockchainSize, bigBlockchain.sizeBlockhain());
+                    Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+                    addBlock2(temp,
+                           balances );
+                    System.out.println("temp size: " + temp.size());
+
+                }else {
+                    UtilsBlock.deleteFiles();
+                    addBlock(bigBlockchain.getBlockchainList());
+                }
+                List<Block> temp = bigBlockchain.subBlock(blockchainSize, bigBlockchain.sizeBlockhain());
+
+                System.out.println("size: " + blockchainSize);
                 System.out.println(":BasisController: resolve: bigblockchain size: " + bigBlockchain.sizeBlockhain());
                 System.out.println(":BasisController: resolve: validation bigblochain: " + bigBlockchain.validatedBlockchain());
 
+                System.out.println("isPortion: " + isPortion + ":isBigPortion: " +  isBigPortion + " size: " + temp.size());
                 if (blockchainSize > bigSize) {
                     return 1;
                 } else if (blockchainSize < bigSize) {
@@ -542,6 +566,8 @@ public class BasisController {
                     return 0;
                 }
             }
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
         } finally {
             updating = false;
         }
@@ -552,6 +578,49 @@ public class BasisController {
     /**rewrites the blockchain to files
      * производит перезапись блокчейна в файлы*/
 
+    public static void addBlock2(List<Block> originalBlocks, Map<String, Account> balances) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+
+        //delete all files from resources folder
+        //удалить все файлы из папки resources
+
+        System.out.println(" addBlock2 start: ");
+
+        //write a new blockchain from scratch to the resources folder
+        //записать с нуля новый блокчейн в папку resources
+        for (Block block : originalBlocks) {
+            System.out.println(" :BasisController: addBlock2: blockchain is being updated: ");
+            UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        }
+
+        blockchain = Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
+        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        blockchainSize = (int) shortDataBlockchain.getSize();
+        blockchainValid = shortDataBlockchain.isValidation();
+
+        //recalculation of the balance
+        //перерасчет баланса
+        List<String> signs = new ArrayList<>();
+        Map<String, Laws> allLaws = new HashMap<>();
+        List<LawEligibleForParliamentaryApproval> allLawsWithBalance = new ArrayList<>();
+        for (Block block :  originalBlocks) {
+            calculateBalance(balances, block, signs);
+            balances = UtilsBalance.calculateBalanceFromLaw(balances, block, allLaws, allLawsWithBalance);
+        }
+
+        Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
+        SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
+
+        //removal of obsolete laws
+        //удаление устаревших законов
+        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+        //rewriting all existing laws
+        //перезапись всех действующих законов
+        UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+
+        System.out.println(":BasisController: addBlock2: finish: " + originalBlocks.size());
+    }
     public static void addBlock(List<Block> orignalBlocks) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
         Map<String, Account> balances = new HashMap<>();
