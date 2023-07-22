@@ -51,6 +51,7 @@ public class MineController {
         }
         BasisController.resolve();
 
+
         model.addAttribute("title", "Corporation International Trade Union.");
 
         return "mining";

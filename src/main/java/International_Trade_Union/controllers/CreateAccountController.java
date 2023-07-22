@@ -21,10 +21,7 @@ public class CreateAccountController {
     /**Позвалояет создавать счет, отображается в браузере*/
     @GetMapping("create-account")
     public String createAccount(Model model) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
-        if(BasisController.isUpdating() || BasisController.isMining()){
-            return "redirect:/processUpdating";
-        }
-        BasisController.resolve();
+
 
         model.addAttribute("title", "create minerAccount");
         Map<String, String> newAccount = CreateAccount.create();

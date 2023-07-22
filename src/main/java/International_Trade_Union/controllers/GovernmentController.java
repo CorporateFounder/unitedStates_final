@@ -225,10 +225,7 @@ public class GovernmentController {
 
     @GetMapping("/create-position")
     public String createPositionShow(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        if(BasisController.isUpdating() || BasisController.isMining()){
-            return "redirect:/processUpdating";
-        }
-        BasisController.resolve();
+
 
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,

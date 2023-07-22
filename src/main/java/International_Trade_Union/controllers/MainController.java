@@ -73,6 +73,7 @@ public class MainController {
             return "redirect:/processUpdating";
         }
         BasisController.resolve();
+
         String sizeStr = "-1";
         try {
             sizeStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/size");

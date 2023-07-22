@@ -23,10 +23,7 @@ public class ConstitutionController {
     /**Отображает устав в браузере*/
     @GetMapping("corporate-charter")
     public String constutionRus(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        if(BasisController.isUpdating() || BasisController.isMining()){
-            return "redirect:/processUpdating";
-        }
-        BasisController.resolve();
+
         model.addAttribute("title", "corporate charter-корпоративный устав");
         List<String> eng = charterEngList();
         List<String> rus = charterRusList();

@@ -32,11 +32,7 @@ public class StatisticsController {
 
     @PostMapping("/statistics")
     public String setStatistics(@RequestParam String periudStr, RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        if(BasisController.isUpdating() || BasisController.isMining()){
-            return "redirect:/processUpdating";
-        }
 
-        BasisController.resolve();
         periud = Periud.valueOf(periudStr);
         redirectAttrs.addAttribute("title statistics: " + periud);
         return "redirect:/statistics";
@@ -44,6 +40,12 @@ public class StatisticsController {
 
     @GetMapping("/statistics")
     public String getStatistics(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+
+        BasisController.resolve();
+
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
