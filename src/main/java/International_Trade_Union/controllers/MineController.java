@@ -49,7 +49,7 @@ public class MineController {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
-        BasisController.resolve();
+
 
 
         model.addAttribute("title", "Corporation International Trade Union.");

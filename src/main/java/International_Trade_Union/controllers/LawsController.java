@@ -274,7 +274,7 @@ public class LawsController {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
-        BasisController.resolve();
+
 
         Directors directors = new Directors();
         Blockchain blockchain = Mining.getBlockchain(
@@ -543,7 +543,7 @@ public class LawsController {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
-        BasisController.resolve();
+
 
         int index = BasisController.getBlockchainSize();
 
@@ -570,7 +570,7 @@ public class LawsController {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
-        BasisController.resolve();
+
 
         Directors directors = new Directors();
         Blockchain blockchain = Mining.getBlockchain(
@@ -617,7 +617,7 @@ public class LawsController {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
-        BasisController.resolve();
+
 
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,

@@ -163,9 +163,7 @@ public class MainController {
 
     @PostMapping("/setMinner")
     public String setMinnerAddress(@RequestParam(value = "setMinner") String setMinner, RedirectAttributes redirectAttrs){
-        if(BasisController.isUpdating() || BasisController.isMining()){
-            return "redirect:/processUpdating";
-        }
+
 
         System.out.println("MainController:  " + setMinner);
         UtilsFileSaveRead.save(setMinner, Seting.ORIGINAL_ACCOUNT, false);

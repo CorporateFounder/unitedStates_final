@@ -31,7 +31,7 @@ public class FractionsControllers {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
-        BasisController.resolve();
+
 
 
         Directors directors = new Directors();
