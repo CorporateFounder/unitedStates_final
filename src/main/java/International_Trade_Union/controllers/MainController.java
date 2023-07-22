@@ -55,14 +55,12 @@ public class MainController {
        } catch (IOException e) {
            throw new RuntimeException(e);
        }
-    }
+   }
     @GetMapping("/")
     public String home(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
-        BasisController.resolve();
-
         String sizeStr = "-1";
         try {
             sizeStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/size");
@@ -164,8 +162,10 @@ public class MainController {
 
 
     @PostMapping("/setMinner")
-    public String setMinnerAddress(@RequestParam(value = "setMinner") String setMinner, RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
-
+    public String setMinnerAddress(@RequestParam(value = "setMinner") String setMinner, RedirectAttributes redirectAttrs){
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
 
         System.out.println("MainController:  " + setMinner);
         UtilsFileSaveRead.save(setMinner, Seting.ORIGINAL_ACCOUNT, false);
@@ -175,8 +175,7 @@ public class MainController {
 
 
     @GetMapping("about")
-    public String aboutUs(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
-
+    public String aboutUs(Model model){
         model.addAttribute("title", "ABOUT US");
         model.addAttribute("eng", OriginalPreambleEng.ARTICLE_0);
         model.addAttribute("rus", OriginalPreamble.ARTICLE_0);
