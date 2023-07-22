@@ -174,10 +174,8 @@ public class MainController {
 
 
     @PostMapping("/setMinner")
-    public String setMinnerAddress(@RequestParam(value = "setMinner") String setMinner, RedirectAttributes redirectAttrs){
-        if(BasisController.isUpdating() || BasisController.isMining()){
-            return "redirect:/processUpdating";
-        }
+    public String setMinnerAddress(@RequestParam(value = "setMinner") String setMinner, RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+
 
         System.out.println("MainController:  " + setMinner);
         UtilsFileSaveRead.save(setMinner, Seting.ORIGINAL_ACCOUNT, false);
@@ -187,7 +185,8 @@ public class MainController {
 
 
     @GetMapping("about")
-    public String aboutUs(Model model){
+    public String aboutUs(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+
         model.addAttribute("title", "ABOUT US");
         model.addAttribute("eng", OriginalPreambleEng.ARTICLE_0);
         model.addAttribute("rus", OriginalPreamble.ARTICLE_0);
