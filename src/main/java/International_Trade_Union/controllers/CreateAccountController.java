@@ -7,9 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import International_Trade_Union.model.CreateAccount;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
+import java.io.IOException;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Map;
 
@@ -21,10 +20,11 @@ public class CreateAccountController {
 
     /**Позвалояет создавать счет, отображается в браузере*/
     @GetMapping("create-account")
-    public String createAccount(Model model) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+    public String createAccount(Model model) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
+        BasisController.resolve();
 
         model.addAttribute("title", "create minerAccount");
         Map<String, String> newAccount = CreateAccount.create();

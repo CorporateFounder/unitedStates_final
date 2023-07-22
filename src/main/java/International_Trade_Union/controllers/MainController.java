@@ -52,16 +52,27 @@ public class MainController {
     static {
        try {
            UtilsCreatedDirectory.createPackages();
+           BasisController.resolve();
        } catch (IOException e) {
            throw new RuntimeException(e);
+       } catch (NoSuchAlgorithmException e) {
+           throw new RuntimeException(e);
+       } catch (InvalidKeySpecException e) {
+           throw new RuntimeException(e);
+       } catch (SignatureException e) {
+           throw new RuntimeException(e);
+       } catch (NoSuchProviderException e) {
+           throw new RuntimeException(e);
+       } catch (InvalidKeyException e) {
+           throw new RuntimeException(e);
        }
-   }
+    }
     @GetMapping("/")
     public String home(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
-
+        BasisController.resolve();
         String sizeStr = "-1";
         try {
             sizeStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/size");

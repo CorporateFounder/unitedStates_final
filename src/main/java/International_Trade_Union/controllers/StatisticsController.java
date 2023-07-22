@@ -31,11 +31,12 @@ public class StatisticsController {
     private static Periud periud = International_Trade_Union.statistics.Periud.DAY;
 
     @PostMapping("/statistics")
-    public String setStatistics(@RequestParam String periudStr, RedirectAttributes redirectAttrs) {
+    public String setStatistics(@RequestParam String periudStr, RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
 
+        BasisController.resolve();
         periud = Periud.valueOf(periudStr);
         redirectAttrs.addAttribute("title statistics: " + periud);
         return "redirect:/statistics";

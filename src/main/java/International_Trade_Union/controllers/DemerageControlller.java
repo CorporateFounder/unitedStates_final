@@ -23,7 +23,7 @@ public class DemerageControlller {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
-
+        BasisController.resolve();
         List<InfoDemerageMoney> infoDemerageMonies = new ArrayList<>();
         infoDemerageMonies = UtilsDemerage.readDemerage(Seting.BALANCE_REPORT_ON_DESTROYED_COINS);
         model.addAttribute("title", "demerage");

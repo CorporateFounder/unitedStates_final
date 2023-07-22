@@ -33,6 +33,7 @@ public class BoardOfShareholdersController {
             return "redirect:/processUpdating";
         }
 
+        BasisController.resolve();
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);

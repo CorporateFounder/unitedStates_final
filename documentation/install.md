@@ -2,7 +2,7 @@
 Victor https://youtu.be/i7b-8lfIueI
 Если у вас windows, то вам нужно скачать из папки target UnitedStates-0.0.1-SHAPSHOT.jar
 в поиске windows введите cmd откройте командную строку и введите туда java -jar (там, где находится файл) /unitedStates-0.0.1-SNAPSHOT.jar
-пример: java -jar C://unitedStates-0.0.1-SNAPSHOT.jar.
+пример: java -jar C:/unitedStates-0.0.1-SNAPSHOT.jar.
 
 Для корректной работы необходимо скачать и установить jre https://www.java.com/en/download/manual.jsp
 https://www.oracle.com/cis/java/technologies/downloads/,
