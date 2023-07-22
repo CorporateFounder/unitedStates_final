@@ -172,25 +172,25 @@ public interface Seting {
     //используется для утверждения бюджета и эмиссии
     int LAW_MONTH_VOTE = (int) (FIFTEEN_DAYS * Seting.COUNT_BLOCK_IN_DAY);
 
-            String ORIGINAL_BLOCKCHAIN_FILE = "\\resources\\blockchain\\";
-    String ORIGINAL_BALANCE_FILE = "\\resources\\balance\\";
-    String ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE = "\\resources\\federalGovernment\\federalGovernment.txt";
-    String ORIGINAL_ALL_CORPORATION_LAWS_FILE = "\\resources\\federalLaws\\";
-    String ORIGINAL_ACCOUNT = "\\resources\\minerAccount\\minerAccount.txt";
-    String ORIGINAL_CORPORATE_VOTE_FILE = "\\resources\\vote\\";
+            String ORIGINAL_BLOCKCHAIN_FILE = "/resources/blockchain/";
+    String ORIGINAL_BALANCE_FILE = "/resources/balance/";
+    String ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE = "/resources/federalGovernment/federalGovernment.txt";
+    String ORIGINAL_ALL_CORPORATION_LAWS_FILE = "/resources/federalLaws/";
+    String ORIGINAL_ACCOUNT = "/resources/minerAccount/minerAccount.txt";
+    String ORIGINAL_CORPORATE_VOTE_FILE = "/resources/vote/";
 
-    String ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE = "\\resources\\allLawsWithBalance\\";
-    String ORGINAL_ALL_TRANSACTION_FILE = "\\resources\\transactions\\";
+    String ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE = "/resources/allLawsWithBalance/";
+    String ORGINAL_ALL_TRANSACTION_FILE = "/resources/transactions/";
 
-    String ORIGINAL_ALL_SENDED_TRANSACTION_FILE = "\\resources\\sendedTransaction\\";
-    String ORIGINAL_POOL_URL_ADDRESS_FILE = "\\resources\\poolAddress\\";
-    String ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE = "\\resources\\pooAddressBlocked\\";
+    String ORIGINAL_ALL_SENDED_TRANSACTION_FILE = "/resources/sendedTransaction/";
+    String ORIGINAL_POOL_URL_ADDRESS_FILE = "/resources/poolAddress/";
+    String ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE = "/resources/pooAddressBlocked/";
 
-    String TEMPORARY_BLOCKCHAIN_FILE = "\\resources\\tempblockchain\\";
+    String TEMPORARY_BLOCKCHAIN_FILE = "/resources/tempblockchain/";
 
     //отчет об уничтоженных монетах
-    String BALANCE_REPORT_ON_DESTROYED_COINS = "\\resources\\balanceReportOnDestroyedCoins\\";
-    String CURRENT_BUDGET_END_EMISSION = "\\resources\\budgetEndEmission\\";
+    String BALANCE_REPORT_ON_DESTROYED_COINS = "/resources/balanceReportOnDestroyedCoins/";
+    String CURRENT_BUDGET_END_EMISSION = "/resources/budgetEndEmission/";
 
 
     //адресса внешних сервисов
@@ -202,29 +202,29 @@ public interface Seting {
 
     //папки файла для тестирования с сохранениям файла
 
-    String TEST_LAST_BLOCK = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileSaved\\lastBlock\\";
-    String INDEX_TEST = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileSaved\\index\\index.txt";
-    String TEST_BLOCKCHAIN_SAVED = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileSaved\\network\\";
-    String TEST_BLOCKCHAIN_BALANCES = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileSaved\\balances\\";
-    String TEST_FEDERAL_GOVERNMENT = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileSaved\\federal government\\federalGovernment.txt";
-    String TEST_FEDERAL_LAWS = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileSaved\\laws\\";
-    String TEST_CURRENT_LAWS = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileSaved\\current laws\\";
-    String TEST_FEDERAL_VOTE = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileSaved\\vote\\";
-    String TEST_ALL_FEDERAL_LAWS_WITH_BALANCE_FILE = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileSaved\\allLawsWithBalance\\";
+    String TEST_LAST_BLOCK = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/lastBlock/";
+    String INDEX_TEST = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/index/index.txt";
+    String TEST_BLOCKCHAIN_SAVED = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/network/";
+    String TEST_BLOCKCHAIN_BALANCES = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/balances/";
+    String TEST_FEDERAL_GOVERNMENT = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/federal government/federalGovernment.txt";
+    String TEST_FEDERAL_LAWS = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/laws/";
+    String TEST_CURRENT_LAWS = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/current laws/";
+    String TEST_FEDERAL_VOTE = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/vote/";
+    String TEST_ALL_FEDERAL_LAWS_WITH_BALANCE_FILE = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/allLawsWithBalance/";
 
 
     //Временный блокчейн для тестирования
-    String TEST_LAST_BLOCK_TEMPORARY = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileWithoutSave\\lastBlock\\";
-    String TEST_INDEX_TEMPORARY = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileWithoutSave\\index\\index.txt";
-    String TEST_TEMPORARY_BLOCKCHAIN = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileWithoutSave\\temporary blockchain\\";
-    String TEST_BLOCKCHAIN_BALANCES_TEMPORARY = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileWithoutSave\\balances\\";
-    String TEST_FEDERAL_GOVERNMENT_TEMPORARY = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileWithoutSave\\federal government\\federalGovernment.txt";
-    String TEST_FEDERAL_LAWS_TEMPORARY = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileWithoutSave\\laws\\";
-    String TEST_CURRENT_LAWS_TEMPORARY = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileWithoutSave\\current laws\\";
-    String TEST_FEDERAL_VOTE_TEMPORARY = ".\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileSaved\\vote\\";
-    String TEST_ALL_FEDERAL_LAWS_WITH_BALANCE_TEMPORARY = ".\\unitedStates\\src\\test\\java\\unitted_states_of_mankind\\resourceTestingFileWithoutSave\\allLawsWithBalance\\";
+    String TEST_LAST_BLOCK_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/lastBlock/";
+    String TEST_INDEX_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/index/index.txt";
+    String TEST_TEMPORARY_BLOCKCHAIN = "/src/testjava/unitted_states_of_mankind/resourceTestingFileWithoutSave/temporary blockchain/";
+    String TEST_BLOCKCHAIN_BALANCES_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/balances/";
+    String TEST_FEDERAL_GOVERNMENT_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/federal government/federalGovernment.txt";
+    String TEST_FEDERAL_LAWS_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/laws/";
+    String TEST_CURRENT_LAWS_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/current laws/";
+    String TEST_FEDERAL_VOTE_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/vote/";
+    String TEST_ALL_FEDERAL_LAWS_WITH_BALANCE_TEMPORARY = "/unitedStates/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/allLawsWithBalance/";
 
-    String TEST_FILE_WRITE_INFO = ".\\src\\test\\java\\unitted_states_of_mankind\\blockchainTwentyYearTest\\";
+    String TEST_FILE_WRITE_INFO = "/src/test/java/unitted_states_of_mankind/blockchainTwentyYearTest/";
     double DIGITAL_DOLLAR_REWARDS_BEFORE = 400.0;
     double DIGITAL_STOCK_REWARDS_BEFORE = 400.0;
     double DIGITAL_DOLLAR_FOUNDER_REWARDS_BEFORE = Math.round(UtilsUse.countPercents(Seting.DIGITAL_DOLLAR_REWARDS_BEFORE, Seting.FOUNDERS_REWARD));
