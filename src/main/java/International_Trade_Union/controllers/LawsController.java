@@ -101,6 +101,9 @@ public class LawsController {
 
     @GetMapping("/sanction")
     public String sanction(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
         BasisController.resolve();
         return "sanction";
     }
@@ -188,6 +191,9 @@ public class LawsController {
     /**Голосование учитывает голоса как акций, так и голоса избраных представителей*/
     @GetMapping("/voting")
     public String lawVoting() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
         BasisController.resolve();
         return "voting";
     }
