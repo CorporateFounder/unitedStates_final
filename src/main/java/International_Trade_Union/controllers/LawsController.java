@@ -34,7 +34,12 @@ public class LawsController {
 
 
     @GetMapping("detail-laws")
-    public String details(Model model) {
+    public String details(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+        BasisController.resolve();
+
         return "detail-laws";
     }
 
@@ -95,7 +100,8 @@ public class LawsController {
 
 
     @GetMapping("/sanction")
-    public String sanction(Model model){
+    public String sanction(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        BasisController.resolve();
         return "sanction";
     }
 
@@ -181,7 +187,8 @@ public class LawsController {
     }
     /**Голосование учитывает голоса как акций, так и голоса избраных представителей*/
     @GetMapping("/voting")
-    public String lawVoting(){
+    public String lawVoting() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        BasisController.resolve();
         return "voting";
     }
     @PostMapping("/voting")
@@ -273,6 +280,10 @@ public class LawsController {
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
 
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+        BasisController.resolve();
         Map<String, Account> balances = new HashMap<>();
         //считывать баланс
         balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
@@ -530,6 +541,11 @@ public class LawsController {
     /**Отображается в браузере список всех принятых бюджетов и эмиссий*/
     @GetMapping("/budget_end_emission")
     public String allBudgetEndEmission(Model model) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+        BasisController.resolve();
         int index = BasisController.getBlockchainSize();
 
         int day = index % Seting.LAW_MONTH_VOTE;
@@ -552,6 +568,10 @@ public class LawsController {
 
     @GetMapping("/budget_end_emission_15_day")
     public String budgetEndEmissision15day(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+        BasisController.resolve();
         Directors directors = new Directors();
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
@@ -593,6 +613,11 @@ public class LawsController {
     /**Отображается в браузере, список всех пакета законов*/
     @GetMapping("/all-laws")
     public String allLaws(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+        BasisController.resolve();
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
@@ -666,6 +691,10 @@ public class LawsController {
                                @RequestParam String password,
                                RedirectAttributes redirectAttrs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+        BasisController.resolve();
         nameLaw = Seting.ADD_DIRECTOR + nameLaw;
         String[] lawsAdd = new String[laws.length];
         for (int i = 0; i < laws.length; i++) {
@@ -744,6 +773,10 @@ public class LawsController {
     /**Отображается в браузере, позволяет создать новый пакет законов*/
     @GetMapping("/create-law")
     public String createLawsShow(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        if(BasisController.isUpdating() || BasisController.isMining()){
+            return "redirect:/processUpdating";
+        }
+        BasisController.resolve();
         model.addAttribute("title", "create law");
         Map<String, Account> balances = new HashMap<>();
         //считывать баланс
