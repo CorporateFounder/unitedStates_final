@@ -54,6 +54,7 @@ public class TransactionsController {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
+        BasisController.resolve();
 
         blockchain= Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
