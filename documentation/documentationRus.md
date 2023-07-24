@@ -53,6 +53,7 @@ https://bitcointalk.org/index.php?topic=5459876.new#new
 и устранить такие проблемы как финансовые кризисы (Дефляционная Спираль, Стагфляция, Галопирующая инфляция и т.д.)
 Пандемии, Космические Угрозы, Экологические проблемы и снизит возникновение военных конфликтов.
 
+
 ## Благодарность всему сообществу bitcointalks и дискорд
 В особенности
 - Utopia-legend
@@ -85,6 +86,7 @@ https://bitcointalk.org/index.php?topic=5459876.new#new
 - [Решения проблем](../documentation/solving-common-problems.md)
 - [БЮДЖЕТ И ЭМИССИЯ](../documentation/how_to_create_a_budget_and_emission.md)
 - [статистика](../documentation/statistics.md)
+- [ОБЯСНЕНИЕ ПОЧЕМУ МОНЕТА БУДЕТ ДОРОЖАТЬ](../documentation/EXPLAIN.md)
 
 [//]: # (- [создание фракции]&#40;../documentation/create-fraction.md&#41;)
 ## Корпоративный устав

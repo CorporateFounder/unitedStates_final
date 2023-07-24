@@ -83,6 +83,7 @@ Pandemics, Space Threats, Environmental Issues and will reduce the occurrence of
 - [resolve problems](../documentationEng/solving-common-problems.md)
 - [BUDGET AND EMISSION](../documentationEng/how_to_create_a_budget_and_emission.md)
 - [statistic](../documentationEng/statistics.md)
+- [EXPLANATION WHY THE COIN WILL RAISE](../documentationEng/EXPLAIN.md)
 
 [//]: # (- [create fraction]&#40;../documentationEng/create-fractionEng.md&#41;)
 ## Corporate Charter
