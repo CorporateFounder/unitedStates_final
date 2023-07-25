@@ -18,10 +18,7 @@ import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.*;
@@ -35,19 +32,30 @@ import java.util.stream.Collectors;
 public class AccountController {
     /**
      * created account
+     * Params: nothing
+     * Body: nothing
      */
     @GetMapping("/keys")
     public Map<String, String> keys() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         return CreateAccount.create();
     }
 
+
+    /***/
+    @GetMapping("/updating")
+    @ResponseBody
+    public Integer updating() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        return BasisController.resolve();
+    }
+
     /**
      * get find end get account
      */
     @GetMapping("/account")
-    public Account account(@RequestBody String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public Account account(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
         Account account = UtilsBalance.getBalance(address, balances);
+
         return account;
     }
 
@@ -55,7 +63,7 @@ public class AccountController {
      * get dollar balance
      */
     @GetMapping("/dollar")
-    public double dollar(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public Double dollar(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
         Account account = UtilsBalance.getBalance(address, balances);
         return account.getDigitalDollarBalance();
@@ -65,7 +73,7 @@ public class AccountController {
      * get stock balance
      */
     @GetMapping("/stock")
-    public double stock(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public Double stock(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
         Account account = UtilsBalance.getBalance(address, balances);
         return account.getDigitalStockBalance();
@@ -77,10 +85,9 @@ public class AccountController {
     @GetMapping("/sendCoin")
     public String send(@RequestParam String sender,
                        @RequestParam String recipient,
-                       Double dollar,
-                       Double stock,
-                       Double reward,
-
+                       @RequestParam Double dollar,
+                       @RequestParam Double stock,
+                       @RequestParam Double reward,
                        @RequestParam String password) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         Base base = new Base58();
         String result = "wrong";
@@ -110,6 +117,15 @@ public class AccountController {
         System.out.println("Main Controller: new transaction: vote: " + VoteEnum.YES);
         dtoTransaction.setSign(sign);
         Directors directors = new Directors();
+        System.out.println("sender: " + sender);
+        System.out.println("recipient: " + recipient);
+        System.out.println("dollar: " + dollar + ": class: " + dollar.getClass());
+        System.out.println("stock: " + stock + ": class: " + stock.getClass());
+        System.out.println("reward: " + reward + ": class: " + reward.getClass());
+        System.out.println("password: " + password);
+        System.out.println("sign: " + dtoTransaction.toSign());
+        System.out.println("verify: " + dtoTransaction.verify());
+
         if (dtoTransaction.verify()) {
 
             //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
@@ -157,7 +173,7 @@ public class AccountController {
      * whether the transaction was added to the blockchain, find with sign
      */
     @GetMapping("/isTransactionAdd")
-    public boolean isTransactionGet(@RequestParam String sign) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public Boolean isTransactionGet(@RequestParam String sign) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         boolean result = false;
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
