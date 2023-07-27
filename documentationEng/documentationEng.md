@@ -105,4 +105,10 @@ Pandemics, Space Threats, Environmental Issues and will reduce the occurrence of
   - [Budget and additional issue](../charterEng/BUDGET%20AND%20EMISSION.md)
 
 
+Documentation wallet api
+ - [main page](../documentationEng/documentation-api-wallet.md)
+ - future 
+ - future
+
+
 [home](../readme.md)

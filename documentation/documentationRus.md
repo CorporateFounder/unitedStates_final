@@ -106,6 +106,12 @@ https://bitcointalk.org/index.php?topic=5459876.new#new
     - [Естественные права](../charter/RIGHTS.md)
     - [Законодательная Власть](../charter/POWER.md)
     - [Бюджет и дополнительная Эмиссия](../charter/BUDGET%20AND%20EMISSION.md)
+
+
+Документация апи кошелька
+ -[главная страница](../documentation/documentation-api-wallet.md)
+ - будет сделана в будущем
+ - 
     
 
 [выход на главную](../readme.md)
