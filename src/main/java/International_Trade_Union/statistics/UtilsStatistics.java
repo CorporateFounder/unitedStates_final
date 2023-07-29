@@ -36,6 +36,8 @@ public class UtilsStatistics {
         System.out.println("start method Utils statistic: ");
         double sumDollarSender = 0;
         double sumStockSender = 0;
+        double medianBalanceDollar = 0;
+        double medianBalanceStock = 0;
 
                 System.out.println("calculate all digital dollars end stocks");
         for (Map.Entry<String, Account> accountEntry : balances.entrySet()) {
@@ -96,11 +98,9 @@ public class UtilsStatistics {
         if(stocksList.size() > 3)
              medianStock = UtilsUse.median(stocksList);
         System.out.println("medianStock: " + medianStock);
+
         //скорость обращения денег
-
         //сумма всех счетов отправителей за периуд
-
-
         if(medianDollar > 0 && dollarsList.size() > 3){
             velocity_of_money_dollar = (medianDollar * dollarsList.size())/ allDigitalDollar;
             velocity_of_money_dollar_model2 = (medianDollar * dollarsList.size())/ sumDollarSender;
@@ -112,7 +112,20 @@ public class UtilsStatistics {
         }
 
 
+        List<Double> medianBalanceDollarList = balances.entrySet()
+                .stream()
+                .filter(t->t.getValue().getDigitalDollarBalance()>0)
+                .map(t->t.getValue().getDigitalDollarBalance())
+                .collect(Collectors.toList());
 
+        List<Double>medinBalanceStockList = balances.entrySet()
+                .stream()
+                .filter(t->t.getValue().getDigitalStockBalance() >0)
+                .map(t->t.getValue().getDigitalStockBalance())
+                .collect(Collectors.toList());
+
+            medianBalanceDollar = UtilsUse.median(medianBalanceDollarList);
+            medianBalanceStock = UtilsUse.median(medinBalanceStockList);
 
         int accountsSize = (int) balances.entrySet().stream()
                 .map(t->t.getValue().getDigitalDollarBalance() > 0 || t.getValue().getDigitalStockBalance() > 0)
@@ -134,7 +147,9 @@ public class UtilsStatistics {
                 medianDollar,
                 medianStock,
                 uniqueMinerDaySize,
-                accountsSize
+                accountsSize,
+                medianBalanceDollar,
+                medianBalanceStock
 
         );
         return statistic;

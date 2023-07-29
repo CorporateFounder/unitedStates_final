@@ -38,8 +38,10 @@
         <p th:text="'sum transactions stock: '+${#numbers.formatDecimal(el.sumTransactionsStock, 1, 'COMMA', 16, 'POINT')}"/>
         <p th:text="'median transactions dollar: '+${#numbers.formatDecimal(el.medianTransactionsDollar, 1, 'COMMA', 16, 'POINT')}"/>
         <p th:text="'median transactions stock: '+${#numbers.formatDecimal(el.medianTransactionsStock, 1, 'COMMA', 16, 'POINT')}"/>
-        <p th:text="'count unique miner in days: '+${el.uniqueMinerInDays}"/>
+        <p th:text="'count unique miner in period: '+${el.uniqueMinerInDays}"/>
         <p th:text="'all account balance upper zero: '+${el.uniqueAddressBalanceUpperZero}"/>
+        <p th:text="'median balance dollar in accounts from period: '+${#numbers.formatDecimal(el.medianBalanceDollar, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'median balance stock in accounts from period: '+${#numbers.formatDecimal(el.medianBalanceStock, 1, 'COMMA', 16, 'POINT')}"/>
     </div>
 
 </div>
