@@ -1026,6 +1026,9 @@ public class BasisController {
             Integer sizeG = Integer.valueOf(sizeStr);
             String text = "";
             //нахождение адрессов
+            Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+            Account miner = balances.get(User.getUserAddress());
+            minerShow = miner;
             findAddresses();
 
             resolve_conflicts();
@@ -1036,7 +1039,7 @@ public class BasisController {
                 AllTransactions.clearAllTransaction();
             }
             //собирает класс список балансов из файла расположенного по пути Seting.ORIGINAL_BALANCE_FILE
-            Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+            balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
             //собирает объект блокчейн из файла
 
             blockchain = Mining.getBlockchain(
@@ -1084,7 +1087,7 @@ public class BasisController {
 
             //получить счет майнера
 
-            Account miner = balances.get(User.getUserAddress());
+            miner = balances.get(User.getUserAddress());
             minerShow = miner;
             System.out.println("BasisController: mining: account miner: " + miner);
             if (miner == null) {
