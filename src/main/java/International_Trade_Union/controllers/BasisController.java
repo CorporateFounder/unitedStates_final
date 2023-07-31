@@ -991,6 +991,7 @@ public class BasisController {
         for (int i = 0; i < 576; i++) {
             try {
                 mining();
+
             } catch (IllegalArgumentException e) {
                 System.out.println("BasisisController: constantMining find error:");
                 continue;
