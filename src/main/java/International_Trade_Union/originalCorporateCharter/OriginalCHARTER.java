@@ -197,6 +197,7 @@ public interface OriginalCHARTER {
             "                .collect(Collectors.toList());\n" +
             "````\n" +
             "[Возврат на главную](../documentation/documentationRus.md)";
+
     String LAW_2 = "# VOTE_STOCK (Как с помощью акций происходит голосование.)\n" +
             "\n" +
             "Как с помощью акций происходит голосование. \n" +

@@ -45,6 +45,7 @@ public class GovernmentController {
             return "redirect:/processUpdating";
         }
 
+
         Directors directors = new Directors();
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,

@@ -159,6 +159,8 @@ public class UtilsGovernment {
             votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks);
         }
 
+
+
         //подсчитать средннее количество раз сколько он проголосовал за
         Map<String, Integer> yesAverage = UtilsCurrentLaw.calculateAverageVotesYes(votesMap);
         //подсчитать среднее количество раз сколько он проголосовал против
@@ -230,6 +232,7 @@ public class UtilsGovernment {
             }
 
         }
+
 
 
 

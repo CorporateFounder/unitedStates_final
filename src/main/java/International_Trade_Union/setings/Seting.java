@@ -213,6 +213,7 @@ public interface Seting {
     String TEST_ALL_FEDERAL_LAWS_WITH_BALANCE_FILE = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/allLawsWithBalance/";
 
 
+
     //Временный блокчейн для тестирования
     String TEST_LAST_BLOCK_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/lastBlock/";
     String TEST_INDEX_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/index/index.txt";
@@ -236,6 +237,7 @@ public interface Seting {
     int DELETED_PORTION = 150;
     int PORTION_DOWNLOAD = 500;
 
+    //version
     int VERSION = 9;
     String ORIGINAL_HASH = "08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c";
 }

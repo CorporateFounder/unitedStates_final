@@ -20,6 +20,7 @@ import java.util.List;
 @Controller
 public class ConstitutionController {
 
+
     /**Отображает устав в браузере*/
     @GetMapping("corporate-charter")
     public String constutionRus(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {

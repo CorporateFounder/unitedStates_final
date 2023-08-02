@@ -314,6 +314,7 @@ public class LawsController {
             }
 
         }
+
         //подсчитать голоса за все проголосованные заканы
         List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
                 lawEligibleForParliamentaryApprovals,
@@ -386,7 +387,6 @@ public class LawsController {
                     .collect(Collectors.toList());
             original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);
         }
-
 
 
         //позиции избираемые советом корпоративных верховных судей

@@ -195,6 +195,7 @@ public interface OriginalCHARTER_ENG {
             "                 .collect(Collectors.toList());\n" +
             "````\n" +
             "[Return to main page](../documentation/documentationEng.md)";
+
     String LAW_2 = "# VOTE_STOCK (How shares are voted.)\n" +
             "How shares are voted.\n" +
             "1. The number of shares is equal to the number of votes.\n" +
