@@ -7,7 +7,7 @@
 
 ## Контакты
 my discord https://discord.gg/MqkvC3SGHH
-my web http://194.87.236.238/
+my web http://194.87.236.238:82/
 my telegram https://t.me/citu_coin
 
 https://bitcointalk.org/index.php?topic=5459836.new#new
