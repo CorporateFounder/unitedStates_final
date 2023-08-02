@@ -2,7 +2,6 @@
 
 ## Approval of the law
 _____
-
 ## CHARTER
 No law is retroactive. No law shall violate the existing statute or be inconsistent with
 other applicable laws. If there is a contradiction between several laws from one set of laws,
@@ -14,6 +13,33 @@ which were adopted earlier, but should be taken into account precisely from the 
 The law is in force as long as it satisfies the conditions for the adoption of the law and as soon as the condition
 violated, the law loses its force until the law is re-adopted.
 In the voting of all laws, only votes cast in the last year are taken into account.
+
+If there are States or Private Jurisdictions that are part of this union,
+then a House of Representatives should be formed. The House of Representatives must be elected
+as from multi-member districts, where each state must have at least one candidate, but
+for every 40,000 voters, one candidate. Also, each candidate must be elected according to such a system.
+Each voter has v = n - 1 votes, where n is the number of candidates for that constituency.
+Each voter can vote YES or NO by casting their votes for candidates.
+Further, for all participants, all the votes given for him are summed up according to the formula YES - NO,
+the result is the rating. Places shall be allocated to the persons with the highest number of
+rating. If there are states or private jurisdictions in the Union, then no law is
+in force until it is also approved by the House of Representatives.
+
+There are minimum requirements that all members of this union must comply with (If this state
+or private jurisdiction)
+1. All participants must trade among themselves only in this cryptocurrency (dollars or stocks)
+2. No member of this alliance should initiate aggression against the members of this alliance.
+3. Union members should not have the right to impose a form of government on each other (an exception is the method
+   election of members of the House of Representatives, and other members must be observers that they were elected
+   according to the rules described. The House of Representatives shall be elected as described in this system,
+   citizens of these jurisdictions).
+4. All members of the union must recognize this charter as the most important law and the laws also adopted
+   factions and the House of Representatives.
+5. All citizens of this union should have the right to freely cross the borders of the members of this union.
+6. Protectionist measures should not be applied against the citizens of the members of this union and the members of the union themselves.
+
+
+
 All laws are divided into several groups.
 1. Ordinary laws
 2. Strategic Plan
@@ -22,32 +48,38 @@ All laws are divided into several groups.
 5. Amendments to the Charter
 6. The charter itself
 
+
+
 NOTHING removes the vote from the candidate when voting.
 ### REGULAR LAWS
 To establish ordinary laws,
-The position must pass at least four weeks after the vote for the amendment to be legitimate.
 1. The name of the package of law should not match the highlighted keywords.
 2. The law must receive more than 1 vote according to the scoring system described by [VOTE_STOCK](../charterEng/VOTE_STOCK.md)
-3. Must receive 15% or more votes from factions according to the scoring system described in [VOTE_FFRACTION](../charterEng/VOTE_FRACTION.md)
+3. Must receive 15% or more votes from factions according to the scoring system described in [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md)
+4. If the founder vetoed the law, you need to get 15% or more votes from factions in the system
+   count described in [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md) and 2 or more votes from
+   Council of Judges (ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES) according to the vote counting system
+   [ONE_VOTE](../charterEng/ONE_VOTE.md)
 
 
 Sample code in LawsController current law:
 ````
       //laws must be approved by everyone.
+         //laws must be approved by everyone.
          List<CurrentLawVotesEndBalance> notEnoughVotes = current.stream()
                  .filter(t -> !directors.contains(t.getPackageName()))
                  .filter(t->!Seting.AMENDMENT_TO_THE_CHARTER.equals(t.getPackageName()))
                  .filter(t->!directors.isCabinets(t.getPackageName()))
                  .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))
                  .filter(t->!Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))
-                 .filter(t ->
-                  t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
-                 && t.getVotes() >= Seting.ALL_STOCK_VOTE
+                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                 && t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0 ||
+                 t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS &&
+                         t.getVotesCorporateCouncilOfReferees() > Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)
                  .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());
-   
+
 
 ````
-
 ### STRATEGIC PLAN.
 The strategic plan is the general plan for the entire network and is approved in the same way as an ordinary law,
 but there are some differences from ordinary laws.
@@ -80,31 +112,31 @@ Each such position can be limited to the number that is defined in this system.
 for this position. Example: There is only one CEO position.
 Elected in the same way as ***strategic plan***
 But the number is determined for each position separately.
+If the founder has vetoed a candidate for this position,
+but it must also be approved by the council of judges and must receive 2 or more votes.
+By system [ONE_VOTE](../charterEng/ONE_VOTE.md)
 ````
-  //positions elected only by all participants
-         List<CurrentLawVotesEndBalance> electedByFractions = current.stream()
-                 .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
-                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+   //positions created by all participants
+         List<CurrentLawVotesEndBalance> createdByFraction = current.stream()
+                 .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
+                 .filter(t->t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
                  && t.getVotes() >= Seting.ALL_STOCK_VOTE)
+                 .collect(Collectors.toList());
+         //adding positions created by the board of directors
+         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : createdByFraction) {
+             directors.addAllByBoardOfDirectors(currentLawVotesEndBalance.getLaws());
+         }
+
+         //positions elected only by all participants
+         List<CurrentLawVotesEndBalance> electedByFractions = current.stream()
+                 .filter(t -> directors.isElectedByFractions(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
+                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                 && t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0 ||
+                         t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                 && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)
                  .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                  .collect(Collectors.toList());
 
-
-         //group by list
-         Map<String, List<CurrentLawVotesEndBalance>> group = electedFraction.stream()
-                 .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));
-
-         Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();
-
-         // leave the amount that is described in this post
-         for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {
-             List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();
-             temporary = temporary.stream()
-                     .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))
-                     .limit(directors.getDirector(stringListEntry.getKey()).getCount())
-                     .collect(Collectors.toList());
-             original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);
-         }
 ````
 
 There are also positions that are created with the help of laws, these positions are also approved by the Legislative power.

@@ -17,6 +17,33 @@ public interface OriginalCHARTER {
             "Закон является Действующим, пока удовлетворяет условиям принятия закона и как только условие \n" +
             "нарушено, закон теряет свою силу, до повторного принятия закона.\n" +
             "В голосовании всех законов, учитываются только голоса отданные за последний год.\n" +
+            "\n" +
+            "Если есть Государства или Частные юрисдикции, которые входят в состав данного союза,\n" +
+            "то должно быть сформировано палата представителей. Палата представителей должна избираться\n" +
+            "как из многомандатных округов, где каждый штат должен иметь не меньше одного кандидата, но\n" +
+            "на каждые 40 тысяч избирателей, по кандидату. Также избираться каждый кандидат должен по системе такой системе.\n" +
+            "Каждый избиратель иметь v = n - 1 голосов, где n это количество кандидатов на данный округ. \n" +
+            "Каждый избиратель может проголосовать ДА или НЕТ отдав свои голоса за кандидатов.\n" +
+            "Дальше для всех участников суммируется все голоса отданные за него по формуле ДА - НЕТ,\n" +
+            "результат является рейтинг. Места должны быть распределены лицам получившим наибольшее количество\n" +
+            "рейтинга. Если Есть в составе Союза государства или частные юрисдикции, то ни один закон не является\n" +
+            "действующим, пока не будет одобрен также палатой представителей.\n" +
+            "\n" +
+            "Есть минимальные требования которые должны соблюдать все члены данного союза (Если это государство \n" +
+            "или частная юрисдикция)\n" +
+            "1. Все участники должны вести торговлю между собой только в данной криптовалюте (доллары или акции)\n" +
+            "2. Ни один участник данного союза не должен инициировать агрессию членам данного союза.\n" +
+            "3. Члены союза не должны иметь права навязывать друг другу форму управления (исключением является способ\n" +
+            "избрания членов палаты представителей, и другие участники должны быть наблюдателями, что их избирали\n" +
+            "в соответствии описанным правилам. Палата представителей должна избираться как описано в данной системе,\n" +
+            "гражданами данных юрисдикций).\n" +
+            "4. Все члены союза должны признавать данный устав как самый главный закон и законы также принятые \n" +
+            "фракциями и палатой представителей.\n" +
+            "5. Все граждане данного союза должны иметь права свободно пересекать границы членов данного союза.\n" +
+            "6. Не должны применяться протекционистские меры против граждан членов данного союза и самих членов союза.\n" +
+            "\n" +
+            "\n" +
+            "\n" +
             "Все законы делятся на несколько групп.\n" +
             "1. Обычные законы\n" +
             "2. Стратегический План\n" +
@@ -32,23 +59,29 @@ public interface OriginalCHARTER {
             "Чтобы утвердить обычные законы, \n" +
             "1. название пакета закона не должно совпадать с выделенными ключевыми словами.\n" +
             "2. Закон должен получить больше 1 голоса по системе подсчета описанной [VOTE_STOCK](../charter/VOTE_STOCK.md)\n" +
-            "3. Должен получить 15% или больше голосов от фракций по системе подсчета описанной в [VOTE_FFRACTION](../charter/VOTE_FRACTION.md)\n" +
+            "3. Должен получить 15% или больше голосов от фракций по системе подсчета описанной в [VOTE_FRACTION](../charter/VOTE_FRACTION.md)\n" +
+            "4. Если основатель наложил вето на закон нужно получить 15% или больше голосов от фракций по системе\n" +
+            "подсчета описанной в [VOTE_FRACTION](../charter/VOTE_FRACTION.md) и 2 или больше голоса от\n" +
+            "совета судей (ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES) по системе подсчета голосов \n" +
+            "[ONE_VOTE](../charter/ONE_VOTE.md)\n" +
             "\n" +
             "\n" +
             "Пример кода в LawsController current law:\n" +
             "````\n" +
             "     //законы должны быть одобрены всеми.\n" +
+            "        //законы должны быть одобрены всеми.\n" +
             "        List<CurrentLawVotesEndBalance> notEnoughVotes = current.stream()\n" +
             "                .filter(t -> !directors.contains(t.getPackageName()))\n" +
             "                .filter(t->!Seting.AMENDMENT_TO_THE_CHARTER.equals(t.getPackageName()))\n" +
             "                .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
             "                .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))\n" +
             "                .filter(t->!Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))\n" +
-            "                .filter(t -> \n" +
-            "                 t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
-            "                && t.getVotes() >= Seting.ALL_STOCK_VOTE\n" +
+            "                .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "                && t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0 ||\n" +
+            "                t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS &&\n" +
+            "                        t.getVotesCorporateCouncilOfReferees() > Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)\n" +
             "                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());\n" +
-            "   \n" +
+            "\n" +
             "\n" +
             "````\n" +
             "\n" +
@@ -83,31 +116,31 @@ public interface OriginalCHARTER {
             "для данной должности. Пример: Генеральный Исполнительный Директор есть только одно место.\n" +
             "Избирается аналогично как ***стратегический план*** \n" +
             "Но количество определяется для каждой должности отдельно.\n" +
+            "Если основатель наложил вето на кандидата на данную должность,\n" +
+            "но его должен также одобрить совет судей и он должен получить 2 или более голосов.\n" +
+            "По системе [ONE_VOTE](../charter/ONE_VOTE.md)\n" +
             "````\n" +
-            " //позиции избираемые только всеми участниками\n" +
-            "        List<CurrentLawVotesEndBalance> electedByFractions = current.stream()\n" +
-            "                .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))\n" +
-            "                .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "  //позиции созданные всеми участниками\n" +
+            "        List<CurrentLawVotesEndBalance> createdByFraction = current.stream()\n" +
+            "                .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))\n" +
+            "                .filter(t->t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
             "                && t.getVotes() >= Seting.ALL_STOCK_VOTE)\n" +
+            "                .collect(Collectors.toList());\n" +
+            "        //добавление позиций созданных советом директоров\n" +
+            "        for (CurrentLawVotesEndBalance currentLawVotesEndBalance : createdByFraction) {\n" +
+            "            directors.addAllByBoardOfDirectors(currentLawVotesEndBalance.getLaws());\n" +
+            "        }\n" +
+            "\n" +
+            "        //позиции избираемые только всеми участниками\n" +
+            "        List<CurrentLawVotesEndBalance> electedByFractions = current.stream()\n" +
+            "                .filter(t -> directors.isElectedByFractions(t.getPackageName()) || directors.isCabinets(t.getPackageName()))\n" +
+            "                .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "                && t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0 ||\n" +
+            "                        t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS \n" +
+            "                && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)\n" +
             "                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())\n" +
             "                .collect(Collectors.toList());\n" +
             "\n" +
-            "\n" +
-            "        //групируем по списку\n" +
-            "        Map<String, List<CurrentLawVotesEndBalance>> group = electedFraction.stream()\n" +
-            "                .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));\n" +
-            "\n" +
-            "        Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();\n" +
-            "\n" +
-            "        //оставляем то количество которое описано в данной должности\n" +
-            "        for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {\n" +
-            "            List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();\n" +
-            "            temporary = temporary.stream()\n" +
-            "                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))\n" +
-            "                    .limit(directors.getDirector(stringListEntry.getKey()).getCount())\n" +
-            "                    .collect(Collectors.toList());\n" +
-            "            original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);\n" +
-            "        }\n" +
             "````\n" +
             "\n" +
             "Также есть должности которые создаются с помощью законов, данные должности утверждаются тоже Законодательной властью.\n" +
@@ -432,32 +465,31 @@ public interface OriginalCHARTER {
             "4. Участники сети должны дать больше одного голоса методом [VOTE_STOCK](../charter/VOTE_STOCK.md)\n" +
             "5. Дальше происходит сортировка от наибольшего к наименьшему полученных голосов от акций и\n" +
             "6. Отбирается один счет с наибольшим количеством голосов полученных от фракций.\n" +
+            "7. Если основатель наложил вето на данного кандидата, тогда нужно получить \n" +
+            "голоса фракций 15% или больше по системе [VOTE_FRACTION](../charter/VOTE_FRACTION.md)\n" +
+            "и голоса совета судей 2 или больше голосов по системе [ONE_VOTE](../charter/ONE_VOTE.md)\n" +
             "\n" +
             "````\n" +
-            "  //позиции избираемые только всеми участниками\n" +
-            "        List<CurrentLawVotesEndBalance> electedByFractions = current.stream()\n" +
-            "                .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))\n" +
-            "                .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "  //позиции созданные всеми участниками\n" +
+            "        List<CurrentLawVotesEndBalance> createdByFraction = current.stream()\n" +
+            "                .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))\n" +
+            "                .filter(t->t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
             "                && t.getVotes() >= Seting.ALL_STOCK_VOTE)\n" +
+            "                .collect(Collectors.toList());\n" +
+            "        //добавление позиций созданных советом директоров\n" +
+            "        for (CurrentLawVotesEndBalance currentLawVotesEndBalance : createdByFraction) {\n" +
+            "            directors.addAllByBoardOfDirectors(currentLawVotesEndBalance.getLaws());\n" +
+            "        }\n" +
+            "\n" +
+            "        //позиции избираемые только всеми участниками\n" +
+            "        List<CurrentLawVotesEndBalance> electedByFractions = current.stream()\n" +
+            "                .filter(t -> directors.isElectedByFractions(t.getPackageName()) || directors.isCabinets(t.getPackageName()))\n" +
+            "                .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "                && t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0 ||\n" +
+            "                        t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "                && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)\n" +
             "                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())\n" +
             "                .collect(Collectors.toList());\n" +
-            "\n" +
-            "\n" +
-            "        //групируем по списку\n" +
-            "        Map<String, List<CurrentLawVotesEndBalance>> group = electedFraction.stream()\n" +
-            "                .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));\n" +
-            "\n" +
-            "        Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();\n" +
-            "\n" +
-            "        //оставляем то количество которое описано в данной должности\n" +
-            "        for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {\n" +
-            "            List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();\n" +
-            "            temporary = temporary.stream()\n" +
-            "                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))\n" +
-            "                    .limit(directors.getDirector(stringListEntry.getKey()).getCount())\n" +
-            "                    .collect(Collectors.toList());\n" +
-            "            original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);\n" +
-            "        }\n" +
             "\n" +
             "````\n" +
             "\n" +
@@ -576,7 +608,10 @@ public interface OriginalCHARTER {
             "        for (CurrentLawVotesEndBalance currentLawVotesEndBalance : current) {\n" +
             "            if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString())){\n" +
             "                if(currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
-            "                && currentLawVotesEndBalance.getVotes() >= Seting.ALL_STOCK_VOTE){\n" +
+            "                && currentLawVotesEndBalance.getVotes() >= Seting.ALL_STOCK_VOTE\n" +
+            "                && currentLawVotesEndBalance.getFractionVote() >= 0 ||\n" +
+            "                currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "                && currentLawVotesEndBalance.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES){\n" +
             "                    primeMinister.add(currentLawVotesEndBalance.getLaws().get(0));\n" +
             "                }\n" +
             "            }\n" +
@@ -602,9 +637,46 @@ public interface OriginalCHARTER {
             "        return current;\n" +
             "\n" +
             "    }\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "    //без учета палаты представителей\n" +
+            "    public static List<CurrentLawVotesEndBalance> filters(List<LawEligibleForParliamentaryApproval> approvalList, Map<String, Account> balances,\n" +
+            "                                                          List<Account> BoardOfShareholders, List<Block> blocks, int limitBlocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {\n" +
+            "        //действующие законы чьи голоса больше ORIGINAL_LIMIT_MIN_VOTE\n" +
+            "        List<CurrentLawVotesEndBalance> current = new ArrayList<>();\n" +
+            "        Map<String, CurrentLawVotes> votesMap = null;\n" +
+            "        List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());\n" +
+            "        if (blocks.size() > limitBlocks) {\n" +
+            "            votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks.subList(blocks.size() - limitBlocks, blocks.size()));\n" +
+            "        } else {\n" +
+            "            votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks);\n" +
+            "        }\n" +
+            "\n" +
+            "        //подсчитать средннее количество раз сколько он проголосовал за\n" +
+            "        Map<String, Integer> yesAverage = UtilsCurrentLaw.calculateAverageVotesYes(votesMap);\n" +
+            "        //подсчитать среднее количество раз сколько он проголосовал против\n" +
+            "        Map<String, Integer> noAverage = UtilsCurrentLaw.calculateAverageVotesNo(votesMap);\n" +
+            "\n" +
+            "        for (LawEligibleForParliamentaryApproval lawEligibleForParliamentaryApproval : approvalList) {\n" +
+            "            if (votesMap.containsKey(lawEligibleForParliamentaryApproval.getLaws().getHashLaw())) {\n" +
+            "                String address = lawEligibleForParliamentaryApproval.getLaws().getHashLaw();\n" +
+            "                String packageName = lawEligibleForParliamentaryApproval.getLaws().getPacketLawName();\n" +
+            "                List<String> laws = lawEligibleForParliamentaryApproval.getLaws().getLaws();\n" +
+            "                double vote = votesMap.get(lawEligibleForParliamentaryApproval.getLaws().getHashLaw()).votes(balances, yesAverage, noAverage);\n" +
+            "\n" +
+            "                CurrentLawVotesEndBalance currentLawVotesEndBalance = new CurrentLawVotesEndBalance(address, packageName, vote, 0, 0, 0, 0, 0, 0, 0,  laws);\n" +
+            "                current.add(currentLawVotesEndBalance);\n" +
+            "\n" +
+            "            }\n" +
+            "        }\n" +
+            "        return current;\n" +
+            "    }\n" +
             "````\n" +
             "\n" +
-            "[Выход на главную](../documentation/documentationRus.md)\n";
+            "[Выход на главную](../documentation/documentationRus.md)\n\n";
     String LAW_11 = "# ОБЯСНЕНИЕ ПОЧЕМУ ЗДЕСЬ ИСПОЛЬЗУЕТСЯ  ДЕМЕРЕДЖ ДЕНЕГ\n" +
             "Как работает отрицательная ставка здесь? Мы каждые пол года сжигаем со всех счетов 0.1% цифровых долларов\n" +
             "и 0.2% цифровых акций, что позволяет нам сохранить денежную массу не изменой, не давая ей расти,\n" +

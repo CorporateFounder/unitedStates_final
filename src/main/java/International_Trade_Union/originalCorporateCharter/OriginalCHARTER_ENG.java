@@ -5,7 +5,6 @@ public interface OriginalCHARTER_ENG {
             "\n" +
             "## Approval of the law\n" +
             "_____\n" +
-            "\n" +
             "## CHARTER\n" +
             "No law is retroactive. No law shall violate the existing statute or be inconsistent with\n" +
             "other applicable laws. If there is a contradiction between several laws from one set of laws,\n" +
@@ -17,6 +16,33 @@ public interface OriginalCHARTER_ENG {
             "The law is in force as long as it satisfies the conditions for the adoption of the law and as soon as the condition\n" +
             "violated, the law loses its force until the law is re-adopted.\n" +
             "In the voting of all laws, only votes cast in the last year are taken into account.\n" +
+            "\n" +
+            "If there are States or Private Jurisdictions that are part of this union,\n" +
+            "then a House of Representatives should be formed. The House of Representatives must be elected\n" +
+            "as from multi-member districts, where each state must have at least one candidate, but\n" +
+            "for every 40,000 voters, one candidate. Also, each candidate must be elected according to such a system.\n" +
+            "Each voter has v = n - 1 votes, where n is the number of candidates for that constituency.\n" +
+            "Each voter can vote YES or NO by casting their votes for candidates.\n" +
+            "Further, for all participants, all the votes given for him are summed up according to the formula YES - NO,\n" +
+            "the result is the rating. Places shall be allocated to the persons with the highest number of\n" +
+            "rating. If there are states or private jurisdictions in the Union, then no law is\n" +
+            "in force until it is also approved by the House of Representatives.\n" +
+            "\n" +
+            "There are minimum requirements that all members of this union must comply with (If this state\n" +
+            "or private jurisdiction)\n" +
+            "1. All participants must trade among themselves only in this cryptocurrency (dollars or stocks)\n" +
+            "2. No member of this alliance should initiate aggression against the members of this alliance.\n" +
+            "3. Union members should not have the right to impose a form of government on each other (an exception is the method\n" +
+            "   election of members of the House of Representatives, and other members must be observers that they were elected\n" +
+            "   according to the rules described. The House of Representatives shall be elected as described in this system,\n" +
+            "   citizens of these jurisdictions).\n" +
+            "4. All members of the union must recognize this charter as the most important law and the laws also adopted\n" +
+            "   factions and the House of Representatives.\n" +
+            "5. All citizens of this union should have the right to freely cross the borders of the members of this union.\n" +
+            "6. Protectionist measures should not be applied against the citizens of the members of this union and the members of the union themselves.\n" +
+            "\n" +
+            "\n" +
+            "\n" +
             "All laws are divided into several groups.\n" +
             "1. Ordinary laws\n" +
             "2. Strategic Plan\n" +
@@ -25,32 +51,38 @@ public interface OriginalCHARTER_ENG {
             "5. Amendments to the Charter\n" +
             "6. The charter itself\n" +
             "\n" +
+            "\n" +
+            "\n" +
             "NOTHING removes the vote from the candidate when voting.\n" +
             "### REGULAR LAWS\n" +
             "To establish ordinary laws,\n" +
-            "The position must pass at least four weeks after the vote for the amendment to be legitimate.\n" +
             "1. The name of the package of law should not match the highlighted keywords.\n" +
             "2. The law must receive more than 1 vote according to the scoring system described by [VOTE_STOCK](../charterEng/VOTE_STOCK.md)\n" +
-            "3. Must receive 15% or more votes from factions according to the scoring system described in [VOTE_FFRACTION](../charterEng/VOTE_FRACTION.md)\n" +
+            "3. Must receive 15% or more votes from factions according to the scoring system described in [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md)\n" +
+            "4. If the founder vetoed the law, you need to get 15% or more votes from factions in the system\n" +
+            "   count described in [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md) and 2 or more votes from\n" +
+            "   Council of Judges (ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES) according to the vote counting system\n" +
+            "   [ONE_VOTE](../charterEng/ONE_VOTE.md)\n" +
             "\n" +
             "\n" +
             "Sample code in LawsController current law:\n" +
             "````\n" +
             "      //laws must be approved by everyone.\n" +
+            "         //laws must be approved by everyone.\n" +
             "         List<CurrentLawVotesEndBalance> notEnoughVotes = current.stream()\n" +
             "                 .filter(t -> !directors.contains(t.getPackageName()))\n" +
             "                 .filter(t->!Seting.AMENDMENT_TO_THE_CHARTER.equals(t.getPackageName()))\n" +
             "                 .filter(t->!directors.isCabinets(t.getPackageName()))\n" +
             "                 .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))\n" +
             "                 .filter(t->!Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))\n" +
-            "                 .filter(t ->\n" +
-            "                  t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
-            "                 && t.getVotes() >= Seting.ALL_STOCK_VOTE\n" +
+            "                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "                 && t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0 ||\n" +
+            "                 t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS &&\n" +
+            "                         t.getVotesCorporateCouncilOfReferees() > Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)\n" +
             "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());\n" +
-            "   \n" +
+            "\n" +
             "\n" +
             "````\n" +
-            "\n" +
             "### STRATEGIC PLAN.\n" +
             "The strategic plan is the general plan for the entire network and is approved in the same way as an ordinary law,\n" +
             "but there are some differences from ordinary laws.\n" +
@@ -83,31 +115,31 @@ public interface OriginalCHARTER_ENG {
             "for this position. Example: There is only one CEO position.\n" +
             "Elected in the same way as ***strategic plan***\n" +
             "But the number is determined for each position separately.\n" +
+            "If the founder has vetoed a candidate for this position,\n" +
+            "but it must also be approved by the council of judges and must receive 2 or more votes.\n" +
+            "By system [ONE_VOTE](../charterEng/ONE_VOTE.md)\n" +
             "````\n" +
-            "  //positions elected only by all participants\n" +
-            "         List<CurrentLawVotesEndBalance> electedByFractions = current.stream()\n" +
-            "                 .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))\n" +
-            "                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "   //positions created by all participants\n" +
+            "         List<CurrentLawVotesEndBalance> createdByFraction = current.stream()\n" +
+            "                 .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))\n" +
+            "                 .filter(t->t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
             "                 && t.getVotes() >= Seting.ALL_STOCK_VOTE)\n" +
+            "                 .collect(Collectors.toList());\n" +
+            "         //adding positions created by the board of directors\n" +
+            "         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : createdByFraction) {\n" +
+            "             directors.addAllByBoardOfDirectors(currentLawVotesEndBalance.getLaws());\n" +
+            "         }\n" +
+            "\n" +
+            "         //positions elected only by all participants\n" +
+            "         List<CurrentLawVotesEndBalance> electedByFractions = current.stream()\n" +
+            "                 .filter(t -> directors.isElectedByFractions(t.getPackageName()) || directors.isCabinets(t.getPackageName()))\n" +
+            "                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "                 && t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0 ||\n" +
+            "                         t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "                 && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)\n" +
             "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())\n" +
             "                 .collect(Collectors.toList());\n" +
             "\n" +
-            "\n" +
-            "         //group by list\n" +
-            "         Map<String, List<CurrentLawVotesEndBalance>> group = electedFraction.stream()\n" +
-            "                 .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));\n" +
-            "\n" +
-            "         Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();\n" +
-            "\n" +
-            "         // leave the amount that is described in this post\n" +
-            "         for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {\n" +
-            "             List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();\n" +
-            "             temporary = temporary.stream()\n" +
-            "                     .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))\n" +
-            "                     .limit(directors.getDirector(stringListEntry.getKey()).getCount())\n" +
-            "                     .collect(Collectors.toList());\n" +
-            "             original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);\n" +
-            "         }\n" +
             "````\n" +
             "\n" +
             "There are also positions that are created with the help of laws, these positions are also approved by the Legislative power.\n" +
@@ -424,35 +456,35 @@ public interface OriginalCHARTER_ENG {
             "\n" +
             "## How the CEO is elected\n" +
             "This director is elected by the Legislature\n" +
-            "3. Fractions must give 15% or more votes using the [VOTE_FRACTION] method (../charter/VOTE_FRACTION.md)\n" +
-            "4. Network participants must give more than one vote using the [VOTE_STOCK](../charter/VOTE_STOCK.md) method\n" +
+            "3. Fractions must give 15% or more votes using the method [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md)\n" +
+            "4. Network participants must give more than one vote using the [VOTE_STOCK](../charterEng/VOTE_STOCK.md) method\n" +
             "5. Next comes the sorting from the highest to the lowest received votes from the shares and\n" +
             "6. One account with the largest number of votes received from factions is selected.\n" +
+            "7. If the founder vetoed this candidate, then you need to get\n" +
+            "   Faction votes 15% or more according to the system [VOTE_FRACTION](../charterEng/VOTE_FRACTION.md)\n" +
+            "   and votes of the council of judges 2 or more votes according to the system [ONE_VOTE](../charterEng/ONE_VOTE.md)\n" +
+            "\n" +
             "````\n" +
-            "   //positions elected only by all participants\n" +
-            "         List<CurrentLawVotesEndBalance> electedByFractions = current.stream()\n" +
-            "                 .filter(t -> directors.isElectedByBoardOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))\n" +
-            "                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "   //positions created by all participants\n" +
+            "         List<CurrentLawVotesEndBalance> createdByFraction = current.stream()\n" +
+            "                 .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))\n" +
+            "                 .filter(t->t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
             "                 && t.getVotes() >= Seting.ALL_STOCK_VOTE)\n" +
+            "                 .collect(Collectors.toList());\n" +
+            "         //adding positions created by the board of directors\n" +
+            "         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : createdByFraction) {\n" +
+            "             directors.addAllByBoardOfDirectors(currentLawVotesEndBalance.getLaws());\n" +
+            "         }\n" +
+            "\n" +
+            "         //positions elected only by all participants\n" +
+            "         List<CurrentLawVotesEndBalance> electedByFractions = current.stream()\n" +
+            "                 .filter(t -> directors.isElectedByFractions(t.getPackageName()) || directors.isCabinets(t.getPackageName()))\n" +
+            "                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "                 && t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0 ||\n" +
+            "                         t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "                 && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)\n" +
             "                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())\n" +
             "                 .collect(Collectors.toList());\n" +
-            "\n" +
-            "\n" +
-            "         //group by list\n" +
-            "         Map<String, List<CurrentLawVotesEndBalance>> group = electedFraction.stream()\n" +
-            "                 .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));\n" +
-            "\n" +
-            "         Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();\n" +
-            "\n" +
-            "         // leave the amount that is described in this post\n" +
-            "         for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {\n" +
-            "             List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();\n" +
-            "             temporary = temporary.stream()\n" +
-            "                     .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))\n" +
-            "                     .limit(directors.getDirector(stringListEntry.getKey()).getCount())\n" +
-            "                     .collect(Collectors.toList());\n" +
-            "             original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);\n" +
-            "         }\n" +
             "\n" +
             "````\n" +
             "\n" +
@@ -496,8 +528,7 @@ public interface OriginalCHARTER_ENG {
             "                 double fraction = 0;\n" +
             "\n" +
             "                 //count special votes for laws\n" +
-            "                 vote = votesMap.get(lawEligibleForParliamentaryApproval.getLaws().getHashLaw()).votesLaw(balances, yesAverage, noAverage);\n" +
-            "                 List<String> boardOfShareholdersAddress = BoardOfShareholders.stream().map(t -> t.getAccount()).collect(Collectors.toList());\n" +
+            "                 vote = votesMap.get(lawEligibleForParliamentaryApproval.getLaws().getHashLaw()).votesLaw(balances, yesAverage, noAverage);List<String> boardOfShareholdersAddress = BoardOfShareholders.stream().map(t -> t.getAccount()).collect(Collectors.toList());\n" +
             "                 boafdOfShareholderVotes = votesMap.get(lawEligibleForParliamentaryApproval.getLaws().getHashLaw()).voteGovernment(balances, boardOfShareholdersAddress);\n" +
             "\n" +
             "                 List<String> founder = List.of(Seting.ADDRESS_FOUNDER);\n" +
@@ -571,7 +602,10 @@ public interface OriginalCHARTER_ENG {
             "         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : current) {\n" +
             "             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString())){\n" +
             "                 if(currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
-            "                 && currentLawVotesEndBalance.getVotes() >= Seting.ALL_STOCK_VOTE){\n" +
+            "                 && currentLawVotesEndBalance.getVotes() >= Seting.ALL_STOCK_VOTE\n" +
+            "                 && currentLawVotesEndBalance.getFractionVote() >= 0 ||\n" +
+            "                 currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS\n" +
+            "                 && currentLawVotesEndBalance.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES){\n" +
             "                     primeMinister.add(currentLawVotesEndBalance.getLaws().get(0));\n" +
             "                 }\n" +
             "             }\n" +
@@ -598,6 +632,42 @@ public interface OriginalCHARTER_ENG {
             "\n" +
             "     }\n" +
             "\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "     //excluding the House of Representatives\n" +
+            "     public static List<CurrentLawVotesEndBalance> filters(List<LawEligibleForParliamentaryApproval> approvalList, Map<String, Account> balances,\n" +
+            "                                                           List<Account> BoardOfShareholders, List<Block> blocks, int limitBlocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {\n" +
+            "         //acting laws whose votes are greater than ORIGINAL_LIMIT_MIN_VOTE\n" +
+            "         List<CurrentLawVotesEndBalance> current = new ArrayList<>();\n" +
+            "         Map<String, CurrentLawVotes> votesMap = null;\n" +
+            "         List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());\n" +
+            "         if (blocks.size() > limitBlocks) {\n" +
+            "             votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks.subList(blocks.size() - limitBlocks, blocks.size()));\n" +
+            "         } else {\n" +
+            "             votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks);\n" +
+            "         }\n" +
+            "\n" +
+            "         //calculate the average number of times he voted for\n" +
+            "         Map<String, Integer> yesAverage = UtilsCurrentLaw.calculateAverageVotesYes(votesMap);\n" +
+            "         //calculate the average number of times he downvoted\n" +
+            "         Map<String, Integer> noAverage = UtilsCurrentLaw.calculateAverageVotesNo(votesMap);\n" +
+            "\n" +
+            "         for (LawEligibleForParliamentaryApproval lawEligibleForParliamentaryApproval : approvalList) {\n" +
+            "             if (votesMap.containsKey(lawEligibleForParliamentaryApproval.getLaws().getHashLaw())) {\n" +
+            "                 String address = lawEligibleForParliamentaryApproval.getLaws().getHashLaw();\n" +
+            "                 String packageName = lawEligibleForParliamentaryApproval.getLaws().getPacketLawName();\n" +
+            "                 List<String> laws = lawEligibleForParliamentaryApproval.getLaws().getLaws();\n" +
+            "                 double vote = votesMap.get(lawEligibleForParliamentaryApproval.getLaws().getHashLaw()).votes(balances, yesAverage, noAverage);\n" +
+            "\n" +
+            "                 CurrentLawVotesEndBalance currentLawVotesEndBalance = new CurrentLawVotesEndBalance(address, packageName, vote, 0, 0, 0, 0, 0, 0, 0, laws);\n" +
+            "                 current.add(currentLawVotesEndBalance);\n" +
+            "\n" +
+            "             }\n" +
+            "         }\n" +
+            "         return current;\n" +
+            "     }\n" +
             "````\n" +
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";

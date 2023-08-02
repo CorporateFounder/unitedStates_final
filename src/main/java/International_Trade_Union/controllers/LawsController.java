@@ -364,7 +364,9 @@ public class LawsController {
         List<CurrentLawVotesEndBalance> electedByFractions = current.stream()
                 .filter(t -> directors.isElectedByFractions(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
-                && t.getVotes() >= Seting.ALL_STOCK_VOTE)
+                && t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0 ||
+                        t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                 .collect(Collectors.toList());
 
@@ -417,7 +419,9 @@ public class LawsController {
                 .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))
                 .filter(t->!Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))
                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
-                && t.getVotes() >= Seting.ALL_STOCK_VOTE)
+                && t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0 ||
+                t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS &&
+                        t.getVotesCorporateCouncilOfReferees() > Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());
 
 
@@ -470,8 +474,8 @@ public class LawsController {
                 .collect(Collectors.toList());
 
 
-        int startBlock = 23660;
-        int finishBlock = 23670;
+        int startBlock = 27871;
+        int finishBlock = 27920;
         if(blockchain.sizeBlockhain() > finishBlock){
             List<Block> blocksCharter = blockchain.subBlock(startBlock, finishBlock);
             //учитывает отрезок блоков для выяснения подлиности устава

@@ -140,7 +140,9 @@ public class GovernmentController {
         List<CurrentLawVotesEndBalance> electedByFraction = current.stream()
                 .filter(t -> directors.isElectedByFractions(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
-                        && t.getVotes() >= Seting.ALL_STOCK_VOTE)
+                        && t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0
+                || t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                 .collect(Collectors.toList());
 

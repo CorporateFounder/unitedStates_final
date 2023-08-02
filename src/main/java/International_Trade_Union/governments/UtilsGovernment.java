@@ -256,7 +256,10 @@ public class UtilsGovernment {
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : current) {
             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString())){
                 if(currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
-                && currentLawVotesEndBalance.getVotes() >= Seting.ALL_STOCK_VOTE){
+                && currentLawVotesEndBalance.getVotes() >= Seting.ALL_STOCK_VOTE
+                && currentLawVotesEndBalance.getFractionVote() >= 0 ||
+                currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                && currentLawVotesEndBalance.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES){
                     primeMinister.add(currentLawVotesEndBalance.getLaws().get(0));
                 }
             }
