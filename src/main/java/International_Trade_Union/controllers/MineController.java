@@ -67,6 +67,8 @@ public class MineController {
             return "redirect:/processUpdating";
         }
 
+        if(number > Long.MAX_VALUE - 2000000)
+            number = (int) (Long.MAX_VALUE - 2000000);
         Block.setRandomNumberProofStatic(number);
         return "redirect:/mining";
     }
