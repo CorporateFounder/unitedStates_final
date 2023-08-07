@@ -156,7 +156,7 @@ public final class Block implements Cloneable {
         String hash = "";
         while (true){
             this.randomNumberProof++;
-            System.out.println("finding the right number to generate the right hash: " + randomNumberProof);
+            System.out.println("A number is selected to generate the correct hash: " + randomNumberProof);
             BlockForHash block = new BlockForHash(this.dtoTransactions,
                     this.previousHash, this.minerAddress, this.founderAddress,
                     this.randomNumberProof, this.minerRewards, this.hashCompexity, this.timestamp, this.index);
