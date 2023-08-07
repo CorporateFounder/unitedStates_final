@@ -185,6 +185,10 @@ public class MainController {
         return "result-sending";
     }
 
+    //"@PostMapping("/") - its spring mapping
+    //@RequestParam - its parametrs in url - example http://localhost:80?age=18&color=red;
+    //RedirectAttributes = its instrument redirect parametr from one htmlt to senod
+    //model = its instrument to binding
     @PostMapping("/")
     public String new_transaction(
             @RequestParam  String sender,

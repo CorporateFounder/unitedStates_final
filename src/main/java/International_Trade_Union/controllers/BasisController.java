@@ -53,6 +53,14 @@ public class BasisController {
     private static boolean blockchainValid = false;
     private static Set<String> excludedAddresses = new HashSet<>();
 
+    public static Account getMinerShow() {
+        return minerShow;
+    }
+
+    public static void setMinerShow(Account minerShow) {
+        BasisController.minerShow = minerShow;
+    }
+
     public static int getBlockchainSize() {
         return blockchainSize;
     }
@@ -278,7 +286,7 @@ public class BasisController {
      * connects to the storage and updates its internal blockchain.
      * подключается к хранилищу и обновляет свой внутренний блокчейн*/
     @GetMapping("/nodes/resolve")
-    public synchronized int resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
+    public static synchronized int resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         System.out.println(":resolve_conflicts");
         return resolve();
     }
@@ -356,8 +364,6 @@ public class BasisController {
                     //если адрес локального хоста, он пропускает
                     if (s.contains("localhost") || s.contains("127.0.0.1"))
                         continue;
-
-
 
                     System.out.println("start:BasisController:resolve conflicts: address: " + s + "/size");
 
@@ -735,7 +741,7 @@ public class BasisController {
      *Registers a new external host. Регистрирует новый внешний хост
      */
     @RequestMapping(method = RequestMethod.POST, value = "/nodes/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public synchronized void register_node(@RequestBody AddressUrl urlAddrress) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public static synchronized void register_node(@RequestBody AddressUrl urlAddrress) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
 
         for (String s : BasisController.getNodes()) {
@@ -792,7 +798,7 @@ public class BasisController {
      */
 
     @GetMapping("/findAddresses")
-    public void findAddresses() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public static void findAddresses() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         for (String s : Seting.ORIGINAL_ADDRESSES) {
             Set<String> addressesSet = new HashSet<>();
             try {
@@ -1004,7 +1010,8 @@ public class BasisController {
         return "redirect:/mining";
     }
 
-    public synchronized String mining() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
+
+    public static synchronized String mining() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
         mining = true;
         try {
 
@@ -1183,24 +1190,7 @@ public class BasisController {
     }
 
 
-    @GetMapping("/testBlock")
-    @ResponseBody
-    public List<DtoTransaction> testBlock() throws IOException, CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
 
-        //отказ от дублирующих транзакций
-        temporaryDtoList = UtilsBlock.validDto(blockchain.getBlockchainList(), temporaryDtoList);
-        System.out.println("after: " + temporaryDtoList);
-//        list.add(blockList);
-        return temporaryDtoList;
-    }
-
-    @GetMapping("testBlock1")
-    @ResponseBody
-    public List<DtoTransaction> testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-
-        return  AllTransactions.getInstance();
-    }
 
     @GetMapping("/processUpdating")
     public String processUpdating(Model model) {

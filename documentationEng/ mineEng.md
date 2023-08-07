@@ -1,36 +1,39 @@
-# Block mining
+# block mining
 
 ## HOW TO START MINING
 Before you start mining blocks, you
 you need to set the address of the miner to which the block will be mined.
 Once you have set your address as a miner, there are two options.
 
-### OPTION 1.
-To start mining, after launch, go to
-there will be a button on http://localhost:8082/miningblock. ***Start mining***
-clicking on it will automatically produce a block.
 
+
+### OPTION 1
+button ***Permanent mining 576 blocks at a time***
+there will be a cycle of 576 attempts to find blocks
 ![mining block](../screenshots/mineEng.png)
 
-### OPTION 2
-push button ***Constant mining 576 block in while***
-there will be a cycle of 576 attempts to find blocks
 
-
-### OPTION 3.
+### OPTION 2.
 calling http://localhost:8082/mine automatically starts mining.
 
 
+### LOAD SHARING AMONG MULTIPLE COMPUTERS.
+Imagine that you have two computers and want them to mine
+blocks, if you just enable them on two computers, they will
+iterate over both from 0 to infinity.
+You can do like this, for example you see the max number
+9223372036854775807 and tell the first PC to search from scratch, and set the settings for the second
+already in the middle. Thus, each of your PCs will search from its place.
+After jar restart everything is reset to 0.
 
+Blockchain Difficulty Adapts Like Bitcoin, But Adaptation Happens
+once every 12 hours (approximately) 288 blocks.
+Each block gives you 400 digital dollars and 400 digital shares.
 
-Blockchain complexity adapts similarly to bitcoin, but adaptation happens
-once every half day.
-Each block gives 400 digital dollars and 400 digital shares
+The current blockchain is not only the longest, but there should be more zeros in it.
 
-The current blockchain is not only the longest blockchain, but it should also have more zeros.
-
-this method counts the number of zeros in the blockchain and the current blockchain, not only the longest, but also the one with the most zeros
-
+This method counts the number of zeros in the blockchain and the current blockchain, not only the longest,
+but also the one with the most zeros
 ````
      src/main/java/utils/UtilsUse.java
 

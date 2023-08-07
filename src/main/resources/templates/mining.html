@@ -22,7 +22,21 @@
         <button type="submit" class="btn btn-success">Constant mining 576 block in while</button>
     </form>
 </div>
-<footer th:insert="blocks/footer :: footer"></footer>
 
+<div  class="alert alert-info mt-2">
+    <h4 th:text="'from what number you need to look for block search: '+${number}"/>
+    <h4 th:text="'max number: '+${max}"/>
+</div>
+
+
+<div class="container mt-5 mb-5">
+    <form action="/setNumber" method="post">
+        <input type="text" name="number" placeholder="input number start searching hash" class="form-control"><br>
+        <button type="submit" class="btn btn-success">change number start hash</button><br>
+    </form>
+
+</div>
+
+<footer th:insert="blocks/footer :: footer"></footer>
 </body>
 </html>

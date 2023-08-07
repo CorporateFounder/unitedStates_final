@@ -21,6 +21,7 @@ import java.util.Objects;
 @JsonAutoDetect
 @Data
 public final class Block implements Cloneable {
+    private static long randomNumberProofStatic = 0;
     private List<DtoTransaction> dtoTransactions;
     private String previousHash;
     private String minerAddress;
@@ -32,7 +33,15 @@ public final class Block implements Cloneable {
     private long index;
     private String hashBlock;
 
-    public Block(List<DtoTransaction> dtoTransactions,  String previousHex, String minerAddress, String founderAddress, int hashCompexity, long index) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+    public static long getRandomNumberProofStatic() {
+        return randomNumberProofStatic;
+    }
+
+    public static void setRandomNumberProofStatic(long randomNumberProofStatic) {
+        Block.randomNumberProofStatic = randomNumberProofStatic;
+    }
+
+    public Block(List<DtoTransaction> dtoTransactions, String previousHex, String minerAddress, String founderAddress, int hashCompexity, long index) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
         this.dtoTransactions = dtoTransactions;
         this.previousHash = previousHex;
         this.minerAddress = minerAddress;
@@ -143,7 +152,7 @@ public final class Block implements Cloneable {
             throw new NotValidTransactionException();
         }
 
-        this.randomNumberProof = 0;
+        this.randomNumberProof = randomNumberProofStatic;
         String hash = "";
         while (true){
             this.randomNumberProof++;
