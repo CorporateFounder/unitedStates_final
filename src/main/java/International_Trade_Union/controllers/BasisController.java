@@ -648,6 +648,7 @@ public class BasisController {
         SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
 
 
+
         //получение и отображение законов, а также сохранение новых законов
         //и изменение действующих законов
         Map<String, Laws> allLaws = UtilsLaws.getLaws(blockchain.getBlockchainList(), Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
