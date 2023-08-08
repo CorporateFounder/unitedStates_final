@@ -169,7 +169,11 @@ public class MainController {
         UtilsFileSaveRead.save(setMinner, Seting.ORIGINAL_ACCOUNT, false);
         return "redirect:/seting";
     }
-
+    @GetMapping("/setMinDollarRewards")
+    public String setMinDollarRewards(@RequestParam(value = "reward") double reward){
+        BasisController.setMinDollarRewards(reward);
+        return "redirect:/seting";
+    }
 
 
     @GetMapping("about")
@@ -282,6 +286,9 @@ public class MainController {
     @GetMapping("/seting")
     public String seting(Model model){
         model.addAttribute("title", "Settings");
+//        model.addAttribute("reward", "the reward that
+//        the miner must receive in order to add a transaction: " +
+//        BasisController.getMinDollarRewards());
         return "seting";
     }
 

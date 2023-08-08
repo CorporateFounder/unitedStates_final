@@ -43,6 +43,8 @@ import static International_Trade_Union.utils.UtilsBalance.calculateBalance;
 
 @Controller
 public class BasisController {
+    private static double minDollarRewards = 0;
+    private static Block prevBlock = null;
     private static Account minerShow = null;
     private static boolean mining = false;
     private static boolean updating = false;
@@ -55,6 +57,14 @@ public class BasisController {
 
     public static Account getMinerShow() {
         return minerShow;
+    }
+
+    public static double getMinDollarRewards() {
+        return minDollarRewards;
+    }
+
+    public static void setMinDollarRewards(double minDollarRewards) {
+        BasisController.minDollarRewards = minDollarRewards;
     }
 
     public static void setMinerShow(Account minerShow) {
@@ -186,6 +196,9 @@ public class BasisController {
             shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
             blockchainSize = (int) shortDataBlockchain.getSize();
             blockchainValid = shortDataBlockchain.isValidation();
+            if(prevBlock == null){
+                Blockchain.indexFromFile(blockchainSize-1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            }
 
 
         } catch (NoSuchAlgorithmException e) {
@@ -218,14 +231,7 @@ public class BasisController {
     @GetMapping("/chain")
     @ResponseBody
     public EntityChain full_chain() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        if (blockchainValid == false || blockchainSize == 0) {
-            blockchain = Mining.getBlockchain(
-                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                    BlockchainFactoryEnum.ORIGINAL);
-            shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-            blockchainSize = (int) shortDataBlockchain.getSize();
-            blockchainValid = shortDataBlockchain.isValidation();
-        }
+        utilsMethod();
 
         return new EntityChain(blockchainSize, blockchain.getBlockchainList());
     }
@@ -237,13 +243,9 @@ public class BasisController {
     @GetMapping("/size")
     @ResponseBody
     public Integer sizeBlockchain() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        utilsMethod();
 
-        blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
-        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-        blockchainSize = (int) shortDataBlockchain.getSize();
-        blockchainValid = shortDataBlockchain.isValidation();
+
         System.out.println(":sizeBlockchain: " + shortDataBlockchain);
 
         return blockchainSize;
@@ -256,11 +258,7 @@ public class BasisController {
     @PostMapping("/sub-blocks")
     @ResponseBody
     public List<Block> subBlocks(@RequestBody SubBlockchainEntity entity) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        if (blockchainValid == false || blockchainSize == 0) {
-            blockchain = Mining.getBlockchain(
-                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                    BlockchainFactoryEnum.ORIGINAL);
-        }
+       utilsMethod();
 
         return Blockchain.subFromFile(entity.getStart(), entity.getFinish(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
     }
@@ -272,11 +270,7 @@ public class BasisController {
     @PostMapping("/block")
     @ResponseBody
     public Block getBlock(@RequestBody Integer index) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        if (blockchainValid == false || blockchainSize == 0) {
-            blockchain = Mining.getBlockchain(
-                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                    BlockchainFactoryEnum.ORIGINAL);
-        }
+        utilsMethod();
 
 //        return blockchain.getBlock(index);
         return Blockchain.indexFromFile(index, Seting.ORIGINAL_BLOCKCHAIN_FILE);
@@ -307,14 +301,7 @@ public class BasisController {
             System.out.println(" :start resolve");
             Blockchain temporaryBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
             Blockchain bigBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
-            if (blockchainValid == false || blockchainSize == 0) {
-                blockchain = Mining.getBlockchain(
-                        Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                        BlockchainFactoryEnum.ORIGINAL);
-                shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-                blockchainSize = (int) shortDataBlockchain.getSize();
-                blockchainValid = shortDataBlockchain.isValidation();
-            }
+            utilsMethod();
 
             //size of the most recent long blockchain downloaded from hosts (storage)
             //размер самого актуального длинного блокчейна, скачанного из хостов (хранилище)
@@ -724,14 +711,8 @@ public class BasisController {
     /**sends the mined block to the storage server.  отправляет добытый блок на сервер хранилища*/
     @RequestMapping("/sendBlocks")
     public String sending() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        if (blockchainValid == false || blockchainSize == 0) {
-            blockchain = Mining.getBlockchain(
-                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                    BlockchainFactoryEnum.ORIGINAL);
-            shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-            blockchainSize = (int) shortDataBlockchain.getSize();
-            blockchainValid = shortDataBlockchain.isValidation();
-        }
+        utilsMethod();
+
         System.out.println("sendBlocks: size: " + blockchain.sizeBlockhain());
         sendAllBlocksToStorage(blockchain.getBlockchainList());
         return "redirect:/";
@@ -1108,7 +1089,8 @@ public class BasisController {
             List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
             //отказ от дублирующих транзакций
             temporaryDtoList = UtilsBlock.validDto(tempBlockchain.getBlockchainList(), temporaryDtoList);
-
+            //отказ от транзакций которые меньше данного вознаграждения
+            temporaryDtoList = UtilsTransaction.reward(temporaryDtoList, minDollarRewards);
 
             //раз в три для очищяет файлы в папке resources/sendedTransaction данная папка
             //хранит уже добавленые в блокчейн транзации, чтобы повторно не добавлять в
@@ -1212,6 +1194,29 @@ public class BasisController {
 
 
         return "processUpdating";
+    }
+
+
+
+    /**Инициализирует блокчейн из файла и ShortDataBlockchain, а также предыдущий блок*/
+    public static boolean utilsMethod() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        boolean result = false;
+        if(shortDataBlockchain.getSize() == 0
+                || !shortDataBlockchain.isValidation()
+                || shortDataBlockchain.getHashCount() == 0
+                || prevBlock == null){
+
+            shortDataBlockchain= Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            blockchain = Mining.getBlockchain(
+                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                    BlockchainFactoryEnum.ORIGINAL);
+
+            blockchainSize = (int) shortDataBlockchain.getSize();
+            blockchainValid = shortDataBlockchain.isValidation();
+
+            result = true;
+        }
+        return result;
     }
 }
 

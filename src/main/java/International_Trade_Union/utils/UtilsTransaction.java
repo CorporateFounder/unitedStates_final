@@ -89,6 +89,19 @@ public class UtilsTransaction {
     }
 
 
+    /**минимальное вознаграждение за добавление в блок транзакции долларов*/
+    public static List<DtoTransaction> reward(List<DtoTransaction> transactions, double minRewards){
+
+        List<DtoTransaction> transactions1 = new ArrayList<>();
+        for (DtoTransaction dtoTransaction : transactions) {
+            if(dtoTransaction.getBonusForMiner() >= minRewards){
+                transactions1.add(dtoTransaction);
+            }
+        }
+
+        return transactions1;
+    }
+
     public static void sendTransaction(DtoTransaction dtoTransaction){
 
     }
