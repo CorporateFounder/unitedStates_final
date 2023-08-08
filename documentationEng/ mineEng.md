@@ -21,10 +21,12 @@ calling http://localhost:8082/mine automatically starts mining.
 Imagine that you have two computers and want them to mine
 blocks, if you just enable them on two computers, they will
 iterate over both from 0 to infinity.
-You can do like this, for example you see the max number
-9223372036854775807 and tell the first PC to search from scratch, and set the settings for the second
-already in the middle. Thus, each of your PCs will search from its place.
-After jar restart everything is reset to 0.
+
+You can start iterating from 0 on one computer, and from 5000 thousand on the second,
+thus the second will check a little earlier. Or 10,000 thousand.
+You must choose the optimal numbers yourself.
+
+But the number must not be equal to or greater than the maximum value.
 
 Blockchain Difficulty Adapts Like Bitcoin, But Adaptation Happens
 once every 12 hours (approximately) 288 blocks.
