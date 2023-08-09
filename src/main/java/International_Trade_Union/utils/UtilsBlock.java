@@ -19,6 +19,66 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class UtilsBlock {
+    public static int complexity( List<Block> blocks){
+        //секунды как часто создается блоки
+        //секунды как часто создается блоки
+        int difficulty = 1;
+        Block latestBlock = blocks.get(blocks.size() -1);;
+        for (int i = (int) latestBlock.getIndex(); i > 0 ; i--) {
+            Block block = blocks.get(i);
+            if(block.getIndex() != 0 && block.getIndex() % Seting.DIFFICULTY_ADJUSTMENT_INTERVAL == 0){
+                latestBlock = block;
+                break;
+            }
+        }
+        if(latestBlock.getIndex() != 0 && latestBlock.getIndex() % Seting.DIFFICULTY_ADJUSTMENT_INTERVAL == 0){
+            difficulty = getAdjustedDifficulty(latestBlock, blocks, Seting.BLOCK_GENERATION_INTERVAL,
+                    Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
+            System.out.println("difficulty: change dificulty: " + difficulty);
+        }
+        else {
+            System.out.println("deffault difficulty");
+            difficulty =  latestBlock.getHashCompexity();
+        }
+
+        return difficulty == 0? 1: difficulty;
+    }
+    public static boolean checkComplexity(Block thisBlock, List<Block> lastBlock){
+
+        boolean  result = true;
+        System.out.println("start checkComplexity");
+        if(thisBlock.getIndex() > Seting.CHECK_DIFFICULTY_INDEX){
+            int temp  = 0;
+            int index = (int) lastBlock.size()-1;
+            System.out.println("index: " + index);
+            for (int i = index; i > 0 ; i--) {
+                Block block = lastBlock.get(i);
+                if( block.getIndex() % Seting.DIFFICULTY_ADJUSTMENT_INTERVAL == 0){
+                    temp = i;
+                    break;
+                }
+            }
+            temp += 1;
+            System.out.println("before dif: " + temp + " size: " + lastBlock.size());
+            int start =0;
+            if (lastBlock.size() > Seting.PORTION_BLOCK_TO_COMPLEXCITY){
+                start = lastBlock.size() - Seting.PORTION_BLOCK_TO_COMPLEXCITY;
+            }
+            int diff =
+                    UtilsBlock.difficulty(lastBlock.subList(start, temp),
+                            Seting.BLOCK_GENERATION_INTERVAL,
+                            Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
+            System.out.println("diff: " + diff);
+            if (diff != thisBlock.getHashCompexity()){
+                System.out.println("difficulty wrong: actual: " + thisBlock.getHashCompexity() +
+                        ": expected: " + diff);
+                result  = false;
+                return result;
+            }
+
+        }
+        return result;
+    }
 
     public static void saveBlocks(List<Block> blocks, String filename) throws IOException {
         int fileLimit = Seting.SIZE_FILE_LIMIT * 1024 * 1024;
