@@ -23,6 +23,7 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -39,25 +40,19 @@ public class TestController {
     @GetMapping("/testBlock")
     @ResponseBody
     public int testBlock() throws IOException, CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        int temp = 0;
-        Blockchain blockchain  =  Mining.getBlockchain(
+        Blockchain blockchain =  Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
-        for (int i = blockchain.sizeBlockhain()-1; i > 0 ; i--) {
-            Block block = blockchain.getBlock(i);
-            if( block.getIndex() % Seting.DIFFICULTY_ADJUSTMENT_INTERVAL == 0){
-                temp = i;
-                break;
-            }
-        }
+        Block block = blockchain.getBlock(blockchain.sizeBlockhain()-1);
+        List<Block> blocks = blockchain.subBlock(
+                blockchain.sizeBlockhain()-Seting.PORTION_BLOCK_TO_COMPLEXCITY,
+               blockchain.sizeBlockhain() );
+        boolean result = UtilsBlock.checkComplexity(block, blocks);
+        int difficult = UtilsBlock.complexity(blocks);
+        System.out.println("result: " + result);
+        System.out.println("difficult: " + difficult);
 
-        int diff =
-                UtilsBlock.difficulty(blockchain.subBlock(temp - 600, temp+1),
-                Seting.BLOCK_GENERATION_INTERVAL,
-                Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
-
-
-        return diff;
+        return difficult;
     }
 
     @GetMapping("/testBlock1")
