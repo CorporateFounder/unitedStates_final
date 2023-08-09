@@ -430,7 +430,6 @@ public class BasisController {
                             emptyList.addAll(temp);
                         }
 
-
                         emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
                         temporaryBlockchain.setBlockchainList(emptyList);
 
