@@ -211,7 +211,6 @@ public class UtilsBlock {
         long timeTaken = latestBlock.getTimestamp().getTime() - prevAdjustmentBlock.getTimestamp().getTime();
 
         if(timeTaken < timeExpected / 2){
-
             return prevAdjustmentBlock.getHashCompexity() + 1;
         }else if(timeTaken > timeExpected * 2){
 

@@ -66,6 +66,24 @@ Pandemics, Space Threats, Environmental Issues and will reduce the occurrence of
 - and many others whose names I could not write because I do not know Chinese
 
 
+	How will this system deal with high volatility? The burning of coins every six months will help to reduce the volatility of the currency. This
+    is because it will create a built-in incentive for people to spend their money rather than hoard it. If people know that their money will be
+    worth less in the future, they will be more likely to spend it now. This will help to keep the currency circulating and prevent it from
+    becoming too volatile. How will this system deal with inflation? The limited supply of coins will help to prevent inflation. The total number
+    of coins will never grow above 20 billion digital dollars and 10 billion digital shares. This means that the value of each coin will be
+    relatively stable over time. How will this system deal with stagflation? Stagflation is a combination of high inflation and high unemployment.
+    The burning of coins will help to prevent stagflation by stimulating economic activity. When people spend their money, they are more likely to
+    buy goods and services from businesses. This will create jobs and help to reduce unemployment. How will this system deal with a deflationary
+    spiral? A deflationary spiral is a situation where prices are falling and people are reluctant to spend money because they expect prices to
+    fall even further. The burning of coins will help to prevent a deflationary spiral by creating an incentive for people to spend their money.
+    If people know that their money will be worth less in the future, they will be more likely to spend it now. This will help to keep prices from
+    falling and prevent a deflationary spiral. How will this coin help save money and increase the wealth of the owners of this coin? The burning
+    of coins will help people to save money. This is because people will be less likely to hoard money if they know that it will be worth less in
+    the future. Instead, they will be more likely to invest their money or spend it on goods and services. This will help to increase the wealth
+    of the owners of this coin. In addition, the limited supply of coins will help to increase the value of each coin. This is because there will
+    be a finite number of coins available, but the demand for coins may increase over time. This could lead to an increase in the value of each
+    coin, which would benefit the owners of this coin. Overall, this system has the potential to address a number of economic problems, such as
+    high volatility, inflation, stagflation, and deflationary spirals. It could also help people to save money and increase their wealth.
 
 ## CONTENT
 - [short description](../documentationEng/preambleEng.md)

@@ -235,7 +235,7 @@ public interface Seting {
     //каким количеством порций отправлять блоки
 
     int DELETED_PORTION = 150;
-    int PORTION_DOWNLOAD = 600;
+    int PORTION_DOWNLOAD = 500;
 
     //version
     int VERSION = 9;
