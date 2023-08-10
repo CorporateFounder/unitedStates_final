@@ -356,6 +356,7 @@ public class UtilsBlock {
                     break;
                 }
             }
+
             else if(!transaction.verify()){
                 System.out.println("wrong transaction: " + transaction + " verify: " + transaction.verify());
                 validated = false;
@@ -369,7 +370,20 @@ public class UtilsBlock {
                 return false;
             }
 
-            if(!actualPrevHash.equals(recordedPrevHash)){
+
+        if(thisBlock.getIndex() > Seting.CHECK_DIFFICULTY_INDEX) {
+
+            int diff = UtilsBlock.difficulty(lastBlock, Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
+            System.out.println("diff: " + diff + ":index: " + thisBlock.getIndex());
+      if (thisBlock.getHashCompexity() != diff) {
+                System.out.println("actual difficult: " + thisBlock.getHashCompexity() + ":expected: "
+                        + diff);
+                System.out.println("wrong difficult");
+                return false;
+            }
+        }
+
+        if(!actualPrevHash.equals(recordedPrevHash)){
                 System.out.println("Blockchain is invalid, expected: " + recordedPrevHash + " actual: " + actualPrevHash );
                 System.out.println("index block: " + thisBlock.getIndex());
                 System.out.println("wrong chain hash");
@@ -407,9 +421,11 @@ public class UtilsBlock {
     public static boolean validation(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL ) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         boolean validated = true;
         int index = 0;
-        List<Block> temporary = new ArrayList<>();
+
         Block prevBlock  = null;
         boolean haveTwoIndexOne = false;
+
+        List<Block> tempList = new ArrayList<>();
         for (int i = 1; i < blocks.size(); i++) {
             index++;
             Block block = blocks.get(i);
@@ -427,19 +443,22 @@ public class UtilsBlock {
             }
             if(prevBlock == null){
                 prevBlock = block;
-                temporary.add(block);
+//                temporary.add(block);
                 continue;
             }
 
 
-            temporary.add(block);
 
+            tempList.add(block);
+            if(tempList.size() > Seting.PORTION_BLOCK_TO_COMPLEXCITY){
+                tempList.remove(0);
+            }
             validated = validationOneBlock(block.getFounderAddress(),
                     prevBlock,
                     block,
                     BLOCK_GENERATION_INTERVAL,
                     DIFFICULTY_ADJUSTMENT_INTERVAL,
-                    temporary );
+                    tempList );
             if(validated == false){
 
 
@@ -450,7 +469,7 @@ public class UtilsBlock {
                 System.out.println("ERROR: UtilsBlock: validation: block.Hash():" + block.getHashBlock());
                 System.out.println("ERROR: UtilsBlock: validation: BLOCK_GENERATION_INTERVAL:" + BLOCK_GENERATION_INTERVAL);
                 System.out.println("ERROR: UtilsBlock: validation: DIFFICULTY_ADJUSTMENT_INTERVAL:" + DIFFICULTY_ADJUSTMENT_INTERVAL);
-                System.out.println("ERROR: UtilsBlock: validation: temporary:" + temporary.size());
+
                 return false;
             }
 

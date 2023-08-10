@@ -236,7 +236,7 @@ public interface Seting {
 
     int DELETED_PORTION = 150;
     int PORTION_DOWNLOAD = 500;
-    int CHECK_DIFFICULTY_INDEX = 35947;
+    int CHECK_DIFFICULTY_INDEX = 35980;
     int PORTION_BLOCK_TO_COMPLEXCITY = 600;
     //version
     int VERSION = 9;
