@@ -6,6 +6,9 @@
 my discord https://discord.gg/MqkvC3SGHH  https://discord.gg/czzQfKDy
 my web http://194.87.236.238:82/
 my telegram https://t.me/citu_coin
+twitter @citu4030
+gmail 
+citu4030@gmail.com
 
 https://bitcointalk.org/index.php?topic=5459836.new#new
 
