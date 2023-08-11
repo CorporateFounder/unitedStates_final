@@ -153,7 +153,10 @@ public class Blockchain implements Cloneable {
         }
 
         for (int i = 0; i < blocks.size(); i++) {
-
+            blockList.add(prev);
+            if (blockList.size() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
+                blockList.remove(0);
+            }
 
             System.out.println("========================================================");
             System.out.println("prev: index: " + prev.getIndex() + " hash: " + prev.getHashBlock());
@@ -174,10 +177,7 @@ public class Blockchain implements Cloneable {
             prev = blocks.get(i).clone();
             size++;
 
-            blockList.add(blocks.get(i).clone());
-            if (blockList.size() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
-                blockList.remove(0);
-            }
+
             System.out.println("size: " + blockList.size());
             hashcount += UtilsUse.hashCount(blocks.get(i).getHashBlock());
             if (validation == false) {
@@ -323,7 +323,7 @@ public class Blockchain implements Cloneable {
 
                     hashCount += UtilsUse.hashCount(block.getHashBlock());
 
-                    tempList.add(block);
+                    tempList.add(prevBlock);
                     if (tempList.size() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
                         tempList.remove(0);
                     }
@@ -395,14 +395,10 @@ public class Blockchain implements Cloneable {
 
                     if (index == size) {
                         block = UtilsJson.jsonToBLock(s);
-                        System.out.println("block index: " + block.getIndex() + " size: "
-                                + size);
+
 
                         if (block.getIndex() == size) {
-                            System.out.println("************************************");
-                            System.out.println("indexFromFile:  " + block.getIndex() + " index: "
-                                    + index + " size: " + size);
-                            System.out.println("************************************");
+
 
                             return block;
                         }

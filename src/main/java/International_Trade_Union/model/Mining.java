@@ -208,6 +208,7 @@ public class Mining {
 
         //здесь должна быть создана динамическая модель
         //определение сложности и создание блока
+
         int difficulty = UtilsBlock.difficulty(blockchain.getBlockchainList(), blockGenerationInterval, DIFFICULTY_ADJUSTMENT_INTERVAL);
 
         System.out.println("Mining: miningBlock: difficulty: " + difficulty + " index: " + index);
