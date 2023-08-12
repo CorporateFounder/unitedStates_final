@@ -22,8 +22,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -98,28 +101,47 @@ public class TestController {
     @GetMapping("/testBlock1")
     @ResponseBody
     public String testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, ParseException {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        int size = 36700;
+        while (true){
+            if(size % 288 == 0){
 
-        long timeUp = format.parse("2016/01/01 00:00:00").getTime();
-        Blockchain blockchain =  Mining.getBlockchain(
+                break;
+            }
+            size++;
+
+        }
+        Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
-       Block current =  blockchain.getBlockchainList().get(blockchain.sizeBlockhain() -1);
-       Block last = blockchain.getBlockchainList().get(blockchain.sizeBlockhain()- Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
+        List<Block> blocks = blockchain.getBlockchainList();
+        System.out.println("blockchain size: " + blockchain.sizeBlockhain());
+        int diff = 0;
+        long time = blocks.get(blocks.size()-1200).getTimestamp().getTime();
+        for (int i = 0; i < 1200; i++) {
+
+            diff= UtilsBlock.difficulty(blocks,
+                    Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
+            blocks.remove(blocks.size()-1);
+            if(diff > 5){
+                System.out.println("diff: " + diff + " index: "+ blocks.get(blocks.size()-1).getIndex());
+                break;
+            }
+            if(time > blocks.get(i).getTimestamp().getTime()){
+                System.out.println("wrong time: " + i);
+                System.out.println("prev time: " + new Date(time));
+                System.out.println("actul time: " + new Date(blocks.get(i).getTimestamp().getTime()));
+            }
+        }
 
 
-        long diff = current.getTimestamp().getTime() - last.getTimestamp().getTime();
-
-        long diffSeconds = diff / 1000 % 60;
-        long diffMinutes = diff / (60 * 1000) % 60;
-        long diffHours = diff / (60 * 60 * 1000) % 24;
-        long diffDays = diff / (24 * 60 * 60 * 1000);
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(diffDays + " дней, ");
-        sb.append(diffHours + " часов, ");
-        sb.append(diffMinutes + " минут, ");
-        sb.append(diffSeconds + " секунд");
-        return sb.toString();
+        System.out.println("******************");
+        System.out.println("diff " + diff);
+        System.out.println("size: " + size);
+        Date current = new Date(System.currentTimeMillis());
+        OffsetDateTime now = OffsetDateTime.now( ZoneOffset.UTC );
+        Timestamp test = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
+        Date utc = new Date(test.getTime());
+        System.out.println("current: " + current + " utc: " + utc);
+        return "0";
     }
 }

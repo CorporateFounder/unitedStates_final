@@ -9,6 +9,7 @@ import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.UtilUrl;
+import International_Trade_Union.utils.UtilsBlock;
 import org.json.JSONException;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -104,5 +105,10 @@ public class Testing {
                 BlockchainFactoryEnum.ORIGINAL);
 
         BasisController.addBlock(blockchain.getBlockchainList());
+    }
+
+    @Test
+    public void TestChangeDiff() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+
     }
 }
