@@ -315,8 +315,8 @@ public class UtilsBlock {
         if(thisBlock.getIndex() > Seting.CHECK_DIFFICULTY_INDEX) {
 
             int diff = UtilsBlock.difficulty(lastBlock, Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
-            System.out.println("acutal: " + thisBlock.getHashCompexity() + "" +
-                    " expected: " + diff + " index: " + thisBlock.getIndex());
+//            System.out.println("acutal: " + thisBlock.getHashCompexity() + "" +
+//                    " expected: " + diff + " index: " + thisBlock.getIndex());
       if (thisBlock.getHashCompexity() != diff) {
                 System.out.println("utils Block: actual difficult: " + thisBlock.getHashCompexity() + ":expected: "
                         + diff);

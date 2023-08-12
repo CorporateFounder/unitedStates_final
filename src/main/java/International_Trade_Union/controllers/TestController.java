@@ -101,7 +101,7 @@ public class TestController {
     @GetMapping("/testBlock1")
     @ResponseBody
     public String testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, ParseException {
-        int size = 36700;
+        int size = 37000;
         while (true){
             if(size % 288 == 0){
 

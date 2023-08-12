@@ -68,10 +68,10 @@ public class Testing {
     @Test
     public void testLimitedMoney(){
         int block = 0;
-        double digitalDollarMining = 200;
-        double digitalStockMining = 200;
-        double dollarPercent = 0.1;
-        double stockPercent = 0.2;
+        double digitalDollarMining = 400;
+        double digitalStockMining = 400;
+        double dollarPercent = 0.2;
+        double stockPercent = 0.4;
         double digitalDollarAccount = 0;
         double digitalStockAccount = 0;
         int year = 360 * 600;
@@ -117,7 +117,7 @@ public class Testing {
     public void TestChangeDiff() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, InterruptedException {
          Timestamp timestamp = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         Timestamp instant = Timestamp.from(Instant.now());
-        Thread.sleep(60000);
+        Thread.sleep(120000);
 
         Timestamp timestamp2 = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         long time = (timestamp.getTime()-timestamp2.getTime())/1000/60;
