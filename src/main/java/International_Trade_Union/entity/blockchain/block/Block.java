@@ -15,6 +15,7 @@ import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -50,7 +51,8 @@ public final class Block implements Cloneable {
         this.minerRewards = miningRewardsCount();
         this.hashCompexity = hashCompexity;
         this.founderAddress = founderAddress;
-        this.timestamp = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
+        this.timestamp = Timestamp.from(Instant.now());
+//        this.timestamp = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         this.index = index;
 
         this.hashBlock = findHash(hashCompexity);

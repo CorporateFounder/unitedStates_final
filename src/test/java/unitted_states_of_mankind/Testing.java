@@ -20,6 +20,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
 @SpringBootTest
 public class Testing {
@@ -108,7 +114,20 @@ public class Testing {
     }
 
     @Test
-    public void TestChangeDiff() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public void TestChangeDiff() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, InterruptedException {
+         Timestamp timestamp = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
+        Timestamp instant = Timestamp.from(Instant.now());
+        Thread.sleep(60000);
 
+        Timestamp timestamp2 = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
+        long time = (timestamp.getTime()-timestamp2.getTime())/1000/60;
+        Long result = timestamp.toInstant().until(timestamp2.toInstant(), ChronoUnit.MINUTES);
+        long result2 = timestamp2.toInstant().until(timestamp.toInstant(), ChronoUnit.MINUTES);
+        Timestamp instant2 = Timestamp.from(Instant.now());
+        long intstantResult = instant.toInstant().until(instant2.toInstant(), ChronoUnit.MINUTES);
+        System.out.println("time: " + time);
+        System.out.println("second method: " + result);
+        System.out.println("second method v2: " + result2);
+        System.out.println("instant: " + intstantResult);
     }
 }
