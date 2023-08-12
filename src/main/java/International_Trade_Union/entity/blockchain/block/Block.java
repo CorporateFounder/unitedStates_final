@@ -52,6 +52,7 @@ public final class Block implements Cloneable {
         this.founderAddress = founderAddress;
         this.timestamp = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         this.index = index;
+
         this.hashBlock = findHash(hashCompexity);
 
     }
