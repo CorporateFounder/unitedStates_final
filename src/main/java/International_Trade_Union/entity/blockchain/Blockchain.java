@@ -159,6 +159,7 @@ public class Blockchain implements Cloneable {
             }
 
             System.out.println("========================================================");
+            System.out.println("i: " + i);
             System.out.println("prev: index: " + prev.getIndex() + " hash: " + prev.getHashBlock());
             System.out.println("block: index: " + blocks.get(i).getIndex() + " hash: " + blocks.get(i).getPreviousHash());
             System.out.println("blocklist index: " + blockList.get(blockList.size()-1).getIndex() + " :hash: " +

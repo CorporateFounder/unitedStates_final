@@ -2,7 +2,9 @@ package International_Trade_Union.entity.blockchain.block;
 
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.exception.NotValidTransactionException;
+import International_Trade_Union.model.Mining;
 import International_Trade_Union.utils.UtilsJson;
+import International_Trade_Union.utils.UtilsStorage;
 import International_Trade_Union.utils.UtilsUse;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
@@ -18,6 +20,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 
@@ -158,6 +161,9 @@ public final class Block implements Cloneable {
 
         this.randomNumberProof = randomNumberProofStatic;
         String hash = "";
+        //используется для определения кто-нибудь уже успел добыть блок.
+        int size = UtilsStorage.getSize();
+        Timestamp previus = Timestamp.from(Instant.now());
         while (true){
             this.randomNumberProof++;
             System.out.println("A number is selected to generate the correct hash: " + randomNumberProof);
@@ -165,6 +171,20 @@ public final class Block implements Cloneable {
                     this.previousHash, this.minerAddress, this.founderAddress,
                     this.randomNumberProof, this.minerRewards, this.hashCompexity, this.timestamp, this.index);
             hash = block.hashForTransaction();
+
+            Timestamp actualTime = Timestamp.from(Instant.now());
+            Long result = actualTime.toInstant().until(previus.toInstant(), ChronoUnit.SECONDS);
+            if(result > 60){
+                int tempSize = UtilsStorage.getSize();
+                if(size < tempSize){
+                    if(UtilsUse.hashComplexity(hash.substring(0, 1), hashCoplexity))
+                    {
+                        System.out.println("someone mined a block before you, the search for this block is no longer relevant and outdated: " + hash);
+                        Mining.miningIsObsolete = true;
+                        break;
+                    }
+                }
+            }
             if(UtilsUse.hashComplexity(hash.substring(0, hashCoplexity), hashCoplexity))
             {
                 System.out.println("block found: hash: " + hash);

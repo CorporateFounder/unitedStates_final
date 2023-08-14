@@ -1112,6 +1112,15 @@ public class BasisController {
                     balances,
                     index
             );
+
+            //синхронизируется с глобальным сервером и если в глобальном сервере,
+            //появился более актуальный блок, то прекращает добывать.
+            if(Mining.miningIsObsolete){
+                Mining.miningIsObsolete = false;
+                System.out.println("This block has already been mined, we start a new cycle");
+                return "ok";
+
+            }
             System.out.println("BasisController: finish mine:");
 
             //нужна для корректировки сложности
@@ -1156,6 +1165,7 @@ public class BasisController {
 //        model.addAttribute("text", text);
         } finally {
             mining = false;
+            Mining.miningIsObsolete = false;
         }
         return "ok";
     }

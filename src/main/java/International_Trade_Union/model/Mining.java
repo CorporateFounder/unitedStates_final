@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import static International_Trade_Union.utils.UtilsBalance.calculateBalanceFromLaw;
 
 public class Mining {
-
+    public static boolean miningIsObsolete = false;
     public static Blockchain getBlockchain(String filename, BlockchainFactoryEnum factoryEnum) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
         List<Block> blocks = UtilsBlock.readLineObject(filename);

@@ -101,7 +101,7 @@ public class TestController {
     @GetMapping("/testBlock1")
     @ResponseBody
     public String testBlock1() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, ParseException {
-        int size = 37000;
+        int size = 37903;
         while (true){
             if(size % 288 == 0){
 
@@ -116,8 +116,8 @@ public class TestController {
         List<Block> blocks = blockchain.getBlockchainList();
         System.out.println("blockchain size: " + blockchain.sizeBlockhain());
         int diff = 0;
-        long time = blocks.get(blocks.size()-1200).getTimestamp().getTime();
-        for (int i = 0; i < 1200; i++) {
+
+        for (int i = 0; i < 600; i++) {
 
             diff= UtilsBlock.difficulty(blocks,
                     Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
@@ -126,22 +126,26 @@ public class TestController {
                 System.out.println("diff: " + diff + " index: "+ blocks.get(blocks.size()-1).getIndex());
                 break;
             }
-            if(time > blocks.get(i).getTimestamp().getTime()){
-                System.out.println("wrong time: " + i);
-                System.out.println("prev time: " + new Date(time));
-                System.out.println("actul time: " + new Date(blocks.get(i).getTimestamp().getTime()));
-            }
+
         }
+
 
 
         System.out.println("******************");
         System.out.println("diff " + diff);
         System.out.println("size: " + size);
-        Date current = new Date(System.currentTimeMillis());
-        OffsetDateTime now = OffsetDateTime.now( ZoneOffset.UTC );
-        Timestamp test = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
-        Date utc = new Date(test.getTime());
-        System.out.println("current: " + current + " utc: " + utc);
+
         return "0";
+    }
+
+    private static final int TARGET_BLOCK_TIME = 150; // 150 секунд
+    private static final int RETARGET_INTERVAL = 288; // 288 блоков
+
+    public static int getDifficulty(List<Block> blockchain) {
+        Block latestBlock = blockchain.get(blockchain.size() - 1);
+        long timeSinceLastBlock = latestBlock.getTimestamp().getTime() - blockchain.get(blockchain.size() - RETARGET_INTERVAL - 1).getTimestamp().getTime();
+        long expectedBlocksPerSecond = RETARGET_INTERVAL / TARGET_BLOCK_TIME;
+        int difficulty = (int) Math.pow(2, (timeSinceLastBlock / expectedBlocksPerSecond) - 1);
+        return difficulty;
     }
 }

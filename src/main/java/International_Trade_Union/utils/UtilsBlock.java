@@ -188,8 +188,8 @@ public class UtilsBlock {
     /**определяет сложность, раз пол дня корректирует сложность. В сутках 576 блоков.
      * каждый блок добывается примерно 2.3 минуты*/
     public static int difficulty(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int  DIFFICULTY_ADJUSTMENT_INTERVAL ){
-
-        //секунды как часто создается блоки
+        //DIFFICULTY_ADJUSTMENT_INTERVAL = 288
+        //BLOCK_GENERATION_INTERVAL =  150000
         int difficulty = 1;
         Block latestBlock = blocks.get(blocks.size() -1);
         if(latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0){
@@ -214,7 +214,6 @@ public class UtilsBlock {
         if(timeTaken < timeExpected / 2){
             return prevAdjustmentBlock.getHashCompexity() + 1;
         }else if(timeTaken > timeExpected * 2){
-
             return prevAdjustmentBlock.getHashCompexity() - 1;
         }else {
             return prevAdjustmentBlock.getHashCompexity();

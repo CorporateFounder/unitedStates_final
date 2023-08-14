@@ -4,6 +4,7 @@ import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.blockchain.Blockchain;
+import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.model.Mining;
@@ -13,6 +14,8 @@ import International_Trade_Union.utils.UtilsBlock;
 import org.json.JSONException;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -107,6 +110,7 @@ public class Testing {
     public void addblock() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Blockchain blockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
         blockchain = Mining.getBlockchain(
+
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
 
@@ -115,19 +119,34 @@ public class Testing {
 
     @Test
     public void TestChangeDiff() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, InterruptedException {
-         Timestamp timestamp = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
-        Timestamp instant = Timestamp.from(Instant.now());
-        Thread.sleep(120000);
+        Timestamp first = Timestamp.from(Instant.now());
+        Thread.sleep(60000);
+        Timestamp second = Timestamp.from(Instant.now());
+        long result = second.toInstant().until(first.toInstant(), ChronoUnit.MINUTES);
+        Long result2 = first.toInstant().until(second.toInstant(), ChronoUnit.MINUTES);
+        System.out.println("result1 " + result);
+        System.out.println("result2: " + result2);
 
-        Timestamp timestamp2 = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
-        long time = (timestamp.getTime()-timestamp2.getTime())/1000/60;
-        Long result = timestamp.toInstant().until(timestamp2.toInstant(), ChronoUnit.MINUTES);
-        long result2 = timestamp2.toInstant().until(timestamp.toInstant(), ChronoUnit.MINUTES);
-        Timestamp instant2 = Timestamp.from(Instant.now());
-        long intstantResult = instant.toInstant().until(instant2.toInstant(), ChronoUnit.MINUTES);
-        System.out.println("time: " + time);
-        System.out.println("second method: " + result);
-        System.out.println("second method v2: " + result2);
-        System.out.println("instant: " + intstantResult);
+        if(
+                result > 10 || result < 0
+        ){
+            System.out.println("_____________________________________________");
+            System.out.println("wrong timestamp:result " + result);
+            ;
+
+            System.out.println("_____________________________________________");
+
+        }
+
+        if(
+                result2 > 10 || result2 < 0
+        ){
+            System.out.println("_____________________________________________");
+            System.out.println("wrong timestamp:result2 " + result2);
+            ;
+
+            System.out.println("_____________________________________________");
+
+        }
     }
 }
