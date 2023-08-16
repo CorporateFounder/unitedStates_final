@@ -193,8 +193,20 @@ public class UtilsBlock {
         int difficulty = 1;
         Block latestBlock = blocks.get(blocks.size() -1);
         if(latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0){
-            difficulty = getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
-            System.out.println("difficulty: change dificulty: " + difficulty);
+
+            System.out.println("=======================================");
+            difficulty = UtilsDIfficult.getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
+
+
+            //более умеренная модель сложности
+            if (latestBlock.getIndex() - 20 > Seting.CHECK_DIFFICULTY_INDEX){
+                difficulty = UtilsDIfficult.difficultyBing(blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
+            }
+
+
+            System.out.println("changes: " + difficulty);
+            System.out.println("=======================================");
+
         }
         else {
             difficulty =  latestBlock.getHashCompexity();
@@ -204,21 +216,6 @@ public class UtilsBlock {
     }
 
 
-    /**получить сложность*/
-    private static int getAdjustedDifficulty(Block latestBlock, List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL){
-        Block prevAdjustmentBlock = blocks.get(blocks.size() - DIFFICULTY_ADJUSTMENT_INTERVAL);
-
-        long timeExpected = BLOCK_GENERATION_INTERVAL * DIFFICULTY_ADJUSTMENT_INTERVAL;
-        long timeTaken = latestBlock.getTimestamp().getTime() - prevAdjustmentBlock.getTimestamp().getTime();
-
-        if(timeTaken < timeExpected / 2){
-            return prevAdjustmentBlock.getHashCompexity() + 1;
-        }else if(timeTaken > timeExpected * 2){
-            return prevAdjustmentBlock.getHashCompexity() - 1;
-        }else {
-            return prevAdjustmentBlock.getHashCompexity();
-        }
-    }
 
     public static boolean validationOneBlock(
             String addressFounder,
@@ -314,8 +311,6 @@ public class UtilsBlock {
         if(thisBlock.getIndex() > Seting.CHECK_DIFFICULTY_INDEX) {
 
             int diff = UtilsBlock.difficulty(lastBlock, Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
-//            System.out.println("acutal: " + thisBlock.getHashCompexity() + "" +
-//                    " expected: " + diff + " index: " + thisBlock.getIndex());
       if (thisBlock.getHashCompexity() != diff) {
                 System.out.println("utils Block: actual difficult: " + thisBlock.getHashCompexity() + ":expected: "
                         + diff);

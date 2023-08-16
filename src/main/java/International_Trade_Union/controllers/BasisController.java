@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class BasisController {
     private static double minDollarRewards = 0;
     private static Block prevBlock = null;
     private static Account minerShow = null;
+    private static int difficultExpected = 0;
     private static boolean mining = false;
     private static boolean updating = false;
     private static DataShortBlockchainInformation shortDataBlockchain = null;
@@ -54,6 +56,15 @@ public class BasisController {
     private static int blockchainSize = 0;
     private static boolean blockchainValid = false;
     private static Set<String> excludedAddresses = new HashSet<>();
+
+
+    public static int getDifficultExpected() {
+        return difficultExpected;
+    }
+
+    public static void setDifficultExpected(int difficultExpected) {
+        BasisController.difficultExpected = difficultExpected;
+    }
 
     public static Account getMinerShow() {
         return minerShow;
@@ -979,6 +990,12 @@ public class BasisController {
         for (int i = 0; i < 576; i++) {
             try {
                 mining();
+                if(Mining.isIsMiningStop())
+                {
+                    System.out.println("production stopped");
+                    Mining.setIsMiningStop(false);
+                    break;
+                }
 
             } catch (IllegalArgumentException e) {
                 System.out.println("BasisisController: constantMining find error:");
@@ -1121,6 +1138,10 @@ public class BasisController {
                 return "ok";
 
             }
+            if(Mining.isIsMiningStop()){
+                System.out.println("mining will be stopped");
+                return "ok";
+            }
             System.out.println("BasisController: finish mine:");
 
             //нужна для корректировки сложности
@@ -1192,6 +1213,41 @@ public class BasisController {
             model.addAttribute("address", "balance has not loaded yet");
             model.addAttribute("dollar", "balance has not loaded yet");
             model.addAttribute("stock", "balance has not loaded yet");
+            model.addAttribute("stop", Mining.isIsMiningStop());
+
+        }else {
+            DecimalFormat decimalFormat = new DecimalFormat("#.################");
+            String dollar = decimalFormat.format(minerShow.getDigitalDollarBalance());
+            String stock = decimalFormat.format(minerShow.getDigitalStockBalance());
+            model.addAttribute("address", minerShow.getAccount());
+            model.addAttribute("dollar", dollar);
+            model.addAttribute("stock", stock);
+            model.addAttribute("stop", Mining.isIsMiningStop());
+            model.addAttribute("expectedDifficult", difficultExpected);
+
+        }
+
+        if(difficultExpected == 0){
+            model.addAttribute("expectedDifficult", "");
+        }else {
+            model.addAttribute("expectedDifficult", difficultExpected);
+        }
+
+
+        return "processUpdating";
+    }
+
+    @GetMapping("/stopMining")
+    public String stopMining(RedirectAttributes model){
+        Mining.setIsMiningStop(true);
+        model.addAttribute("isMining", isMining());
+        model.addAttribute("isUpdating", isUpdating());
+        if (minerShow == null) {
+            model.addAttribute("address", "balance has not loaded yet");
+            model.addAttribute("dollar", "balance has not loaded yet");
+            model.addAttribute("stock", "balance has not loaded yet");
+
+            model.addAttribute("stop", Mining.isIsMiningStop() + " mining will be stopped, as file updates will stop. You can click on the main page, if mining is disabled then you will see it.");
         }else {
             DecimalFormat decimalFormat = new DecimalFormat("#.################");
             String dollar = decimalFormat.format(minerShow.getDigitalDollarBalance());
@@ -1200,10 +1256,16 @@ public class BasisController {
             model.addAttribute("dollar", dollar);
             model.addAttribute("stock", stock);
 
+            model.addAttribute("stop", Mining.isIsMiningStop() + " mining will be stopped, as file updates will stop. You can click on the main page, if mining is disabled then you will see it.");
+
         }
 
-
-        return "processUpdating";
+        if(difficultExpected == 0){
+            model.addAttribute("expectedDifficult", "");
+        }else {
+            model.addAttribute("expectedDifficult", difficultExpected);
+        }
+        return "redirect:/processUpdating";
     }
 
 

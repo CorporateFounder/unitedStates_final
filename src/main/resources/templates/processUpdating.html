@@ -16,8 +16,13 @@
         <h3 th:text="'stock: '+${stock}"/>
         <h3 th:text="'is mining: '+${isMining}"/>
         <h3 th:text="'is updating: '+${isUpdating}"/>
+        <h3 th:text="'is stop: '+${stop}"/>
+        <h3 th:text="'serearching difficult: '+${expectedDifficult}"/>
 
-        <h6>now there is a process of updating or mining, if you clicked 576, it may take a day. it is recommended not to interrupt the process, otherwise it will lead to file corruption</h6>
+        <h6>after click stop mining need waiting</h6>
+        <form action="/stopMining" class="container mt-1">
+            <button type="submit" class="btn btn-success">stop mining</button>
+        </form>
     </div>
 </div>
 

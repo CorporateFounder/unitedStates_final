@@ -4,6 +4,7 @@ package International_Trade_Union.model;
 
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
+import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
@@ -27,6 +28,7 @@ import static International_Trade_Union.utils.UtilsBalance.calculateBalanceFromL
 
 public class Mining {
     public static boolean miningIsObsolete = false;
+    private static boolean isMiningStop = false;
     public static Blockchain getBlockchain(String filename, BlockchainFactoryEnum factoryEnum) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
         List<Block> blocks = UtilsBlock.readLineObject(filename);
@@ -37,6 +39,14 @@ public class Mining {
            blockchain.setBlockchainList(blocks);
         }
         return blockchain;
+    }
+
+    public static boolean isIsMiningStop() {
+        return isMiningStop;
+    }
+
+    public static void setIsMiningStop(boolean isMiningStop) {
+        Mining.isMiningStop = isMiningStop;
     }
 
     public static Map<String, Account> getBalances(String filename, Blockchain blockchain, Map<String, Account> balances, List<String> signs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
@@ -210,7 +220,7 @@ public class Mining {
         //определение сложности и создание блока
 
         int difficulty = UtilsBlock.difficulty(blockchain.getBlockchainList(), blockGenerationInterval, DIFFICULTY_ADJUSTMENT_INTERVAL);
-
+        BasisController.setDifficultExpected(difficulty);
         System.out.println("Mining: miningBlock: difficulty: " + difficulty + " index: " + index);
 
         //blockchain.getHashBlock(blockchain.sizeBlockhain() - 1)

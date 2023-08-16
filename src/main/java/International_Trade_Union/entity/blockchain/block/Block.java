@@ -28,6 +28,7 @@ import java.util.Objects;
 @Data
 public final class Block implements Cloneable {
     private static long randomNumberProofStatic = 0;
+
     private List<DtoTransaction> dtoTransactions;
     private String previousHash;
     private String minerAddress;
@@ -166,7 +167,8 @@ public final class Block implements Cloneable {
         Timestamp previus = Timestamp.from(Instant.now());
         while (true){
             this.randomNumberProof++;
-            System.out.println("A number is selected to generate the correct hash: " + randomNumberProof);
+            System.out.println("A number is selected to generate the correct hash: " +
+                    randomNumberProof + " is stop: " + Mining.isIsMiningStop() + " isBsolete: " + Mining.miningIsObsolete);
             BlockForHash block = new BlockForHash(this.dtoTransactions,
                     this.previousHash, this.minerAddress, this.founderAddress,
                     this.randomNumberProof, this.minerRewards, this.hashCompexity, this.timestamp, this.index);
@@ -177,14 +179,20 @@ public final class Block implements Cloneable {
             if(result > 60){
                 int tempSize = UtilsStorage.getSize();
                 if(size < tempSize){
-                    if(UtilsUse.hashComplexity(hash.substring(0, 1), hashCoplexity))
-                    {
-                        System.out.println("someone mined a block before you, the search for this block is no longer relevant and outdated: " + hash);
-                        Mining.miningIsObsolete = true;
-                        break;
-                    }
+                    Mining.miningIsObsolete = true;
+                    System.out.println("someone mined a block before you, the search for this block is no longer relevant and outdated: " + hash);
+                    return hash;
+
                 }
             }
+
+            //отключить майнинг
+            if(Mining.isIsMiningStop()){
+                System.out.println("mining will be stopped");
+                return hash;
+
+            }
+
             if(UtilsUse.hashComplexity(hash.substring(0, hashCoplexity), hashCoplexity))
             {
                 System.out.println("block found: hash: " + hash);
