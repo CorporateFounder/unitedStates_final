@@ -176,7 +176,9 @@ public final class Block implements Cloneable {
 
             Timestamp actualTime = Timestamp.from(Instant.now());
             Long result = actualTime.toInstant().until(previus.toInstant(), ChronoUnit.SECONDS);
-            if(result > 60){
+            System.out.println("findhash time: " + result + " result > 30 || result < -30: " + (result > 30));
+            if(result > 30 || result < -30){
+                previus = actualTime;
                 int tempSize = UtilsStorage.getSize();
                 if(size < tempSize){
                     Mining.miningIsObsolete = true;
