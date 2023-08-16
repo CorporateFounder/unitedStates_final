@@ -204,6 +204,7 @@ public class Mining {
         byte[] signGold = UtilsSecurity.sign(privateKey, minerRew.toSign());
         minerRew.setSign(signGold);
 
+
         //вознаграждение основателя
         DtoTransaction founderRew = new DtoTransaction(Seting.BASIS_ADDRESS, blockchain.getADDRESS_FOUNDER(),
                 founderReward, founderDigigtalReputationReward, new Laws(), 0.0, VoteEnum.YES);
