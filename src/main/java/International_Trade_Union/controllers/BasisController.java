@@ -923,6 +923,11 @@ public class BasisController {
                     System.out.println(":GOOD SUCCESS: " + HttpStatus.OK.value());
                     System.out.println(":FAIL BAD BLOCKHAIN: " + HttpStatus.EXPECTATION_FAILED.value());
                     System.out.println(":CONFLICT VERSION: " + HttpStatus.FAILED_DEPENDENCY.value());
+                    System.out.println(":NAME CONFLICT: " + HttpStatus.NOT_ACCEPTABLE.value());
+                    System.out.println("two miner addresses cannot be consecutive: " + HttpStatus.NOT_ACCEPTABLE.value());
+                    System.out.println("PARITY ERROR" + HttpStatus.LOCKED);
+                    System.out.println("Test version: If the index is even, then the stock balance must also be even; if the index is not even, then the stock balance must also be odd"
+                    + HttpStatus.LOCKED.value());
                     System.out.println(":response: " + response);
 
                     System.out.println(":BasisController: sendAllBlocksStorage: response: " + response);
@@ -987,7 +992,7 @@ public class BasisController {
     @GetMapping("/constantMining")
     public String alwaysMining() throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
 
-        for (int i = 0; i < 576; i++) {
+        while (true) {
             try {
                 mining();
                 if(Mining.isIsMiningStop())
@@ -1016,6 +1021,10 @@ public class BasisController {
             tempBlockchain = Mining.getBlockchain(
                     Seting.ORIGINAL_BLOCKCHAIN_FILE,
                     BlockchainFactoryEnum.ORIGINAL);
+            long index = tempBlockchain.sizeBlockhain();
+            Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+            Account miner = balances.get(User.getUserAddress());
+            minerShow = miner;
 
 
             String sizeStr = "-1";
@@ -1033,9 +1042,7 @@ public class BasisController {
             Integer sizeG = Integer.valueOf(sizeStr);
             String text = "";
             //нахождение адрессов
-            Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-            Account miner = balances.get(User.getUserAddress());
-            minerShow = miner;
+
             findAddresses();
 
             resolve_conflicts();
@@ -1065,8 +1072,8 @@ public class BasisController {
             }
 
 
-            //если размер блокчейна меньше или равно единице, сохранить в файл генезис блок
-            long index = tempBlockchain.sizeBlockhain();
+
+
             if (blockchain.sizeBlockhain() <= 1) {
                 System.out.println("save genesis block");
                 //сохранение генезис блока
@@ -1184,7 +1191,7 @@ public class BasisController {
 //        sendAddress();
             text = "success: блок успешно добыт";
 //        model.addAttribute("text", text);
-        } finally {
+        }  finally {
             mining = false;
             Mining.miningIsObsolete = false;
         }

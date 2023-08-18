@@ -167,8 +167,8 @@ public final class Block implements Cloneable {
         Timestamp previus = Timestamp.from(Instant.now());
         while (true){
             this.randomNumberProof++;
-            System.out.println("A number is selected to generate the correct hash: " +
-                    randomNumberProof + " is stop: " + Mining.isIsMiningStop() + " isBsolete: " + Mining.miningIsObsolete);
+//            System.out.println("A number is selected to generate the correct hash: " +
+//                    randomNumberProof + " is stop: " + Mining.isIsMiningStop() + " isBsolete: " + Mining.miningIsObsolete);
             BlockForHash block = new BlockForHash(this.dtoTransactions,
                     this.previousHash, this.minerAddress, this.founderAddress,
                     this.randomNumberProof, this.minerRewards, this.hashCompexity, this.timestamp, this.index);
@@ -176,7 +176,7 @@ public final class Block implements Cloneable {
 
             Timestamp actualTime = Timestamp.from(Instant.now());
             Long result = actualTime.toInstant().until(previus.toInstant(), ChronoUnit.SECONDS);
-            System.out.println("findhash time: " + result + " result > 10 || result < -10: " + (result > 10 || result < -10));
+//            System.out.println("findhash time: " + result + " result > 10 || result < -10: " + (result > 10 || result < -10));
             if(result > 10 || result < -10){
                 previus = actualTime;
                 int tempSize = UtilsStorage.getSize();

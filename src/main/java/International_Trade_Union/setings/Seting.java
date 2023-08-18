@@ -149,6 +149,16 @@ public interface Seting {
     String ORIGINAL_CHARTER_CURRENT_ALL_CODE = "ORIGINAL_CHARTER_CURRENT_ALL_CODE";
 
 
+    //подсчет голосов для должности в годах, учитываются только те голоса
+    //которые не позже четырех лет для законов и должностей,
+    //голоса отданные за законы должны обновляться каждые четыре года
+    //как и за должности
+    int POSITION_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 1;
+    //подсчет голосов для законов в годах
+    int LAW_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 1;
+
+    //используется для утверждения бюджета и эмиссии
+    int LAW_MONTH_VOTE = (int) (FIFTEEN_DAYS * Seting.COUNT_BLOCK_IN_DAY);
 
 
     // сколько секунд в сутках
@@ -161,16 +171,6 @@ public interface Seting {
     //сколько блоков добывается в сутки
     double COUNT_BLOCK_IN_DAY = (DAY_SECOND / BLOCK_TIME);
 
-    //подсчет голосов для должности в годах, учитываются только те голоса
-    //которые не позже четырех лет для законов и должностей,
-    //голоса отданные за законы должны обновляться каждые четыре года
-    //как и за должности
-    int POSITION_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 1;
-    //подсчет голосов для законов в годах
-    int LAW_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 1;
-
-    //используется для утверждения бюджета и эмиссии
-    int LAW_MONTH_VOTE = (int) (FIFTEEN_DAYS * Seting.COUNT_BLOCK_IN_DAY);
 
             String ORIGINAL_BLOCKCHAIN_FILE = "/resources/blockchain/";
     String ORIGINAL_BALANCE_FILE = "/resources/balance/";
@@ -228,6 +228,9 @@ public interface Seting {
     String TEST_FILE_WRITE_INFO = "/src/test/java/unitted_states_of_mankind/blockchainTwentyYearTest/";
     double DIGITAL_DOLLAR_REWARDS_BEFORE = 400.0;
     double DIGITAL_STOCK_REWARDS_BEFORE = 400.0;
+
+    //добыча должна происходить по формуле (сложность * 30) если индекс не четный +1, если четное  + 0
+    double MONEY = 30;
     double DIGITAL_DOLLAR_FOUNDER_REWARDS_BEFORE = Math.round(UtilsUse.countPercents(Seting.DIGITAL_DOLLAR_REWARDS_BEFORE, Seting.FOUNDERS_REWARD));
     double DIGITAL_REPUTATION_FOUNDER_REWARDS_BEFORE = Math.round(UtilsUse.countPercents(Seting.DIGITAL_STOCK_REWARDS_BEFORE, Seting.FOUNDERS_REWARD));
 
@@ -237,9 +240,10 @@ public interface Seting {
     int DELETED_PORTION = 150;
     int PORTION_DOWNLOAD = 500;
     int CHECK_DIFFICULTY_INDEX = 39100;
+    int CHECK_DIFFICULTY_BLOCK_2 = 40032;
     int PORTION_BLOCK_TO_COMPLEXCITY = 600;
     //version
-    int VERSION = 12;
+    int VERSION = 13;
 
     String ORIGINAL_HASH = "08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c";
 }

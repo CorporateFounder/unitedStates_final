@@ -196,13 +196,7 @@ public class Mining {
         PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(Seting.BASIS_PASSWORD));
         double sumRewards = forAdd.stream().collect(Collectors.summingDouble(DtoTransaction::getBonusForMiner));
 
-        //вознаграждения майнера
-        DtoTransaction minerRew = new DtoTransaction(Seting.BASIS_ADDRESS, minner.getAccount(),
-                minerRewards, digitalReputationForMiner, new Laws(), sumRewards, VoteEnum.YES );
 
-        //подписывает
-        byte[] signGold = UtilsSecurity.sign(privateKey, minerRew.toSign());
-        minerRew.setSign(signGold);
 
 
         //вознаграждение основателя
@@ -213,7 +207,7 @@ public class Mining {
         founderRew.setSign(signFounder);
 
 
-        forAdd.add(minerRew);
+
         forAdd.add(founderRew);
 
 
@@ -224,6 +218,22 @@ public class Mining {
         BasisController.setDifficultExpected(difficulty);
         System.out.println("Mining: miningBlock: difficulty: " + difficulty + " index: " + index);
 
+        if(index > Seting.CHECK_DIFFICULTY_BLOCK_2) {
+            minerRewards = difficulty * Seting.MONEY;
+            digitalReputationForMiner= difficulty * Seting.MONEY;
+            minerRewards += index%2 == 0 ? 0 : 1;
+            digitalReputationForMiner += index%2 == 0 ? 0 : 1;
+        }
+
+        //вознаграждения майнера
+        DtoTransaction minerRew = new DtoTransaction(Seting.BASIS_ADDRESS, minner.getAccount(),
+                minerRewards, digitalReputationForMiner, new Laws(), sumRewards, VoteEnum.YES );
+
+
+        forAdd.add(minerRew);
+        //подписывает
+        byte[] signGold = UtilsSecurity.sign(privateKey, minerRew.toSign());
+        minerRew.setSign(signGold);
         //blockchain.getHashBlock(blockchain.sizeBlockhain() - 1)
         Block block = new Block(
                 forAdd,

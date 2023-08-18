@@ -28,7 +28,7 @@ public class UtilsBlock {
         File folder = new File(filename);
         List<String> files = new ArrayList<>();
         for (File file : folder.listFiles()) {
-            if(!file.isDirectory()){
+            if (!file.isDirectory()) {
                 files.add(file.getAbsolutePath());
             }
         }
@@ -38,7 +38,7 @@ public class UtilsBlock {
         String nextFile = "";
 
         if (files.size() > 0) {
-            nextFile = files.get(files.size()-1);
+            nextFile = files.get(files.size() - 1);
 
             count = Integer.parseInt(nextFile.replaceAll("[^\\d]", ""));
 
@@ -47,7 +47,7 @@ public class UtilsBlock {
 
         File file = new File(nextFile);
 
-        if(file.length() >= fileLimit){
+        if (file.length() >= fileLimit) {
             count++;
 
         }
@@ -55,7 +55,7 @@ public class UtilsBlock {
         nextFile = filename + count + ".txt";
 
         List<String> jsons = new ArrayList<>();
-        for (Block block: blocks) {
+        for (Block block : blocks) {
             String json = UtilsJson.objToStringJson(block);
             jsons.add(json);
         }
@@ -64,6 +64,7 @@ public class UtilsBlock {
 //        UtilsFileSaveRead.save(json + "\n", nextFile);
         UtilsFileSaveRead.saves(jsons, nextFile, true);
     }
+
     public static void saveBLock(Block block, String filename) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         int fileLimit = Seting.SIZE_FILE_LIMIT * 1024 * 1024;
 
@@ -71,7 +72,7 @@ public class UtilsBlock {
         File folder = new File(filename);
         List<String> files = new ArrayList<>();
         for (File file : folder.listFiles()) {
-            if(!file.isDirectory()){
+            if (!file.isDirectory()) {
                 files.add(file.getAbsolutePath());
             }
         }
@@ -82,7 +83,7 @@ public class UtilsBlock {
         String nextFile = "";
 
         if (files.size() > 0) {
-            nextFile = files.get(files.size()-1);
+            nextFile = files.get(files.size() - 1);
 
             count = Integer.parseInt(nextFile.replaceAll("[^\\d]", ""));
 
@@ -91,7 +92,7 @@ public class UtilsBlock {
 
         File file = new File(nextFile);
 
-        if(file.length() >= fileLimit){
+        if (file.length() >= fileLimit) {
             count++;
 
         }
@@ -105,12 +106,11 @@ public class UtilsBlock {
     }
 
 
-
     public static List<Block> read(String nameFile) throws FileNotFoundException, JsonProcessingException {
-        return  UtilsJson.jsonToListBLock(UtilsFileSaveRead.read(nameFile));
+        return UtilsJson.jsonToListBLock(UtilsFileSaveRead.read(nameFile));
     }
 
-    public static List<Block> readLineObject(String filename ) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public static List<Block> readLineObject(String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         List<Block> blocks = new ArrayList<>();
         File folder = new File(filename);
 
@@ -118,7 +118,7 @@ public class UtilsBlock {
             if (fileEntry.isDirectory()) {
                 System.out.println("is directory " + fileEntry.getAbsolutePath());
             } else {
-               List<String> list = UtilsFileSaveRead.reads(fileEntry.getAbsolutePath());
+                List<String> list = UtilsFileSaveRead.reads(fileEntry.getAbsolutePath());
                 for (String s : list) {
 
                     Block block = UtilsJson.jsonToBLock(s);
@@ -134,7 +134,8 @@ public class UtilsBlock {
 
         return blocks;
     }
-    public static Blockchain readBLock(String nameFile, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL, long INTERVAL_TARGET , String ADDRESS_FOUNDER) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+
+    public static Blockchain readBLock(String nameFile, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL, long INTERVAL_TARGET, String ADDRESS_FOUNDER) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
         List<Block> blocks = null;
         List<List<Block>> list = new ArrayList<>();
 
@@ -170,11 +171,11 @@ public class UtilsBlock {
     }
 
     public static Blockchain readBLock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-       return readBLock(Seting.TEST_FILE_WRITE_INFO, Seting.BLOCK_GENERATION_INTERVAL,  Seting.DIFFICULTY_ADJUSTMENT_INTERVAL, Seting.INTERVAL_TARGET, Seting.ADDRESS_FOUNDER );
+        return readBLock(Seting.TEST_FILE_WRITE_INFO, Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL, Seting.INTERVAL_TARGET, Seting.ADDRESS_FOUNDER);
     }
 
-    public static boolean isValidTimestamp(Block newBlock, Block prevBLock, long timestamp){
-        return (prevBLock.getTimestamp().getTime() - timestamp <newBlock.getTimestamp().getTime())
+    public static boolean isValidTimestamp(Block newBlock, Block prevBLock, long timestamp) {
+        return (prevBLock.getTimestamp().getTime() - timestamp < newBlock.getTimestamp().getTime())
                 && newBlock.getTimestamp().getTime() < System.currentTimeMillis();
     }
 
@@ -185,36 +186,38 @@ public class UtilsBlock {
 
     //new https://guicommits.com/building-blockchain-with-python/
 
-    /**определяет сложность, раз пол дня корректирует сложность. В сутках 576 блоков.
-     * каждый блок добывается примерно 2.3 минуты*/
-    public static int difficulty(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int  DIFFICULTY_ADJUSTMENT_INTERVAL ){
+    /**
+     * определяет сложность, раз пол дня корректирует сложность. В сутках 576 блоков.
+     * каждый блок добывается примерно 2.3 минуты
+     */
+    public static int difficulty(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL) {
         //DIFFICULTY_ADJUSTMENT_INTERVAL = 288
         //BLOCK_GENERATION_INTERVAL =  150000
         int difficulty = 1;
-        Block latestBlock = blocks.get(blocks.size() -1);
-        if(latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0){
+        Block latestBlock = blocks.get(blocks.size() - 1);
+        if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
 
             System.out.println("=======================================");
             difficulty = UtilsDIfficult.getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
 
 
             //более умеренная модель сложности
-            if (latestBlock.getIndex() - 20 > Seting.CHECK_DIFFICULTY_INDEX){
+            if (latestBlock.getIndex() - 20 > Seting.CHECK_DIFFICULTY_INDEX && latestBlock.getIndex() < Seting.CHECK_DIFFICULTY_BLOCK_2) {
                 difficulty = UtilsDIfficult.difficultyBing(blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
+            } else if (latestBlock.getIndex() > Seting.CHECK_DIFFICULTY_BLOCK_2) {
+                difficulty = UtilsDIfficult.getAdjustedDifficulty2(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
             }
 
 
             System.out.println("changes: " + difficulty);
             System.out.println("=======================================");
 
-        }
-        else {
-            difficulty =  latestBlock.getHashCompexity();
+        } else {
+            difficulty = latestBlock.getHashCompexity();
         }
 
-       return difficulty == 0? 1: difficulty;
+        return difficulty == 0 ? 1 : difficulty;
     }
-
 
 
     public static boolean validationOneBlock(
@@ -225,9 +228,7 @@ public class UtilsBlock {
             int difficultyAdjustmentInterval,
             List<Block> lastBlock) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
-        boolean addressFounderReward = false;
-        boolean addressMinerReward = false;
-        if(!addressFounder.equals(thisBlock.getFounderAddress())){
+        if (!addressFounder.equals(thisBlock.getFounderAddress())) {
             System.out.println("genesis address not equals block founder: ");
             System.out.println("genesis address: " + addressFounder);
             System.out.println("block address: " + thisBlock.getFounderAddress());
@@ -236,9 +237,8 @@ public class UtilsBlock {
         }
 
 
-            String actualPrevHash = previusblock.hashForBlockchain();
-            String recordedPrevHash = thisBlock.getPreviousHash();
-
+        String actualPrevHash = previusblock.hashForBlockchain();
+        String recordedPrevHash = thisBlock.getPreviousHash();
 
 
         boolean validated = true;
@@ -246,24 +246,28 @@ public class UtilsBlock {
         int countBasisSendAll = 0;
         finished:
         for (DtoTransaction transaction : thisBlock.getDtoTransactions()) {
-            if(transaction.verify() && transaction.getSender().equals(Seting.BASIS_ADDRESS)){
+            if (transaction.verify() && transaction.getSender().equals(Seting.BASIS_ADDRESS)) {
                 double minerReward = Seting.DIGITAL_DOLLAR_REWARDS_BEFORE;
                 double minerPowerReward = Seting.DIGITAL_STOCK_REWARDS_BEFORE;
+                if(thisBlock.getIndex() > Seting.CHECK_DIFFICULTY_BLOCK_2) {
+                    minerReward = thisBlock.getHashCompexity() * Seting.MONEY;
+                    minerPowerReward = thisBlock.getHashCompexity() * Seting.MONEY;
+                    minerReward += thisBlock.getIndex()%2 == 0 ? 0 : 1;
+                    minerPowerReward += thisBlock.getIndex()%2 == 0 ? 0 : 1;
+                }
 
-
-
-                if(transaction.getSender().equals(Seting.BASIS_ADDRESS)&&
+                if (transaction.getSender().equals(Seting.BASIS_ADDRESS) &&
                         transaction.getCustomer().equals(thisBlock.getMinerAddress()) && transaction.getDigitalDollar() > minerReward
-                        && thisBlock.getIndex() > 1){
+                        && thisBlock.getIndex() > 1) {
                     System.out.println("wrong transaction: reward miner wrong digital dollar: " + minerReward + " index: " + thisBlock.getIndex());
                     System.out.println("sendmoney " + transaction.getDigitalDollar());
                     validated = false;
                     break;
                 }
-                if(transaction.getSender().equals(Seting.BASIS_ADDRESS) &&
+                if (transaction.getSender().equals(Seting.BASIS_ADDRESS) &&
                         transaction.getCustomer().equals(thisBlock.getMinerAddress()) && transaction.getDigitalStockBalance()
                         > minerPowerReward
-                        && thisBlock.getIndex() > 1){
+                        && thisBlock.getIndex() > 1) {
                     System.out.println("wrong transaction: reward miner wrong digital stock: " + minerPowerReward + " need: " + transaction.getDigitalStockBalance());
                     System.out.println(transaction);
                     validated = false;
@@ -271,47 +275,44 @@ public class UtilsBlock {
                 }
 
 
-                if(transaction.getSender().equals(Seting.BASIS_ADDRESS)
-                        &&transaction.getCustomer().equals(addressFounder)){
+                if (transaction.getSender().equals(Seting.BASIS_ADDRESS)
+                        && transaction.getCustomer().equals(addressFounder)) {
                     countBasisSendFounder += 1;
                 }
 
-                if(transaction.getSender().equals(Seting.BASIS_ADDRESS)&&!transaction.getCustomer().equals(addressFounder))
-                {
-                    countBasisSendAll +=1;
+                if (transaction.getSender().equals(Seting.BASIS_ADDRESS) && !transaction.getCustomer().equals(addressFounder)) {
+                    countBasisSendAll += 1;
                 }
 
-                if(countBasisSendFounder > 2 && thisBlock.getIndex() > 1){
+                if (countBasisSendFounder > 2 && thisBlock.getIndex() > 1) {
                     System.out.println("basis sender send for founder uper one: " + countBasisSendFounder);
                     validated = false;
                     break;
                 }
 
-                if(countBasisSendAll > 1 && thisBlock.getIndex() > 1){
+                if (countBasisSendAll > 1 && thisBlock.getIndex() > 1) {
                     System.out.println("basis sender send uper two: " + countBasisSendAll + " block index: " + thisBlock.getIndex());
                     validated = false;
                     break;
                 }
-            }
-
-            else if(!transaction.verify()){
+            } else if (!transaction.verify()) {
                 System.out.println("wrong transaction: " + transaction + " verify: " + transaction.verify());
                 validated = false;
                 break finished;
             }
 
         }
-            if(!UtilsUse.hashComplexity(thisBlock.getHashBlock(), thisBlock.getHashCompexity())){
-                System.out.println("does't start hash with 0");
-                System.out.println("this block hash: " + thisBlock.getHashBlock());
-                return false;
-            }
+        if (!UtilsUse.hashComplexity(thisBlock.getHashBlock(), thisBlock.getHashCompexity())) {
+            System.out.println("does't start hash with 0");
+            System.out.println("this block hash: " + thisBlock.getHashBlock());
+            return false;
+        }
 
 
-        if(thisBlock.getIndex() > Seting.CHECK_DIFFICULTY_INDEX) {
+        if (thisBlock.getIndex() > Seting.CHECK_DIFFICULTY_INDEX) {
 
             int diff = UtilsBlock.difficulty(lastBlock, Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
-      if (thisBlock.getHashCompexity() != diff) {
+            if (thisBlock.getHashCompexity() != diff) {
                 System.out.println("utils Block: actual difficult: " + thisBlock.getHashCompexity() + ":expected: "
                         + diff);
                 System.out.println("wrong difficult");
@@ -319,17 +320,30 @@ public class UtilsBlock {
             }
         }
 
-        if(!actualPrevHash.equals(recordedPrevHash)){
-                System.out.println("Blockchain is invalid, expected: " + recordedPrevHash + " actual: " + actualPrevHash );
-                System.out.println("index block: " + thisBlock.getIndex());
-                System.out.println("wrong chain hash");
+        if (!actualPrevHash.equals(recordedPrevHash)) {
+            System.out.println("Blockchain is invalid, expected: " + recordedPrevHash + " actual: " + actualPrevHash);
+            System.out.println("index block: " + thisBlock.getIndex());
+            System.out.println("wrong chain hash");
+            return false;
+        }
+
+        if (thisBlock.getIndex() > Seting.CHECK_DIFFICULTY_BLOCK_2){
+            if (!previusblock.getMinerAddress().equals(thisBlock.getMinerAddress())) {
+                System.out.println("two times in a row the same address cannot mine a block, you need to alternate");
                 return false;
             }
+
+            if(previusblock.getIndex()+1 != thisBlock.getIndex()) {
+                System.out.println("wrong index sequence");
+                return false;
+            }
+        }
+
 
         return validated;
     }
 
-    public static void deleteFiles(){
+    public static void deleteFiles() {
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_BLOCKCHAIN_FILE);
 //        UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE);
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_BALANCE_FILE);
@@ -340,7 +354,7 @@ public class UtilsBlock {
         UtilsFileSaveRead.deleteAllFiles(Seting.CURRENT_BUDGET_END_EMISSION);
     }
 
-    public static List<DtoTransaction> validDto(List<Block> blocks, List<DtoTransaction> transactions){
+    public static List<DtoTransaction> validDto(List<Block> blocks, List<DtoTransaction> transactions) {
 
         List<DtoTransaction> transactionArrayList = new ArrayList<>();
         for (int i = 0; i < blocks.size(); i++) {
@@ -354,11 +368,12 @@ public class UtilsBlock {
 
 
     }
-    public static boolean validation(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL ) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+
+    public static boolean validation(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         boolean validated = true;
         int index = 0;
 
-        Block prevBlock  = null;
+        Block prevBlock = null;
         boolean haveTwoIndexOne = false;
 
         List<Block> tempList = new ArrayList<>();
@@ -367,26 +382,25 @@ public class UtilsBlock {
             Block block = blocks.get(i);
 
 
-            if(block.getIndex() == 1 && haveTwoIndexOne == false){
+            if (block.getIndex() == 1 && haveTwoIndexOne == false) {
                 index = 1;
                 haveTwoIndexOne = true;
                 block.getHashBlock().equals(Seting.ORIGINAL_HASH);
             }
-            if(index != block.getIndex()){
+            if (index != block.getIndex()) {
                 System.out.println("wrong blockchain missing block: " + index + " index: " + block.getIndex());
                 validated = false;
                 return validated;
             }
-            if(prevBlock == null){
+            if (prevBlock == null) {
                 prevBlock = block;
 //                temporary.add(block);
                 continue;
             }
 
 
-
             tempList.add(prevBlock);
-            if(tempList.size() > Seting.PORTION_BLOCK_TO_COMPLEXCITY){
+            if (tempList.size() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
                 tempList.remove(0);
             }
             validated = validationOneBlock(block.getFounderAddress(),
@@ -394,8 +408,8 @@ public class UtilsBlock {
                     block,
                     BLOCK_GENERATION_INTERVAL,
                     DIFFICULTY_ADJUSTMENT_INTERVAL,
-                    tempList );
-            if(validated == false){
+                    tempList);
+            if (validated == false) {
 
                 System.out.println("ERROR: UtilsBlock: validation: prevBLock.Hash():" + prevBlock.getHashBlock());
                 System.out.println("ERROR: UtilsBlock: validation: index:" + block.getIndex());

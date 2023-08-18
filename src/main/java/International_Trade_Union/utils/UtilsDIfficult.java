@@ -57,4 +57,19 @@ public class UtilsDIfficult {
         }
     }
 
+
+    public static int getAdjustedDifficulty2(Block latestBlock, List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL){
+        Block prevAdjustmentBlock = blocks.get(blocks.size() - DIFFICULTY_ADJUSTMENT_INTERVAL);
+        double percent = 2.3;
+        long timeExpected = BLOCK_GENERATION_INTERVAL * DIFFICULTY_ADJUSTMENT_INTERVAL;
+        long timeTaken = latestBlock.getTimestamp().getTime() - prevAdjustmentBlock.getTimestamp().getTime();
+
+        if(timeTaken < timeExpected / percent){
+            return prevAdjustmentBlock.getHashCompexity() + 1;
+        }else if(timeTaken > timeExpected * percent){
+            return prevAdjustmentBlock.getHashCompexity() - 1;
+        }else {
+            return prevAdjustmentBlock.getHashCompexity();
+        }
+    }
 }
