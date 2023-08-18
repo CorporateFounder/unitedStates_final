@@ -327,6 +327,7 @@ public class UtilsBlock {
             return false;
         }
 
+
         if (thisBlock.getIndex() > Seting.CHECK_DIFFICULTY_BLOCK_2){
             if (previusblock.getMinerAddress().equals(thisBlock.getMinerAddress())) {
                 System.out.println("two times in a row the same address cannot mine a block, you need to alternate");
