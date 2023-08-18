@@ -35,18 +35,19 @@ and also using direct democracy, but I need you to participate, I am a developer
 code to make the legislative system better. Together we will be like the founding fathers of digital democracy.
 
 What are its benefits.
-1. He has a unique mining system built on the basis of SHA - 256.
+1. It has a unique mining system based on SHA-256.
 2. Difficulty adapts every 12 hours.
-3. Two types of coins are mined at the same time, DIGITAL DOLLARS and DIGITAL SHARES.
-4. A unique system that allows you to mine each block for 400 DIGITAL DOLLARS and 400 DIGITAL SHARES, while the total money supply does not constantly grow, since 0.2% of digital dollars and 0.4% of digital shares are burned from each account every six months.
-5. An election system that allows you to create your own faction and vote on the rules of the network directly.
-6. Budget system, a public budget that can be spent with the help of shareholder votes.
-7. A unique system of government that is built with elements of the English Parliament and a charter that was inspired by the US constitution and Libertarian principles including the NAP.
-8. The ability to mine blocks directly on the local server, which automatically connects to the global server that only stores, updates and gives the current blockchain.
-9. There are 576 blocks per day.
-10. All settings are made taking into account knowledge in the field of Macroeconomics and took into account such schools as Milton Friedman's Monetarism, the Austrian School of Economics (Mises, Hayek), Silvio Gezel - money with demurrage and other books.
-11. The algorithm is designed in such a way that over time the economy will grow more steadily and will have a more stable course, which will prevent future crises such as the Deflationary Spiral and Stagflation, and also allow for the optimal development of all of humanity.
-12. the total number of coins never exceeds 10 billion dollars and will reach this value in about 100 years.
+3. Two types of coins are mined at the same time: DIGITAL DOLLARS and DIGITAL SHARES.
+4. A unique system that allows you to mine each block for (difficulty * 30) + odd if index is even then odd 0, if not 1, while the total money supply does not grow constantly, since every six 0.2% of digital coins are burned from each account dollars and 0.4% of digital stocks months.
+5. An election system that allows you to create your own faction and directly vote according to the rules of the network.
+6. Budgetary system, the state budget, which can be spent with the help of shareholders' votes.
+7. Unique system of government, consisting of elements of the English parliament and a charter inspired by the constitution
+8. USA and libertarian principles, including NAP.
+9. The ability to mine blocks directly on the local server, which automatically connects to the global server, which only stores, updates and returns the current blockchain.
+10. 576 blocks per day.
+11. All settings are made taking into account knowledge in the field of Macroeconomics and took into account such schools as Milton Friedman's Monetarism, the Austrian School of Economics (Mises, Hayek), Silvio Gezel - money with demurrage and other books.
+12. The algorithm is designed in such a way that over time the economy will grow more steadily and have a more stable exchange rate, which will prevent future crises such as the Deflationary Spiral and Stagflation, as well as allow for the optimal development of all of humanity.
+13. The total number of coins never exceeds 10 billion dollars and will reach this value in about 100 years.
 
 Ultimately, this system will be able to function as a Confederation or Federation for humanity.
 and eliminate such problems as financial crises (Deflationary Spiral, Stagflation, Galloping inflation, etc.)

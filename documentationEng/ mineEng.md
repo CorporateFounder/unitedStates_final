@@ -1,5 +1,3 @@
-# block mining
-
 ## HOW TO START MINING
 Before you start mining blocks, you
 you need to set the address of the miner to which the block will be mined.
@@ -8,8 +6,8 @@ Once you have set your address as a miner, there are two options.
 
 
 ### OPTION 1
-button ***Permanent mining 576 blocks at a time***
-there will be a cycle of 576 attempts to find blocks
+Press the start button, to stop mining, click on the main page and appear
+the page where the stop button will be.
 ![mining block](../screenshots/mineEng.png)
 
 
@@ -30,7 +28,7 @@ But the number must not be equal to or greater than the maximum value.
 
 Blockchain Difficulty Adapts Like Bitcoin, But Adaptation Happens
 once every 12 hours (approximately) 288 blocks.
-Each block gives you 400 digital dollars and 400 digital shares.
+Each block gives (difficulty * 30 ) + odd = where odd is 0 if the block index is even and 1 if not even
 
 The current blockchain is not only the longest, but there should be more zeros in it.
 
