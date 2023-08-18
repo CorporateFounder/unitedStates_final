@@ -49,12 +49,14 @@ public class StatisticsController {
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
+
+
         System.out.println("start statistics method");
         Map<String, Account> balances = new HashMap<>();
         List<Statistic> statistics = new ArrayList<>();
         List<String> signs = new ArrayList<>();
         for (Block block : blockchain.getBlockchainList()) {
-
+            System.out.println("index: " + block.getIndex());
             balances = UtilsBalance.calculateBalance(balances, block, signs);
             if (block.getIndex() > 576 && block.getIndex() % periud.getPeriud() == 0) {
                 System.out.println("per index: " + block.getIndex() + ":"
@@ -70,8 +72,13 @@ public class StatisticsController {
         statistics = statistics.stream()
                 .sorted(Comparator.comparing(Statistic::getIndexBlock))
                 .collect(Collectors.toList());
+
+        statistics = statistics.stream()
+                .sorted(Comparator.comparing(Statistic::getIndexBlock).reversed())
+                .collect(Collectors.toList());
         model.addAttribute("title statistics: " + periud);
         model.addAttribute("statistics", statistics);
+        System.out.println("blockchain size: " + blockchain.getBlockchainList().size());
         return "statistics";
     }
 }
