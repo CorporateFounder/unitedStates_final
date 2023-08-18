@@ -1,23 +1,29 @@
 # CITU CRYPTOCURRENCY
+
 ## Corporation International Trade Union
+
 (Corporation International Trade Union - CITU)
 
 ## Contacts
+
 my discord https://discord.gg/MqkvC3SGHH  https://discord.gg/czzQfKDy
 my web http://194.87.236.238:82/
 my telegram https://t.me/citu_coin
 twitter @citu4030
-gmail 
+gmail
 citu4030@gmail.com
 
 https://bitcointalk.org/index.php?topic=5459836.new#new
 
 https://bitcointalk.org/index.php?topic=5459876.new#new
+
 # Important
+
 If your version is lower than the global one, be sure to download the new version,
 otherwise you will not be able to mine coins. Versions must match
 
 ## Mission.
+
 Using a new economic model that is resistant to deflationary and inflationary crises,
 unite humanity into a single democratic trading network. Our digital democracy is resilient to stuffing
 and parliament represents all sections of society. First of all, we are creating a democratic platform,
@@ -26,27 +32,40 @@ regions and social groups to solve social and economic problems, as well as redu
 countries and the economic growth of mankind.
 
 ## Preamble
+
 Hi all.
 Before downloading, I would like you to read the text below.
 My cryptocurrency was inspired by the US Constitution and the parliamentary system of government.
-My system has implemented a system that allows all participants to create laws and approve laws through democratic procedures.
-Imagine a world where a resident of the United States, Mexico, Canada or other regions will elect their representatives and approve laws,
+My system has implemented a system that allows all participants to create laws and approve laws through democratic
+procedures.
+Imagine a world where a resident of the United States, Mexico, Canada or other regions will elect their representatives
+and approve laws,
 and also using direct democracy, but I need you to participate, I am a developer and can modify
 code to make the legislative system better. Together we will be like the founding fathers of digital democracy.
 
 What are its benefits.
+
 1. It has a unique mining system based on SHA-256.
 2. Difficulty adapts every 12 hours.
 3. Two types of coins are mined at the same time: DIGITAL DOLLARS and DIGITAL SHARES.
-4. A unique system that allows you to mine each block for (difficulty * 30) + odd if index is even then odd 0, if not 1, while the total money supply does not grow constantly, since every six 0.2% of digital coins are burned from each account dollars and 0.4% of digital stocks months.
-5. An election system that allows you to create your own faction and directly vote according to the rules of the network.
+4. A unique system that allows you to mine each block for (difficulty * 30) + odd if index is even then odd 0, if not 1,
+   while the total money supply does not grow constantly, since every six 0.2% of digital coins are burned from each
+   account dollars and 0.4% of digital stocks months.
+5. An election system that allows you to create your own faction and directly vote according to the rules of the
+   network.
 6. Budgetary system, the state budget, which can be spent with the help of shareholders' votes.
-7. Unique system of government, consisting of elements of the English parliament and a charter inspired by the constitution
+7. Unique system of government, consisting of elements of the English parliament and a charter inspired by the
+   constitution
 8. USA and libertarian principles, including NAP.
-9. The ability to mine blocks directly on the local server, which automatically connects to the global server, which only stores, updates and returns the current blockchain.
+9. The ability to mine blocks directly on the local server, which automatically connects to the global server, which
+   only stores, updates and returns the current blockchain.
 10. 576 blocks per day.
-11. All settings are made taking into account knowledge in the field of Macroeconomics and took into account such schools as Milton Friedman's Monetarism, the Austrian School of Economics (Mises, Hayek), Silvio Gezel - money with demurrage and other books.
-12. The algorithm is designed in such a way that over time the economy will grow more steadily and have a more stable exchange rate, which will prevent future crises such as the Deflationary Spiral and Stagflation, as well as allow for the optimal development of all of humanity.
+11. All settings are made taking into account knowledge in the field of Macroeconomics and took into account such
+    schools as Milton Friedman's Monetarism, the Austrian School of Economics (Mises, Hayek), Silvio Gezel - money with
+    demurrage and other books.
+12. The algorithm is designed in such a way that over time the economy will grow more steadily and have a more stable
+    exchange rate, which will prevent future crises such as the Deflationary Spiral and Stagflation, as well as allow
+    for the optimal development of all of humanity.
 13. The total number of coins never exceeds 10 billion dollars and will reach this value in about 100 years.
 
 Ultimately, this system will be able to function as a Confederation or Federation for humanity.
@@ -54,7 +73,9 @@ and eliminate such problems as financial crises (Deflationary Spiral, Stagflatio
 Pandemics, Space Threats, Environmental Issues and will reduce the occurrence of military conflicts.
 
 ## Благодарность всему сообществу bitcointalks и дискорд
+
 В особенности
+
 - Utopia-legend
 - zhizhentaiyangshuori
 - Solomonk4
@@ -68,7 +89,6 @@ Pandemics, Space Threats, Environmental Issues and will reduce the occurrence of
 - richman
 - just_mine_it
 - and many others whose names I could not write because I do not know Chinese
-
 
 	How will this system deal with high volatility? The burning of coins every six months will help to reduce the volatility of the currency. This
     is because it will create a built-in incentive for people to spend their money rather than hoard it. If people know that their money will be
@@ -90,6 +110,7 @@ Pandemics, Space Threats, Environmental Issues and will reduce the occurrence of
     high volatility, inflation, stagflation, and deflationary spirals. It could also help people to save money and increase their wealth.
 
 ## CONTENT
+
 - [short description](../documentationEng/preambleEng.md)
 - [active url](../documentationEng/active-urlEng.md)
 - [how to install the application](../documentationEng/installEng.md)
@@ -108,29 +129,30 @@ Pandemics, Space Threats, Environmental Issues and will reduce the occurrence of
 - [EXPLANATION WHY THE COIN WILL RAISE](../documentationEng/EXPLAIN.md)
 
 [//]: # (- [create fraction]&#40;../documentationEng/create-fractionEng.md&#41;)
-## Corporate Charter
-- Corporate Charter
-  - [How Laws Are Chosen.](../charterEng/HOW_LAWS_ARE_CHOSEN.md)
-  - [VOTE_STOCK (How voting is done with shares.)](../charterEng/VOTE_STOCK.md)
-  - [ONE_VOTE (One vote)](../charterEng/ONE_VOTE.md)
-  - [VOTE_FRACTION-how a faction is elected and votes](../charterEng/VOTE_FRACTION.md)
-  - [Mechanism for maintaining fines](../charterEng/MECHANISM_FOR_REDUCING_THE_NUMBER_OF_SHARES.md)
-  - [Who has the right to create Laws](../charterEng/WHO_HAS_THE_RIGHT_TO_CREATE_LAWS.md)
-  - [Powers of the Corporate Council of Supreme Judges](../charterEng/POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES.md)
-  - [How the Chief Judge is elected](../charterEng/HOW_THE_CHIEF_JUDGE_IS_CHOSEN.md)
-  - [Corporation Property](../charterEng/PROPERTY_OF_THE_CORPORATION.md)
-  - [CEO-GENERAL_EXECUTIVE_DIRECTOR](../charterEng/GENERAL_EXECUTIVE_DIRECTOR.md)
-  - [Why is money demurrage used here](../charterEng/EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE.md)
-  - [Right of Free Speech](../charterEng/FREEDOM_OF_SPEECH.md)
-  - [Natural Rights](../charterEng/RIGHTS.md)
-  - [Legislative Power](../charterEng/POWER.md)
-  - [Budget and additional issue](../charterEng/BUDGET%20AND%20EMISSION.md)
 
+## Corporate Charter
+
+- Corporate Charter
+    - [How Laws Are Chosen.](../charterEng/HOW_LAWS_ARE_CHOSEN.md)
+    - [VOTE_STOCK (How voting is done with shares.)](../charterEng/VOTE_STOCK.md)
+    - [ONE_VOTE (One vote)](../charterEng/ONE_VOTE.md)
+    - [VOTE_FRACTION-how a faction is elected and votes](../charterEng/VOTE_FRACTION.md)
+    - [Mechanism for maintaining fines](../charterEng/MECHANISM_FOR_REDUCING_THE_NUMBER_OF_SHARES.md)
+    - [Who has the right to create Laws](../charterEng/WHO_HAS_THE_RIGHT_TO_CREATE_LAWS.md)
+    - [Powers of the Corporate Council of Supreme Judges](../charterEng/POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES.md)
+    - [How the Chief Judge is elected](../charterEng/HOW_THE_CHIEF_JUDGE_IS_CHOSEN.md)
+    - [Corporation Property](../charterEng/PROPERTY_OF_THE_CORPORATION.md)
+    - [CEO-GENERAL_EXECUTIVE_DIRECTOR](../charterEng/GENERAL_EXECUTIVE_DIRECTOR.md)
+    - [Why is money demurrage used here](../charterEng/EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE.md)
+    - [Right of Free Speech](../charterEng/FREEDOM_OF_SPEECH.md)
+    - [Natural Rights](../charterEng/RIGHTS.md)
+    - [Legislative Power](../charterEng/POWER.md)
+    - [Budget and additional issue](../charterEng/BUDGET%20AND%20EMISSION.md)
 
 Documentation wallet api
- - [main page](../documentationEng/documentation-api-wallet.md)
- - future 
- - future
 
+- [main page](../documentationEng/documentation-api-wallet.md)
+- future
+- future
 
 [home](../readme.md)
