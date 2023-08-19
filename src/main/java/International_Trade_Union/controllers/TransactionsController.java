@@ -20,7 +20,9 @@ import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class TransactionsController {
@@ -106,7 +108,8 @@ public class TransactionsController {
             }
 
         }
-
+        transactions = transactions.stream()
+                .sorted(Comparator.comparing(DataForTransaction::getNumberBlock)).collect(Collectors.toList());
         model.addAttribute("title", "transactions account");
         model.addAttribute("transactions", transactions);
         return "transactions";

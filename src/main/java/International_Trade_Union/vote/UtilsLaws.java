@@ -279,6 +279,7 @@ public class UtilsLaws {
         return currentLaws;
     }
 
+
     //возвращяет список всех законов, как действующих, так и не действующих, если закон новый то автоматически сохраняет его
     public static Map<String, Laws> getLaws(List<Block> blocks, String fileLaws) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         List<Laws> lawsForSave = new ArrayList<>();

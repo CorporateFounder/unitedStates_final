@@ -7,10 +7,13 @@ import International_Trade_Union.entity.SubBlockchainEntity;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.model.Account;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.SaveBalances;
 import International_Trade_Union.utils.UtilsBlock;
+import International_Trade_Union.utils.UtilsTransaction;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -43,58 +46,27 @@ public class TestController {
     @GetMapping("/testBlock")
     @ResponseBody
     public int testBlock() throws IOException, CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        Blockchain blockchain =  Mining.getBlockchain(
+        Blockchain tempblockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
 
+        //транзакции которые мы добавили в блок и теперь нужно удалить из файла, в папке resources/transactions
+        List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
+        System.out.println("temporaryDtoList: " + temporaryDtoList);
+        System.out.println("********************************************************");
+        //отказ от дублирующих транзакций
+        temporaryDtoList = UtilsBlock.validDto(tempblockchain.getBlockchainList(), temporaryDtoList);
+        System.out.println("temporaryDtoList: " + temporaryDtoList);
+        System.out.println("*********************************************************");
+        //отказ от транзакций которые меньше данного вознаграждения
+        temporaryDtoList = UtilsTransaction.reward(temporaryDtoList, 0);
+        System.out.println("**********************************************************");
 
-        int classicDiff = UtilsBlock.difficulty(blockchain.getBlockchainList(),
-                Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL );
+        //раз в три для очищяет файлы в папке resources/sendedTransaction данная папка
+        //хранит уже добавленые в блокчейн транзации, чтобы повторно не добавлять в
+        //в блок уже добавленные транзакции
 
-
-        System.out.println("classicDiff: " + classicDiff);
-        System.out.println("*****************************************************************");
-        System.out.println("validation: " + blockchain.validatedBlockchain());
-
-        System.out.println("*****************************************************************");
-        DataShortBlockchainInformation dataShortBlockchainInformation =
-                Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-        System.out.println("dataShortBlockchainInformation: " + dataShortBlockchainInformation);
-        System.out.println("*****************************************************************");
-
-
-
-
-
-
-        System.out.println("*****************************************************************");
-        int block_size = 2;
-
-
-
-        List<Block> tempBLocks = blockchain.getBlockchainList()
-                .subList(blockchain.sizeBlockhain()-300-block_size,
-                        blockchain.sizeBlockhain()-300);
-
-
-        List<Block> lastBlocks = blockchain.getBlockchainList()
-                .subList((int) (tempBLocks.get(0).getIndex()-Seting.PORTION_BLOCK_TO_COMPLEXCITY-block_size),
-                        (int) (tempBLocks.get(0).getIndex()-block_size));
-        System.out.println("last: " + lastBlocks.get(lastBlocks.size()-1).getIndex());
-        System.out.println("temp: " + tempBLocks.get(0).getIndex());
-        Block prevBlock = blockchain.getBlock((int) (tempBLocks.get(0).getIndex()-1));
-
-
-        dataShortBlockchainInformation.setSize(dataShortBlockchainInformation.
-                getSize()-block_size);
-        DataShortBlockchainInformation shortData = Blockchain.shortCheck(prevBlock, tempBLocks,
-                dataShortBlockchainInformation, lastBlocks);
-
-
-        System.out.println("shortData: " + shortData);
-        System.out.println("*****************************************************************");
-
-
+        AllTransactions.clearUsedTransaction(AllTransactions.getInsanceSended());
         return 0;
     }
 
