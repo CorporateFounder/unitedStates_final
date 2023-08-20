@@ -672,24 +672,62 @@ public interface OriginalCHARTER_ENG {
             "````\n" +
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
-    String LAW_11 = "## EXPLANATION WHY MONEY DEMURAGE IS USED HERE\n" +
-            "How does the negative rate work here? Every six months we burn 0.1% of digital dollars from all accounts\n" +
-            "and 0.2% of digital shares, which allows us to keep the money supply unchanged, preventing it from growing,\n" +
-            "for the new money created and the money destroyed come into parity.\n" +
-            "The negative rate is now applied in many countries, this measure stimulates money holders when the price is excessively high,\n" +
-            "saturate the market with money.\n" +
-            "The amount of money mined for each block is 400 digital dollars and 400 digital shares,\n" +
-            "also 2% of each mining reward to the founder, which is 4 digital dollars and 4 digital Shares for each block mining.\n" +
-            "Here it is used as the Theories of Silvio Gesell, as well as the school of monetarism in a modified form.\n" +
+    String LAW_11 = "# EXPLANATION WHY MONEY DEMURAGE IS USED HERE\n" +
+            "Imagine that you are a miner in one of two cryptocurrencies.\n" +
+            "One of them halves the income of the cryptocurrency every four years per block.\n" +
+            "Similar to bitcoin.\n" +
+            "The second has a fixed income per block, which does not change like dogecoin.\n" +
+            "If you are a cryptocurrency miner like Bitcoin, your costs are fixed.\n" +
+            "You buy a farm, but there is a big problem if the income is halved,\n" +
+            "then you must sell coins at twice the price to remain profitable.\n" +
+            "Since if every four years production will be reduced, then in order for this\n" +
+            "the system remains viable, the cost must double.\n" +
+            "How do you not affect the market, you will be forced to reduce the size of the farm in order to\n" +
+            "remain profitable, but this will also lead to a decrease in cost.\n" +
+            "The number of blocks in bitcoin is limited to 144 blocks, which in any case will not allow\n" +
+            "increase profitability and income from transactions cannot double every 4 years, how so\n" +
+            "at what point will it become unprofitable to pay for small purchases at an inflated price, which\n" +
+            "will reduce turnover.\n" +
+            "In other words, for such a system to remain profitable, it is necessary that the cost\n" +
+            "doubled every four years.\n" +
+            "\n" +
+            "If you are a miner of dogecoin, or similar coins, then you have another problem.\n" +
+            "Such coins have the main problem of high inflation. Let's imagine such a situation,\n" +
+            "a crisis arose and the cost of all coins fell a little, then mine with old equipment\n" +
+            "became unprofitable. Then the miners reduce the equipment, but this reduces security,\n" +
+            "which in turn reduces the value, but the coin continues to be issued in the same quantity.\n" +
+            "Instead of reducing production, it continues to grow, which creates\n" +
+            "even more problems.\n" +
+            "\n" +
+            "How my coin solves these problems.\n" +
+            "1. Every six months, 0.2% of digital dollars and 0.4% of digital dollars are destroyed from all accounts.\n" +
+            "   digital shares, which does not allow the money supply to grow and it should not be 10 billion\n" +
+            "   dollars and 5 billion shares with a difficulty of 10.\n" +
+            "2. Unique mining system, if the index is even then the income is equal to difficulty * 30,\n" +
+            "3. If the index is not even, then (difficulty * 30) + 1.\n" +
+            "4. if the index is even, then only those addresses whose share balance is even can be added to the blockchain.\n" +
+            "5. if the index is not even, then everything.\n" +
+            "6. difficulty is equal to the number of zeros in the block hash.\n" +
+            "7. Two times the same address cannot add a block.\n" +
+            "\n" +
+            "Now, given all of the above parameters, we can conclude.\n" +
+            "A negative rate stimulates the sale of coins, which creates a rate correction every\n" +
+            "half a year and does not allow big falls. It also stimulates turnover and limits\n" +
+            "mining of coins. How so the number of coins created and destroyed will be equal.\n" +
+            "And the dynamic loot change system increases the loot when the difficulty\n" +
+            "increases, which allows to meet demand and reduce production when demand falls.\n" +
+            "This measure makes the coin rate more resistant to fluctuations.\n" +
+            "\n" +
             "\n" +
             "With Silvio Gezel, the negative rate was 1% per month, which would just kill the economy,\n" +
             "under monetarism, the growth of the money supply had to be proportional to the growth of GDP, but since in\n" +
             "this system fails to calculate the real GDP growth, I set a fixed growth, also if the monetary growth\n" +
             "will equal GDP, there is a high probability of Hyperinflation, since GDP does not always reflect real economic growth.\n" +
-            "Money must be solid so that a business can predict its long-term investments and from monetarism, only the part that\n" +
+            "Money must be hard so that a business can predict its long-term investments and from monetarism, only the part that\n" +
             "the money supply should grow linearly, but in general there is a mix of different economic schools, including the Austrian School of Economics.\n" +
             "\n" +
-            "With a negative rate of 0.2% every six months for digital dollars and 0.4% for digital stocks, we avoid the consequences of a severe economic crisis for this currency.\n" +
+            "With a negative rate of 0.2% every six months for digital dollars and 0.4% for digital stocks, we avoid the consequences of a severe\n" +
+            "economic crisis for this currency.\n" +
             "\n" +
             "Such a mechanism creates a price corridor where the lower limit of the value of these digital currencies is the total number of issued digital currencies.\n" +
             "dollars and digital stocks, and the upper limit is the real value. Since as soon as the value becomes higher than the real value,\n" +
@@ -703,9 +741,9 @@ public interface OriginalCHARTER_ENG {
             "and this leads to the fact that some manufacturers go bankrupt and lay off many workers, which further reduces wages.\n" +
             "wages from the rest, as the labor market becomes surplus.\n" +
             "\n" +
-            "Which, in turn, causes even more fear among money holders to invest, and this process continues until the moment when\n" +
-            "until the value of money starts to decline due to the fact that the total number of production chains has decreased and goods have also decreased.\n" +
-            "\"\n" +
+            "Which in turn causes even more fear among money holders to invest and this process continues until\n" +
+            "\"until the value of money starts to decline as the total number of production chains has shrunk and commodities have also shrunk.\n" +
+            "\n" +
             "Example: Let's imagine that we had inflation and the value of money fell by 40% within a month, the cost of goods increases sharply,\n" +
             "but wages have not risen, so a lot of goods will not be bought, which leads to the closure of production chains,\n" +
             "which, in turn, due to an excess of workers in the labor market, reduces wages, which also further reduces\n" +
@@ -716,25 +754,17 @@ public interface OriginalCHARTER_ENG {
             "stagflation.\n" +
             "\n" +
             "To avoid such crises, in this cryptocurrency, money grows in the same predictable amount.\n" +
-            "408 (8 - founder's reward, 400 - earner's reward)\n" +
-            "digital dollars and shares per block, about 576 blocks per day. A negative rate adjusts the value of coins every six months.\n" +
-            "It is also forbidden to use fractional reserve banking for these coins, as their number grows linearly, and\n" +
+            "If the market has grown, then the demand for money will increase, which will attract more miners to mine this coin, which in turn\n" +
+            "will increase the complexity and thereby increase the number of coins, according to the formula described above, if, on the contrary, demand has fallen,\n" +
+            "the difficulty will drop and the loot will decrease, which will make the course more predictable. There are 576 blocks per day.\n" +
+            "\n" +
+            "A negative rate adjusts the value of coins every six months.\n" +
+            "It is also forbidden to use fractional reserve banking for these coins, as their number grows in smaller numbers, and\n" +
             "will not be able to cover the debts incurred due to fractional reserve banking, due to lack of\n" +
             "cash, since with fractional reserve banking, the increase in debt will be much higher than this protocol will create money.\n" +
             "\n" +
             "Also, if you increase the money supply by changing the settings, and making the money supply increase much higher, it can cause hyperinflation or\n" +
-            "even galloping inflation. If it is necessary to increase the growth of the money supply, this should only happen through amendments,\n" +
-            "keeping the founder's remuneration percentage at two percent. And mining per block should not increase more than 5% for\n" +
-            "ten years, each subsequent increase that may be made must take place at least tenyears through amendments,\n" +
-            "and no more than 5% per block from the reward of the last block. (Example: if we change\n" +
-            "through the amendments, then the extraction should not be higher than 420 coins, but each following will be no more than five percent of the last.\n" +
-            "Thus, the next increase made through the amendments will be 440.10 coins. But this amendment will be introduced only in ten\n" +
-            "years after the first production adjustment)\n" +
-            "\n" +
-            "With a lack of money supply, if the number of mined coins has not been changed through an amendment, you can add a few\n" +
-            "additional zeros after the decimal point, so it will simply increase the value of the coins, without increasing the total money supply.\n" +
-            "\n" +
-            "Negative rates should not be higher than 1% per annum and lower than 0.2% per annum. Negative rates can only be changed through amendments.\n" +
+            "even galloping inflation.\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
     String LAW_12 = "# FREEDOM_OF_SPEECH The right to free speech\n" +
             "No body of this corporation or entity shall prohibit free practice\n" +

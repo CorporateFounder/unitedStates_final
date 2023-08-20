@@ -280,56 +280,68 @@
 
 
           //доход майнера
-          double minerRewards = Настройка.DIGITAL_DOLLAR_REWARDS_BEFORE;
-          double digitalReputationForMiner = Setting.DIGITAL_STOCK_REWARDS_BEFORE;
+        double minerRewards = Seting.DIGITAL_DOLLAR_REWARDS_BEFORE;
+        double digitalReputationForMiner = Seting.DIGITAL_STOCK_REWARDS_BEFORE;
 
-          // доход учредителя
-          двойное вознаграждение основателя = Настройка.DIGITAL_DOLLAR_FOUNDER_REWARDS_BEFORE;
-          двойной учредительDigigtalReputationReward = Setting.DIGITAL_REPUTATION_FOUNDER_REWARDS_BEFORE;
+        //доход основателя
+        double founderReward = Seting.DIGITAL_DOLLAR_FOUNDER_REWARDS_BEFORE;
+        double founderDigigtalReputationReward = Seting.DIGITAL_REPUTATION_FOUNDER_REWARDS_BEFORE;
 
-          Базовая база = новая Base58();
+        Base base = new Base58();
 
-          //суммирует все вознаграждения майнеров
-          PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(Setting.BASIS_PASSWORD));
-          double sumRewards = forAdd.stream().collect(Collectors.summingDouble(DtoTransaction::getBonusForMiner));
-
-          //награда майнерам
-          DtoTransaction minerRew = новая DtoTransaction (Setting.BASIS_ADDRESS, minner.getAccount(),
-                  minerRewards, digitalReputationForMiner, новые законы(), sumRewards, VoteEnum.YES );
-
-          byte[] signGold = UtilsSecurity.sign(privateKey, minerRew.toSign());
-          minerRew.setSign(signGold);
-
-          // вознаграждение основателя
-          FounderRew DtoTransaction = новая DtoTransaction (Setting.BASIS_ADDRESS, blockchain.getADDRESS_FOUNDER(),
-                  Награда основателя, Награда за репутацию основателя Digital, новые законы(), 0.0, VoteEnum.YES);
-          byte[] signFounder = UtilsSecurity.sign(privateKey,founderRew.toSign());
-
-          основатель Rew.setSign (signFounder);
+        //суммирует все вознаграждения майнеров
+        PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(Seting.BASIS_PASSWORD));
+        double sumRewards = forAdd.stream().collect(Collectors.summingDouble(DtoTransaction::getBonusForMiner));
 
 
-          forAdd.add(minerRew);
-          forAdd.add (основатель Rew);
 
 
-          //определение сложности и создание блока
+        //вознаграждение основателя
+        DtoTransaction founderRew = new DtoTransaction(Seting.BASIS_ADDRESS, blockchain.getADDRESS_FOUNDER(),
+                founderReward, founderDigigtalReputationReward, new Laws(), 0.0, VoteEnum.YES);
+        byte[] signFounder = UtilsSecurity.sign(privateKey, founderRew.toSign());
 
-          Интервал сложности = UtilsBlock.difficulty (blockchain.getBlockchainList (), blockGenerationInterval, DIFFICULTY_ADJUSTMENT_INTERVAL);
-
-          System.out.println("Майнинг: miningBlock: сложность: " + сложность + " индекс: " + индекс);
-
-
-          //blockchain.getHashBlock(blockchain.sizeBlockchain() - 1)
-          Блочный блок = новый блок(
-                  дляДобавить,
-                  blockchain.getHashBlock(blockchain.sizeBlockchain() - 1),
-                  майнер.getAccount(),
-                  блокчейн.getADDRESS_FOUNDER(),
-                  трудность,
-                  индекс);
+        founderRew.setSign(signFounder);
 
 
-         возвратный блок;
+
+        forAdd.add(founderRew);
+
+
+        //здесь должна быть создана динамическая модель
+        //определение сложности и создание блока
+
+        int difficulty = UtilsBlock.difficulty(blockchain.getBlockchainList(), blockGenerationInterval, DIFFICULTY_ADJUSTMENT_INTERVAL);
+        BasisController.setDifficultExpected(difficulty);
+        System.out.println("Mining: miningBlock: difficulty: " + difficulty + " index: " + index);
+
+        if(index > Seting.CHECK_DIFFICULTY_BLOCK_2) {
+            minerRewards = difficulty * Seting.MONEY;
+            digitalReputationForMiner= difficulty * Seting.MONEY;
+            minerRewards += index%2 == 0 ? 0 : 1;
+            digitalReputationForMiner += index%2 == 0 ? 0 : 1;
+        }
+
+        //вознаграждения майнера
+        DtoTransaction minerRew = new DtoTransaction(Seting.BASIS_ADDRESS, minner.getAccount(),
+                minerRewards, digitalReputationForMiner, new Laws(), sumRewards, VoteEnum.YES );
+
+
+        forAdd.add(minerRew);
+        //подписывает
+        byte[] signGold = UtilsSecurity.sign(privateKey, minerRew.toSign());
+        minerRew.setSign(signGold);
+        //blockchain.getHashBlock(blockchain.sizeBlockhain() - 1)
+        Block block = new Block(
+                forAdd,
+                blockchain.getHashBlock(blockchain.sizeBlockhain() - 1),
+                minner.getAccount(),
+                blockchain.getADDRESS_FOUNDER(),
+                difficulty,
+                index);
+
+
+       return block;
       }
 ````
 
@@ -512,39 +524,68 @@ BASIS_ADDRESS предназначен для отправки вознагра�
 
 ````
       //доход майнера
-      double minerRewards = Настройка.DIGITAL_DOLLAR_REWARDS_BEFORE;
-      double digitalReputationForMiner = Setting.DIGITAL_STOCK_REWARDS_BEFORE;
+        double minerRewards = Seting.DIGITAL_DOLLAR_REWARDS_BEFORE;
+        double digitalReputationForMiner = Seting.DIGITAL_STOCK_REWARDS_BEFORE;
 
-          // доход учредителя
-          двойное вознаграждение основателя = Настройка.DIGITAL_DOLLAR_FOUNDER_REWARDS_BEFORE;
-          двойной учредительDigigtalReputationReward = Setting.DIGITAL_REPUTATION_FOUNDER_REWARDS_BEFORE;
+        //доход основателя
+        double founderReward = Seting.DIGITAL_DOLLAR_FOUNDER_REWARDS_BEFORE;
+        double founderDigigtalReputationReward = Seting.DIGITAL_REPUTATION_FOUNDER_REWARDS_BEFORE;
 
-          Базовая база = новая Base58();
+        Base base = new Base58();
 
-      Базовая база = новая Base58();
-
-          //суммирует все вознаграждения майнеров
-          PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(Setting.BASIS_PASSWORD));
-          double sumRewards = forAdd.stream().collect(Collectors.summingDouble(DtoTransaction::getBonusForMiner));
-
-          //награда майнерам
-          DtoTransaction minerRew = новая DtoTransaction (Setting.BASIS_ADDRESS, minner.getAccount(),
-                  minerRewards, digitalReputationForMiner, новые законы(), sumRewards, VoteEnum.YES );
-
-          //знаки
-          byte[] signGold = UtilsSecurity.sign(privateKey, minerRew.toSign());
-          minerRew.setSign(signGold);
-
-          // вознаграждение основателя
-          FounderRew DtoTransaction = новая DtoTransaction (Setting.BASIS_ADDRESS, blockchain.getADDRESS_FOUNDER(),
-                  Награда основателя, Награда за репутацию основателя Digital, новые законы(), 0.0, VoteEnum.YES);
-          byte[] signFounder = UtilsSecurity.sign(privateKey,founderRew.toSign());
-
-          основатель Rew.setSign (signFounder);
+        //суммирует все вознаграждения майнеров
+        PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(Seting.BASIS_PASSWORD));
+        double sumRewards = forAdd.stream().collect(Collectors.summingDouble(DtoTransaction::getBonusForMiner));
 
 
-          forAdd.add(minerRew);
-          forAdd.add (основатель Rew);
+
+
+        //вознаграждение основателя
+        DtoTransaction founderRew = new DtoTransaction(Seting.BASIS_ADDRESS, blockchain.getADDRESS_FOUNDER(),
+                founderReward, founderDigigtalReputationReward, new Laws(), 0.0, VoteEnum.YES);
+        byte[] signFounder = UtilsSecurity.sign(privateKey, founderRew.toSign());
+
+        founderRew.setSign(signFounder);
+
+
+
+        forAdd.add(founderRew);
+
+
+        //здесь должна быть создана динамическая модель
+        //определение сложности и создание блока
+
+        int difficulty = UtilsBlock.difficulty(blockchain.getBlockchainList(), blockGenerationInterval, DIFFICULTY_ADJUSTMENT_INTERVAL);
+        BasisController.setDifficultExpected(difficulty);
+        System.out.println("Mining: miningBlock: difficulty: " + difficulty + " index: " + index);
+
+        if(index > Seting.CHECK_DIFFICULTY_BLOCK_2) {
+            minerRewards = difficulty * Seting.MONEY;
+            digitalReputationForMiner= difficulty * Seting.MONEY;
+            minerRewards += index%2 == 0 ? 0 : 1;
+            digitalReputationForMiner += index%2 == 0 ? 0 : 1;
+        }
+
+        //вознаграждения майнера
+        DtoTransaction minerRew = new DtoTransaction(Seting.BASIS_ADDRESS, minner.getAccount(),
+                minerRewards, digitalReputationForMiner, new Laws(), sumRewards, VoteEnum.YES );
+
+
+        forAdd.add(minerRew);
+        //подписывает
+        byte[] signGold = UtilsSecurity.sign(privateKey, minerRew.toSign());
+        minerRew.setSign(signGold);
+        //blockchain.getHashBlock(blockchain.sizeBlockhain() - 1)
+        Block block = new Block(
+                forAdd,
+                blockchain.getHashBlock(blockchain.sizeBlockhain() - 1),
+                minner.getAccount(),
+                blockchain.getADDRESS_FOUNDER(),
+                difficulty,
+                index);
+
+
+       return block;
 ````
 
 [вернуться домой](./documentationRus.md)

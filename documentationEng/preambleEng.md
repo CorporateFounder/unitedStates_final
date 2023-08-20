@@ -28,7 +28,8 @@ I will give an example on the most successful currencies Bitcoin and Dogecoin.
 2. Dogecoin removed production cuts, but this creates inflation as the money supply continues to grow,
    which causes problems.
 3. My coin burns 0.2% of digital dollars and 0.4% of digital shares from all accounts every half a year,
-   which allows miners to always mine 400 digital dollars and 400 digital shares for each block,
+   which allows miners to mine if the index is even difficulty * 30, if the index is not even (difficulty * 30) + 1,
+   where difficulty is equal to the number of zeros in the hash
    nor does the money supply grow as extraction and destruction come into equilibrium.
 4. You do not need to create a server with a white ip for mining. Since all local servers send
    their blocks to a global server that stores, updates and transmits the actual blockchain.
@@ -40,6 +41,8 @@ I will give an example on the most successful currencies Bitcoin and Dogecoin.
    but also one where the sum of all zeros is greater than that of an alternative blockchain.
 7. About 576 blocks are mined per day, which allows more to be mined.
 8. Difficulty is adjusted every half a year.
+9. if the index is even, then only those miners whose balance of shares is even can mine, if the index is not even, then that's it.
+
 
 ***src/main/java/International_Trade_Union/utils/UtilsBlock.java***
 
@@ -52,10 +55,10 @@ I will give an example on the most successful currencies Bitcoin and Dogecoin.
          long timeExpected = BLOCK_GENERATION_INTERVAL * DIFFICULTY_ADJUSTMENT_INTERVAL;
          long timeTaken = latestBlock.getTimestamp().getTime() - prevAdjustmentBlock.getTimestamp().getTime();
 
-         if(timeTaken < timeExpected / 2){
+         if(timeTaken < timeExpected / 2.3){
 
              return prevAdjustmentBlock.getHashCompexity() + 1;
-         }else if(timeTaken > timeExpected * 2){
+         }else if(timeTaken > timeExpected * 2.3){
 
              return prevAdjustmentBlock.getHashCompexity() - 1;
          } else {
@@ -66,7 +69,7 @@ I will give an example on the most successful currencies Bitcoin and Dogecoin.
 
 ````
     /**determines the difficulty, since half a day adjusts the difficulty. There are 576 blocks per day.
-  * each block is mined in approximately 2.3 minutes*/
+  * each block is mined in approximately 150 second*/
      public static int difficulty(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL ){
 
          //seconds how often blocks are created
@@ -91,4 +94,5 @@ What positions are there?
 - Council of Corporate Judges [CORPORATE_COUNCIL_OF_REFEREES]
 - General Executive Director [GENERAL_EXECUTIVE_DIRECTOR]
 - High Judge [HIGH_JUDGE]
+
   [back to home](./documentationEng.md)

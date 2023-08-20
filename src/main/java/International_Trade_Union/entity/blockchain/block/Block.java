@@ -166,9 +166,9 @@ public final class Block implements Cloneable {
         int size = UtilsStorage.getSize();
         Timestamp previus = Timestamp.from(Instant.now());
         while (true){
+            //перебирает число nonce чтобы найти хеш
             this.randomNumberProof++;
-//            System.out.println("A number is selected to generate the correct hash: " +
-//                    randomNumberProof + " is stop: " + Mining.isIsMiningStop() + " isBsolete: " + Mining.miningIsObsolete);
+
             BlockForHash block = new BlockForHash(this.dtoTransactions,
                     this.previousHash, this.minerAddress, this.founderAddress,
                     this.randomNumberProof, this.minerRewards, this.hashCompexity, this.timestamp, this.index);
@@ -176,9 +176,10 @@ public final class Block implements Cloneable {
 
             Timestamp actualTime = Timestamp.from(Instant.now());
             Long result = actualTime.toInstant().until(previus.toInstant(), ChronoUnit.SECONDS);
-//            System.out.println("findhash time: " + result + " result > 10 || result < -10: " + (result > 10 || result < -10));
+//          каждые десять секунд проверяем, что время между текущим и предыдущим запросом не больше 10
             if(result > 10 || result < -10){
                 previus = actualTime;
+                //проверяет устаревание майнинга, если устарел - прекращает майнинг
                 int tempSize = UtilsStorage.getSize();
                 if(size < tempSize){
                     Mining.miningIsObsolete = true;
@@ -188,13 +189,14 @@ public final class Block implements Cloneable {
                 }
             }
 
-            //отключить майнинг
+            //если true, то прекращаем майнинг
             if(Mining.isIsMiningStop()){
                 System.out.println("mining will be stopped");
                 return hash;
 
             }
 
+            //если true, то прекращаем майнинг. Правильный блок найден
             if(UtilsUse.hashComplexity(hash.substring(0, hashCoplexity), hashCoplexity))
             {
                 System.out.println("block found: hash: " + hash);
