@@ -926,7 +926,7 @@ public class BasisController {
                     System.out.println(":NAME CONFLICT: " + HttpStatus.NOT_ACCEPTABLE.value());
                     System.out.println("two miner addresses cannot be consecutive: " + HttpStatus.NOT_ACCEPTABLE.value());
                     System.out.println("PARITY ERROR" + HttpStatus.LOCKED);
-                    System.out.println("Test version: If the index is even, then the stock balance must also be even; if the index is not even, then the stock balance must also be odd"
+                    System.out.println("Test version: If the index is even, then the stock balance must also be even; if the index is not even, all can mining"
                     + HttpStatus.LOCKED.value());
                     System.out.println(":response: " + response);
 
