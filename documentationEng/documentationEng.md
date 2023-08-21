@@ -39,13 +39,13 @@ What are its benefits.
 1. There are 576 blocks per day, for each block is given if the block index is even (difficulty * 30) of coins, if not even
    (difficulty * 30) + 1 coins. where difficulty is equal to the number of zeros in the hash.
 2. Two unique digital dollar coins and digital shares.
-3. Lack of halving, instead, the restriction occurs by burning coins from all accounts in the amount
+3. No halving, instead, the restriction occurs by burning coins from all accounts in the amount
    0.2% semi-annually for digital dollars and 0.4% for digital stocks.
-4. Unique electoral system inspired by the principles of Libertarianism, the Anguillan Parliament and
-   and the US constitution.
+4. Unique electoral system inspired by the principles of Libertarianism, the English Parliament and
+   the US constitution.
 5. It has a unique mining system based on SHA-256.
 6. Unique anti-centralization system. Such rules
-   how the same address cannot block twice in a row, and
+   how the same address cannot mine a block twice in a row, and
    rule, if the index is even, only those whose balance of shares is even and not zero can mine,
    and if the index is not even, then that's it.
    Makes this system decentralized.
