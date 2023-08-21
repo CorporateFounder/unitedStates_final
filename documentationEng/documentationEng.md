@@ -17,6 +17,15 @@ https://bitcointalk.org/index.php?topic=5459836.new#new
 
 https://bitcointalk.org/index.php?topic=5459876.new#new
 
+# Important
+If your version is lower than the global one, be sure to download the new version,
+otherwise you will not be able to mine coins. Versions must match
+
+A unique project has been made, with unique features that can prevent such crises as stagflation and a deflationary spiral.
+This coin is based on economic schools and takes into account macroeconomics. Based on the theories of Monetarism by Milton Friedman,
+Silvio Gesell free money, Austrian School of Economics and Elements of the labor theory of value.
+
+
 ## Preamble
 Hi all.
 Before downloading, I would like you to read the text below.
@@ -27,8 +36,8 @@ and also using direct democracy, but I need you to participate, I am a developer
 code to make the legislative system better. Together we will be like the founding fathers of digital democracy.
 
 What are its benefits.
-1. There are 576 blocks per day, for each block is given if the block index is even (difficulty * 30), if not even
-   (difficulty * 30) + 1. where difficulty is equal to the number of zeros in the hash.
+1. There are 576 blocks per day, for each block is given if the block index is even (difficulty * 30) of coins, if not even
+   (difficulty * 30) + 1 coins. where difficulty is equal to the number of zeros in the hash.
 2. Two unique digital dollar coins and digital shares.
 3. Lack of halving, instead, the restriction occurs by burning coins from all accounts in the amount
    0.2% semi-annually for digital dollars and 0.4% for digital stocks.
