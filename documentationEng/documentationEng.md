@@ -17,60 +17,52 @@ https://bitcointalk.org/index.php?topic=5459836.new#new
 
 https://bitcointalk.org/index.php?topic=5459876.new#new
 
-# Important
+## Preamble
+Hi all.
+Before downloading, I would like you to read the text below.
+My cryptocurrency was inspired by the US Constitution and the parliamentary system of government.
+My system has implemented a system that allows all participants to create laws and approve laws through democratic procedures.
+Imagine a world where a resident of the United States, Mexico, Canada or other regions will elect their representatives and approve laws,
+and also using direct democracy, but I need you to participate, I am a developer and can modify
+code to make the legislative system better. Together we will be like the founding fathers of digital democracy.
 
-If your version is lower than the global one, be sure to download the new version,
-otherwise you will not be able to mine coins. Versions must match
+What are its benefits.
+1. There are 576 blocks per day, for each block is given if the block index is even (difficulty * 30), if not even
+   (difficulty * 30) + 1. where difficulty is equal to the number of zeros in the hash.
+2. Two unique digital dollar coins and digital shares.
+3. Lack of halving, instead, the restriction occurs by burning coins from all accounts in the amount
+   0.2% semi-annually for digital dollars and 0.4% for digital stocks.
+4. Unique electoral system inspired by the principles of Libertarianism, the Anguillan Parliament and
+   and the US constitution.
+5. It has a unique mining system based on SHA-256.
+6. Unique anti-centralization system. Such rules
+   how the same address cannot block twice in a row, and
+   rule, if the index is even, only those whose balance of shares is even and not zero can mine,
+   and if the index is not even, then that's it.
+   Makes this system decentralized.
+6. Difficulty adapts every 288 blocks.
+7. An election system that allows you to create your own faction and directly vote according to the rules of the network.
+8. Budgetary system, the state budget, which can be spent with the help of shareholders' votes.
+9. Unique system of government, consisting of elements of the English parliament and a charter inspired by the constitution
+   US and libertarian principles, including the NAP.
+10. The ability to mine blocks directly on the local server, which automatically connects to the global server, which only stores,
+    updates and returns the current blockchain.
+11. All settings are made taking into account knowledge in the field of Macroeconomics and took into account such schools as Milton Friedman's Monetarism,
+    Austrian School of Economics (Mises, Hayek), Silvio Gezel - money with demurrage and other books.
+12. The algorithm is designed in such a way that over time the economy will grow more steadily and have a more stable exchange rate,
+    which will prevent future crises such as the Deflationary Spiral and Stagflation, as well as allow for the optimal development of all of humanity.
+    the total number of coins never exceeds 10 billion dollars and 5 billion shares if the difficulty is not higher than 10.
+13. Ultimately, this system will be able to function as a Confederation or Federation for humanity
+    and eliminate such problems as financial crises (Deflationary Spiral, Stagflation, Galloping inflation, etc.)
+    Pandemics, Space Threats, Environmental Issues and will reduce the occurrence of military conflicts.
 
 ## Mission.
-
 Using a new economic model that is resistant to deflationary and inflationary crises,
 unite humanity into a single democratic trading network. Our digital democracy is resilient to stuffing
 and parliament represents all sections of society. First of all, we are creating a democratic platform,
 where the views of all participants must be heard. The goal is to unite people of different views, different religions,
 regions and social groups to solve social and economic problems, as well as reduce conflicts between
 countries and the economic growth of mankind.
-
-## Preamble
-
-Hi all.
-Before downloading, I would like you to read the text below.
-My cryptocurrency was inspired by the US Constitution and the parliamentary system of government.
-My system has implemented a system that allows all participants to create laws and approve laws through democratic
-procedures.
-Imagine a world where a resident of the United States, Mexico, Canada or other regions will elect their representatives
-and approve laws,
-and also using direct democracy, but I need you to participate, I am a developer and can modify
-code to make the legislative system better. Together we will be like the founding fathers of digital democracy.
-
-What are its benefits.
-
-1. It has a unique mining system based on SHA-256.
-2. Difficulty adapts every 12 hours.
-3. Two types of coins are mined at the same time: DIGITAL DOLLARS and DIGITAL SHARES.
-4. A unique system that allows you to mine each block for (difficulty * 30) + odd if index is even then odd 0, if not 1,
-   while the total money supply does not grow constantly, since every six 0.2% of digital coins are burned from each
-   account dollars and 0.4% of digital stocks months.
-5. An election system that allows you to create your own faction and directly vote according to the rules of the
-   network.
-6. Budgetary system, the state budget, which can be spent with the help of shareholders' votes.
-7. Unique system of government, consisting of elements of the English parliament and a charter inspired by the
-   constitution
-8. USA and libertarian principles, including NAP.
-9. The ability to mine blocks directly on the local server, which automatically connects to the global server, which
-   only stores, updates and returns the current blockchain.
-10. 576 blocks per day.
-11. All settings are made taking into account knowledge in the field of Macroeconomics and took into account such
-    schools as Milton Friedman's Monetarism, the Austrian School of Economics (Mises, Hayek), Silvio Gezel - money with
-    demurrage and other books.
-12. The algorithm is designed in such a way that over time the economy will grow more steadily and have a more stable
-    exchange rate, which will prevent future crises such as the Deflationary Spiral and Stagflation, as well as allow
-    for the optimal development of all of humanity.
-13. The total number of coins never exceeds 10 billion dollars and will reach this value in about 100 years.
-
-Ultimately, this system will be able to function as a Confederation or Federation for humanity.
-and eliminate such problems as financial crises (Deflationary Spiral, Stagflation, Galloping inflation, etc.)
-Pandemics, Space Threats, Environmental Issues and will reduce the occurrence of military conflicts.
 
 ## Благодарность всему сообществу bitcointalks и дискорд
 
@@ -89,25 +81,6 @@ Pandemics, Space Threats, Environmental Issues and will reduce the occurrence of
 - richman
 - just_mine_it
 - and many others whose names I could not write because I do not know Chinese
-
-	How will this system deal with high volatility? The burning of coins every six months will help to reduce the volatility of the currency. This
-    is because it will create a built-in incentive for people to spend their money rather than hoard it. If people know that their money will be
-    worth less in the future, they will be more likely to spend it now. This will help to keep the currency circulating and prevent it from
-    becoming too volatile. How will this system deal with inflation? The limited supply of coins will help to prevent inflation. The total number
-    of coins will never grow above 20 billion digital dollars and 10 billion digital shares. This means that the value of each coin will be
-    relatively stable over time. How will this system deal with stagflation? Stagflation is a combination of high inflation and high unemployment.
-    The burning of coins will help to prevent stagflation by stimulating economic activity. When people spend their money, they are more likely to
-    buy goods and services from businesses. This will create jobs and help to reduce unemployment. How will this system deal with a deflationary
-    spiral? A deflationary spiral is a situation where prices are falling and people are reluctant to spend money because they expect prices to
-    fall even further. The burning of coins will help to prevent a deflationary spiral by creating an incentive for people to spend their money.
-    If people know that their money will be worth less in the future, they will be more likely to spend it now. This will help to keep prices from
-    falling and prevent a deflationary spiral. How will this coin help save money and increase the wealth of the owners of this coin? The burning
-    of coins will help people to save money. This is because people will be less likely to hoard money if they know that it will be worth less in
-    the future. Instead, they will be more likely to invest their money or spend it on goods and services. This will help to increase the wealth
-    of the owners of this coin. In addition, the limited supply of coins will help to increase the value of each coin. This is because there will
-    be a finite number of coins available, but the demand for coins may increase over time. This could lead to an increase in the value of each
-    coin, which would benefit the owners of this coin. Overall, this system has the potential to address a number of economic problems, such as
-    high volatility, inflation, stagflation, and deflationary spirals. It could also help people to save money and increase their wealth.
 
 ## CONTENT
 
