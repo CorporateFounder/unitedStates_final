@@ -61,16 +61,7 @@ public class Blockchain implements Cloneable {
     }
 
     public void addBlock(Block newBlock) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-//        if(blockchainList.size() > 2){
-//            boolean time = UtilsBlock.isValidTimestamp(blockchainList.get(blockchainList.size()-1), newBlock, INTERVAL_TARGET);
-//            if(!time){
-//                System.out.println("time out block add " + time);
-//               return;
-//            }
-//        }
         blockchainList.add(newBlock);
-
-
     }
 
     public Block genesisBlock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, SignatureException, InvalidKeyException {

@@ -2,6 +2,7 @@ package International_Trade_Union.controllers;
 
 import International_Trade_Union.entity.*;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.json.JSONException;
 
 import org.springframework.http.MediaType;
@@ -44,6 +45,7 @@ import static International_Trade_Union.utils.UtilsBalance.calculateBalance;
 
 @Controller
 public class BasisController {
+
     private static double minDollarRewards = 0;
     private static Block prevBlock = null;
     private static Account minerShow = null;
@@ -304,6 +306,13 @@ public class BasisController {
      * Updates the blockchain. Connects to the storage host and downloads if the host has a more up-to-date blockchain.
      * Обновляет блокчейн. Подключается к хосту хранилища и скачивает, если в на хосте более актуальный блокчейн.
 */
+
+    public static int resovle2() throws JsonProcessingException {
+        prevBlock = Blockchain.indexFromFile(blockchainSize-1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        updating = true;
+
+        return -4;
+    }
     public static int resolve() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
         updating = true;
         boolean isPortion = false;
@@ -1112,7 +1121,8 @@ public class BasisController {
             //транзакции которые мы добавили в блок и теперь нужно удалить из файла, в папке resources/transactions
             List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
             //отказ от дублирующих транзакций
-            temporaryDtoList = UtilsBlock.validDto(tempBlockchain.getBlockchainList(), temporaryDtoList);
+            List<Block> temp = Blockchain.subFromFile(blockchainSize-Seting.CHECK_DTO, blockchainSize,Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            temporaryDtoList = UtilsBlock.validDto(temp, temporaryDtoList);
             //отказ от транзакций которые меньше данного вознаграждения
             temporaryDtoList = UtilsTransaction.reward(temporaryDtoList, minDollarRewards);
 
