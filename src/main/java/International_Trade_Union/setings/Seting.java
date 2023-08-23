@@ -248,5 +248,5 @@ public interface Seting {
     String ORIGINAL_HASH = "08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c";
 
     //для проверки транзакции в майнинга повторяющихся блоков.
-    int CHECK_DTO = 288;
+    int CHECK_DTO = 300;
 }

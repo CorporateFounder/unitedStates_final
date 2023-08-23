@@ -16,5 +16,10 @@ public class DataShortBlockchainInformation {
         this.isValidation = isValidation;
         this.hashCount = hashCount;
     }
+
+    @Override
+    public DataShortBlockchainInformation clone() throws CloneNotSupportedException {
+        return new DataShortBlockchainInformation(size, isValidation, hashCount);
+    }
 }
 

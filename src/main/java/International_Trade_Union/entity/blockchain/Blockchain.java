@@ -150,13 +150,6 @@ public class Blockchain implements Cloneable {
                 blockList.remove(0);
             }
 
-            System.out.println("========================================================");
-            System.out.println("i: " + i);
-            System.out.println("prev: index: " + prev.getIndex() + " hash: " + prev.getHashBlock());
-            System.out.println("block: index: " + blocks.get(i).getIndex() + " hash: " + blocks.get(i).getPreviousHash());
-            System.out.println("blocklist index: " + blockList.get(blockList.size()-1).getIndex() + " :hash: " +
-                    blockList.get(blockList.size()-1).getHashBlock());
-            System.out.println("========================================================");
             blockList = blockList.stream()
                     .sorted(Comparator.comparing(Block::getIndex))
                     .collect(Collectors.toList());
@@ -485,7 +478,10 @@ public class Blockchain implements Cloneable {
 //        Blockchain blockchain = Mining.getBlockchain(
 //                Seting.ORIGINAL_BLOCKCHAIN_FILE,
 //                BlockchainFactoryEnum.ORIGINAL);
-        return UtilsBlock.validation(blockchainList, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
+        return UtilsBlock.validation(blockchainList, 0, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
+    }
+    public boolean validatedBlockchain(int index) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        return UtilsBlock.validation(blockchainList, index, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
     }
 
     public String jsonString() throws IOException {

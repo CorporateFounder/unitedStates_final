@@ -197,10 +197,7 @@ public class UtilsBlock {
         Block latestBlock = blocks.get(blocks.size() - 1);
         if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
 
-            System.out.println("=======================================");
             difficulty = UtilsDIfficult.getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
-
-
             //более умеренная модель сложности
             if (latestBlock.getIndex() - 20 > Seting.CHECK_DIFFICULTY_INDEX && latestBlock.getIndex() < Seting.CHECK_DIFFICULTY_BLOCK_2) {
                 difficulty = UtilsDIfficult.difficultyBing(blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
@@ -209,8 +206,7 @@ public class UtilsBlock {
             }
 
 
-            System.out.println("changes: " + difficulty);
-            System.out.println("=======================================");
+
 
         } else {
             difficulty = latestBlock.getHashCompexity();
@@ -370,7 +366,7 @@ public class UtilsBlock {
 
     }
 
-    public static boolean validation(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public static boolean validation(List<Block> blocks, int checkIndex, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         boolean validated = true;
         int index = 0;
 
@@ -380,6 +376,11 @@ public class UtilsBlock {
         List<Block> tempList = new ArrayList<>();
         for (int i = 1; i < blocks.size(); i++) {
             index++;
+
+            if(i < checkIndex){
+                System.out.println("already checked");
+                return true;
+            }
             Block block = blocks.get(i);
 
 
