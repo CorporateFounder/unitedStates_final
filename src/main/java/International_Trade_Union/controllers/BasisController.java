@@ -1137,7 +1137,7 @@ public class BasisController {
 
         System.out.println(new Date() + ":BasisController: sendAllBlocksToStorage: start: ");
         int bigsize = 0;
-        int blocks_current_size = blocks.size();
+        int blocks_current_size = (int) blocks.get(blocks.size()-1).getIndex() +1;
         //отправка блокчейна на хранилище блокчейна
         System.out.println(":BasisController: sendAllBlocksToStorage: ");
         getNodes().stream().forEach(System.out::println);
@@ -1161,7 +1161,7 @@ public class BasisController {
                     System.out.println(":your local chain less");
                     return -1;
                 }
-                List<Block> fromToTempBlock = blocks.subList(size, blocks.size());
+                List<Block> fromToTempBlock = blocks.subList(size, blocks_current_size);
                 SendBlocksEndInfo infoBlocks = new SendBlocksEndInfo(Seting.VERSION, fromToTempBlock);
                 String jsonFromTo = UtilsJson.objToStringJson(infoBlocks);
                 //if the current blockchain is larger than the storage, then
@@ -1452,7 +1452,9 @@ public class BasisController {
             //добавляет последний блок в блокчейн
             tempBlockchain.addBlock(block);
 
-            sendAllBlocksToStorage(tempBlockchain.getBlockchainList());
+            List<Block> sends = new ArrayList<>();
+            sends.add(block);
+            sendAllBlocksToStorage(sends);
             tempBlockchain.setBlockchainList(new ArrayList<>());
 
 
