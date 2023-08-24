@@ -302,6 +302,9 @@ public class BasisController {
     @GetMapping("/nodes/resolve")
     public static synchronized int resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         System.out.println(":resolve_conflicts");
+        if(blockchainSize <= 1){
+            resolve();
+        }
         int result = resovle2();
         System.out.println("resovle2: " + result);
         if (result != 0) {
