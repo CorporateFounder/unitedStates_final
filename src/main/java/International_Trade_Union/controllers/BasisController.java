@@ -436,7 +436,7 @@ public class BasisController {
                                 prevBlock = Blockchain.indexFromFile(blockchainSize - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
 
-                                if (size - lastDiff.get(lastDiff.size() - 1).getIndex() < Seting.PORTION_DOWNLOAD) {
+                                if (size - prevBlock.getIndex() < Seting.PORTION_DOWNLOAD) {
                                     downloadPortion = false;
                                     finish = size;
                                     subBlockchainEntity = new SubBlockchainEntity(start, finish);
