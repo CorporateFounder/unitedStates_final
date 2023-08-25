@@ -23,11 +23,16 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 
 @JsonAutoDetect
 @Data
 public final class Block implements Cloneable {
     private static long randomNumberProofStatic = 0;
+    private static int INCREMENT_VALUE = 200;
+    private static int THREAD_COUNT = 5;
 
     private List<DtoTransaction> dtoTransactions;
     private String previousHash;
@@ -153,6 +158,88 @@ public final class Block implements Cloneable {
 
     public String jsonString() throws IOException {
         return UtilsJson.objToStringJson(this);
+    }
+
+    public String findHashMultiple(int hashComplexity)  {
+
+        try {
+            if (!verifyesTransSign()) {
+                throw new NotValidTransactionException();
+            }
+
+            int increment = 0;
+            this.randomNumberProof = randomNumberProofStatic + increment;
+
+            AtomicReference<String> hashRef = new AtomicReference<>("");
+            int size = UtilsStorage.getSize();
+            Timestamp previous = Timestamp.from(Instant.now());
+            AtomicReference<Timestamp> previousTimestamp = new AtomicReference<>(previous);
+
+            ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
+            boolean mining = true;
+            while (mining) {
+                this.randomNumberProof++;
+                final int currentIncrement = increment;
+
+                executor.execute(() -> {
+                    BlockForHash block = new BlockForHash(this.dtoTransactions, this.previousHash,
+                            this.minerAddress, this.founderAddress, this.randomNumberProof,
+                            this.minerRewards, this.hashCompexity, this.timestamp, this.index);
+
+                    String threadHash = null;
+                    try {
+                        threadHash = block.hashForTransaction();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    Timestamp actualTime = Timestamp.from(Instant.now());
+                    Long result = actualTime.toInstant().until(previousTimestamp.get().toInstant(), ChronoUnit.SECONDS);
+                    if (result > 10 || result < -10) {
+                        previousTimestamp.set(actualTime);
+                    }
+
+                    int tempSize = UtilsStorage.getSize();
+                    if (size < tempSize) {
+                        Mining.miningIsObsolete = true;
+                        System.out.println("Someone mined a block before you, search is no longer relevant: " + threadHash);
+                        return;
+                    }
+
+                    if (Mining.isIsMiningStop()) {
+                        System.out.println("Mining stopped");
+                        return;
+                    }
+
+                    if (UtilsUse.hashComplexity(threadHash.substring(0, hashComplexity), hashComplexity)) {
+                        System.out.println("Block found: " + threadHash);
+                        hashRef.set(threadHash);
+                        executor.shutdownNow();
+                        return;
+                    }
+                });
+
+                increment += INCREMENT_VALUE;
+            }
+
+            executor.shutdown();
+            return hashRef.get();
+        } catch (NotValidTransactionException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (SignatureException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchProviderException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
+        }
+
     }
     //TODO
     public String findHash(int hashCoplexity) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
