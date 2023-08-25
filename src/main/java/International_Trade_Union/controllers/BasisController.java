@@ -302,14 +302,12 @@ public class BasisController {
     @GetMapping("/nodes/resolve")
     public static synchronized int resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         System.out.println(":resolve_conflicts");
-        if(blockchainSize <= 1){
-            resolve();
-        }
+
         int result = resovle2();
         System.out.println("resovle2: " + result);
         if (result != 0) {
             result = resolve();
-            System.out.println("resovle2: " + result);
+            System.out.println("resovle: " + result);
         }
         System.out.println("resolve" + result);
 
@@ -414,11 +412,24 @@ public class BasisController {
                                     lastDiff = Blockchain.subFromFile(blockchainSize - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
                                             blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                                 }
-                                DataShortBlockchainInformation temp = Blockchain.shortCheck(prevBlock, subBlocks, shortDataBlockchain, lastDiff);
-                                if (!temp.isValidation()) {
+                                DataShortBlockchainInformation temp = new DataShortBlockchainInformation();
+
+                                if(blockchainSize > 1){
+                                    temp =  Blockchain.shortCheck(prevBlock, subBlocks, shortDataBlockchain, lastDiff);
+                                }
+
+
+                                System.out.println("temp: " + temp);
+                                System.out.println("blockchainsize: " + blockchainSize);
+                                System.out.println("sublocks: " + subBlocks.size());
+
+                                if (blockchainSize > 1 && !temp.isValidation()) {
                                     return -10;
                                 }
                                 addBlock3(subBlocks, balances);
+                                if(!temp.isValidation()){
+                                    temp = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                                }
                                 shortDataBlockchain = temp;
                                 blockchainSize = (int) shortDataBlockchain.getSize();
                                 blockchainValid = shortDataBlockchain.isValidation();
@@ -434,17 +445,29 @@ public class BasisController {
                                     System.out.println("2:sublockchainJson: " + subBlockchainJson);
                                     subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
                                     System.out.println("2:download sub block: " + subBlocks.size());
+
                                     balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
                                     if (blockchainSize > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
                                         lastDiff = Blockchain.subFromFile(blockchainSize - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
                                                 blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                                     }
 
-                                    temp = Blockchain.shortCheck(prevBlock, subBlocks, shortDataBlockchain, lastDiff);
-                                    if (!temp.isValidation()) {
+                                    if(blockchainSize > 1){
+                                        temp =  Blockchain.shortCheck(prevBlock, subBlocks, shortDataBlockchain, lastDiff);
+                                    }
+
+
+                                    System.out.println("temp: " + temp);
+                                    System.out.println("blockchainsize: " + blockchainSize);
+                                    System.out.println("sublocks: " + subBlocks.size());
+
+                                    if (blockchainSize > 1 && !temp.isValidation()) {
                                         return -10;
                                     }
                                     addBlock3(subBlocks, balances);
+                                    if(!temp.isValidation()){
+                                        temp = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                                    }
                                     shortDataBlockchain = temp;
                                     blockchainSize = (int) shortDataBlockchain.getSize();
                                     blockchainValid = shortDataBlockchain.isValidation();
@@ -470,11 +493,22 @@ public class BasisController {
                                         blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                             }
 
-                            DataShortBlockchainInformation temp = Blockchain.shortCheck(prevBlock, subBlocks, shortDataBlockchain, lastDiff);
-                            if (!temp.isValidation()) {
+                            DataShortBlockchainInformation temp = new DataShortBlockchainInformation();
+                            if(blockchainSize > 1){
+                                temp = Blockchain.shortCheck(prevBlock, subBlocks, shortDataBlockchain, lastDiff);
+                            }
+
+                            System.out.println("temp: " + temp);
+                            System.out.println("blockchainsize: " + blockchainSize);
+                            System.out.println("sublocks: " + subBlocks.size());
+
+                            if (temp.getSize() > 1 && !temp.isValidation()) {
                                 return -10;
                             }
                             addBlock3(subBlocks, balances);
+                            if(!temp.isValidation()){
+                                temp = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                            }
                             shortDataBlockchain = temp;
                             blockchainSize = (int) shortDataBlockchain.getSize();
                             blockchainValid = shortDataBlockchain.isValidation();
