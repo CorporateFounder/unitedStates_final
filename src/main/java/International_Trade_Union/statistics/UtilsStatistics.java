@@ -18,10 +18,14 @@ public class UtilsStatistics {
         double allDigitalDollar = 0;
         double allDigitalStock = 0;
 
+        //стандартная модель
         double velocity_of_money_dollar = 0;
+        //моя модель
         double velocity_of_money_dollar_model2 = 0;
 
+        //стандартная модель
         double velocity_of_money_stock = 0;
+        //моя модель
         double velocity_of_money_stock_model2 = 0;
 
         int transactions = 0;
