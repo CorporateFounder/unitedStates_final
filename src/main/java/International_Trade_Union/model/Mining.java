@@ -101,7 +101,7 @@ public class Mining {
 
     public static Block miningDay(
             Account minner,
-            Blockchain blockchain,
+            List<Block> blockchain,
             long blockGenerationInterval,
             int DIFFICULTY_ADJUSTMENT_INTERVAL,
             List<DtoTransaction> transactionList,
@@ -180,8 +180,8 @@ public class Mining {
                 continue;
             }
         }
-
-
+        int difficulty = UtilsBlock.difficulty(blockchain, blockGenerationInterval, DIFFICULTY_ADJUSTMENT_INTERVAL);
+        Block prevBlock = blockchain.get(blockchain.size()-1);
         //доход майнера
         double minerRewards = Seting.DIGITAL_DOLLAR_REWARDS_BEFORE;
         double digitalReputationForMiner = Seting.DIGITAL_STOCK_REWARDS_BEFORE;
@@ -189,7 +189,17 @@ public class Mining {
         //доход основателя
         double founderReward = Seting.DIGITAL_DOLLAR_FOUNDER_REWARDS_BEFORE;
         double founderDigigtalReputationReward = Seting.DIGITAL_REPUTATION_FOUNDER_REWARDS_BEFORE;
+        if(index > Seting.CHECK_FOUNDER_REWARD_INDEX){
+            if(difficulty >= 8){
+                founderReward = difficulty;
+                founderDigigtalReputationReward = digitalReputationForMiner;
+            }
+            else {
+                founderReward = 8;
+                founderDigigtalReputationReward = 8;
+            }
 
+        }
         Base base = new Base58();
 
         //суммирует все вознаграждения майнеров
@@ -199,8 +209,13 @@ public class Mining {
 
 
 
+        String addressFounrder = Blockchain.indexFromFile(0, Seting.ORIGINAL_BLOCKCHAIN_FILE).getFounderAddress();
+        if(!addressFounrder.equals(prevBlock.getFounderAddress())) {
+            System.out.println("wrong founder address: " );
+            return null;
+        }
         //вознаграждение основателя
-        DtoTransaction founderRew = new DtoTransaction(Seting.BASIS_ADDRESS, blockchain.getADDRESS_FOUNDER(),
+        DtoTransaction founderRew = new DtoTransaction(Seting.BASIS_ADDRESS, addressFounrder,
                 founderReward, founderDigigtalReputationReward, new Laws(), 0.0, VoteEnum.YES);
         byte[] signFounder = UtilsSecurity.sign(privateKey, founderRew.toSign());
 
@@ -214,7 +229,7 @@ public class Mining {
         //здесь должна быть создана динамическая модель
         //определение сложности и создание блока
 
-        int difficulty = UtilsBlock.difficulty(blockchain.getBlockchainList(), blockGenerationInterval, DIFFICULTY_ADJUSTMENT_INTERVAL);
+
         BasisController.setDifficultExpected(difficulty);
         System.out.println("Mining: miningBlock: difficulty: " + difficulty + " index: " + index);
 
@@ -237,9 +252,9 @@ public class Mining {
         //blockchain.getHashBlock(blockchain.sizeBlockhain() - 1)
         Block block = new Block(
                 forAdd,
-                blockchain.getHashBlock(blockchain.sizeBlockhain() - 1),
+                prevBlock.getHashBlock(),
                 minner.getAccount(),
-                blockchain.getADDRESS_FOUNDER(),
+                addressFounrder,
                 difficulty,
                 index);
 

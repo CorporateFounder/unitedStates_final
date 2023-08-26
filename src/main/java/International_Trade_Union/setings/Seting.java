@@ -241,6 +241,7 @@ public interface Seting {
     int PORTION_DOWNLOAD = 500;
     int CHECK_DIFFICULTY_INDEX = 39100;
     int CHECK_DIFFICULTY_BLOCK_2 = 40032;
+    int CHECK_FOUNDER_REWARD_INDEX = 46693;
     int PORTION_BLOCK_TO_COMPLEXCITY = 600;
     //version
     int VERSION = 13;

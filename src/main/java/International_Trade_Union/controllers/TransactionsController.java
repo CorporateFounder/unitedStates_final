@@ -72,7 +72,7 @@ public class TransactionsController {
 
         if(fromBlock >= toBlock){
             fromBlock = 0;
-            toBlock = blockchain.sizeBlockhain();
+            toBlock = blockchain.sizeBlockhain()-1;
         }
 
         for (int i = fromBlock; i < toBlock ; i++) {
@@ -109,7 +109,7 @@ public class TransactionsController {
 
         }
         transactions = transactions.stream()
-                .sorted(Comparator.comparing(DataForTransaction::getNumberBlock)).collect(Collectors.toList());
+                .sorted(Comparator.comparing(DataForTransaction::getNumberBlock).reversed()).collect(Collectors.toList());
         model.addAttribute("title", "transactions account");
         model.addAttribute("transactions", transactions);
         return "transactions";
@@ -125,6 +125,9 @@ public class TransactionsController {
                 BlockchainFactoryEnum.ORIGINAL);
         System.out.println("from: " + from);
         System.out.println("to: " + to);
+        if(to > blockchain.sizeBlockhain()){
+            to = blockchain.sizeBlockhain()-1;
+        }
         System.out.println("isSent: " + isSent);
         fromBlock = from;
         toBlock = to;

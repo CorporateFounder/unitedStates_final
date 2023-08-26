@@ -1325,10 +1325,17 @@ public class BasisController {
         mining = true;
         try {
 
-            tempBlockchain = Mining.getBlockchain(
-                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                    BlockchainFactoryEnum.ORIGINAL);
-            long index = tempBlockchain.sizeBlockhain();
+            findAddresses();
+
+            resolve_conflicts();
+
+
+            List<Block> tempBlockchain = Blockchain.subFromFile(
+                    blockchainSize - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
+                    blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE
+            );
+            Block prevBlock = tempBlockchain.get(tempBlockchain.size()-1);
+            long index = prevBlock.getIndex()+1;
             Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
             Account miner = balances.get(User.getUserAddress());
             minerShow = miner;
@@ -1350,12 +1357,10 @@ public class BasisController {
             String text = "";
             //нахождение адрессов
 
-            findAddresses();
-
-            resolve_conflicts();
 
 
-            if (blockchainSize % (576 * 2) == 0) {
+
+            if (blockchainSize % 288 == 0) {
                 System.out.println("clear storage transaction because is old");
                 AllTransactions.clearAllTransaction();
             }
@@ -1371,33 +1376,26 @@ public class BasisController {
             blockchainValid = shortDataBlockchain.isValidation();
 
 
-            //если блокчейн работает то продолжить
-            if (!tempBlockchain.validatedBlockchain()) {
-                text = "wrong chain: неправильный блокчейн, добыча прекращена";
-//            model.addAttribute("text", text);
-                return "wrong blockchain";
-            }
 
 
-            if (blockchain.sizeBlockhain() <= 1) {
+
+            if (blockchainSize <= 1) {
                 System.out.println("save genesis block");
+                Blockchain blockchain1 = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
                 //сохранение генезис блока
-                if (blockchain.sizeBlockhain() == 1) {
-                    UtilsBlock.saveBLock(blockchain.genesisBlock(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                if (blockchainSize == 1) {
+                    UtilsBlock.saveBLock(blockchain1.genesisBlock(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
                 }
 
                 //получить список балансов из файла
                 List<String> signs = new ArrayList<>();
-                balances = Mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain, balances, signs);
+                balances = Mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain1, balances, signs);
                 //удалить старые файлы баланса
                 Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
 
                 //сохранить балансы
                 SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
-                blockchain = Mining.getBlockchain(
-                        Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                        BlockchainFactoryEnum.ORIGINAL);
-
+//
 
             }
             //скачать список балансов из файла
@@ -1462,16 +1460,26 @@ public class BasisController {
             //Тестирование блока
             List<Block> testingValidationsBlock = null;
 
-            if (tempBlockchain.sizeBlockhain() > diff) {
+            if (tempBlockchain.size() > diff) {
+                testingValidationsBlock = Blockchain.clone(
+                        tempBlockchain.size() - diff,
+                        temp.size(), tempBlockchain
+                );
 
-                testingValidationsBlock = tempBlockchain.subBlock(tempBlockchain.sizeBlockhain() - diff, tempBlockchain.sizeBlockhain());
             } else {
-                testingValidationsBlock = tempBlockchain.clone();
+                testingValidationsBlock = Blockchain.clone(
+                        0, tempBlockchain.size(), tempBlockchain
+                );
+            }
+
+            String addresFounder = Blockchain.indexFromFile(0, Seting.ORIGINAL_BLOCKCHAIN_FILE).getFounderAddress();
+            if (!block.getFounderAddress().equals(addresFounder)){
+                System.out.println("wrong address founder: ");
             }
             //проверяет последние 288 блоков на валидность.
             if (testingValidationsBlock.size() > 1) {
                 boolean validationTesting = UtilsBlock.validationOneBlock(
-                        tempBlockchain.genesisBlock().getFounderAddress(),
+                        addresFounder,
                         testingValidationsBlock.get(testingValidationsBlock.size() - 1),
                         block,
                         Seting.BLOCK_GENERATION_INTERVAL,
@@ -1486,13 +1494,12 @@ public class BasisController {
                 testingValidationsBlock.add(block.clone());
             }
 
-            //добавляет последний блок в блокчейн
-            tempBlockchain.addBlock(block);
+
 
             List<Block> sends = new ArrayList<>();
             sends.add(block);
             sendAllBlocksToStorage(sends);
-            tempBlockchain.setBlockchainList(new ArrayList<>());
+
 
 
             //отправить адресса

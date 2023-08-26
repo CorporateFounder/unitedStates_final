@@ -274,10 +274,36 @@ public class UtilsBlock {
                 if (transaction.getSender().equals(Seting.BASIS_ADDRESS)
                         && transaction.getCustomer().equals(addressFounder)) {
                     countBasisSendFounder += 1;
+                    if(thisBlock.getIndex() > Seting.CHECK_FOUNDER_REWARD_INDEX){
+                        if(thisBlock.getHashCompexity() >= 8){
+                            if(transaction.getDigitalDollar() != thisBlock.getHashCompexity() ||
+                                    thisBlock.getHashCompexity() != transaction.getDigitalStockBalance()){
+                                System.out.println("wrong reward founder: index: " + thisBlock.getIndex()
+                                        + ":reward dollar: " + transaction.getDigitalDollar() + ": reward stock: "
+                                        + transaction.getDigitalStockBalance()
+                                        + " difficult: " + thisBlock.getHashCompexity()
+                                        + " founder: " + addressFounder);
+                                validated = false;
+                                break;
+                            }
+                        }
+                        else {
+                            if(transaction.getDigitalDollar() != 8 || transaction.getDigitalStockBalance() != 8){
+                                System.out.println("wrong reward founder: index: " + thisBlock.getIndex()
+                                        + ":reward dollar: " + transaction.getDigitalDollar() + ": reward stock: "
+                                        + transaction.getDigitalStockBalance() + " difficult: " + thisBlock.getHashCompexity());
+                                validated = false;
+                                break;
+                            }
+                        }
+
+                    }
                 }
 
-                if (transaction.getSender().equals(Seting.BASIS_ADDRESS) && !transaction.getCustomer().equals(addressFounder)) {
+                if (transaction.getSender().equals(Seting.BASIS_ADDRESS) &&
+                        !transaction.getCustomer().equals(addressFounder)) {
                     countBasisSendAll += 1;
+
                 }
 
                 if (countBasisSendFounder > 2 && thisBlock.getIndex() > 1) {
