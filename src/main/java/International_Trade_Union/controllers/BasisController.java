@@ -1243,14 +1243,14 @@ public class BasisController {
                     if (response == HttpStatus.CONFLICT.value()) {
                         System.out.println(":BasisController: sendAllBlocksStorage: start deleted 50 blocks:");
                         System.out.println(":size before delete: " + blockchainSize);
-                        blockchain = Mining.getBlockchain(
+                       Blockchain blockchain1 = Mining.getBlockchain(
                                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                                 BlockchainFactoryEnum.ORIGINAL);
-                        List<Block> temporary = blockchain.subBlock(0, blockchainSize - Seting.DELETED_PORTION);
+                        List<Block> temporary = blockchain1.subBlock(0, blockchainSize - Seting.DELETED_PORTION);
                         UtilsBlock.deleteFiles();
-                        blockchain.setBlockchainList(temporary);
-                        UtilsBlock.saveBlocks(blockchain.getBlockchainList(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
-                        blockchain = Mining.getBlockchain(
+                        blockchain1.setBlockchainList(temporary);
+                        UtilsBlock.saveBlocks(blockchain1.getBlockchainList(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                        blockchain1 = Mining.getBlockchain(
                                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                                 BlockchainFactoryEnum.ORIGINAL);
 
@@ -1259,7 +1259,7 @@ public class BasisController {
                         blockchainValid = shortDataBlockchain.isValidation();
 
                         UtilsBlock.deleteFiles();
-                        addBlock(blockchain.getBlockchainList());
+                        addBlock(blockchain1.getBlockchainList());
                         System.out.println(":size after delete: " + blockchainSize);
 
 
