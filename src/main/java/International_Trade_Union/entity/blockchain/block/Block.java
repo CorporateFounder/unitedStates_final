@@ -237,7 +237,7 @@ public final class Block implements Cloneable {
         while (true){
             //перебирает число nonce чтобы найти хеш
             this.randomNumberProof++;
-            this.timestamp = Timestamp.from(Instant.now());
+
 
             System.out.println("");
             BlockForHash block = new BlockForHash(this.dtoTransactions,
