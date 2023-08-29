@@ -61,7 +61,7 @@ public class MainController {
                System.out.println("shortBlockchainInformation null");
                shortBlockchainInformation = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
                String stringJson = UtilsJson.objToStringJson(shortBlockchainInformation);
-               UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
+               UtilsFileSaveRead.save(stringJson, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
            }
        } catch (IOException e) {
            throw new RuntimeException(e);
