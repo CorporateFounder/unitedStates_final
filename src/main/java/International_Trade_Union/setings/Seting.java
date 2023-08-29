@@ -186,7 +186,7 @@ public interface Seting {
     String ORIGINAL_POOL_URL_ADDRESS_FILE = "/resources/poolAddress/";
     String ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE = "/resources/pooAddressBlocked/";
 
-    String TEMPORARY_BLOCKCHAIN_FILE = "/resources/tempblockchain/";
+    String TEMPORARY_BLOCKCHAIN_FILE = "/resources/tempblockchain/shortBlockchain.txt";
 
     //отчет об уничтоженных монетах
     String BALANCE_REPORT_ON_DESTROYED_COINS = "/resources/balanceReportOnDestroyedCoins/";

@@ -3,6 +3,7 @@ package International_Trade_Union.controllers;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.InfoDificultyBlockchain;
 import International_Trade_Union.entity.blockchain.Blockchain;
+import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
+    private static DataShortBlockchainInformation shortBlockchainInformation;
     private static int globalSize = 0;
 
     public static int getGlobalSize() {
@@ -52,15 +54,38 @@ public class MainController {
     static {
        try {
            UtilsCreatedDirectory.createPackages();
+           String json = UtilsFileSaveRead.read(Seting.TEMPORARY_BLOCKCHAIN_FILE);
+           if (json != null && !json.isEmpty())
+            shortBlockchainInformation = UtilsJson.jsonToDataShortBlockchainInformation(json);
+           if(shortBlockchainInformation == null){
+               System.out.println("shortBlockchainInformation null");
+               shortBlockchainInformation = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+               String stringJson = UtilsJson.objToStringJson(shortBlockchainInformation);
+               UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
+           }
        } catch (IOException e) {
            throw new RuntimeException(e);
+       } catch (NoSuchAlgorithmException e) {
+           throw new RuntimeException(e);
+       } catch (InvalidKeySpecException e) {
+           throw new RuntimeException(e);
+       } catch (SignatureException e) {
+           throw new RuntimeException(e);
+       } catch (NoSuchProviderException e) {
+           throw new RuntimeException(e);
+       } catch (InvalidKeyException e) {
+           throw new RuntimeException(e);
        }
-   }
+    }
     @GetMapping("/")
     public String home(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
+
+        String stringShort = UtilsFileSaveRead.read(Seting.TEMPORARY_BLOCKCHAIN_FILE);
+    if(stringShort != null && !stringShort.isEmpty())
+        shortBlockchainInformation = UtilsJson.jsonToDataShortBlockchainInformation(stringShort);
         String sizeStr = "-1";
         try {
             sizeStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/size");
@@ -119,16 +144,39 @@ public class MainController {
         model.addAttribute("global_version", versionStr);
         model.addAttribute("difficultOneBlock",difficultOneBlock);
         model.addAttribute("difficultAllBlockchain",  difficultAllBlockchain);
+        Blockchain blockchain = null;
+        int size = 0;
+        boolean validation = false;
+        Block block =  null;
+        if(shortBlockchainInformation == null ||
+         shortBlockchainInformation.isValidation() == false){
+             blockchain = Mining.getBlockchain(
+                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                    BlockchainFactoryEnum.ORIGINAL);
+            size = blockchain.sizeBlockhain();
+            validation = blockchain.validatedBlockchain();
+            blockchain.getBlock(blockchain.sizeBlockhain()-1);
+        }else {
+            size = (int) shortBlockchainInformation.getSize();
+            validation = shortBlockchainInformation.isValidation();
+            if(size > 1)
+                block = Blockchain.indexFromFile(size-1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            else {
+                blockchain = Mining.getBlockchain(
+                        Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                        BlockchainFactoryEnum.ORIGINAL);
+                block =  blockchain.getBlock(blockchain.sizeBlockhain()-1);
+            }
 
-        Blockchain blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
-        int size = blockchain.sizeBlockhain();
+        }
+
+
+
         Map<String, Account> balances = new HashMap<>();
 
         model.addAttribute("size", size);
         model.addAttribute("version", Seting.VERSION);
-        boolean validation = blockchain.validatedBlockchain();
+
 
         if(validation == false){
             System.out.println("deleted blockchain files");
@@ -147,7 +195,7 @@ public class MainController {
         model.addAttribute("account", account);
 
         //дата сколько осталось до уничтожения монет
-        Block block =  blockchain.getBlock(blockchain.sizeBlockhain()-1);
+
         model.addAttribute("info", "In this system, a year is 360 days, and a day is 576 blocks.");
         model.addAttribute("info2", "every 180 days, 0.2% of digital dollars and 0.4% of digital shares" +
                 " are withdrawn from the account.");

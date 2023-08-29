@@ -435,6 +435,8 @@ public class BasisController {
                                 blockchainValid = shortDataBlockchain.isValidation();
                                 prevBlock = Blockchain.indexFromFile(blockchainSize - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
+                                String json = UtilsJson.objToStringJson(shortDataBlockchain);
+                                UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
 
                                 if (size - prevBlock.getIndex() < Seting.PORTION_DOWNLOAD) {
                                     downloadPortion = false;
@@ -473,6 +475,8 @@ public class BasisController {
                                     blockchainValid = shortDataBlockchain.isValidation();
                                     prevBlock = Blockchain.indexFromFile(blockchainSize - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
+                                    json = UtilsJson.objToStringJson(shortDataBlockchain);
+                                    UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
                                 }
                             }
                         } else {
@@ -514,6 +518,8 @@ public class BasisController {
                             blockchainValid = shortDataBlockchain.isValidation();
                             prevBlock = Blockchain.indexFromFile(blockchainSize - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
+                            String json = UtilsJson.objToStringJson(shortDataBlockchain);
+                            UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
                         }
 
                         //if the local blockchain was originally greater than 0, then add part of the missing list of blocks to the list.
@@ -1611,6 +1617,8 @@ public class BasisController {
         }
         return result;
     }
+
+
 }
 
 
