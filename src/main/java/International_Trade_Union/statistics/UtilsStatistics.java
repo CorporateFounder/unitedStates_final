@@ -18,6 +18,8 @@ public class UtilsStatistics {
         double allDigitalDollar = 0;
         double allDigitalStock = 0;
 
+        List<Integer> listDifficult = new ArrayList<>();
+
         //стандартная модель
         double velocity_of_money_dollar = 0;
         //моя модель
@@ -58,6 +60,7 @@ public class UtilsStatistics {
         System.out.println("calculate transactions dollar end stock");
         for (Block block : list) {
             uniqueMinersInDay.add(block.getMinerAddress());
+            listDifficult.add(block.getHashCompexity());
             for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
 
                 if(!dtoTransaction.getSender().equals(Seting.BASIS_ADDRESS)){
@@ -134,6 +137,8 @@ public class UtilsStatistics {
         int accountsSize = (int) balances.entrySet().stream()
                 .map(t->t.getValue().getDigitalDollarBalance() > 0 || t.getValue().getDigitalStockBalance() > 0)
                 .count();
+
+        int difficultMod = mode(listDifficult);
         Statistic statistic = new Statistic(
                 indexBlock,
                 thisPeriud,
@@ -153,10 +158,27 @@ public class UtilsStatistics {
                 uniqueMinerDaySize,
                 accountsSize,
                 medianBalanceDollar,
-                medianBalanceStock
+                medianBalanceStock,
+                difficultMod
 
         );
         return statistic;
     }
 
+    public static int mode(List<Integer> list) {
+        int maxValue = 0, maxCount = 0;
+
+        for (int i = 0; i < list.size(); ++i) {
+            int count = 0;
+            for (int j = 0; j < list.size(); ++j) {
+                if (list.get(j) == list.get(i)) ++count;
+            }
+            if (count > maxCount) {
+                maxCount = count;
+                maxValue = list.get(i);
+            }
+        }
+
+        return maxValue;
+    }
 }

@@ -42,6 +42,7 @@
         <p th:text="'all account balance upper zero: '+${el.uniqueAddressBalanceUpperZero}"/>
         <p th:text="'median balance dollar in accounts from period: '+${#numbers.formatDecimal(el.medianBalanceDollar, 1, 'COMMA', 16, 'POINT')}"/>
         <p th:text="'median balance stock in accounts from period: '+${#numbers.formatDecimal(el.medianBalanceStock, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'mode difficult: '+${el.difficultyMod}"/>
     </div>
 
 </div>

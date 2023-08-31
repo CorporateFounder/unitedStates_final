@@ -34,13 +34,32 @@ public class Statistic {
     private int uniqueAddressBalanceUpperZero;
     private double medianBalanceDollar;
     private double medianBalanceStock;
-    //сколько добыто цифровых долларов за день
+    private int difficultyMod;
 
 
     public Statistic() {
     }
 
-    public Statistic(int indexBlock, int periud, double allDigitalDollars, double allDigitalStocks, double velocity_of_money_dollar, double velocity_of_money_dollar_model2, double velocity_of_money_stock, double velocity_of_money_stock_model2, int transactions, int countDollarTransactions, int countStocktransactions, double sumTransactionsDollar, double sumTransactionsStock, double medianTransactionsDollar, double medianTransactionsStock, int uniqueMinerInDays, int uniqueAddressBalanceUpperZero, double medianBalanceDollar, double medianBalanceStock) {
+    public Statistic(int indexBlock,
+                     int periud,
+                     double allDigitalDollars,
+                     double allDigitalStocks,
+                     double velocity_of_money_dollar,
+                     double velocity_of_money_dollar_model2,
+                     double velocity_of_money_stock,
+                     double velocity_of_money_stock_model2,
+                     int transactions,
+                     int countDollarTransactions,
+                     int countStocktransactions,
+                     double sumTransactionsDollar,
+                     double sumTransactionsStock,
+                     double medianTransactionsDollar,
+                     double medianTransactionsStock,
+                     int uniqueMinerInDays,
+                     int uniqueAddressBalanceUpperZero,
+                     double medianBalanceDollar,
+                     double medianBalanceStock,
+                     int difficultyMod) {
         this.indexBlock = indexBlock;
         this.periud = periud;
         this.allDigitalDollars = allDigitalDollars;
@@ -60,5 +79,6 @@ public class Statistic {
         this.uniqueAddressBalanceUpperZero = uniqueAddressBalanceUpperZero;
         this.medianBalanceDollar = medianBalanceDollar;
         this.medianBalanceStock = medianBalanceStock;
+        this.difficultyMod = difficultyMod;
     }
 }
