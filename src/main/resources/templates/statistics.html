@@ -43,6 +43,7 @@
         <p th:text="'median balance dollar in accounts from period: '+${#numbers.formatDecimal(el.medianBalanceDollar, 1, 'COMMA', 16, 'POINT')}"/>
         <p th:text="'median balance stock in accounts from period: '+${#numbers.formatDecimal(el.medianBalanceStock, 1, 'COMMA', 16, 'POINT')}"/>
         <p th:text="'mode difficult: '+${el.difficultyMod}"/>
+        <p th:text="'increase in accounts of the current period, in relation to the previous one, in percent: '+${#numbers.formatDecimal(el.growthAccountPercent, 1, 'COMMA', 16, 'POINT')}"/>
     </div>
 
 </div>

@@ -50,7 +50,7 @@ public class StatisticsController {
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
 
-
+        Statistic prevStatistic = null;
         System.out.println("start statistics method");
         Map<String, Account> balances = new HashMap<>();
         List<Statistic> statistics = new ArrayList<>();
@@ -65,7 +65,17 @@ public class StatisticsController {
                         (int) (block.getIndex()- periud.getPeriud()),
                         (int) block.getIndex()+1);
                 Statistic statistic = UtilsStatistics.statistic(tempBlocks, balances, periud);
+                if (prevStatistic == null || prevStatistic.getUniqueAddressBalanceUpperZero() == 0){
+                    statistic.setGrowthAccountPercent(0);
+                }else {
+                    double percnet = ((double) statistic.getUniqueAddressBalanceUpperZero() -
+                            prevStatistic.getUniqueAddressBalanceUpperZero()) /
+                            (double) prevStatistic.getUniqueAddressBalanceUpperZero() * Seting.HUNDRED_PERCENT;
+                    statistic.setGrowthAccountPercent(percnet);
+                }
                 statistics.add(statistic);
+
+                prevStatistic = statistic;
             }
         }
 

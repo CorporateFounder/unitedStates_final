@@ -35,7 +35,7 @@ public class Statistic {
     private double medianBalanceDollar;
     private double medianBalanceStock;
     private int difficultyMod;
-
+    private double growthAccountPercent;
 
     public Statistic() {
     }
