@@ -25,6 +25,27 @@
     <button type="submit" class="btn btn-success">change miner address</button><br>
 </form>
 
+<h4 th:text="'number of threads: '+${pool}"/>
+
+<form action="/setPool" method="post">
+    <input type="text" name="setPool" placeholder="enter number of threads" class="form-control"><br>
+    <button type="submit" class="btn btn-success">change pool</button><br>
+</form>
+
+
+<h4 th:text="'multithreading enabled: '+${isOn}"/>
+<form action="/changeIsOn" method="post">
+
+
+    <h5>multithreading enabled YES (true) or NO (false)</h5>
+    <select  name="isMultiThread" class="form-control">
+        <option value="YES" >YES</option>
+        <option value="NO">NO</option>
+
+    </select><br>
+
+    <button type="submit" class="btn btn-success">Submit </button><br>
+</form>
 
 </div>
 

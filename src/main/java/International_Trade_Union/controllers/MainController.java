@@ -209,6 +209,27 @@ public class MainController {
     }
 
 
+    @PostMapping("/changeIsOn")
+    public String isOn(@RequestParam(value = "isMultiThread") String isMultiThread){
+        if(isMultiThread.equals("YES")){
+            Block.setMultiThread(true);
+        }else {
+            Block.setMultiThread(false);
+        }
+        return "redirect:/seting";
+    }
+    @PostMapping("/setPool")
+    public String setPool(@RequestParam(value = "setPool") String setPool){
+       int number = 10;
+
+        try{
+          number = Integer.valueOf(setPool);
+          Block.setThreadCount(number);
+       }catch(Exception e) {
+            e.printStackTrace();
+        }
+        return "redirect:/seting";
+    }
     @PostMapping("/setMinner")
     public String setMinnerAddress(@RequestParam(value = "setMinner") String setMinner, RedirectAttributes redirectAttrs){
 
@@ -222,6 +243,8 @@ public class MainController {
         BasisController.setMinDollarRewards(reward);
         return "redirect:/seting";
     }
+
+
 
 
     @GetMapping("about")
@@ -335,8 +358,12 @@ public class MainController {
     public String seting(Model model){
         model.addAttribute("title", "Settings");
 //        model.addAttribute("reward", "the reward that
-//        the miner must receive in order to add a transaction: " +
+//        the miner must receive in order to add a transaction.: " +
 //        BasisController.getMinDollarRewards());
+        System.out.println("pool: " + Block.getThreadCount());
+        System.out.println("isOn: " + Block.isMultiThread());
+        model.addAttribute("pool",Block.getThreadCount());
+        model.addAttribute("isOn", Block.isMultiThread());
         return "seting";
     }
 

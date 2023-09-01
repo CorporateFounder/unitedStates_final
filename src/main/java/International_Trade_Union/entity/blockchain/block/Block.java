@@ -23,8 +23,7 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 @JsonAutoDetect
@@ -32,7 +31,25 @@ import java.util.concurrent.atomic.AtomicReference;
 public final class Block implements Cloneable {
     private static long randomNumberProofStatic = 0;
     private static int INCREMENT_VALUE = 200;
-    private static int THREAD_COUNT = 5;
+    private static int THREAD_COUNT = 10;
+
+    private static boolean MULTI_THREAD = false;
+
+    public static int getThreadCount() {
+        return THREAD_COUNT;
+    }
+
+    public static void setThreadCount(int threadCount) {
+        THREAD_COUNT = threadCount;
+    }
+
+    public static boolean isMultiThread() {
+        return MULTI_THREAD;
+    }
+
+    public static void setMultiThread(boolean multiThread) {
+        MULTI_THREAD = multiThread;
+    }
 
     private List<DtoTransaction> dtoTransactions;
     private String previousHash;
@@ -63,7 +80,7 @@ public final class Block implements Cloneable {
         this.timestamp = Timestamp.from(Instant.now());
 //        this.timestamp = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         this.index = index;
-        this.hashBlock = findHash(hashCompexity);
+        this.hashBlock = chooseFindHash(hashCompexity, MULTI_THREAD);
 
     }
 
@@ -159,70 +176,98 @@ public final class Block implements Cloneable {
     public String jsonString() throws IOException {
         return UtilsJson.objToStringJson(this);
     }
-
-    public String findHashMulti(int hashComplexity) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
-        if (!verifyesTransSign()){
+    public String chooseFindHash(int hashCompexity, boolean choose) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        if(choose){
+            return findHashConcurrently(hashCompexity);
+        }else {
+            return findHash(hashCompexity);
+        }
+    }
+    public String findHashConcurrently(int hashComplexity)
+            throws IOException, NoSuchAlgorithmException, SignatureException,
+            NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+        if (!verifyesTransSign()) {
             throw new NotValidTransactionException();
         }
 
-        this.randomNumberProof = randomNumberProofStatic;
+        int valueRandomDifferent = 0;
+        this.randomNumberProof = randomNumberProofStatic + valueRandomDifferent;
         String hash = "";
 
         int size = UtilsStorage.getSize();
-        Timestamp previus = Timestamp.from(Instant.now());
+        Timestamp previousTimestamp = Timestamp.from(Instant.now());
 
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
-        AtomicReference<String> atomicHash = new AtomicReference<>("");
+        CompletionService<String> completionService = new ExecutorCompletionService<>(executorService);
 
-        while (true) {
-            this.randomNumberProof++;
 
-            Runnable miningTask = () -> {
-                try {
-                    BlockForHash block = new BlockForHash(this.dtoTransactions,
-                            this.previousHash, this.minerAddress, this.founderAddress,
-                            this.randomNumberProof, this.minerRewards, this.hashCompexity, this.timestamp, this.index);
-                    String currentHash = block.hashForTransaction();
+        for (int i = 0; i < THREAD_COUNT; i++) {
+            completionService.submit(() -> {
+                long tempRandomNumberProof = randomNumberProof;
+                while (true){
+                    tempRandomNumberProof++;
+                    BlockForHash block = new BlockForHash(this.dtoTransactions, this.previousHash,
+                            this.minerAddress, this.founderAddress, this.randomNumberProof,
+                            this.minerRewards, this.hashCompexity, this.timestamp, this.index);
+                    System.out.printf("Trying %d to find a block: ", tempRandomNumberProof);
+                    String hashTemp =  block.hashForTransaction();
 
-                    if (UtilsUse.hashComplexity(currentHash.substring(0, hashComplexity), hashComplexity)) {
-                        atomicHash.set(currentHash);
+                    if (UtilsUse.hashComplexity(hashTemp.substring(0, hashComplexity), hashComplexity)) {
+                        System.out.println("Block found: Hash: " + hashTemp);
+                        this.randomNumberProof = tempRandomNumberProof;
                         executorService.shutdownNow();
+                        return hashTemp;
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-            };
 
-            executorService.execute(miningTask);
+            });
 
-            Timestamp actualTime = Timestamp.from(Instant.now());
-            Long result = actualTime.toInstant().until(previus.toInstant(), ChronoUnit.SECONDS);
+            valueRandomDifferent += INCREMENT_VALUE;
+        }
+        while (true) {
 
-            if (result > 10 || result < -10) {
-                previus = actualTime;
+
+
+
+            Timestamp currentTimestamp = Timestamp.from(Instant.now());
+            long timeDifference = currentTimestamp.toInstant().until(previousTimestamp.toInstant(), ChronoUnit.SECONDS);
+
+            if (timeDifference > 10 || timeDifference < -10) {
+                previousTimestamp = currentTimestamp;
                 int tempSize = UtilsStorage.getSize();
                 if (size < tempSize) {
                     Mining.miningIsObsolete = true;
-                    System.out.println("someone mined a block before you, the search for this block is no longer relevant and outdated: " + atomicHash.get());
-                    return atomicHash.get();
+                    System.out.println("Someone mined a block before you. The search for this block is no longer relevant and outdated: " + hash);
+                    executorService.shutdownNow();
+                    return hash;
                 }
             }
 
             if (Mining.isIsMiningStop()) {
-                System.out.println("mining will be stopped");
-                return atomicHash.get();
+                System.out.println("Mining will be stopped");
+                executorService.shutdownNow();
+                return hash;
             }
 
-            if (!atomicHash.get().isEmpty()) {
-                System.out.println("block found: hash: " + atomicHash.get());
-                break;
+            for (int i = 0; i < THREAD_COUNT; i++) {
+                try {
+                    Future<String> future = completionService.poll(100, TimeUnit.MILLISECONDS);
+                    if (future != null) {
+                        hash = future.get();
+                        if (UtilsUse.hashComplexity(hash.substring(0, hashComplexity), hashComplexity)) {
+                            System.out.println("Block found: Hash: " + hash);
+                            executorService.shutdownNow();
+                            return hash;
+                        }
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    // Обработка исключений
+                }
             }
+
         }
-
-        executorService.shutdown();
-
-        return atomicHash.get();
     }
+
     //TODO
     public String findHash(int hashCoplexity) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
         if (!verifyesTransSign()){
