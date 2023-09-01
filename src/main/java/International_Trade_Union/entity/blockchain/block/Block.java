@@ -195,16 +195,20 @@ public final class Block implements Cloneable {
         String hash = "";
 
         int size = UtilsStorage.getSize();
-        Timestamp previousTimestamp = Timestamp.from(Instant.now());
+
 
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
         CompletionService<String> completionService = new ExecutorCompletionService<>(executorService);
 
 
         for (int i = 0; i < THREAD_COUNT; i++) {
+
             completionService.submit(() -> {
                 long tempRandomNumberProof = randomNumberProof;
+                Timestamp previousTimestamp = Timestamp.from(Instant.now());
+
                 while (true){
+
                     tempRandomNumberProof++;
                     BlockForHash block = new BlockForHash(this.dtoTransactions, this.previousHash,
                             this.minerAddress, this.founderAddress, this.randomNumberProof,
@@ -215,6 +219,26 @@ public final class Block implements Cloneable {
                     if (UtilsUse.hashComplexity(hashTemp.substring(0, hashComplexity), hashComplexity)) {
                         System.out.println("Block found: Hash: " + hashTemp);
                         this.randomNumberProof = tempRandomNumberProof;
+                        executorService.shutdownNow();
+                        return hashTemp;
+                    }
+
+                    Timestamp currentTimestamp = Timestamp.from(Instant.now());
+                    long timeDifference = currentTimestamp.toInstant().until(previousTimestamp.toInstant(), ChronoUnit.SECONDS);
+
+                    if (timeDifference > 10 || timeDifference < -10) {
+                        previousTimestamp = currentTimestamp;
+                        int tempSize = UtilsStorage.getSize();
+                        if (size < tempSize) {
+                            Mining.miningIsObsolete = true;
+                            System.out.println("Someone mined a block before you. The search for this block is no longer relevant and outdated: " + hashTemp);
+                            executorService.shutdownNow();
+                            return hashTemp;
+                        }
+                    }
+
+                    if (Mining.isIsMiningStop()) {
+                        System.out.println("Mining will be stopped");
                         executorService.shutdownNow();
                         return hashTemp;
                     }
@@ -229,25 +253,7 @@ public final class Block implements Cloneable {
 
 
 
-            Timestamp currentTimestamp = Timestamp.from(Instant.now());
-            long timeDifference = currentTimestamp.toInstant().until(previousTimestamp.toInstant(), ChronoUnit.SECONDS);
 
-            if (timeDifference > 10 || timeDifference < -10) {
-                previousTimestamp = currentTimestamp;
-                int tempSize = UtilsStorage.getSize();
-                if (size < tempSize) {
-                    Mining.miningIsObsolete = true;
-                    System.out.println("Someone mined a block before you. The search for this block is no longer relevant and outdated: " + hash);
-                    executorService.shutdownNow();
-                    return hash;
-                }
-            }
-
-            if (Mining.isIsMiningStop()) {
-                System.out.println("Mining will be stopped");
-                executorService.shutdownNow();
-                return hash;
-            }
 
             for (int i = 0; i < THREAD_COUNT; i++) {
                 try {
