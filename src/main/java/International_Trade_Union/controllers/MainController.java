@@ -205,6 +205,8 @@ public class MainController {
             model.addAttribute("demerage", "now is the day: " + day);
         }
 
+        Block.setMultiThread(true);
+
         return "home";
     }
 
