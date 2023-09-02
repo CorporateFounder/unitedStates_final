@@ -33,7 +33,7 @@ public final class Block implements Cloneable {
     private static int INCREMENT_VALUE = 200;
     private static int THREAD_COUNT = 10;
 
-
+    private static boolean MULTI_THREAD = false;
 
     public static int getThreadCount() {
         return THREAD_COUNT;
@@ -43,7 +43,13 @@ public final class Block implements Cloneable {
         THREAD_COUNT = threadCount;
     }
 
+    public static boolean isMultiThread() {
+        return MULTI_THREAD;
+    }
 
+    public static void setMultiThread(boolean multiThread) {
+        MULTI_THREAD = multiThread;
+    }
 
     private List<DtoTransaction> dtoTransactions;
     private String previousHash;
@@ -74,7 +80,7 @@ public final class Block implements Cloneable {
         this.timestamp = Timestamp.from(Instant.now());
 //        this.timestamp = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         this.index = index;
-        this.hashBlock = findHashConcurrently(hashCompexity);
+        this.hashBlock = chooseFindHash(hashCompexity, MULTI_THREAD);
 
     }
 
@@ -233,6 +239,7 @@ public final class Block implements Cloneable {
                         }
                     }
 
+
                     if (Mining.isIsMiningStop()) {
                         System.out.println("Mining will be stopped");
                         executorService.shutdownNow();
@@ -247,6 +254,9 @@ public final class Block implements Cloneable {
 
         stop:
         while (true){
+            if(Mining.isIsMiningStop() || Mining.miningIsObsolete){
+                break stop;
+            }
             for (int i = 0; i < THREAD_COUNT; i++) {
                 try {
                     Future<String> future = completionService.poll(100, TimeUnit.MILLISECONDS);
@@ -255,9 +265,7 @@ public final class Block implements Cloneable {
                         if (UtilsUse.hashComplexity(hash.substring(0, hashComplexity), hashComplexity)) {
                             System.out.println("Block found: Hash: " + hash);
                             executorService.shutdownNow();
-
                             return hash;
-
                         }
                     }
                 } catch (InterruptedException | ExecutionException e) {
@@ -265,10 +273,8 @@ public final class Block implements Cloneable {
                     e.printStackTrace();
                 }
             }
-            if(Mining.isIsMiningStop() || Mining.miningIsObsolete){
-                break stop;
-            }
         }
+
 
 
         return "0";
