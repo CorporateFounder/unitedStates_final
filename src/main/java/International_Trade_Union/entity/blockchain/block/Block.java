@@ -248,7 +248,7 @@ public final class Block implements Cloneable {
 
             valueRandomDifferent += INCREMENT_VALUE;
         }
-        while (true) {
+
 
 
 
@@ -268,10 +268,11 @@ public final class Block implements Cloneable {
                     }
                 } catch (InterruptedException | ExecutionException e) {
                     // Обработка исключений
+                    e.printStackTrace();
                 }
             }
 
-        }
+        return "none";
     }
 
     //TODO
