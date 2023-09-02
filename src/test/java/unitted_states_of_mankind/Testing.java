@@ -53,8 +53,8 @@ public class Testing {
 
     @Test
     public void testSorted(){
-        Directors directors = new Directors();
-        System.out.println(directors.isElectedByFractions(NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString()));
+        int availableProcessors = Runtime.getRuntime().availableProcessors();
+        System.out.println("availableProcessors: " + availableProcessors);
     }
 
     @Test

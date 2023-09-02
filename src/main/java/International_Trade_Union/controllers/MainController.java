@@ -209,15 +209,6 @@ public class MainController {
     }
 
 
-    @PostMapping("/changeIsOn")
-    public String isOn(@RequestParam(value = "isMultiThread") String isMultiThread){
-        if(isMultiThread.equals("YES")){
-            Block.setMultiThread(true);
-        }else {
-            Block.setMultiThread(false);
-        }
-        return "redirect:/seting";
-    }
     @PostMapping("/setPool")
     public String setPool(@RequestParam(value = "setPool") String setPool){
        int number = 10;
@@ -361,9 +352,9 @@ public class MainController {
 //        the miner must receive in order to add a transaction.: " +
 //        BasisController.getMinDollarRewards());
         System.out.println("pool: " + Block.getThreadCount());
-        System.out.println("isOn: " + Block.isMultiThread());
+
         model.addAttribute("pool",Block.getThreadCount());
-        model.addAttribute("isOn", Block.isMultiThread());
+
         return "seting";
     }
 

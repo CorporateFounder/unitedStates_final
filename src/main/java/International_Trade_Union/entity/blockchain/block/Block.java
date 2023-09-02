@@ -33,7 +33,7 @@ public final class Block implements Cloneable {
     private static int INCREMENT_VALUE = 200;
     private static int THREAD_COUNT = 10;
 
-    private static boolean MULTI_THREAD = false;
+
 
     public static int getThreadCount() {
         return THREAD_COUNT;
@@ -43,13 +43,7 @@ public final class Block implements Cloneable {
         THREAD_COUNT = threadCount;
     }
 
-    public static boolean isMultiThread() {
-        return MULTI_THREAD;
-    }
 
-    public static void setMultiThread(boolean multiThread) {
-        MULTI_THREAD = multiThread;
-    }
 
     private List<DtoTransaction> dtoTransactions;
     private String previousHash;
@@ -80,7 +74,7 @@ public final class Block implements Cloneable {
         this.timestamp = Timestamp.from(Instant.now());
 //        this.timestamp = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         this.index = index;
-        this.hashBlock = chooseFindHash(hashCompexity, MULTI_THREAD);
+        this.hashBlock = findHashConcurrently(hashCompexity);
 
     }
 
@@ -251,23 +245,31 @@ public final class Block implements Cloneable {
             valueRandomDifferent += INCREMENT_VALUE;
         }
 
+        stop:
+        while (true){
+            for (int i = 0; i < THREAD_COUNT; i++) {
+                try {
+                    Future<String> future = completionService.poll(100, TimeUnit.MILLISECONDS);
+                    if (future != null) {
+                        hash = future.get();
+                        if (UtilsUse.hashComplexity(hash.substring(0, hashComplexity), hashComplexity)) {
+                            System.out.println("Block found: Hash: " + hash);
+                            executorService.shutdownNow();
 
-        for (int i = 0; i < THREAD_COUNT; i++) {
-            try {
-                Future<String> future = completionService.poll(100, TimeUnit.MILLISECONDS);
-                if (future != null) {
-                    hash = future.get();
-                    if (UtilsUse.hashComplexity(hash.substring(0, hashComplexity), hashComplexity)) {
-                        System.out.println("Block found: Hash: " + hash);
-                        executorService.shutdownNow();
-                        return hash;
+                            return hash;
+
+                        }
                     }
+                } catch (InterruptedException | ExecutionException e) {
+                    // Обработка исключений
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException | ExecutionException e) {
-                // Обработка исключений
-                e.printStackTrace();
+            }
+            if(Mining.isIsMiningStop() || Mining.miningIsObsolete){
+                break stop;
             }
         }
+
 
         return "0";
     }
