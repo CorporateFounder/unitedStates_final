@@ -99,7 +99,7 @@ public final class Block implements Cloneable {
 
     @JsonAutoDetect
     @Data
-    private class BlockForHash{
+    private class BlockForHash {
         private List<DtoTransaction> transactions;
         private String previousHash;
         private String minerAddress;
@@ -150,20 +150,20 @@ public final class Block implements Cloneable {
 
     public String hashForBlockchain()
             throws
-            IOException{
+            IOException {
         return this.hashBlock;
     }
 
 
     public boolean verifyesTransSign() throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
         for (DtoTransaction dtoTransaction : dtoTransactions) {
-            if(!dtoTransaction.verify())
+            if (!dtoTransaction.verify())
                 return false;
         }
         return true;
     }
 
-    private double miningRewardsCount(){
+    private double miningRewardsCount() {
         double rewards = 0.0;
         for (DtoTransaction dtoTransaction : dtoTransactions) {
 
@@ -176,13 +176,15 @@ public final class Block implements Cloneable {
     public String jsonString() throws IOException {
         return UtilsJson.objToStringJson(this);
     }
+
     public String chooseFindHash(int hashCompexity, boolean choose) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        if(choose){
+        if (choose) {
             return findHashConcurrently(hashCompexity);
-        }else {
+        } else {
             return findHash(hashCompexity);
         }
     }
+
     public String findHashConcurrently(int hashComplexity)
             throws IOException, NoSuchAlgorithmException, SignatureException,
             NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
@@ -207,14 +209,14 @@ public final class Block implements Cloneable {
                 long tempRandomNumberProof = randomNumberProof;
                 Timestamp previousTimestamp = Timestamp.from(Instant.now());
 
-                while (true){
+                while (true) {
 
                     tempRandomNumberProof++;
                     BlockForHash block = new BlockForHash(this.dtoTransactions, this.previousHash,
                             this.minerAddress, this.founderAddress, this.randomNumberProof,
                             this.minerRewards, this.hashCompexity, this.timestamp, this.index);
                     System.out.printf("Trying %d to find a block: ", tempRandomNumberProof);
-                    String hashTemp =  block.hashForTransaction();
+                    String hashTemp = block.hashForTransaction();
 
                     if (UtilsUse.hashComplexity(hashTemp.substring(0, hashComplexity), hashComplexity)) {
                         System.out.println("Block found: Hash: " + hashTemp);
@@ -250,34 +252,29 @@ public final class Block implements Cloneable {
         }
 
 
-
-
-
-
-
-            for (int i = 0; i < THREAD_COUNT; i++) {
-                try {
-                    Future<String> future = completionService.poll(100, TimeUnit.MILLISECONDS);
-                    if (future != null) {
-                        hash = future.get();
-                        if (UtilsUse.hashComplexity(hash.substring(0, hashComplexity), hashComplexity)) {
-                            System.out.println("Block found: Hash: " + hash);
-                            executorService.shutdownNow();
-                            return hash;
-                        }
+        for (int i = 0; i < THREAD_COUNT; i++) {
+            try {
+                Future<String> future = completionService.poll(100, TimeUnit.MILLISECONDS);
+                if (future != null) {
+                    hash = future.get();
+                    if (UtilsUse.hashComplexity(hash.substring(0, hashComplexity), hashComplexity)) {
+                        System.out.println("Block found: Hash: " + hash);
+                        executorService.shutdownNow();
+                        return hash;
                     }
-                } catch (InterruptedException | ExecutionException e) {
-                    // Обработка исключений
-                    e.printStackTrace();
                 }
+            } catch (InterruptedException | ExecutionException e) {
+                // Обработка исключений
+                e.printStackTrace();
             }
+        }
 
-        return "none";
+        return "0";
     }
 
     //TODO
     public String findHash(int hashCoplexity) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
-        if (!verifyesTransSign()){
+        if (!verifyesTransSign()) {
             throw new NotValidTransactionException();
         }
 
@@ -286,7 +283,7 @@ public final class Block implements Cloneable {
         //используется для определения кто-нибудь уже успел добыть блок.
         int size = UtilsStorage.getSize();
         Timestamp previus = Timestamp.from(Instant.now());
-        while (true){
+        while (true) {
             //перебирает число nonce чтобы найти хеш
             this.randomNumberProof++;
 
@@ -300,11 +297,11 @@ public final class Block implements Cloneable {
             Timestamp actualTime = Timestamp.from(Instant.now());
             Long result = actualTime.toInstant().until(previus.toInstant(), ChronoUnit.SECONDS);
 //          каждые десять секунд проверяем, что время между текущим и предыдущим запросом не больше 10
-            if(result > 10 || result < -10){
+            if (result > 10 || result < -10) {
                 previus = actualTime;
                 //проверяет устаревание майнинга, если устарел - прекращает майнинг
                 int tempSize = UtilsStorage.getSize();
-                if(size < tempSize){
+                if (size < tempSize) {
                     Mining.miningIsObsolete = true;
                     System.out.println("someone mined a block before you, the search for this block is no longer relevant and outdated: " + hash);
                     return hash;
@@ -313,15 +310,14 @@ public final class Block implements Cloneable {
             }
 
             //если true, то прекращаем майнинг
-            if(Mining.isIsMiningStop()){
+            if (Mining.isIsMiningStop()) {
                 System.out.println("mining will be stopped");
                 return hash;
 
             }
 
             //если true, то прекращаем майнинг. Правильный блок найден
-            if(UtilsUse.hashComplexity(hash.substring(0, hashCoplexity), hashCoplexity))
-            {
+            if (UtilsUse.hashComplexity(hash.substring(0, hashCoplexity), hashCoplexity)) {
                 System.out.println("block found: hash: " + hash);
                 break;
             }
