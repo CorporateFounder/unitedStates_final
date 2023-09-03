@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Data
 public final class Block implements Cloneable {
     private static long randomNumberProofStatic = 0;
-    private static int INCREMENT_VALUE = 200;
+    private static int INCREMENT_VALUE = 2000;
     private static int THREAD_COUNT = 10;
 
     private static boolean MULTI_THREAD = false;
@@ -193,7 +193,7 @@ public final class Block implements Cloneable {
         }
 
         int valueRandomDifferent = 0;
-        this.randomNumberProof = randomNumberProofStatic + valueRandomDifferent;
+
         String hash = "";
 
         int size = UtilsStorage.getSize();
@@ -204,7 +204,7 @@ public final class Block implements Cloneable {
 
 
         for (int i = 0; i < THREAD_COUNT; i++) {
-
+            this.randomNumberProof = randomNumberProofStatic + valueRandomDifferent;
             completionService.submit(() -> {
                 long tempRandomNumberProof = randomNumberProof;
                 Timestamp previousTimestamp = Timestamp.from(Instant.now());
@@ -215,7 +215,7 @@ public final class Block implements Cloneable {
                     BlockForHash block = new BlockForHash(this.dtoTransactions, this.previousHash,
                             this.minerAddress, this.founderAddress, this.randomNumberProof,
                             this.minerRewards, this.hashCompexity, this.timestamp, this.index);
-                    System.out.printf("Trying %d to find a block: ", tempRandomNumberProof);
+                    System.out.printf("Try %d: ", tempRandomNumberProof);
                     String hashTemp = block.hashForTransaction();
 
                     if (UtilsUse.hashComplexity(hashTemp.substring(0, hashComplexity), hashComplexity)) {

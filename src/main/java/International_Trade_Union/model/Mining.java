@@ -181,6 +181,8 @@ public class Mining {
             }
         }
         int difficulty = UtilsBlock.difficulty(blockchain, blockGenerationInterval, DIFFICULTY_ADJUSTMENT_INTERVAL);
+
+//       difficulty = 3; //test
         Block prevBlock = blockchain.get(blockchain.size()-1);
         //доход майнера
         double minerRewards = Seting.DIGITAL_DOLLAR_REWARDS_BEFORE;
