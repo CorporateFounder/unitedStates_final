@@ -80,7 +80,7 @@ public final class Block implements Cloneable {
         this.timestamp = Timestamp.from(Instant.now());
 //        this.timestamp = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         this.index = index;
-        this.hashBlock = findHash(hashCompexity);
+        this.hashBlock = chooseFindHash(hashCompexity, MULTI_THREAD);
 
     }
 
@@ -215,8 +215,7 @@ public final class Block implements Cloneable {
                     BlockForHash block = new BlockForHash(this.dtoTransactions, this.previousHash,
                             this.minerAddress, this.founderAddress, tempRandomNumberProof,
                             this.minerRewards, this.hashCompexity, this.timestamp, this.index);
-//                    System.out.printf("Try %d: com %d: %s ", tempRandomNumberProof, hashComplexity,
-//                            Thread.currentThread().getName());
+
 
                     String hashTemp = block.hashForTransaction();
 
@@ -232,6 +231,8 @@ public final class Block implements Cloneable {
                     long timeDifference = currentTimestamp.toInstant().until(previousTimestamp.toInstant(), ChronoUnit.SECONDS);
 
                     if (timeDifference > 10 || timeDifference < -10) {
+                        System.out.printf("Try %d: com %d: %s ", tempRandomNumberProof, hashComplexity,
+                                Thread.currentThread().getName());
                         previousTimestamp = currentTimestamp;
                         int tempSize = UtilsStorage.getSize();
                         if (size < tempSize) {
@@ -268,14 +269,13 @@ public final class Block implements Cloneable {
                     System.out.println("future: " + future);
                     if (future != null) {
                         hash = future.get();
+                        if(hash == null || hash.isEmpty())
+                            continue;
                         if (UtilsUse.hashComplexity(hash.substring(0, hashComplexity), hashComplexity)
                         || Mining.miningIsObsolete || Mining.isIsMiningStop()) {
                             System.out.println("Block found: Hash: " + hash);
                             executorService.shutdownNow();
-
-
-
-                            return hash;
+                            break stop;
                         }
                     }
 
@@ -294,7 +294,7 @@ public final class Block implements Cloneable {
             throw new RuntimeException(e);
         }
 
-        return "0";
+        return hash;
     }
 
     //TODO
