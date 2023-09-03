@@ -8,7 +8,6 @@ import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
-import International_Trade_Union.governments.Director;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.setings.Seting;
@@ -23,8 +22,6 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static International_Trade_Union.utils.UtilsBalance.calculateBalanceFromLaw;
 
 public class Mining {
     public static boolean miningIsObsolete = false;
@@ -194,7 +191,7 @@ public class Mining {
         //доход основателя
         double founderReward = Seting.DIGITAL_DOLLAR_FOUNDER_REWARDS_BEFORE;
         double founderDigigtalReputationReward = Seting.DIGITAL_REPUTATION_FOUNDER_REWARDS_BEFORE;
-        if(index > Seting.CHECK_FOUNDER_REWARD_INDEX){
+        if(index > Seting.CHECK_UPDATING_VERSION){
             if(difficulty >= 8){
                 founderReward = difficulty;
                 founderDigigtalReputationReward = digitalReputationForMiner;
@@ -238,7 +235,7 @@ public class Mining {
         BasisController.setDifficultExpected(difficulty);
         System.out.println("Mining: miningBlock: difficulty: " + difficulty + " index: " + index);
 
-        if(index > Seting.CHECK_DIFFICULTY_BLOCK_2) {
+        if(index > Seting.CHECK_UPDATING_VERSION) {
             minerRewards = difficulty * Seting.MONEY;
             digitalReputationForMiner= difficulty * Seting.MONEY;
             minerRewards += index%2 == 0 ? 0 : 1;

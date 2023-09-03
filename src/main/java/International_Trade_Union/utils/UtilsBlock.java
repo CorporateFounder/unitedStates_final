@@ -1,7 +1,6 @@
 package International_Trade_Union.utils;
 
 
-import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
@@ -9,7 +8,6 @@ import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.setings.Seting;
-import org.springframework.http.converter.json.GsonBuilderUtils;
 
 
 import java.io.*;
@@ -199,13 +197,6 @@ public class UtilsBlock {
 
             difficulty = UtilsDIfficult.getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
             //более умеренная модель сложности
-            if (latestBlock.getIndex() - 20 > Seting.CHECK_DIFFICULTY_INDEX && latestBlock.getIndex() < Seting.CHECK_DIFFICULTY_BLOCK_2) {
-                difficulty = UtilsDIfficult.difficultyBing(blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
-            } else if (latestBlock.getIndex() > Seting.CHECK_DIFFICULTY_BLOCK_2) {
-                difficulty = UtilsDIfficult.getAdjustedDifficulty2(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
-            }
-
-
 
 
         } else {
@@ -245,7 +236,7 @@ public class UtilsBlock {
             if (transaction.verify() && transaction.getSender().equals(Seting.BASIS_ADDRESS)) {
                 double minerReward = Seting.DIGITAL_DOLLAR_REWARDS_BEFORE;
                 double minerPowerReward = Seting.DIGITAL_STOCK_REWARDS_BEFORE;
-                if(thisBlock.getIndex() > Seting.CHECK_DIFFICULTY_BLOCK_2) {
+                if(thisBlock.getIndex() > Seting.CHECK_UPDATING_VERSION) {
                     minerReward = thisBlock.getHashCompexity() * Seting.MONEY;
                     minerPowerReward = thisBlock.getHashCompexity() * Seting.MONEY;
                     minerReward += thisBlock.getIndex()%2 == 0 ? 0 : 1;
@@ -274,7 +265,7 @@ public class UtilsBlock {
                 if (transaction.getSender().equals(Seting.BASIS_ADDRESS)
                         && transaction.getCustomer().equals(addressFounder)) {
                     countBasisSendFounder += 1;
-                    if(thisBlock.getIndex() > Seting.CHECK_FOUNDER_REWARD_INDEX){
+                    if(thisBlock.getIndex() > Seting.CHECK_UPDATING_VERSION){
                         if(thisBlock.getHashCompexity() >= 8){
                             if(transaction.getDigitalDollar() != thisBlock.getHashCompexity() ||
                                     thisBlock.getHashCompexity() != transaction.getDigitalStockBalance()){
@@ -331,7 +322,7 @@ public class UtilsBlock {
         }
 
 
-        if (thisBlock.getIndex() > Seting.CHECK_DIFFICULTY_INDEX) {
+        if (thisBlock.getIndex() > Seting.CHECK_UPDATING_VERSION) {
 
             int diff = UtilsBlock.difficulty(lastBlock, Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
             if (thisBlock.getHashCompexity() != diff) {
@@ -350,7 +341,7 @@ public class UtilsBlock {
         }
 
 
-        if (thisBlock.getIndex() > Seting.CHECK_DIFFICULTY_BLOCK_2){
+        if (thisBlock.getIndex() > Seting.CHECK_UPDATING_VERSION){
             if (previusblock.getMinerAddress().equals(thisBlock.getMinerAddress())) {
                 System.out.println("two times in a row the same address cannot mine a block, you need to alternate");
                 return false;
