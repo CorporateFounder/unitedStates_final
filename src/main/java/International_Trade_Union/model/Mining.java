@@ -28,7 +28,7 @@ import static International_Trade_Union.utils.UtilsBalance.calculateBalanceFromL
 
 public class Mining {
     public static boolean miningIsObsolete = false;
-    private static boolean isMiningStop = false;
+    private static volatile boolean isMiningStop = false;
     public static Blockchain getBlockchain(String filename, BlockchainFactoryEnum factoryEnum) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
         List<Block> blocks = UtilsBlock.readLineObject(filename);
@@ -45,7 +45,8 @@ public class Mining {
         return isMiningStop;
     }
 
-    public static void setIsMiningStop(boolean isMiningStop) {
+    public static synchronized void setIsMiningStop(boolean isMiningStop) {
+
         Mining.isMiningStop = isMiningStop;
     }
 
@@ -182,8 +183,10 @@ public class Mining {
         }
         int difficulty = UtilsBlock.difficulty(blockchain, blockGenerationInterval, DIFFICULTY_ADJUSTMENT_INTERVAL);
 
-//       difficulty = 3; //test
+
         Block prevBlock = blockchain.get(blockchain.size()-1);
+
+
         //доход майнера
         double minerRewards = Seting.DIGITAL_DOLLAR_REWARDS_BEFORE;
         double digitalReputationForMiner = Seting.DIGITAL_STOCK_REWARDS_BEFORE;

@@ -1200,11 +1200,13 @@ public class BasisController {
                 if (Integer.valueOf(sizeStr) > 0)
                     size = Integer.valueOf(sizeStr);
                 System.out.println(":BasisController: send: local size: " + blocks_current_size + " global size: " + size);
-                if (size > blocks.size()) {
-                    System.out.println(":your local chain less");
+                if (size > blocks_current_size) {
+                    System.out.println(":your local chain less: current: " + blocks_current_size + " global: " + size);
                     return -1;
                 }
-                List<Block> fromToTempBlock = blocks.subList(size, blocks_current_size);
+//                List<Block> fromToTempBlock = blocks.subList(size, blocks_current_size);
+                List<Block> fromToTempBlock = new ArrayList<>();
+                fromToTempBlock.addAll(blocks);
                 SendBlocksEndInfo infoBlocks = new SendBlocksEndInfo(Seting.VERSION, fromToTempBlock);
                 String jsonFromTo = UtilsJson.objToStringJson(infoBlocks);
                 //if the current blockchain is larger than the storage, then
@@ -1459,7 +1461,7 @@ public class BasisController {
                 System.out.println("mining will be stopped");
                 return "ok";
             }
-            System.out.println("BasisController: finish mine:");
+            System.out.println("BasisController: finish mine:" + block.getIndex());
 
             //нужна для корректировки сложности
             int diff = Seting.DIFFICULTY_ADJUSTMENT_INTERVAL;
@@ -1496,12 +1498,13 @@ public class BasisController {
                     System.out.println("wrong validation block: " + validationTesting);
                     System.out.println("index block: " + block.getIndex());
                     text = "wrong validation";
+
                 }
                 testingValidationsBlock.add(block.clone());
             }
 
 
-
+            System.out.println("block to send: " + block.getIndex());
             List<Block> sends = new ArrayList<>();
             sends.add(block);
             sendAllBlocksToStorage(sends);

@@ -18,10 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SignatureException;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -53,8 +51,40 @@ public class Testing {
 
     @Test
     public void testSorted(){
-        int availableProcessors = Runtime.getRuntime().availableProcessors();
-        System.out.println("availableProcessors: " + availableProcessors);
+        // Изначальное значение хэш рейта
+        long hashRate = 1; // Начинаем с 1 H/s
+
+        // Вычисление SHA-256 хешей
+        try {
+            MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+
+            // Пример вычисления хеша строки "Hello, World!"
+            String input = "Hello, World!";
+            byte[] inputBytes = input.getBytes(StandardCharsets.UTF_8);
+
+            long startTime = System.currentTimeMillis();
+            long elapsedTime = 0;
+
+            // Увеличиваем хэш рейт до тех пор, пока время выполнения цикла не превысит одну секунду
+            while (elapsedTime < 1000) {
+                long numberOfHashes = hashRate;
+
+                for (long i = 0; i < numberOfHashes; i++) {
+                    sha256.digest(inputBytes);
+                }
+
+                long endTime = System.currentTimeMillis();
+                elapsedTime = endTime - startTime;
+
+                // Увеличиваем хэш рейт в 10 раз для следующей итерации
+                hashRate *= 2;
+            }
+
+            System.out.println("Количество хешей SHA-256, которые может перебирать один поток процессора в одну секунду: " + (hashRate / 10));
+            System.out.println("Время, затраченное на вычисление хешей: " + elapsedTime + " миллисекунд");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test

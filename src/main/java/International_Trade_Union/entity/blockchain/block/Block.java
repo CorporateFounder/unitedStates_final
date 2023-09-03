@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Data
 public final class Block implements Cloneable {
     private static long randomNumberProofStatic = 0;
-    private static int INCREMENT_VALUE = 2000;
+    private static int INCREMENT_VALUE = 1677721;
     private static int THREAD_COUNT = 10;
 
     private static boolean MULTI_THREAD = false;
@@ -80,7 +80,7 @@ public final class Block implements Cloneable {
         this.timestamp = Timestamp.from(Instant.now());
 //        this.timestamp = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         this.index = index;
-        this.hashBlock = chooseFindHash(hashCompexity, MULTI_THREAD);
+        this.hashBlock = findHash(hashCompexity);
 
     }
 
@@ -213,15 +213,18 @@ public final class Block implements Cloneable {
 
                     tempRandomNumberProof++;
                     BlockForHash block = new BlockForHash(this.dtoTransactions, this.previousHash,
-                            this.minerAddress, this.founderAddress, this.randomNumberProof,
+                            this.minerAddress, this.founderAddress, tempRandomNumberProof,
                             this.minerRewards, this.hashCompexity, this.timestamp, this.index);
-                    System.out.printf("Try %d: ", tempRandomNumberProof);
+//                    System.out.printf("Try %d: com %d: %s ", tempRandomNumberProof, hashComplexity,
+//                            Thread.currentThread().getName());
+
                     String hashTemp = block.hashForTransaction();
 
                     if (UtilsUse.hashComplexity(hashTemp.substring(0, hashComplexity), hashComplexity)) {
-                        System.out.println("Block found: Hash: " + hashTemp);
+                        System.out.println("Block found: Hash: " + hashTemp + ": " + Thread.currentThread().getName());
+//
                         this.randomNumberProof = tempRandomNumberProof;
-                        executorService.shutdownNow();
+
                         return hashTemp;
                     }
 
@@ -233,8 +236,10 @@ public final class Block implements Cloneable {
                         int tempSize = UtilsStorage.getSize();
                         if (size < tempSize) {
                             Mining.miningIsObsolete = true;
+//
                             System.out.println("Someone mined a block before you. The search for this block is no longer relevant and outdated: " + hashTemp);
-                            executorService.shutdownNow();
+//
+
                             return hashTemp;
                         }
                     }
@@ -242,7 +247,7 @@ public final class Block implements Cloneable {
 
                     if (Mining.isIsMiningStop()) {
                         System.out.println("Mining will be stopped");
-                        executorService.shutdownNow();
+//
                         return hashTemp;
                     }
                 }
@@ -260,14 +265,21 @@ public final class Block implements Cloneable {
             for (int i = 0; i < THREAD_COUNT; i++) {
                 try {
                     Future<String> future = completionService.poll(100, TimeUnit.MILLISECONDS);
+                    System.out.println("future: " + future);
                     if (future != null) {
                         hash = future.get();
-                        if (UtilsUse.hashComplexity(hash.substring(0, hashComplexity), hashComplexity)) {
+                        if (UtilsUse.hashComplexity(hash.substring(0, hashComplexity), hashComplexity)
+                        || Mining.miningIsObsolete || Mining.isIsMiningStop()) {
                             System.out.println("Block found: Hash: " + hash);
                             executorService.shutdownNow();
+
+
+
                             return hash;
                         }
                     }
+
+
                 } catch (InterruptedException | ExecutionException e) {
                     // Обработка исключений
                     e.printStackTrace();
@@ -276,7 +288,11 @@ public final class Block implements Cloneable {
             
         }
 
-
+        try {
+            executorService.awaitTermination(600, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         return "0";
     }
