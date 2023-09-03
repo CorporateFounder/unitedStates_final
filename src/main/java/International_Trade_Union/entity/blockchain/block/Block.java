@@ -30,8 +30,10 @@ import java.util.concurrent.atomic.AtomicReference;
 @Data
 public final class Block implements Cloneable {
     private static long randomNumberProofStatic = 0;
-    private static int INCREMENT_VALUE = 1677721;
+    private static int INCREMENT_VALUE = 50000;
     private static int THREAD_COUNT = 10;
+
+    private static boolean stopThread = false;
 
     private static boolean MULTI_THREAD = false;
 
@@ -80,7 +82,7 @@ public final class Block implements Cloneable {
         this.timestamp = Timestamp.from(Instant.now());
 //        this.timestamp = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         this.index = index;
-        this.hashBlock = chooseFindHash(hashCompexity, MULTI_THREAD);
+        this.hashBlock = findHash(hashCompexity);
 
     }
 
@@ -215,14 +217,19 @@ public final class Block implements Cloneable {
                     BlockForHash block = new BlockForHash(this.dtoTransactions, this.previousHash,
                             this.minerAddress, this.founderAddress, tempRandomNumberProof,
                             this.minerRewards, this.hashCompexity, this.timestamp, this.index);
-
+                    if(stopThread == true){
+                        return "0";
+                    }
 
                     String hashTemp = block.hashForTransaction();
 
+
                     if (UtilsUse.hashComplexity(hashTemp.substring(0, hashComplexity), hashComplexity)) {
                         System.out.println("Block found: Hash: " + hashTemp + ": " + Thread.currentThread().getName());
-//
+                        stopThread = true;
                         this.randomNumberProof = tempRandomNumberProof;
+                        System.out.println("find pool name: " + Thread.currentThread().getName()+
+                                "hashTemp: " + hashTemp);
 
                         return hashTemp;
                     }
@@ -240,7 +247,8 @@ public final class Block implements Cloneable {
 //
                             System.out.println("Someone mined a block before you. The search for this block is no longer relevant and outdated: " + hashTemp);
 //
-
+                            System.out.println("update pool name: " + Thread.currentThread().getName()+
+                                    "hashTemp: " + hashTemp);
                             return hashTemp;
                         }
                     }
@@ -249,6 +257,8 @@ public final class Block implements Cloneable {
                     if (Mining.isIsMiningStop()) {
                         System.out.println("Mining will be stopped");
 //
+                        System.out.println("stop pool name: " + Thread.currentThread().getName()+
+                                "hashTemp: " + hashTemp);
                         return hashTemp;
                     }
                 }
@@ -269,13 +279,13 @@ public final class Block implements Cloneable {
                     System.out.println("future: " + future);
                     if (future != null) {
                         hash = future.get();
-                        if(hash == null || hash.isEmpty())
+                        if (hash == null || hash.isEmpty() || hash.length() < hashComplexity)
                             continue;
                         if (UtilsUse.hashComplexity(hash.substring(0, hashComplexity), hashComplexity)
-                        || Mining.miningIsObsolete || Mining.isIsMiningStop()) {
+                                || Mining.miningIsObsolete || Mining.isIsMiningStop()) {
                             System.out.println("Block found: Hash: " + hash);
                             executorService.shutdownNow();
-                            break stop;
+                            return hash;
                         }
                     }
 
@@ -283,15 +293,18 @@ public final class Block implements Cloneable {
                 } catch (InterruptedException | ExecutionException e) {
                     // Обработка исключений
                     e.printStackTrace();
+                    break stop;
                 }
             }
-            
+
         }
 
         try {
             executorService.awaitTermination(600, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        }finally {
+            stopThread = false;
         }
 
         return hash;

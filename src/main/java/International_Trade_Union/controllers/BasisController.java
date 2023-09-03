@@ -1242,9 +1242,10 @@ public class BasisController {
                     System.out.println("PARITY ERROR" + HttpStatus.LOCKED);
                     System.out.println("Test version: If the index is even, then the stock balance must also be even; if the index is not even, all can mining"
                             + HttpStatus.LOCKED.value());
-                    System.out.println(":response: " + response);
+                    System.out.println(":response: " + response );
 
-                    System.out.println(":BasisController: sendAllBlocksStorage: response: " + response);
+                    System.out.println(":BasisController: sendAllBlocksStorage: response: " + response );
+                    System.out.println("blocks: " + blocks);
 
                     //there is an up-to-date branch on the global server, download it and delete the obsolete branch.
                     //на глобальном сервере есть актуальная ветка, скачать ее и удалить устревшую ветку.

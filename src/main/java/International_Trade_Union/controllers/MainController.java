@@ -204,7 +204,7 @@ public class MainController {
            int day = (int) (block.getIndex() / Seting.COUNT_BLOCK_IN_DAY % (Seting.YEAR / Seting.HALF_YEAR));
             model.addAttribute("demerage", "now is the day: " + day);
         }
-
+//
         Block.setMultiThread(true);
 
         return "home";
