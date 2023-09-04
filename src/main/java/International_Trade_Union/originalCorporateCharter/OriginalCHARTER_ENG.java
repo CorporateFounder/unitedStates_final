@@ -819,7 +819,7 @@ public interface OriginalCHARTER_ENG {
             "All participants must participate in the vote for the law adopted by the system to be valid\n" +
             "(The only exception is the Board of Shareholders, since the Board of Shareholders participates\n" +
             "only in the approval of amendments to the Charter).\n" +
-            "For all votes, only votes cast in the last four years count.\n" +
+            "For all votes, only votes cast in the last year count.\n" +
             "All members may hold multiple positions from different groups, but may not\n" +
             "hold more than one position in the same category.\n" +
             "Example: One account can be both ***Independent Network Member*** and ***Be like a faction***\n" +
@@ -867,7 +867,6 @@ public interface OriginalCHARTER_ENG {
             "All network members who have shares and are not included in the first three categories listed above,\n" +
             "are ***independent members of the network***. The votes of each such participant are equal to\n" +
             "to the number of shares at the moment and is described in detail in [VOTE_STOCK](../charterEng/VOTE_STOCK.md).\n" +
-            "\n" +
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
     String LAW_15 = "# BUDGET AND EMISSION.\n" +

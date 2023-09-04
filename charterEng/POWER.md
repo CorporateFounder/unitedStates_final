@@ -7,7 +7,7 @@ Power consists of 3 groups in this system.
 All participants must participate in the vote for the law adopted by the system to be valid
 (The only exception is the Board of Shareholders, since the Board of Shareholders participates
 only in the approval of amendments to the Charter).
-For all votes, only votes cast in the last four years count.
+For all votes, only votes cast in the last year count.
 All members may hold multiple positions from different groups, but may not
 hold more than one position in the same category.
 Example: One account can be both ***Independent Network Member*** and ***Be like a faction***
@@ -55,6 +55,5 @@ This is how faction votes are counted [VOTE_FRACTION](../charterEng/VOTE_FRACTIO
 All network members who have shares and are not included in the first three categories listed above,
 are ***independent members of the network***. The votes of each such participant are equal to
 to the number of shares at the moment and is described in detail in [VOTE_STOCK](../charterEng/VOTE_STOCK.md).
-
 
 [Exit to home](../documentationEng/documentationEng.md)
