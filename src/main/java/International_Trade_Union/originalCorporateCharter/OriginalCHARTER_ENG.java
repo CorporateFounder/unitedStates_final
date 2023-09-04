@@ -445,8 +445,8 @@ public interface OriginalCHARTER_ENG {
             "cannot be sold without a valid law,\n" +
             "where the sale process will be described and at what price the property will be sold.\n" +
             "The founder's account, and the accounts of other members are not\n" +
-            "corporate account, the Board of Directors must create a separate account which\n" +
-            "will be budgeted and managed only by members of the current members of the Board of Directors.\n" +
+            "corporation account, factions must create a separate account which\n" +
+            "will be budgeted and managed only by members of the current factions.\n" +
             "\n" +
             "[Exit to home](../documentationEng/documentationEng.md)";
     String LAW_10 = "# GENERAL_EXECUTIVE_DIRECTOR General Executive Director\n" +
