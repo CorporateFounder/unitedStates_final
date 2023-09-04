@@ -328,7 +328,7 @@ public class UtilsBlock {
         if (thisBlock.getIndex() > Seting.NEW_START_DIFFICULT) {
 
             int diff = UtilsBlock.difficulty(lastBlock, Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
-            if (thisBlock.getHashCompexity() != diff) {
+            if (thisBlock.getHashCompexity() < diff - 1) {
                 System.out.println("utils Block: actual difficult: " + thisBlock.getHashCompexity() + ":expected: "
                         + diff);
                 System.out.println("wrong difficult");
