@@ -190,10 +190,15 @@ public class UtilsBlock {
      */
     public static int difficulty(List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL) {
         //DIFFICULTY_ADJUSTMENT_INTERVAL = 288
-        //BLOCK_GENERATION_INTERVAL =  150000
+        //BLOCK_GENERATION_INTERVAL =  150000 милисекунд
         int difficulty = 1;
         Block latestBlock = blocks.get(blocks.size() - 1);
-        if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
+        if(latestBlock.getIndex() > 576){
+            difficulty = UtilsDIfficult.getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
+//            System.out.println("difficult: " + difficulty + " index: " + latestBlock.getIndex());
+        }
+
+        else if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
 
             difficulty = UtilsDIfficult.getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
             //более умеренная модель сложности
@@ -322,7 +327,7 @@ public class UtilsBlock {
         }
 
 
-        if (thisBlock.getIndex() > Seting.CHECK_UPDATING_VERSION) {
+        if (thisBlock.getIndex() > Seting.NEW_START_DIFFICULT) {
 
             int diff = UtilsBlock.difficulty(lastBlock, Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
             if (thisBlock.getHashCompexity() != diff) {

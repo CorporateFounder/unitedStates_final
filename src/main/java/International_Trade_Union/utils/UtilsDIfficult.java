@@ -18,9 +18,9 @@ public class UtilsDIfficult {
         long timeExpected = BLOCK_GENERATION_INTERVAL * DIFFICULTY_ADJUSTMENT_INTERVAL;
         long timeTaken = latestBlock.getTimestamp().getTime() - prevAdjustmentBlock.getTimestamp().getTime();
 
-        if(timeTaken < timeExpected / 2.3){
+        if(timeTaken < timeExpected / 2.6){
             return prevAdjustmentBlock.getHashCompexity() + 1;
-        }else if(timeTaken > timeExpected * 1.5){
+        }else if(timeTaken > timeExpected * 1.3){
             return prevAdjustmentBlock.getHashCompexity() - 1;
         }else {
             return prevAdjustmentBlock.getHashCompexity();
