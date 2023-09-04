@@ -194,7 +194,7 @@ public class Mining {
         if(index > Seting.CHECK_UPDATING_VERSION){
             if(difficulty >= 8){
                 founderReward = difficulty;
-                founderDigigtalReputationReward = digitalReputationForMiner;
+                founderDigigtalReputationReward = difficulty;
             }
             else {
                 founderReward = 8;
