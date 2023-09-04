@@ -9,7 +9,6 @@ import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.CreateAccount;
 import International_Trade_Union.model.Mining;
-import International_Trade_Union.model.User;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
@@ -17,7 +16,7 @@ import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
-import org.springframework.stereotype.Controller;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -29,7 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-public class AccountController {
+public class ConductorController {
     /**
      * created account
      * Params: nothing
@@ -188,5 +187,17 @@ public class AccountController {
 
         }
         return result;
+    }
+
+    /**find block from index*/
+    @GetMapping("/block")
+    public Block block(@RequestParam int index) throws JsonProcessingException {
+        return Blockchain.indexFromFile(index, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+    }
+
+    /**find block from hash*/
+    @GetMapping("/blockHash")
+    public Block blockFromHash(@RequestParam String hash) throws JsonProcessingException {
+        return Blockchain.hashFromFile(hash, Seting.ORIGINAL_BLOCKCHAIN_FILE);
     }
 }

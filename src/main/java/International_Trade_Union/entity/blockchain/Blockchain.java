@@ -299,6 +299,7 @@ public class Blockchain implements Cloneable {
 
         return valid;
     }
+
     public static DataShortBlockchainInformation checkFromFile(
 
             String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -394,6 +395,30 @@ public class Blockchain implements Cloneable {
         return valid;
     }
 
+    public static Block hashFromFile(String hash, String filename) throws JsonProcessingException {
+        File folder = new File(filename);
+        Block block = null;
+
+
+        for (final File fileEntry : folder.listFiles()) {
+
+            if (fileEntry.isDirectory()) {
+                System.out.println("is directory " + fileEntry.getAbsolutePath());
+            } else {
+
+                List<String> list = UtilsFileSaveRead.reads(fileEntry.getAbsolutePath());
+                for (String s : list) {
+                    block = UtilsJson.jsonToBLock(s);
+
+                    if (block.getHashBlock() == hash) {
+                        return block;
+                    }
+                }
+            }
+        }
+        return block;
+    }
+
     public static Block indexFromFile(int index, String filename) throws JsonProcessingException {
         File folder = new File(filename);
         Block block = null;
@@ -480,6 +505,7 @@ public class Blockchain implements Cloneable {
 //                BlockchainFactoryEnum.ORIGINAL);
         return UtilsBlock.validation(blockchainList, 0, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
     }
+
     public boolean validatedBlockchain(int index) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         return UtilsBlock.validation(blockchainList, index, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
     }
