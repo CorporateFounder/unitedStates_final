@@ -210,8 +210,6 @@ public class UtilsBlock {
 
         return difficulty == 0 ? 1 : difficulty;
     }
-
-
     public static boolean validationOneBlock(
             String addressFounder,
             Block previusblock,

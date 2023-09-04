@@ -242,6 +242,7 @@ public interface Seting {
     int CHECK_UPDATING_VERSION = 51648;
     int NEW_START_DIFFICULT = 51666;
     int PORTION_BLOCK_TO_COMPLEXCITY = 600;
+
     //version
     int VERSION = 15;
 

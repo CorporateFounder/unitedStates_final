@@ -9,8 +9,6 @@ import java.util.List;
 
 public class UtilsDIfficult {
 
-
-
     /**получить сложность*/
     public static int getAdjustedDifficulty(Block latestBlock, List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL){
         Block prevAdjustmentBlock = blocks.get(blocks.size() - DIFFICULTY_ADJUSTMENT_INTERVAL);
