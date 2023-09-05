@@ -235,6 +235,7 @@ public class MainController {
     public String setMinDollarRewards(@RequestParam(value = "reward") String reward){
         double number = 0;
 
+
         try{
             number = Double.valueOf(reward);
             BasisController.setMinDollarRewards(number);
