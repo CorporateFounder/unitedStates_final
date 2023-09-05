@@ -325,6 +325,8 @@ public class UtilsBlock {
         }
 
 
+
+
         if (thisBlock.getIndex() > Seting.NEW_START_DIFFICULT) {
 
             int diff = UtilsBlock.difficulty(lastBlock, Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);

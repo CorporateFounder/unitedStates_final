@@ -9,14 +9,17 @@ import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.BlockchainDifficulty;
 import International_Trade_Union.utils.UtilUrl;
 import International_Trade_Union.utils.UtilsBlock;
+import International_Trade_Union.utils.UtilsUse;
 import org.json.JSONException;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
@@ -26,7 +29,11 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.BitSet;
 import java.util.Date;
+
+import static International_Trade_Union.utils.BlockchainDifficulty.meetsDifficulty;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class Testing {
@@ -141,14 +148,50 @@ public class Testing {
     }
 
     @Test
-    public void addblock() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        Blockchain blockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
-        blockchain = Mining.getBlockchain(
+    public void testHashDifficulty() {
 
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
+        String data = "test";
+        int difficulty = 5;
 
-        BasisController.addBlock(blockchain.getBlockchainList());
+        // генерируем хеш
+        String hash = "";
+        int nonce = 0;
+
+        do {
+            hash = UtilsUse.sha256hash(data + nonce);
+            nonce++;
+        } while(!meetsDifficulty(hash.getBytes(), difficulty));
+
+        byte[] hashBytes = hash.getBytes();
+
+        // выводим хеш и биты
+        System.out.println("Hash: " + hash);
+        printBitSet(hashBytes);
+
+        // проверяем сложность
+        assertTrue(meetsDifficulty(hashBytes, difficulty));
+
+        // проверяем большую сложность
+        int diff2 = 4;
+        assertFalse(meetsDifficulty(hashBytes, diff2));
+
+        // подсчитываем нули
+        int leadingZeros = BlockchainDifficulty.countLeadingZeroBits(hashBytes);
+        assertEquals(difficulty, leadingZeros);
+    }
+
+    void printBitSet(byte[] bytes) {
+        BitSet bits = BitSet.valueOf(bytes);
+
+        for(int i=0; i<bits.length(); i++) {
+            if (bits.get(i)) {
+                System.out.print(1);
+            } else {
+                System.out.print(0);
+            }
+        }
+
+        System.out.println();
     }
 
     @Test
