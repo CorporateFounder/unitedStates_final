@@ -61,7 +61,6 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\orig
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\vote\CurrentLawVotesEndBalance.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\LawsController.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterDraft\ArticleSixBillOfRightsDraft.java
-D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\AccountController.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\statistics\Statistic.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\vote\LawEligibleForParliamentaryApproval.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\DataForTransaction.java
@@ -95,6 +94,7 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\enti
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\TestController.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\UnitedStatesApplication.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\MainController.java
+D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\ConductorController.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\governments\Directors.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\node\Nodes.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\WebController\StorageController.java

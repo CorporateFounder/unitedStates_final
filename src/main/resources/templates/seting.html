@@ -33,6 +33,11 @@
 </form>
 
 
+<h4 th:text="'miner reward dollar: ' +${minerRew}"></h4>
+<form action="/setMinDollarRewards" method="post">
+    <input type="text" name="reward" placeholder="enter number of threads" class="form-control"><br>
+    <button type="submit" class="btn btn-success">miner rewards</button><br>
+</form>
 
 
 </div>

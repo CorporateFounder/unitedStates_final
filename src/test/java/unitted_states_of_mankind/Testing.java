@@ -89,11 +89,15 @@ public class Testing {
 
     @Test
     public void sendBlocks() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        Blockchain blockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
-        blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
-
+        System.out.println(":CONFLICT TREE, IN GLOBAL DIFFERENT TREE: " + HttpStatus.CONFLICT.value());
+        System.out.println(":GOOD SUCCESS: " + HttpStatus.OK.value());
+        System.out.println(":FAIL BAD BLOCKHAIN: " + HttpStatus.EXPECTATION_FAILED.value());
+        System.out.println(":CONFLICT VERSION: " + HttpStatus.FAILED_DEPENDENCY.value());
+        System.out.println(":NAME CONFLICT: " + HttpStatus.NOT_ACCEPTABLE.value());
+        System.out.println("two miner addresses cannot be consecutive: " + HttpStatus.NOT_ACCEPTABLE.value());
+        System.out.println("PARITY ERROR" + HttpStatus.LOCKED);
+        System.out.println("Test version: If the index is even, then the stock balance must also be even; if the index is not even, all can mining"
+                + HttpStatus.LOCKED.value());
 
 
     }

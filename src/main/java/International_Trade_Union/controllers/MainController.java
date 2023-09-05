@@ -231,9 +231,17 @@ public class MainController {
         UtilsFileSaveRead.save(setMinner, Seting.ORIGINAL_ACCOUNT, false);
         return "redirect:/seting";
     }
-    @GetMapping("/setMinDollarRewards")
-    public String setMinDollarRewards(@RequestParam(value = "reward") double reward){
-        BasisController.setMinDollarRewards(reward);
+    @PostMapping ("/setMinDollarRewards")
+    public String setMinDollarRewards(@RequestParam(value = "reward") String reward){
+        double number = 0;
+
+        try{
+            number = Double.valueOf(reward);
+            BasisController.setMinDollarRewards(number);
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+
         return "redirect:/seting";
     }
 
@@ -355,6 +363,7 @@ public class MainController {
 //        BasisController.getMinDollarRewards());
         System.out.println("pool: " + Block.getThreadCount());
 
+        model.addAttribute("minerRew", BasisController.getMinDollarRewards());
         model.addAttribute("pool",Block.getThreadCount());
 
         return "seting";
