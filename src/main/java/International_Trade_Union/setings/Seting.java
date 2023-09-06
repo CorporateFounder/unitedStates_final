@@ -240,7 +240,7 @@ public interface Seting {
     int DELETED_PORTION = 150;
     int PORTION_DOWNLOAD = 500;
     int CHECK_UPDATING_VERSION = 51648;
-    int NEW_START_DIFFICULT = 53390;
+    int NEW_START_DIFFICULT = 53391;
     int PORTION_BLOCK_TO_COMPLEXCITY = 600;
 
     //version
