@@ -193,7 +193,7 @@ public class UtilsBlock {
         //BLOCK_GENERATION_INTERVAL =  150000 милисекунд
         int difficulty = 1;
         Block latestBlock = blocks.get(blocks.size() - 1);
-        if(latestBlock.getIndex() > Seting.NEW_START_DIFFICULT -1
+        if(latestBlock.getIndex() > Seting.NEW_START_DIFFICULT - 3
         && latestBlock.getIndex() < Seting.NEW_START_DIFFICULT + Seting.COUNT_BLOCK_IN_DAY){
             difficulty = 3;
             return difficulty;
