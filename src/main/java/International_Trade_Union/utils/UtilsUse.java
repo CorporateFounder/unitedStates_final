@@ -111,10 +111,10 @@ public class UtilsUse {
 
     public static boolean chooseComplexity(String literral, int hashComplexity, long index){
         if(index < Seting.NEW_START_DIFFICULT){
-            System.out.println(" chooseComplexity hashComplexity");
+
             return hashComplexity(literral, hashComplexity);
         }else {
-            System.out.println(" chooseComplexity meetsDifficulty");
+
             return BlockchainDifficulty.meetsDifficulty(literral.getBytes(), hashComplexity);
         }
     }
