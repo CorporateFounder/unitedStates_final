@@ -194,8 +194,8 @@ public class UtilsBlock {
         int difficulty = 1;
         Block latestBlock = blocks.get(blocks.size() - 1);
         if(latestBlock.getIndex() > Seting.NEW_START_DIFFICULT - 3
-        && latestBlock.getIndex() < Seting.NEW_START_DIFFICULT + Seting.COUNT_BLOCK_IN_DAY){
-            difficulty = 3;
+        && latestBlock.getIndex() < Seting.NEW_START_DIFFICULT + 288){
+            difficulty = 5;
             return difficulty;
         }
         if(latestBlock.getIndex() > 576){
