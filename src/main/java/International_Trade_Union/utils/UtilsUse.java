@@ -109,6 +109,14 @@ public class UtilsUse {
         return result;
     }
 
+    public static boolean chooseComplexity(String literral, int hashComplexity, long index){
+        if(index < Seting.NEW_START_DIFFICULT){
+            return hashComplexity(literral, hashComplexity);
+        }else {
+            return BlockchainDifficulty.meetsDifficulty(literral.getBytes(), hashComplexity);
+        }
+    }
+
     public static boolean hashComplexity(String literral, int hashComplexity){
 
         String regex = "^[0]{" + Integer.toString(hashComplexity) + "}";

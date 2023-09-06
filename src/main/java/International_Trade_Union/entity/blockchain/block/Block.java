@@ -224,7 +224,7 @@ public final class Block implements Cloneable {
                     String hashTemp = block.hashForTransaction();
 
 
-                    if (UtilsUse.hashComplexity(hashTemp.substring(0, hashComplexity), hashComplexity)) {
+                    if (UtilsUse.chooseComplexity(hashTemp.substring(0, hashComplexity), hashComplexity, this.index)) {
                         System.out.println("Block found: Hash: " + hashTemp + ": " + Thread.currentThread().getName());
                         stopThread = true;
                         this.randomNumberProof = tempRandomNumberProof;
@@ -281,7 +281,7 @@ public final class Block implements Cloneable {
                         hash = future.get();
                         if (hash == null || hash.isEmpty() || hash.length() < hashComplexity)
                             continue;
-                        if (UtilsUse.hashComplexity(hash.substring(0, hashComplexity), hashComplexity)
+                        if (UtilsUse.chooseComplexity(hash.substring(0, hashComplexity), hashComplexity, this.index)
                                 || Mining.miningIsObsolete || Mining.isIsMiningStop()) {
                             System.out.println("Block found: Hash: " + hash);
                             executorService.shutdownNow();
@@ -355,7 +355,7 @@ public final class Block implements Cloneable {
             }
 
             //если true, то прекращаем майнинг. Правильный блок найден
-            if (UtilsUse.hashComplexity(hash.substring(0, hashCoplexity), hashCoplexity)) {
+            if (UtilsUse.chooseComplexity(hash.substring(0, hashCoplexity), hashCoplexity, index)) {
                 System.out.println("block found: hash: " + hash);
                 break;
             }

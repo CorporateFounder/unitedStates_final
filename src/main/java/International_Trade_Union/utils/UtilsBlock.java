@@ -318,7 +318,7 @@ public class UtilsBlock {
             }
 
         }
-        if (!UtilsUse.hashComplexity(thisBlock.getHashBlock(), thisBlock.getHashCompexity())) {
+        if (!UtilsUse.chooseComplexity(thisBlock.getHashBlock(), thisBlock.getHashCompexity(), thisBlock.getIndex())) {
             System.out.println("does't start hash with 0");
             System.out.println("this block hash: " + thisBlock.getHashBlock());
             return false;

@@ -151,7 +151,7 @@ public class Testing {
     public void testHashDifficulty() {
 
         String data = "test";
-        int difficulty = 5;
+        int difficulty = 3;
 
         // генерируем хеш
         String hash = "";
