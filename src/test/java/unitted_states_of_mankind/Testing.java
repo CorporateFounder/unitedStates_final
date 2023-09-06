@@ -3,6 +3,7 @@ package unitted_states_of_mankind;
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.controllers.BasisController;
+import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.governments.Directors;
@@ -29,8 +30,10 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Date;
+import java.util.List;
 
 import static International_Trade_Union.utils.BlockchainDifficulty.meetsDifficulty;
 import static org.junit.jupiter.api.Assertions.*;
@@ -148,7 +151,7 @@ public class Testing {
     }
 
     @Test
-    public void testHashDifficulty() {
+    public void testHashDifficulty() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
         String data = "test";
         int difficulty = 3;
@@ -178,6 +181,16 @@ public class Testing {
         // подсчитываем нули
         int leadingZeros = BlockchainDifficulty.countLeadingZeroBits(hashBytes);
         assertEquals(difficulty, leadingZeros);
+
+        List<DtoTransaction> dtoTransactions = new ArrayList<>();
+        Block block = new Block(dtoTransactions, "previous",
+                "mineAdres", "founder", 2,
+                53392);
+        System.out.println("block: hash: " + block.getHashBlock());
+        printBitSet(block.getHashBlock().getBytes());
+        String test = block.findHash(4);
+        System.out.println("test: " + test);
+        printBitSet(test.getBytes());
     }
 
     void printBitSet(byte[] bytes) {
