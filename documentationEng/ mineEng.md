@@ -1,3 +1,5 @@
+# block mining
+
 ## HOW TO START MINING
 Before you start mining blocks, you
 you need to set the address of the miner to which the block will be mined.
@@ -35,19 +37,37 @@ The current blockchain is not only the longest, but there should be more zeros i
 This method counts the number of zeros in the blockchain and the current blockchain, not only the longest,
 but also the one with the most zeros
 ````
-     src/main/java/utils/UtilsUse.java
+       src/main/java/utils/UtilsUse.java
 
-      //count the number of consecutive zeros in hash
-     public static long hashCount(String hash) {
-         long count = 0;
-         for (int i = 0; i < hash.length(); i++) {
-             if(hash.charAt(i) == '0') count++;
-             else return count;
+        // count the number of consecutive zeros in the hash
+       public static long hashCount(string hash) {
+           long count = 0;
+           for (int i = 0; i < hash.length(); i++) {
+               if(hash.charAt(i) == '0') count++;
+               otherwise return counter;
+           }
+           the number of returns;
+       }
+````
+after 53391 blocks, the count is based on the number of zeros in bits
+````
+  public static boolean meetsDifficulty(byte[] hash, int difficulty) {
+   
+     int zeroBits = countLeadingZeroBits(hash);
+     return zeroBits >= difficulty;
+   }
+     public static int countLeadingZeroBits(byte[] hash) {
+         int bitLength = hash length * 8;
+         BitSet bits = BitSet.valueOf(hash);
+
+         int count = 0;
+         while (count < bitLength && !bits.get(count)) {
+             count++;
          }
+
          return count;
      }
-````
-
+   ````
 
 The class is responsible for the extraction
 

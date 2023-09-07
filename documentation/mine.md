@@ -49,7 +49,25 @@
           количество возвратов;
       }
 ````
+после 53391 блока подсчет происходит по количеству нулей в битах
+````
+ public static boolean meetsDifficulty(byte[] hash, int difficulty) {
+   
+    int zeroBits = countLeadingZeroBits(hash);
+    return zeroBits >= difficulty;
+  }
+    public static int countLeadingZeroBits(byte[] hash) {
+        int bitLength = hash.length * 8;
+        BitSet bits = BitSet.valueOf(hash);
 
+        int count = 0;
+        while (count < bitLength && !bits.get(count)) {
+            count++;
+        }
+
+        return count;
+    }
+  ````
 
 Класс отвечает за извлечение
 
