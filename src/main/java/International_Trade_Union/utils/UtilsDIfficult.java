@@ -13,6 +13,7 @@ public class UtilsDIfficult {
     public static int getAdjustedDifficulty(Block latestBlock, List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL){
         Block prevAdjustmentBlock = blocks.get(blocks.size() - DIFFICULTY_ADJUSTMENT_INTERVAL);
 
+
         double percentGrow = 2.6;
         double percentDown = 1.3;
         if(latestBlock.getIndex() > Seting.NEW_START_ADJUSTMENT){
