@@ -64,6 +64,21 @@ public final class Block implements Cloneable {
     private long index;
     private String hashBlock;
 
+    public String hashForTransaction() throws IOException {
+
+        BlockForHash block = new BlockForHash(this.getDtoTransactions(),
+                this.previousHash,
+                this.minerAddress,
+                this.founderAddress,
+                this.randomNumberProof,
+                this.minerRewards,
+                this.hashCompexity,
+                this.timestamp,
+                this.index);
+
+        return UtilsUse.sha256hash(block.jsonString());
+    }
+
     public static long getRandomNumberProofStatic() {
         return randomNumberProofStatic;
     }
@@ -101,7 +116,7 @@ public final class Block implements Cloneable {
 
     @JsonAutoDetect
     @Data
-    private class BlockForHash {
+    public class BlockForHash {
         private List<DtoTransaction> transactions;
         private String previousHash;
         private String minerAddress;

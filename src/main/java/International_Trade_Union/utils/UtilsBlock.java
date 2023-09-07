@@ -343,6 +343,14 @@ public class UtilsBlock {
             }
         }
 
+
+        if(thisBlock.getIndex() >Seting.NEW_CHECK_UTILS_BLOCK && !thisBlock.getHashBlock().equals(thisBlock.hashForTransaction())){
+            System.out.println("false hash added wrong hash");
+            System.out.println("actual: " + thisBlock.getHashBlock());
+            System.out.println("expected: " + thisBlock.hashForTransaction());
+            return false;
+        }
+
         if (!actualPrevHash.equals(recordedPrevHash)) {
             System.out.println("Blockchain is invalid, expected: " + recordedPrevHash + " actual: " + actualPrevHash);
             System.out.println("index block: " + thisBlock.getIndex());

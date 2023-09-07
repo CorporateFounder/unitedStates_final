@@ -10,10 +10,8 @@ import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
-import International_Trade_Union.utils.BlockchainDifficulty;
-import International_Trade_Union.utils.UtilUrl;
-import International_Trade_Union.utils.UtilsBlock;
-import International_Trade_Union.utils.UtilsUse;
+import International_Trade_Union.utils.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.json.JSONException;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -154,7 +152,7 @@ public class Testing {
     public void testHashDifficulty() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
         String data = "test";
-        int difficulty = 3;
+        int difficulty = 2;
 
         // генерируем хеш
         String hash = "";
@@ -188,9 +186,13 @@ public class Testing {
                 53392);
         System.out.println("block: hash: " + block.getHashBlock());
         printBitSet(block.getHashBlock().getBytes());
-        String test = block.findHash(4);
-        System.out.println("test: " + test);
-        printBitSet(test.getBytes());
+        System.out.println("block: " + UtilsJson.objToStringJson(block));
+    }
+    @Test
+    public void testHash() throws IOException {
+        String json = "{\"dtoTransactions\":[],\"previousHash\":\"previous\",\"minerAddress\":\"mineAdres\",\"founderAddress\":\"founder\",\"randomNumberProof\":1,\"minerRewards\":0.0,\"hashCompexity\":2,\"timestamp\":1694088872091,\"index\":53392,\"hashBlock\":\"8c59604158f2f4ce093e7bef8ae46fc471071d95f24221e85b8b589dcff32a13\"}";
+        Block block = UtilsJson.jsonToBLock(json);
+        assertEquals(block.getHashBlock(), block.getPreviousHash());
     }
 
     void printBitSet(byte[] bytes) {
