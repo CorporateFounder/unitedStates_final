@@ -66,17 +66,20 @@ public final class Block implements Cloneable {
 
     public String hashForTransaction() throws IOException {
 
-        BlockForHash block = new BlockForHash(this.getDtoTransactions(),
-                this.previousHash,
-                this.minerAddress,
-                this.founderAddress,
-                this.randomNumberProof,
-                this.minerRewards,
-                this.hashCompexity,
-                this.timestamp,
-                this.index);
+        if(this != null){
+            BlockForHash block = new BlockForHash(this.getDtoTransactions(),
+                    this.previousHash,
+                    this.minerAddress,
+                    this.founderAddress,
+                    this.randomNumberProof,
+                    this.minerRewards,
+                    this.hashCompexity,
+                    this.timestamp,
+                    this.index); return UtilsUse.sha256hash(block.jsonString());
+        }
 
-        return UtilsUse.sha256hash(block.jsonString());
+
+       return "";
     }
 
     public static long getRandomNumberProofStatic() {
