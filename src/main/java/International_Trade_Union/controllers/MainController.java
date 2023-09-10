@@ -178,12 +178,12 @@ public class MainController {
         model.addAttribute("version", Seting.VERSION);
 
 
-//        if(validation == false){
-//            System.out.println("deleted blockchain files");
-//
-////            System.exit(1);
-//            UtilsBlock.deleteFiles();
-//        }
+        if(validation == false){
+            System.out.println("deleted blockchain files");
+
+//            System.exit(1);
+            UtilsBlock.deleteFiles();
+        }
         model.addAttribute("validation", validation);
 
 
