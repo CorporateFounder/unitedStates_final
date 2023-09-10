@@ -292,7 +292,7 @@ public class TestController {
         System.out.println("23o5AEqbbRnmkiggoWbix2dRwtpULVnFLba6eZLkq5Udw: " + cheaterAccount.containsKey("23o5AEqbbRnmkiggoWbix2dRwtpULVnFLba6eZLkq5Udw"));
         System.out.println("25Ybc6xyHoCS6KnFc6ezb4QHq4hKVRJ5hSmjJDtoLcyK2: " + cheaterAccount.containsKey("25Ybc6xyHoCS6KnFc6ezb4QHq4hKVRJ5hSmjJDtoLcyK2    "));
         String sender = "jQCqtL2VXmLznKcQQmiMdmf2JeNrsioG3njkHXNRX2Fo";
-        String password = "3hupFSQNWwiJuQNc68HiWzPgyNpQA2yy9iiwhytMS7rZydBY2XFUi3vuhMgnGXGeUHsNMoQQzrUDAqYmqZfBk49dB9erSRWaK2gU19PdkBufjJ9shs7YcQky1fa8s6Wvc3RtMVA5xSQ3An6Hq7C54NcMBfXUZ2dgwykMFNYdi3Lyjb7zamNPs8m8ydKYYo3KxqiJu";
+        String password = "";
 
 
         for (Map.Entry<String,Account> send : differents.entrySet()) {
