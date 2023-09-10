@@ -8,17 +8,30 @@ import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
+import International_Trade_Union.governments.UtilsGovernment;
+import International_Trade_Union.model.Account;
 import International_Trade_Union.model.Mining;
+import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
+import International_Trade_Union.utils.base.Base;
+import International_Trade_Union.utils.base.Base58;
+import International_Trade_Union.vote.Laws;
+import International_Trade_Union.vote.VoteEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.bouncycastle.pqc.crypto.newhope.NHSecretKeyProcessor;
 import org.json.JSONException;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.thymeleaf.spring5.processor.SpringTextareaFieldTagProcessor;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
@@ -28,10 +41,8 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static International_Trade_Union.utils.BlockchainDifficulty.meetsDifficulty;
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,6 +51,56 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Testing {
 
 
+    Map<String, Account> cheater = new HashMap<>();
+    @GetMapping("/showCheater")
+    public void showCheater() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        Blockchain blockchain = Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
+
+        List<Block> blocks = blockchain.getBlockchainList();
+        for (Block block : blocks) {
+            if(block.getIndex() >Seting.NEW_CHECK_UTILS_BLOCK &&
+                    !block.getHashBlock().equals(block.hashForTransaction())){
+                System.out.println("false hash added wrong hash");
+//            System.out.println("actual: " + thisBlock.getHashBlock());
+//            System.out.println("expected: " + thisBlock.hashForTransaction());
+                System.out.println("address: " + block.getMinerAddress());
+
+
+
+            //for find cheater
+            stop:
+            for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
+                if(dtoTransaction.getSender().equals(Seting.BASIS_ADDRESS) &&
+                dtoTransaction.getCustomer().equals(block.getMinerAddress())){
+                    String address = block.getMinerAddress();
+                    double dollar = dtoTransaction.getDigitalDollar();
+                    double stock = dtoTransaction.getDigitalStockBalance();
+                    System.out.printf("cheater address %s: stole dollar %f end stock %f: from block index %d ",
+                            address, dollar, stock, block.getIndex());
+
+
+                    if(cheater.containsKey(address)){
+                        double sumDollar = cheater.get(address).getDigitalDollarBalance() + dollar;
+                        double sumStock = cheater.get(address).getDigitalStockBalance() + stock;
+                        Account account = new Account(address, sumDollar, sumStock);
+                        cheater.put(address, account);
+                    }else {
+                        Account account = new Account(address, dollar, stock);
+                        cheater.put(address, account);
+                    }
+                    break stop;
+                }
+            }
+
+
+            }
+
+
+        }
+
+    }
     @Test
     public void generateOriginalBlocks() throws IOException, JSONException, InterruptedException {
 
@@ -48,7 +109,7 @@ public class Testing {
             System.out.println("block generate i: " + i);
             try {
                 UtilUrl.readJsonFromUrl("http://localhost:8082/mine");
-            }catch (IOException e){
+            } catch (IOException e) {
                 System.out.println("error test mining");
                 continue;
             }
@@ -58,7 +119,7 @@ public class Testing {
     }
 
     @Test
-    public void testSorted(){
+    public void testSorted() {
         // Изначальное значение хэш рейта
         long hashRate = 1; // Начинаем с 1 H/s
 
@@ -111,7 +172,7 @@ public class Testing {
     }
 
     @Test
-    public void testLimitedMoney(){
+    public void testLimitedMoney() {
         int block = 0;
         double digitalDollarMining = 400;
         double digitalStockMining = 400;
@@ -124,9 +185,9 @@ public class Testing {
         for (int i = 0; i < year; i++) {
             for (int j = 0; j < 576; j++) {
                 block++;
-                if(block % (180 * 576) == 0){
-                    digitalDollarAccount = digitalStockAccount - digitalDollarAccount * dollarPercent /100;
-                    digitalStockAccount = digitalStockAccount - digitalStockAccount * stockPercent /100;
+                if (block % (180 * 576) == 0) {
+                    digitalDollarAccount = digitalStockAccount - digitalDollarAccount * dollarPercent / 100;
+                    digitalStockAccount = digitalStockAccount - digitalStockAccount * stockPercent / 100;
                 }
 
                 digitalDollarAccount += digitalDollarMining;
@@ -136,10 +197,10 @@ public class Testing {
 //                digitalDollarMining = digitalDollarMining/2;
 //                digitalStockAccount/= 2;
 //            }
-            if(digitalDollarAccount < 56000000000.0 && digitalDollarAccount > 5100000000.0){
+            if (digitalDollarAccount < 56000000000.0 && digitalDollarAccount > 5100000000.0) {
                 //при таких настройках, верхняя граница, должна быть достигнута к 334 году
                 //денежная масса больше не будет выше пять миллиардов сто сорок миллионов
-                System.out.println("block: " + block + " index: " + i + " year: " + (i%360));
+                System.out.println("block: " + block + " index: " + i + " year: " + (i % 360));
                 break;
             }
         }
@@ -158,11 +219,13 @@ public class Testing {
         String hash = "";
         int nonce = 0;
 
+
         do {
             hash = UtilsUse.sha256hash(data + nonce);
             nonce++;
-        } while(!meetsDifficulty(hash.getBytes(), difficulty));
+        } while (!meetsDifficulty(hash.getBytes(), difficulty));
 
+        //---------------------------------------------------------------------------
         byte[] hashBytes = hash.getBytes();
 
         // выводим хеш и биты
@@ -188,17 +251,301 @@ public class Testing {
         printBitSet(block.getHashBlock().getBytes());
         System.out.println("block: " + UtilsJson.objToStringJson(block));
     }
+
+    @Test
+    public void Account() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        Map<String, Account> originals = SaveBalances.readLineObject("C://strategy1/balance/");
+        Account account = originals.get("hzhq1LUk3qCcNyrTGE5pSRrRsYf3HkdSmeu5jap1JUnx");
+        System.out.println(account);
+    }
+
     @Test
     public void testHash() throws IOException {
         String json = "{\"dtoTransactions\":[],\"previousHash\":\"previous\",\"minerAddress\":\"mineAdres\",\"founderAddress\":\"founder\",\"randomNumberProof\":1,\"minerRewards\":0.0,\"hashCompexity\":2,\"timestamp\":1694088872091,\"index\":53392,\"hashBlock\":\"8c59604158f2f4ce093e7bef8ae46fc471071d95f24221e85b8b589dcff32a13\"}";
         Block block = UtilsJson.jsonToBLock(json);
-        assertEquals(block.getHashBlock(), block.getPreviousHash());
+        assertEquals(block.getHashBlock(),block.hashForTransaction());
+    }
+
+    public String send(@RequestParam String sender,
+                       @RequestParam String recipient,
+                       @RequestParam Double dollar,
+                       @RequestParam Double stock,
+                       @RequestParam Double reward,
+                       @RequestParam String password) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+        Base base = new Base58();
+        String result = "wrong";
+        if (dollar == null)
+            dollar = 0.0;
+
+        if (stock == null)
+            stock = 0.0;
+
+        if (reward == null)
+            reward = 0.0;
+
+        Laws laws = new Laws();
+        laws.setLaws(new ArrayList<>());
+        laws.setHashLaw("");
+        laws.setPacketLawName("");
+        DtoTransaction dtoTransaction = new DtoTransaction(
+                sender,
+                recipient,
+                dollar,
+                stock,
+                laws,
+                reward,
+                VoteEnum.YES);
+        PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));
+        byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
+        System.out.println("Main Controller: new transaction: vote: " + VoteEnum.YES);
+        dtoTransaction.setSign(sign);
+        Directors directors = new Directors();
+        System.out.println("sender: " + sender);
+        System.out.println("recipient: " + recipient);
+        System.out.println("dollar: " + dollar + ": class: " + dollar.getClass());
+        System.out.println("stock: " + stock + ": class: " + stock.getClass());
+        System.out.println("reward: " + reward + ": class: " + reward.getClass());
+        System.out.println("password: " + password);
+        System.out.println("sign: " + dtoTransaction.toSign());
+        System.out.println("verify: " + dtoTransaction.verify());
+
+        if (dtoTransaction.verify()) {
+
+            //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
+            //отправитель совпадает с законом
+            List<String> corporateSeniorPositions = directors.getDirectors().stream()
+                    .map(t -> t.getName()).collect(Collectors.toList());
+            System.out.println("LawsController: create_law: " + laws.getPacketLawName() + "contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
+            if (corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(sender, laws)) {
+                System.out.println("sending" + "wrong transaction: Position to be equals whith send");
+                return result;
+            }
+            result = dtoTransaction.toSign();
+
+            String str = base.encode(dtoTransaction.getSign());
+            System.out.println("sign: " + str);
+            AllTransactions.addTransaction(dtoTransaction);
+            String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
+            for (String s : Seting.ORIGINAL_ADDRESSES) {
+
+                String original = s;
+                String url = s + "/addTransaction";
+                //если адресс совпадает с внутреним хостом, то не отправляет самому себе
+                if (BasisController.getExcludedAddresses().contains(url)) {
+                    System.out.println("MainController: its your address or excluded address: " + url);
+                    continue;
+                }
+                try {
+                    //отправка в сеть
+                    UtilUrl.sendPost(jsonDto, url);
+
+                } catch (Exception e) {
+                    System.out.println("exception discover: " + original);
+
+                }
+            }
+
+
+        } else
+            return result;
+        return result;
+
+    }
+
+    @Test
+    public void testBalance() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        Map<String, Account> originals = SaveBalances.readLineObject("C://strategy1/balance/");
+        Map<String, Account> forks = SaveBalances.readLineObject("C://strategy2/balance/");
+        Map<String, Account> balance = SaveBalances.readLineObject("C://resources/balance/");
+        Map<String, Account> differents = new HashMap<>();
+
+
+        Map<String, Account> cheaterAccount = new HashMap<>();
+        Map<String, Integer> countAddressCheater = new HashMap<>();
+        BufferedReader reader = null;
+        try {
+            // Открываем файл для чтения
+            reader = new BufferedReader(new FileReader("C://cheater miner/1.txt"));
+
+            String line;
+            // Читаем файл построчно, пока не достигнем конца файла (null)
+            while ((line = reader.readLine()) != null) {
+                // Обрабатываем текущую строку
+                String[] arr = line.split(":");
+                if(cheaterAccount.containsKey(arr[0])){
+                    double dollar = Double.valueOf(arr[1]) + cheaterAccount.get(arr[0]).getDigitalDollarBalance();
+                    double stock = Double.valueOf(arr[2])+ cheaterAccount.get(arr[0]).getDigitalStockBalance();;
+                    Account account = new Account(arr[0], dollar, stock);
+                    cheaterAccount.put(arr[0], account);
+                }else {
+                    String address = arr[0];
+
+                    try {
+                        double dollar = Double.valueOf(arr[1]);
+                        double stock = Double.valueOf(arr[2]);
+//                        System.out.println("dollar: " + dollar + " stock: " + stock + " index: " + arr[3]);
+                        Account account = new Account(address, dollar, stock);
+                        cheaterAccount.put(address, account);
+                    }catch (ArrayIndexOutOfBoundsException e){
+                        continue;
+                    }catch (NumberFormatException e){
+                        continue;
+                    }
+                }
+
+                if(countAddressCheater.containsKey(arr[0])){
+                    int count = countAddressCheater.get(arr[0]) + 1;
+                    countAddressCheater.put(arr[0], count);
+                }else {
+                    countAddressCheater.put(arr[0], 1);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                // Закрываем BufferedReader после использования
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        for (Map.Entry<String, Account> cheater : cheaterAccount.entrySet()) {
+            System.out.println("cheater: " + cheater);
+        }
+        for (Map.Entry<String, Integer> countAccount : countAddressCheater.entrySet()) {
+            System.out.println("chear how much: " + countAccount);
+        }
+
+
+        //----------------------------------------------------------------------
+        for (Map.Entry<String, Account> original : originals.entrySet()) {
+            String address = original.getKey();
+            if (forks.containsKey(address)) {
+                double originalDollar = original.getValue().getDigitalDollarBalance();
+                double originalStock = original.getValue().getDigitalStockBalance();
+                double forkDollar = forks.get(address).getDigitalDollarBalance();
+                double forkStock = forks.get(address).getDigitalStockBalance();
+                double resultDollar = originalDollar - forkDollar;
+                double resultStock = originalStock - forkStock;
+                if (resultDollar < 0) {
+                    resultDollar = 0;
+                    System.out.println("dollar original: " + originalDollar + " fork: " + forkDollar);
+                }
+
+
+                if (resultStock < 0) {
+                    resultStock = 0;
+                    System.out.println("stock original: " + originalStock + " fork: " + forkStock);
+                }
+
+                Account account = new Account(address, resultDollar, resultStock);
+                differents.put(address, account);
+            } else {
+                double originalDollar = original.getValue().getDigitalDollarBalance();
+                double originalStock = original.getValue().getDigitalStockBalance();
+                Account account = new Account(address, originalDollar, originalStock);
+                differents.put(address, account);
+            }
+        }
+
+        HashMap<String, Account> afterFork = new HashMap<>();
+        for (Map.Entry<String, Account> different : differents.entrySet()) {
+            String address = different.getKey();
+            if (forks.containsKey(address)) {
+                double originalDollar = different.getValue().getDigitalDollarBalance();
+                double originalStock = different.getValue().getDigitalStockBalance();
+                double forkDollar = forks.get(address).getDigitalDollarBalance();
+                double forkStock = forks.get(address).getDigitalStockBalance();
+
+                double resultDollar = forkDollar + originalDollar;
+                double resultStock = forkStock + originalStock;
+                Account account = new Account(address, resultDollar, resultStock);
+                afterFork.put(address, account);
+            } else {
+                double originalDollar = different.getValue().getDigitalDollarBalance();
+                double originalStock = different.getValue().getDigitalStockBalance();
+                Account account = new Account(address, originalDollar, originalStock);
+                afterFork.put(address, account);
+            }
+        }
+        for (Map.Entry<String, Account> different : differents.entrySet()) {
+            String address = different.getKey();
+            if(cheaterAccount.containsKey(address)){
+                double dollar = different.getValue().getDigitalDollarBalance();
+                double stock = different.getValue().getDigitalStockBalance();
+                dollar = dollar - cheaterAccount.get(address).getDigitalDollarBalance();
+                System.out.println("====================");
+                System.out.println("cheter: "  + cheaterAccount.get(address).getDigitalDollarBalance());
+                stock = stock - cheaterAccount.get(address).getDigitalStockBalance();
+                if(dollar < 0)
+                    dollar = 0;
+                if(stock < 0)
+                    stock = 0;
+
+//                different.getValue().setDigitalStockBalance(dollar);
+//                different.getValue().setDigitalStockBalance(stock);
+                differents.get(address).setDigitalDollarBalance(dollar);
+                differents.get(address).setDigitalDollarBalance(stock);
+            }
+        }
+
+
+        List<Account> originalAccounts = originals.entrySet().stream()
+                .map(t -> t.getValue()).collect(Collectors.toList());
+        List<Account> afterForkAccounts = afterFork.entrySet().stream()
+                .map(t -> t.getValue())
+                .collect(Collectors.toList());
+        List<Account> differentAcount = differents.entrySet().stream()
+                .map(t->t.getValue()).collect(Collectors.toList());
+
+
+        double originalSumDollar = originalAccounts.stream().mapToDouble(t->t.getDigitalDollarBalance()).sum();
+        double originalSumStock = originalAccounts.stream().mapToDouble(t->t.getDigitalStockBalance()).sum();
+        double afterForkSumDollar = afterForkAccounts.stream().mapToDouble(t->t.getDigitalDollarBalance()).sum();
+        double afterForkSumsStock = afterForkAccounts.stream().mapToDouble(t->t.getDigitalStockBalance()).sum();
+
+       List<Account> forkAccount = forks.entrySet().stream().map(t->t.getValue())
+                       .collect(Collectors.toList());
+
+       double forkSumDollar = forkAccount.stream().mapToDouble(t->t.getDigitalDollarBalance()).sum();
+       double forkSumStock = forkAccount.stream().mapToDouble(t->t.getDigitalStockBalance()).sum();
+
+        System.out.printf("dollar: original: %f after fork: %f: \n", originalSumDollar, afterForkSumDollar);
+        System.out.printf("stock: original: %f after fork: %f: \n", originalSumStock, afterForkSumsStock);
+        System.out.printf(" different dollar: %f: \n", (originalSumDollar-afterForkSumDollar));
+        System.out.printf(" different stock: %f: \n", (originalSumStock-afterForkSumsStock));
+        System.out.printf("different fork dollar: %f: \n ",(originalSumDollar-forkSumDollar));
+        System.out.printf("different fork stock: %f: \n ", (originalSumStock-forkSumStock));
+        System.out.printf("dollar: %f: stock %f: \n ", forkSumDollar, forkSumStock);
+
+        String address = "hzhq1LUk3qCcNyrTGE5pSRrRsYf3HkdSmeu5jap1JUnx";
+        System.out.println("****************************");
+        System.out.println(address+":" + cheaterAccount.containsKey(address));
+        System.out.println("different balance: " + differents.get(address));
+        System.out.println("orginal: " + originals.get(address));
+        System.out.println("balance: " + balance.get(address));
+        if(forks != null){
+            System.out.println("fork: " + forks.get(address));
+            System.out.println("chetaer Account: " + cheaterAccount.get(address));
+//        Account fork = forks.get(address);
+//        Account different = differents.get(address);
+//        double dollar = fork.getDigitalDollarBalance() - different.getDigitalDollarBalance();
+//        double stock = fork.getDigitalStockBalance() - different.getDigitalStockBalance();
+//        System.out.println("dollar: " + dollar);
+//        System.out.println("stock: " + stock);
+        }
+
     }
 
     void printBitSet(byte[] bytes) {
         BitSet bits = BitSet.valueOf(bytes);
 
-        for(int i=0; i<bits.length(); i++) {
+        for (int i = 0; i < bits.length(); i++) {
             if (bits.get(i)) {
                 System.out.print(1);
             } else {
@@ -219,26 +566,5 @@ public class Testing {
         System.out.println("result1 " + result);
         System.out.println("result2: " + result2);
 
-        if(
-                result > 10 || result < 0
-        ){
-            System.out.println("_____________________________________________");
-            System.out.println("wrong timestamp:result " + result);
-            ;
-
-            System.out.println("_____________________________________________");
-
-        }
-
-        if(
-                result2 > 10 || result2 < 0
-        ){
-            System.out.println("_____________________________________________");
-            System.out.println("wrong timestamp:result2 " + result2);
-            ;
-
-            System.out.println("_____________________________________________");
-
-        }
     }
 }

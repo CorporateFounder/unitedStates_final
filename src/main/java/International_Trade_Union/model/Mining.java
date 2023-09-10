@@ -23,6 +23,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
+
 public class Mining {
     public static boolean miningIsObsolete = false;
     private static volatile boolean isMiningStop = false;
@@ -240,6 +242,11 @@ public class Mining {
             digitalReputationForMiner= difficulty * Seting.MONEY;
             minerRewards += index%2 == 0 ? 0 : 1;
             digitalReputationForMiner += index%2 == 0 ? 0 : 1;
+        }
+
+        if(index == Seting.SPECIAL_BLOCK_FORK && minner.getAccount().equals(Seting.FORK_ADDRESS_SPECIAL)){
+            minerRewards = SPECIAL_FORK_BALANCE;
+            digitalReputationForMiner = SPECIAL_FORK_BALANCE;
         }
 
         //вознаграждения майнера

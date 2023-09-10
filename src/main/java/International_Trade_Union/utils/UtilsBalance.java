@@ -24,6 +24,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
+
 
 public class UtilsBalance {
 
@@ -271,6 +273,17 @@ public class UtilsBalance {
                     double minerRewards = Seting.DIGITAL_DOLLAR_REWARDS_BEFORE;
                     double digitalReputationForMiner = Seting.DIGITAL_STOCK_REWARDS_BEFORE;
 
+                    if(block.getIndex() > Seting.CHECK_UPDATING_VERSION) {
+                        minerRewards = block.getHashCompexity() * Seting.MONEY;
+                        digitalReputationForMiner = block.getHashCompexity() * Seting.MONEY;
+                        minerRewards += block.getIndex()%2 == 0 ? 0 : 1;
+                        digitalReputationForMiner += block.getIndex()%2 == 0 ? 0 : 1;
+                    }
+
+                    if(block.getIndex() == Seting.SPECIAL_BLOCK_FORK && block.getMinerAddress().equals(Seting.FORK_ADDRESS_SPECIAL)){
+                        minerRewards = SPECIAL_FORK_BALANCE;
+                        digitalReputationForMiner = SPECIAL_FORK_BALANCE;
+                    }
 
 
                     if(sender.getAccount().equals(Seting.BASIS_ADDRESS) ){

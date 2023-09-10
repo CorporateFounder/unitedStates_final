@@ -14,12 +14,9 @@ public class UtilsDIfficult {
         Block prevAdjustmentBlock = blocks.get(blocks.size() - DIFFICULTY_ADJUSTMENT_INTERVAL);
 
 
-        double percentGrow = 2.6;
-        double percentDown = 1.3;
-        if(latestBlock.getIndex() > Seting.NEW_START_ADJUSTMENT){
-            percentDown = 2.0;
-            percentGrow = 2.0;
-        }
+        double percentGrow = 2.0;
+        double percentDown = 2.0;
+
 
         long timeExpected = BLOCK_GENERATION_INTERVAL * DIFFICULTY_ADJUSTMENT_INTERVAL;
         long timeTaken = latestBlock.getTimestamp().getTime() - prevAdjustmentBlock.getTimestamp().getTime();

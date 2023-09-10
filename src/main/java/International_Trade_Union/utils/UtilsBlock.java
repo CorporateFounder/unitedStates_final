@@ -1,6 +1,7 @@
 package International_Trade_Union.utils;
 
 
+import International_Trade_Union.model.Account;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
@@ -16,7 +17,12 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
+
 public class UtilsBlock {
+
+    //this need olny find cheater
+    public static Map<String, Account> cheater = new HashMap<>();
 
 
     public static void saveBlocks(List<Block> blocks, String filename) throws IOException {
@@ -193,28 +199,23 @@ public class UtilsBlock {
         //BLOCK_GENERATION_INTERVAL =  150000 милисекунд
         int difficulty = 1;
         Block latestBlock = blocks.get(blocks.size() - 1);
-        if(latestBlock.getIndex() > Seting.NEW_START_DIFFICULT - 3
-        && latestBlock.getIndex() < Seting.NEW_START_DIFFICULT + 288){
+        if (latestBlock.getIndex() > Seting.NEW_START_DIFFICULT - 3
+                && latestBlock.getIndex() < Seting.NEW_START_DIFFICULT + 288) {
             difficulty = 3;
             return difficulty;
-        }
-        if(latestBlock.getIndex() > 576){
+        } else if (latestBlock.getIndex() > Seting.NEW_START_DIFFICULT + 288) {
             difficulty = UtilsDIfficult.getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
-//            System.out.println("difficult: " + difficulty + " index: " + latestBlock.getIndex());
-        }
-
-        else if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
+        } else if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
 
             difficulty = UtilsDIfficult.getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
             //более умеренная модель сложности
-
-
         } else {
             difficulty = latestBlock.getHashCompexity();
         }
 
         return difficulty == 0 ? 1 : difficulty;
     }
+
     public static boolean validationOneBlock(
             String addressFounder,
             Block previusblock,
@@ -244,11 +245,16 @@ public class UtilsBlock {
             if (transaction.verify() && transaction.getSender().equals(Seting.BASIS_ADDRESS)) {
                 double minerReward = Seting.DIGITAL_DOLLAR_REWARDS_BEFORE;
                 double minerPowerReward = Seting.DIGITAL_STOCK_REWARDS_BEFORE;
-                if(thisBlock.getIndex() > Seting.CHECK_UPDATING_VERSION) {
+                if (thisBlock.getIndex() > Seting.CHECK_UPDATING_VERSION) {
                     minerReward = thisBlock.getHashCompexity() * Seting.MONEY;
                     minerPowerReward = thisBlock.getHashCompexity() * Seting.MONEY;
-                    minerReward += thisBlock.getIndex()%2 == 0 ? 0 : 1;
-                    minerPowerReward += thisBlock.getIndex()%2 == 0 ? 0 : 1;
+                    minerReward += thisBlock.getIndex() % 2 == 0 ? 0 : 1;
+                    minerPowerReward += thisBlock.getIndex() % 2 == 0 ? 0 : 1;
+                }
+
+                if (thisBlock.getIndex() == Seting.SPECIAL_BLOCK_FORK && thisBlock.getMinerAddress().equals(Seting.FORK_ADDRESS_SPECIAL)) {
+                    minerReward = SPECIAL_FORK_BALANCE;
+                    minerPowerReward = SPECIAL_FORK_BALANCE;
                 }
 
                 if (transaction.getSender().equals(Seting.BASIS_ADDRESS) &&
@@ -273,10 +279,10 @@ public class UtilsBlock {
                 if (transaction.getSender().equals(Seting.BASIS_ADDRESS)
                         && transaction.getCustomer().equals(addressFounder)) {
                     countBasisSendFounder += 1;
-                    if(thisBlock.getIndex() > Seting.CHECK_UPDATING_VERSION){
-                        if(thisBlock.getHashCompexity() >= 8){
-                            if(transaction.getDigitalDollar() != thisBlock.getHashCompexity() ||
-                                    thisBlock.getHashCompexity() != transaction.getDigitalStockBalance()){
+                    if (thisBlock.getIndex() > Seting.CHECK_UPDATING_VERSION) {
+                        if (thisBlock.getHashCompexity() >= 8) {
+                            if (transaction.getDigitalDollar() != thisBlock.getHashCompexity() ||
+                                    thisBlock.getHashCompexity() != transaction.getDigitalStockBalance()) {
                                 System.out.println("wrong reward founder: index: " + thisBlock.getIndex()
                                         + ":reward dollar: " + transaction.getDigitalDollar() + ": reward stock: "
                                         + transaction.getDigitalStockBalance()
@@ -285,9 +291,8 @@ public class UtilsBlock {
                                 validated = false;
                                 break;
                             }
-                        }
-                        else {
-                            if(transaction.getDigitalDollar() != 8 || transaction.getDigitalStockBalance() != 8){
+                        } else {
+                            if (transaction.getDigitalDollar() != 8 || transaction.getDigitalStockBalance() != 8) {
                                 System.out.println("wrong reward founder: index: " + thisBlock.getIndex()
                                         + ":reward dollar: " + transaction.getDigitalDollar() + ": reward stock: "
                                         + transaction.getDigitalStockBalance() + " difficult: " + thisBlock.getHashCompexity());
@@ -323,17 +328,19 @@ public class UtilsBlock {
             }
 
         }
+
         if (!UtilsUse.chooseComplexity(thisBlock.getHashBlock(), thisBlock.getHashCompexity(), thisBlock.getIndex())) {
             System.out.println("does't start hash with 0");
+
             System.out.println("this block hash: " + thisBlock.getHashBlock());
+            if(thisBlock.getIndex() >= Seting.NEW_START_DIFFICULT)
+                BlockchainDifficulty.printBinary(thisBlock.getHashBlock().getBytes());
+
             return false;
         }
 
 
-
-
         if (thisBlock.getIndex() > Seting.NEW_START_DIFFICULT) {
-
             int diff = UtilsBlock.difficulty(lastBlock, Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
             if (thisBlock.getHashCompexity() < diff - 1) {
                 System.out.println("utils Block: actual difficult: " + thisBlock.getHashCompexity() + ":expected: "
@@ -344,10 +351,38 @@ public class UtilsBlock {
         }
 
 
-        if(thisBlock.getIndex() >Seting.NEW_CHECK_UTILS_BLOCK && !thisBlock.getHashBlock().equals(thisBlock.hashForTransaction())){
+        if (thisBlock.getIndex() > Seting.NEW_CHECK_UTILS_BLOCK && !thisBlock.getHashBlock().equals(thisBlock.hashForTransaction())) {
             System.out.println("false hash added wrong hash");
-            System.out.println("actual: " + thisBlock.getHashBlock());
-            System.out.println("expected: " + thisBlock.hashForTransaction());
+//            System.out.println("actual: " + thisBlock.getHashBlock());
+//            System.out.println("expected: " + thisBlock.hashForTransaction());
+            System.out.println("address: " + thisBlock.getMinerAddress());
+
+
+//            //for find cheater
+//            stop:
+//            for (DtoTransaction dtoTransaction : thisBlock.getDtoTransactions()) {
+//                if(dtoTransaction.getSender().equals(Seting.BASIS_ADDRESS) &&
+//                dtoTransaction.getCustomer().equals(thisBlock.getMinerAddress())){
+//                    String address = thisBlock.getMinerAddress();
+//                    double dollar = dtoTransaction.getDigitalDollar();
+//                    double stock = dtoTransaction.getDigitalStockBalance();
+//                    System.out.printf("cheater address %s: stole dollar %f end stock %f: from block index %d ",
+//                            address, dollar, stock, thisBlock.getIndex());
+//
+//
+//                    if(cheater.containsKey(address)){
+//                        double sumDollar = cheater.get(address).getDigitalDollarBalance() + dollar;
+//                        double sumStock = cheater.get(address).getDigitalStockBalance() + stock;
+//                        Account account = new Account(address, sumDollar, sumStock);
+//                        cheater.put(address, account);
+//                    }else {
+//                        Account account = new Account(address, dollar, stock);
+//                        cheater.put(address, account);
+//                    }
+//                    break stop;
+//                }
+//            }
+
             return false;
         }
 
@@ -360,13 +395,13 @@ public class UtilsBlock {
         }
 
 
-        if (thisBlock.getIndex() > Seting.CHECK_UPDATING_VERSION){
-            if (previusblock.getMinerAddress().equals(thisBlock.getMinerAddress())) {
-                System.out.println("two times in a row the same address cannot mine a block, you need to alternate");
-                return false;
-            }
+        if (thisBlock.getIndex() > Seting.CHECK_UPDATING_VERSION) {
+//            if (previusblock.getMinerAddress().equals(thisBlock.getMinerAddress())) {
+//                System.out.println("two times in a row the same address cannot mine a block, you need to alternate");
+//                return false;
+//            }
 
-            if(previusblock.getIndex()+1 != thisBlock.getIndex()) {
+            if (previusblock.getIndex() + 1 != thisBlock.getIndex()) {
                 System.out.println("wrong index sequence");
                 return false;
             }
@@ -416,7 +451,7 @@ public class UtilsBlock {
         for (int i = 1; i < blocks.size(); i++) {
             index++;
 
-            if(i < checkIndex){
+            if (i < checkIndex) {
                 System.out.println("already checked");
                 return true;
             }
@@ -450,6 +485,8 @@ public class UtilsBlock {
                     BLOCK_GENERATION_INTERVAL,
                     DIFFICULTY_ADJUSTMENT_INTERVAL,
                     tempList);
+
+//            SaveBalances.saveBalances(cheater, "C://testing/cheaters/");
             if (validated == false) {
 
                 System.out.println("ERROR: UtilsBlock: validation: prevBLock.Hash():" + prevBlock.getHashBlock());

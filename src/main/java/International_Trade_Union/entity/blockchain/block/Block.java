@@ -3,8 +3,10 @@ package International_Trade_Union.entity.blockchain.block;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.exception.NotValidTransactionException;
 import International_Trade_Union.model.Mining;
+
 import International_Trade_Union.utils.UtilsJson;
 import International_Trade_Union.utils.UtilsStorage;
+import International_Trade_Union.utils.UtilsTime;
 import International_Trade_Union.utils.UtilsUse;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
@@ -97,7 +99,7 @@ public final class Block implements Cloneable {
         this.minerRewards = miningRewardsCount();
         this.hashCompexity = hashCompexity;
         this.founderAddress = founderAddress;
-        this.timestamp = Timestamp.from(Instant.now());
+        this.timestamp = new Timestamp(UtilsTime.getUniversalTimestamp());
 //        this.timestamp = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         this.index = index;
         this.hashBlock = findHash(hashCompexity);
@@ -198,11 +200,7 @@ public final class Block implements Cloneable {
     }
 
     public String chooseFindHash(int hashCompexity, boolean choose) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        if (choose) {
-            return findHashConcurrently(hashCompexity);
-        } else {
-            return findHash(hashCompexity);
-        }
+       return "test";
     }
 
     public String findHashConcurrently(int hashComplexity)
@@ -338,19 +336,17 @@ public final class Block implements Cloneable {
         String hash = "";
         //используется для определения кто-нибудь уже успел добыть блок.
         int size = UtilsStorage.getSize();
-        Timestamp previus = Timestamp.from(Instant.now());
+        Timestamp previus = new Timestamp(UtilsTime.getUniversalTimestamp());
         while (true) {
             //перебирает число nonce чтобы найти хеш
             this.randomNumberProof++;
 
-
-            System.out.println("");
             BlockForHash block = new BlockForHash(this.dtoTransactions,
                     this.previousHash, this.minerAddress, this.founderAddress,
                     this.randomNumberProof, this.minerRewards, this.hashCompexity, this.timestamp, this.index);
             hash = block.hashForTransaction();
-            System.out.printf("Trying %d to find a block: ", randomNumberProof);
-            Timestamp actualTime = Timestamp.from(Instant.now());
+            System.out.printf("\tTrying %d to find a block: ", randomNumberProof);
+            Timestamp actualTime = new Timestamp(UtilsTime.getUniversalTimestamp());
             Long result = actualTime.toInstant().until(previus.toInstant(), ChronoUnit.SECONDS);
 //          каждые десять секунд проверяем, что время между текущим и предыдущим запросом не больше 10
             if (result > 10 || result < -10) {

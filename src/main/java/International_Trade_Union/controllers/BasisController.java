@@ -191,14 +191,17 @@ public class BasisController {
     /**
      * Возвращает действующий блокчейн. Returns a valid blockchain
      */
-    public static Blockchain getBlockchain() {
-        return blockchain;
+    public static Blockchain getBlockchain() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        Blockchain blockchain1  = Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
+        return blockchain1;
     }
 
-    public static synchronized void setBlockchain(Blockchain blockchain) {
-        BasisController.blockchain = blockchain;
-    }
-
+//    public static synchronized void setBlockchain(Blockchain blockchain) {
+//        BasisController.blockchain = blockchain;
+//    }
+    public static Map<String, Integer> cheaters = new HashMap<>();
     static {
         try {
             //creates all resource folders to work with
@@ -218,7 +221,173 @@ public class BasisController {
             blockchainSize = (int) shortDataBlockchain.getSize();
             blockchainValid = shortDataBlockchain.isValidation();
             prevBlock = Blockchain.indexFromFile(blockchainSize - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-
+            String json = UtilsJson.objToStringJson(shortDataBlockchain);
+            UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
+            if(cheaters.isEmpty()){
+                cheaters.put("23gGdRnzpGCzeoFhRbTh6qN4iUHx4yN7XHtiyu9dLNHp5", 20);
+                cheaters.put("yds19rd1F1DaUw2raZjEtVcXJS1w52PDNWCnqmJU2Vm2", 460);
+                cheaters.put("24ZK18ixYsLVFtRkofVaoAPdbwR8KsavRtGLNHDiMyzy3", 38);
+                cheaters.put("br5AWJ1kYALi8aj6riQmadbVB3N5EQEww4i9NU6fa8rW", 460);
+                cheaters.put("tjghGks15LdppYYvZKwb79w6wU2NwgpEeq5Rktj7smHH", 48);
+                cheaters.put("tsUbUnrNhKbRD5aXaTRUVwmqX1nE6QwyFrvj9E9fvC9i", 12);
+                cheaters.put("xR8M7uGWbXqJZ91agqsHYPGqtgxDdGyMtcN3ub9HrRP4", 270);
+                cheaters.put("ss8xWxs5h6PxcGBLsbqxYYZpMFow9xwPq8WXZcCp9T8W", 840);
+                cheaters.put("wdQkJH2ojoAwiuBszkj4M2PF3gtwP32VcdRvivoACbcq", 10);
+                cheaters.put("2BgqL9dBcZzxRtFToidJe8GoThMbEzwRB2mFCUeLQjY5E", 132);
+                cheaters.put("rkYZHogbkJy9iFXPxuojBRGX4ULQmNi2h96dGRxXhjzB", 336);
+                cheaters.put("26GKW4gTxZ9CfFmeUYa4tf72fCHKVX1Ra1vaV5yhEzPk8", 28);
+                cheaters.put("2789oTQwPH1VELR3rcPiURptx17RG1wmx5taZ71URKEK1", 402);
+                cheaters.put("xUaV5cMdTwMFvtU5mFAiGjgoV6AKXA5izD6fXqQeAnop", 262);
+                cheaters.put("vEoTZj1WDNSZdK7mtJ9g98Yp39zEKFNbnAmeMkkALvQ1", 28);
+                cheaters.put("oGooDwbBWz1GoQ4xHkquPhVxJWFgs5AY8Z5BRiKaZVGQ", 56);
+                cheaters.put("hNSz6M75uLKMCeW17AR4sDcoPZjXJxNbVZuFjnZpgS61", 6);
+                cheaters.put("fbCBE5Et4tmtGPYB74AumnhmTKVtssrWF8d6gfcgssZD", 4);
+                cheaters.put("ruo7jAT29PJVZR3W5wjBgbJpRnoAfbtAJ2BJnP4UqygR", 130);
+                cheaters.put("eEQK24hv8DKkJNter1PgZLJJhWEfSXigXHLYNWwrm2eY", 124);
+                cheaters.put("28yWK3qM546xyQYrG2Kcyqzz37FBPYJKiybLxWDKo5Ppz", 26);
+                cheaters.put("wDzvvr76G6c5vojqMVqZExCaa9GnrSCNVRQMY9RzzKDm", 42);
+                cheaters.put("277sR4HdHx6XijaBu48y2cBNKhBGjaaSt73oBQ2RHLyCp", 46);
+                cheaters.put("iVitpjskNQykCH5R6G1Vy9mvJaWDzEz2akGXU1M1kPmL", 12);
+                cheaters.put("2BkmG61VpEpNLnkHihjw4X72q971vA4w5pHYEcb7ef8W5", 150);
+                cheaters.put("n4Y74AdPQnjrKFzkWTSkN5x57wKZpwfxZsccgBu6dgXC", 160);
+                cheaters.put("ifN9wScZr4CuWVELQo1J524xUv78X8dUrCnqkMDUHKGx", 22);
+                cheaters.put("24uzecEAGzrS8EcNZHEVkJD3R42pBn8927fdXqFvJQfRR", 32);
+                cheaters.put("283yA6LzTYNZLNYF6ktcJWKeR1zogu6oZSKDNqU6FJDMB", 242);
+                cheaters.put("yYjcKwDptRFMDNPZuXZKd99G2tCuryz1GuTh4AzK4JjB", 8);
+                cheaters.put("28Rg1NQpSPv5mwhowW3q71CtALUr9nP1TdeVcWGvWsZxC", 212);
+                cheaters.put("orx1fcthjcAAaMxjuvaGEVPDMFY2Tpg9pYRnkBMQMngC", 342);
+                cheaters.put("296U3K2cCexBm94VLeqF2d81qHU76HFjBbf99MChLwtSj", 22);
+                cheaters.put("unETHwaQSM9PmC61d79hk1wNGQoRAADMXp2caUmxCYDM", 24);
+                cheaters.put("togZkNxViksGGwHQkeb6Wfftc65oJvmniFsCgcLM3JMR", 98);
+                cheaters.put("pzEyaZZqY8N3auYsQL8bQ5Nxw2bjxyAGXKHvvv4BUG7h", 40);
+                cheaters.put("q7ZKrcchAXgSVicHRi8MbY8vXtJ5jFgMz6GjsFKCPGE2", 172);
+                cheaters.put("v3cyYpMcAQyYYNxnghUsKjxqDKQW9JWssSfB5YgnDRkZ", 258);
+                cheaters.put("rustMYAYYhZqQbGcDFAjLvFGF8PpQUVxTbJ82y9JosHy", 364);
+                cheaters.put("224ybxXE5yteZxNDjs39ndpXVWhPbkNoqqtaB3EU1TvA1", 4);
+                cheaters.put("jZ2L4dKFh15cftZdGhyz4aN2RC8wS9oGzMuTZBEezA8c", 22);
+                cheaters.put("teEMAYvdxQKVejutYwhzC4rbiFBWrb6ML1CCa4EscYkW", 684);
+                cheaters.put("25zNyykmQjnj4H7meMzGQvwyPNeLsFeef9Pjw1ozvpq5P", 120);
+                cheaters.put("pMXXqFVXM6PYQfwAnxL788bkToecn7GQcHBuXawhtUC3", 702);
+                cheaters.put("e9yxWtbbCiv6FpSNDqfaZmQYn1C7fsWDmzVyWdhwGbRa", 8);
+                cheaters.put("nBE3Zf1KjVkvA9bnRFjuKtKqZsU9gxah9KbeuUdrGzNm", 24);
+                cheaters.put("cwUQne7HqKb9z5imxQsWG8QJMf32DEtXRxpoXeFbCwD5", 166);
+                cheaters.put("kBEqKkTzygDdErhzcZLmAMcJMuUogfVkBbye7sVnTH6r", 124);
+                cheaters.put("v8BEUMZk64k5J9HcfPeJJMCDRXJRv2HKwDKQm6YksMxx", 288);
+                cheaters.put("zJmfZzJ8xpHcdq4QtLHD2rf42gz9Vm2Wat4a6R6FsPso", 214);
+                cheaters.put("ysMDsZe9EsfnfSfLhtGiizqfZGf1dkWE1X8v15VwBXsQ", 252);
+                cheaters.put("quMX9Vq5xU4kNA9U8H9gA4ALXq4JAvLkaMdFT2NpB3fW", 18);
+                cheaters.put("hqhbCcimB8hUcn2Gkzi7Ak9G8MPXLdvY1rr9qXKzbAga", 32);
+                cheaters.put("osgahwsZCW3PkYpMqSxnLBR5KN6NgQLbxvAuGeC7RxRk", 652);
+                cheaters.put("e9BHsZzg5JMf1LsxtR1fkyMXZ3RDWKw6nj99HSQi8tWv", 8);
+                cheaters.put("292YK2bMfneupTvSRJ46APfmw53jF5P21eQgXt7D98x1v", 672);
+                cheaters.put("z1KzWiZjFnqSQTwHph6jV4KydaXmGQt6SeCNSK8aKRUB", 8);
+                cheaters.put("mtYyHFA2hw9Tv9JvGwwitGwTq42d65DP7iCegoP8YuEQ", 34);
+                cheaters.put("oAcadYwHTgBUtNpStjfahjRwYYVLu9hukyabwxjT32og", 376);
+                cheaters.put("oFWXNKMEug8EjND88S8t1yCxn64PbWUu3Y6iagwqFqMB", 180);
+                cheaters.put("28RWx6G6A4NoB7CwC6kKnhJ5epUvYEzTpcuN5Emmeujzj", 110);
+                cheaters.put("oMqgPS4HZwd7oQVQjsfqUVR1Vkrmw9oUiiJZRizsvvWF", 16);
+                cheaters.put("k2KBBp9B5ve7C42fdBnAMF1LxxQkiacEtk36Z71QWD1N", 10);
+                cheaters.put("beACedNewaJU6BMFN8CrMeoRNArUHYEYTqZjQJCmNmRC", 398);
+                cheaters.put("215RUpCcGTk9RChPrjKbM8KbsXLPoknLwxWzW5CfAxJPB", 516);
+                cheaters.put("jzGTKkkvJQRLo1dvJPdAyqCL9Ro3mNNipKmUYBNuCkpr", 506);
+                cheaters.put("24diH6Kq61KaYCXRu5uiDGrS8izbqeJaDwVCdaL2oh6Ua", 280);
+                cheaters.put("wFu9mvZqKMKWhaMNRZoczpEXZzoaDYQjBnp5iaM6Pz39", 228);
+                cheaters.put("fmdBFQzg2Ur4MFey8GyRSNBdFy6EJTbcwqgFcnUVgvQK", 152);
+                cheaters.put("jwsCieirRQGttwfoDUuFNfK7dwycPXe9jrbV31k3rCpH", 300);
+                cheaters.put("whFXwPDBEH1wGCdjxqsz3qBHHkLHcsKoAw5PRN5dKdBX", 212);
+                cheaters.put("mvNUJKFMoWR5sTPge3ULS9tackuMGQKS7wsh2XcVa2Rt", 34);
+                cheaters.put("2518F6Ywb1Rr4p7UgxbdT8Mv83F7CLFhnxFMuCPKpw5Yh", 690);
+                cheaters.put("yfWzeXyM63iaf5dMmFQ5sNnZWrhavQhKSWTG8Fwm6tJE", 332);
+                cheaters.put("2AE3iXvSt5S9GxcRK9JK6sdt2WaWgAGojRq8wYvKHnPgQ", 136);
+                cheaters.put("zuturEey12vXvT32P1MMZxD7idAzakRZnohCVy6F34Hn", 26);
+                cheaters.put("2BKfoo2qfzBT27rXRhb9oackZEtcQdRr4P5cUrGKVCmfj", 262);
+                cheaters.put("kYCZTyigxAQhVMpqBfat63rDfTbHQ3bpMNqjJyXUxE75", 404);
+                cheaters.put("w3X85ceDfyEq1SEFFDQBmbdBJP8f2girpW6D1eMzRYLz", 34);
+                cheaters.put("snNSobvq1STcYof8hzkqGF7FfeEQ3gruv2eN9hbpyMXJ", 30);
+                cheaters.put("gPqT5QAv4sYHHcMRcUKAz9eaceHx32ePRZeMeEQkwVQh", 2);
+                cheaters.put("maPQo4KRv3bixgVp5PRNRGu35KnPJrhRoeu7zw8mRhTX", 4);
+                cheaters.put("cRur6s9pZqXJjMtdL1MBKttKWuuWC9246itspnHrDYAQ", 22);
+                cheaters.put("272MnDK5ZCZA4E64x3w5xFxWBLZkeBvaDFy1eeYTVv5ni", 420);
+                cheaters.put("27iftF24CpdZtfT5SoouJ9ViKRWsZ6WUj9mx7pupQhLwz", 4);
+                cheaters.put("yR8ZEK9xcFkxTpT5V7QJY3zsmP3DfC1TcWmG26v36E7T", 22);
+                cheaters.put("pAyuDDZ7sXUQXojWaDUfSRRFn65PvodFoyd2oQdoco4J", 170);
+                cheaters.put("23fxY3QspMdpiqSGCM7xP1HmRowbeUKWEuqXNNDqPBhp9", 52);
+                cheaters.put("jusku5PfFtdrUL2PrwDWWRj845hWaWepw4Zeba1Y6Up6", 6);
+                cheaters.put("vtNLydTEDqbTmFq8Ew28gBu3tXM294KuB2aaDRSVDwBv", 66);
+                cheaters.put("gye7VmCjzfinYd6eqN2UH1HhkwxcCt4CX9bkgWUraLjy", 590);
+                cheaters.put("ugpmBdEsXjvFR3dYT2q2irv15iKiTNKSKUbYdTgPfsz1", 26);
+                cheaters.put("24d7Ay3mNLETD4QcvRRmeLUspkgvxXqp7iDamcE5DLJaL", 6);
+                cheaters.put("dGNNYTqKUq2ur87axvmhoAYNhZsefNRD2uSfDqvru5qA", 36);
+                cheaters.put("s3mKzCgdxdk62F6q5LyWx5N7dEJgHn6STLpPqBv2dcsy", 130);
+                cheaters.put("2AREzDBWHnA4L5YJXBDURGqdA1ZTY5qtsVZw7g1bdiLim", 30);
+                cheaters.put("gX6bLhsMEkwd4cjEtLmiDWddVCzkENGGaUNaSNngiYBx", 108);
+                cheaters.put("zKWF4WxMY5uVbPmuV5E8SYo331FCWWKdjQucEZuHjU4L", 48);
+                cheaters.put("tWjvEda9ux64h4M4bggRYax18k955V8fefLd7WkYukcu", 26);
+                cheaters.put("f89RukbCknDEbAcWTJ4kdyU4wr3hG2QgggWwAHehP8mu", 70);
+                cheaters.put("23mHgUJwzn5ufRrmwcjJ9pChMHoMCF6iXTKpHuBpUmK6B", 242);
+                cheaters.put("wdAiMNvQHjGxTR2SoPC1f5CtMEBkAKqtr3g9zhoNwJcb", 40);
+                cheaters.put("g3PW13FnuqwujejCs2KsRnEZi26v2focEj26tXEN121t", 56);
+                cheaters.put("dY73Ujg6SdUfTU2uNL3M4xp9YPS49mfKFf8UY1pNhhNP", 32);
+                cheaters.put("p3mDRXgDNxJ16NcBoFqFGQHSQwaBMhDe1zNGP4e5mJaT", 40);
+                cheaters.put("2ASpf7w2FNo62yFPk9m4dzZkdu91VUukdcJ1MBodGsS99", 74);
+                cheaters.put("zwsc3EXk547XRjeke5DadHEs95RpsjbVEd9Kt9rkDnLv", 4);
+                cheaters.put("beACedaJU6BMFN8CrMeoRNArUHYEYTqZjQJCmNmRC", 2);
+                cheaters.put("28xPLz7Ewk5vZP8EUrBzZr6yoGPXrWnKTJ4jpDNVj3TwE", 40);
+                cheaters.put("25eQtccfAhnov3NZ8vZKYSS9KGbVN2WKUYsj46s6HvKz1", 26);
+                cheaters.put("iyeHYJnsFV8ZnuC4yyVmDiFe354T2GZHBVUqA64XMtZU", 148);
+                cheaters.put("23UdcdQosh8NdFPX6MJ5n4Qxtbu4pmkstWgRjnJMhxXvR", 32);
+                cheaters.put("dcnpsAvwT2NVfkS4dtBdd6NpbY4bQ5PABc3kiPsXavsj", 126);
+                cheaters.put("mNe6iUtdQSARbprgWn7SGXdAhuDDdKeKniB5LYWPzWa3", 610);
+                cheaters.put("25eHdsX3t4NgA1MsDSJCcpCENvSjiw2qw9yCKupcWTgfP", 28);
+                cheaters.put("sLDTrgToh4tXKUk1TcVtThZFgMvZsFdi1YRhJCJcJwzP", 6);
+                cheaters.put("cDR6QfaAgScEi7NZLHxGKiBEC5v8cgdqGUcXPdQexS21", 146);
+                cheaters.put("bh427oRfPaaihsemmqt3DD7AfyugKZxjz4RWYs8LurbE", 222);
+                cheaters.put("h1H1E38aWVhycSBKn2SjL3hRwPg2xZf6H1diKu1m4Mwn", 424);
+                cheaters.put("df5yzLBqmqBK6Ax9t7W93NLUu138s38rYN7RpsRxRTCN", 24);
+                cheaters.put("23SwqJRMvj6eZX1XbXCAGPJBcyP6xQqTKdfMkjF4dQncg", 304);
+                cheaters.put("2A6kQQ2uAN8zt5B5pfjXydz6P5o6yuyDv5xFyv9fZiFZQ", 230);
+                cheaters.put("2A8S3QkzMqg2FktSMWjEHR6uSUk7am9zac1hfS2UhcjeA", 238);
+                cheaters.put("xrmVPZmpZ3Ttctip9CiwiwmPdb8bBMJoZo9UerCBPjoq", 260);
+                cheaters.put("25T7yijyjktRAS2czwWEJvURxrmhrBBjGRST51DPVmQai", 248);
+                cheaters.put("279w1BHeizFj94sbxLi8pBqGrV4kvao3GSBPBJTkumygo", 142);
+                cheaters.put("ux2xJHME9P7RdZ9NRbCSuFKEcir55feLmSfZFWSSAPxS", 24);
+                cheaters.put("23zGb1bpho2hqpMCYWKVUZSQ8nvvGDgcG1jrWYakPFnDG", 94);
+                cheaters.put("csAF2XdC1EE3mCnSpAiGx1Swe2nvgaiSevF1tY31H4V5", 34);
+                cheaters.put("24GHqPQpdqLwoYKdwWpZcaVx5wRMhmt5qJvdT495VdwXh", 82);
+                cheaters.put("kHiKPVZij6icNs6jELjty2aJXQ4Sw5TEkae7AhjkUZJG", 6);
+                cheaters.put("26vVvoDk5rEMscD2MpQHt3FhpsWnFJcd2AKRDNsrgcbH9", 632);
+                cheaters.put("wBX6762JpbJWHDq7zSSmnyH4EguR4WHPSqZaJiXXVK4T", 8);
+                cheaters.put("2BR6WDEMyt9awJXfo6wsH6JuVykh7iyY4CdxueDBAi1z3", 16);
+                cheaters.put("p91SrgDws5n8GSf4rKCn2gZk27b4HBi48LohLspV3mmL", 464);
+                cheaters.put("jtw7SKU3HRju5A2EFBX96Q2FdG18GXfrwKmGusY7Zqyb", 100);
+                cheaters.put("hVmU5GkJ3pu1vSWzA1vAatYrt4BYY7B8P8HqzsMbmJGM", 70);
+                cheaters.put("riMPjBFzmFpmvo7vnQQzCkhBzRM6ubY32TJLCnsyhwS8", 46);
+                cheaters.put("hjBFyuBcqi2s6QwSLqWficZEmSeaY6jpyyfKeWzd2Vyk", 254);
+                cheaters.put("26nec5NMvVWttPpnHFzrYyt9Z1i74pxfJmx4DFYeYwK73", 390);
+                cheaters.put("hpt8iZNx1haf3jcGVdrCTj59MSQdgUbsHBq8qY9NHuBC", 16);
+                cheaters.put("qLM45ntQypxRHUepugdN6hbbceYohy8R3FueRXDb7Fns", 56);
+                cheaters.put("26BMHMizDLwSKLCGwPqM8TFqb8PW74BiUmKtmdo1GacLn", 242);
+                cheaters.put("twvJvVkkm6dAuqSEs4pHLnUWCYSn8YoxFvRu5q4qo1n4", 80);
+                cheaters.put("of7r6Eoqp86CvUFyDMa9pm36mMtYCVUTz47A2jPU15Kk", 166);
+                cheaters.put("23sq3TT5EvGGUMFZh6k4STAC3hrRnPirpNmQ7zcYRoJ7m", 556);
+                cheaters.put("2A9HWooA3Y9EEnBhGLz1Bbo8kRupR5kJ6xjjab5ZjcTmk", 142);
+                cheaters.put("268wySmYmMdDhA6FBUu7XupVMMTeGzcZ7JsMVUuDiikys", 24);
+                cheaters.put("xWe6F7kriDSprcovdt6muDypDeWih4EJ5q179Z3caGXb", 22);
+                cheaters.put("deXgm6J9LNgeD8N8axfQAL8rGrs3vWFAYnfoNhW5GCDf", 480);
+                cheaters.put("pFno2wqqEAzmAj2tQ4ow4Af3BjSyijyS4JbTb9ESfZiS", 1648);
+                cheaters.put("fL3AaTUMvUpLEhXZKHLwHSzpqAAmbHmvN6EXtothEiie", 224);
+                cheaters.put("wPr3hTFJL6dXJpD3srcx69wCekCncc5GLvko4oBfrEVU", 126);
+                cheaters.put("dQr71RUczgJ7SH6Uepyy7hpdAP2JAPfz7DvzYLnsvefD", 52);
+                cheaters.put("26x5aDK78k8TTdkdPPjWzf6o1jkwbNT9ZB5FzZ5jYGYR7", 12);
+                cheaters.put("sSVE6PhRBrLJSjiBCokhhrUbaQKqsWbR2ipb2jem5viK", 34);
+                cheaters.put("27HDzRat6kFZw1PTdGnG3KVdPcRqNRVYobaNYntmj4MqQ", 50);
+                cheaters.put("ezktCpiUw1DFLneDm1mbvwzkQDNcdtuxj9f15MKytntS", 36);
+                cheaters.put("2733E2eSNwPL4sccL42q43CZ995AThvbx4ZENFdhBY7uJ", 12);
+                cheaters.put("25TjMCZzaQsRoGkJ61Nb8JFTVPiWN4GhSPrKFA3Y4g3WN", 184);
+                cheaters.put("eocwNsJ6i5pyBCKjyva4eXUStS7i7QZJBtqDtNZtwVrC", 36);
+                cheaters.put("2336trATzYoMsmFB6qbTPHwUFLsk1mZSxXysbjywxjcKF", 24);
+                cheaters.put("hzhq1LUk3qCcNyrTGE5pSRrRsYf3HkdSmeu5jap1JUnx", 242);
+            }
 
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
@@ -234,6 +403,8 @@ public class BasisController {
             throw new RuntimeException(e);
         }
     }
+
+
 
     public BasisController() {
     }
@@ -251,8 +422,10 @@ public class BasisController {
     @ResponseBody
     public EntityChain full_chain() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         utilsMethod();
-
-        return new EntityChain(blockchainSize, blockchain.getBlockchainList());
+        Blockchain blockchain1 = Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
+        return new EntityChain(blockchain1.sizeBlockhain(), blockchain1.getBlockchainList());
     }
 
     /**
@@ -577,6 +750,9 @@ public class BasisController {
 
     public static int resolve() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
         updating = true;
+        Blockchain blockchain1 = Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
         boolean isPortion = false;
         boolean isBigPortion = false;
         try {
@@ -704,7 +880,7 @@ public class BasisController {
                         //если локальный блокчейн изначально был больше 0, то добавить в список часть недостающего списка блоков.
                         if (blocks_current_size > 0) {
                             System.out.println("sub: from 0 " + ":" + blocks_current_size);
-                            List<Block> temp = blockchain.subBlock(0, blocks_current_size);
+                            List<Block> temp = blockchain1.subBlock(0, blocks_current_size);
 
                             emptyList.addAll(temp);
                         }
@@ -743,11 +919,11 @@ public class BasisController {
                                     System.out.println(":download blocks: " + block.getIndex() +
                                             " your block : " + (blocks_current_size) + ":wating need downoad blocks: " + (block.getIndex() - blocks_current_size));
                                     emptyList.add(block);
-                                } else if (!blockchain.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
+                                } else if (!blockchain1.getBlock(i).getHashBlock().equals(block.getHashBlock())) {
                                     emptyList.add(block);
                                     System.out.println("********************************");
                                     System.out.println(":dowdnload block index: " + i);
-                                    System.out.println(":block original index: " + blockchain.getBlock(i).getIndex());
+                                    System.out.println(":block original index: " + blockchain1.getBlock(i).getIndex());
                                     System.out.println(":block from index: " + block.getIndex());
                                     System.out.println("---------------------------------");
                                 } else {
@@ -755,7 +931,7 @@ public class BasisController {
 
                                     if (i != 0) {
                                         System.out.println("portion:sub: " + 0 + " : " + i + " block index: " + block.getIndex());
-                                        emptyList.addAll(blockchain.subBlock(0, i));
+                                        emptyList.addAll(blockchain1.subBlock(0, i));
                                     }
 
                                     emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
@@ -810,7 +986,7 @@ public class BasisController {
             //Будет принять только тот блокчейн который является не только самым длинным, но и самым сложным.
             if (bigBlockchain.validatedBlockchain() && bigBlockchain.sizeBlockhain() > blockchainSize && hashCountZeroBigBlockchain > hashCountZeroAll) {
                 System.out.println("resolve start addBlock start: ");
-                blockchain = bigBlockchain;
+                blockchain1 = bigBlockchain;
                 if (isBigPortion) {
                     List<Block> temp = bigBlockchain.subBlock(blockchainSize, bigBlockchain.sizeBlockhain());
                     Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
@@ -898,9 +1074,6 @@ public class BasisController {
             UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
         }
 
-        blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
         shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
         blockchainSize = (int) shortDataBlockchain.getSize();
         blockchainValid = shortDataBlockchain.isValidation();
@@ -931,7 +1104,7 @@ public class BasisController {
     }
 
     public static void addBlock(List<Block> orignalBlocks) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-
+        Blockchain blockchain1 = null;
         Map<String, Account> balances = new HashMap<>();
         Blockchain temporaryForValidation = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
         temporaryForValidation.setBlockchainList(orignalBlocks);
@@ -947,23 +1120,26 @@ public class BasisController {
             UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
         }
 
-        blockchain = Mining.getBlockchain(
+        blockchain1 = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
         shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
         blockchainSize = (int) shortDataBlockchain.getSize();
         blockchainValid = shortDataBlockchain.isValidation();
         prevBlock = Blockchain.indexFromFile(blockchainSize - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+
+        String json = UtilsJson.objToStringJson(shortDataBlockchain);
+        UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
         //recalculation of the balance
         //перерасчет баланса
-        balances = UtilsBalance.calculateBalances(blockchain.getBlockchainList());
+        balances = UtilsBalance.calculateBalances(blockchain1.getBlockchainList());
         Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
         SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
 
 
         //получение и отображение законов, а также сохранение новых законов
         //и изменение действующих законов
-        Map<String, Laws> allLaws = UtilsLaws.getLaws(blockchain.getBlockchainList(), Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
+        Map<String, Laws> allLaws = UtilsLaws.getLaws(blockchain1.getBlockchainList(), Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
 
         //возвращает все законы с балансом
         List<LawEligibleForParliamentaryApproval> allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances,
@@ -986,7 +1162,7 @@ public class BasisController {
     @GetMapping("/addBlock")
     public ResponseEntity getBLock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
-        blockchain = Mining.getBlockchain(
+        Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
         UtilsBlock.deleteFiles();
@@ -1029,17 +1205,7 @@ public class BasisController {
     }
 
 
-    /**
-     * sends the mined block to the storage server.  отправляет добытый блок на сервер хранилища
-     */
-    @RequestMapping("/sendBlocks")
-    public String sending() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        utilsMethod();
 
-        System.out.println("sendBlocks: size: " + blockchain.sizeBlockhain());
-        sendAllBlocksToStorage(blockchain.getBlockchainList());
-        return "redirect:/";
-    }
 
     /**
      * Registers a new external host. Регистрирует новый внешний хост
@@ -1242,6 +1408,7 @@ public class BasisController {
                     System.out.println("PARITY ERROR" + HttpStatus.LOCKED);
                     System.out.println("Test version: If the index is even, then the stock balance must also be even; if the index is not even, all can mining"
                             + HttpStatus.LOCKED.value());
+                    System.out.println("BLOCK HAS CHEATER ADDRESS: " + HttpStatus.SEE_OTHER);
                     System.out.println(":response: " + response );
 
                     System.out.println(":BasisController: sendAllBlocksStorage: response: " + response );
@@ -1330,6 +1497,20 @@ public class BasisController {
     }
 
 
+    public static List<DtoTransaction> deletedCheaters (List<DtoTransaction> dtoTransactions){
+        List<DtoTransaction> withoutCheaters = new ArrayList<>();
+        List<String> cheating = cheaters.entrySet().stream().filter(t->t.getValue() > Seting.LIMIT_CHEATING)
+                .map(t->t.getKey()).collect(Collectors.toList());
+        for (DtoTransaction dtoTransaction : dtoTransactions) {
+            if(cheating.contains(dtoTransaction.getSender()))
+                continue;
+
+            withoutCheaters.add(dtoTransaction);
+        }
+        return withoutCheaters;
+    }
+
+
     public static synchronized String mining() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
         mining = true;
         try {
@@ -1377,9 +1558,6 @@ public class BasisController {
             balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
             //собирает объект блокчейн из файла
 
-            blockchain = Mining.getBlockchain(
-                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                    BlockchainFactoryEnum.ORIGINAL);
             shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
             blockchainSize = (int) shortDataBlockchain.getSize();
             blockchainValid = shortDataBlockchain.isValidation();
@@ -1426,6 +1604,8 @@ public class BasisController {
             //отказ от дублирующих транзакций
             List<Block> temp = Blockchain.subFromFile(blockchainSize - Seting.CHECK_DTO, blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE);
             temporaryDtoList = UtilsBlock.validDto(temp, temporaryDtoList);
+            //блокировка читеров
+            temporaryDtoList = deletedCheaters(temporaryDtoList);
             //отказ от транзакций которые меньше данного вознаграждения
             temporaryDtoList = UtilsTransaction.reward(temporaryDtoList, minDollarRewards);
 
@@ -1610,9 +1790,7 @@ public class BasisController {
                 || prevBlock == null) {
 
             shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-            blockchain = Mining.getBlockchain(
-                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                    BlockchainFactoryEnum.ORIGINAL);
+
 
             blockchainSize = (int) shortDataBlockchain.getSize();
             blockchainValid = shortDataBlockchain.isValidation();

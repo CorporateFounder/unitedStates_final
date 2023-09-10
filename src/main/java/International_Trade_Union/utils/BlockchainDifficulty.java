@@ -7,7 +7,12 @@ import java.util.List;
 
 
 public class BlockchainDifficulty {
-
+  public static void printBinary(byte[] bytes) {
+    for(byte b : bytes) {
+      String binary = String.format("%8s", Integer.toBinaryString(b & 0xFF)).replace(' ', '0');
+      System.out.print(binary);
+    }
+  }
   public static int getAdjustedDifficulty(Block latestBlock, List<Block> blocks,
                                           long blockInterval, int difficultyInterval) {
     
