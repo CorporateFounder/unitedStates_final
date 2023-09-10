@@ -291,7 +291,9 @@ public class TestController {
         System.out.println("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43: " + cheaterAccount.containsKey("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43"));
         System.out.println("23o5AEqbbRnmkiggoWbix2dRwtpULVnFLba6eZLkq5Udw: " + cheaterAccount.containsKey("23o5AEqbbRnmkiggoWbix2dRwtpULVnFLba6eZLkq5Udw"));
         System.out.println("25Ybc6xyHoCS6KnFc6ezb4QHq4hKVRJ5hSmjJDtoLcyK2: " + cheaterAccount.containsKey("25Ybc6xyHoCS6KnFc6ezb4QHq4hKVRJ5hSmjJDtoLcyK2    "));
-        String sender = "jQCqtL2VXmLznKcQQmiMdmf2JeNrsioG3njkHXNRX2Fo";
+
+
+        String sender = "";
         String password = "";
 
 
@@ -405,5 +407,29 @@ public class TestController {
         long expectedBlocksPerSecond = RETARGET_INTERVAL / TARGET_BLOCK_TIME;
         int difficulty = (int) Math.pow(2, (timeSinceLastBlock / expectedBlocksPerSecond) - 1);
         return difficulty;
+    }
+
+    @GetMapping("/findCheater")
+    public void findCheater() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        Blockchain tempblockchain = Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
+
+        for (Block block : tempblockchain.getBlockchainList()) {
+            if(!block.getHashBlock().equals(block.hashForTransaction())){
+                for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
+                    if(dtoTransaction.getSender().equals(Seting.BASIS_ADDRESS) &&
+                    dtoTransaction.getCustomer().equals(block.getMinerAddress())){
+                        System.out.printf("cheater address: %s, dollar: %f, stock %f, index %d\n",
+                                block.getMinerAddress(),
+                                dtoTransaction.getDigitalDollar(),
+                                dtoTransaction.getDigitalStockBalance(),
+                                block.getIndex());
+                    }
+                }
+
+            }
+        }
+
     }
 }

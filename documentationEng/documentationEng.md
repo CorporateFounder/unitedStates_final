@@ -93,6 +93,7 @@ countries and the economic growth of mankind.
 
 ## CONTENT
 
+
 - [short description](../documentationEng/preambleEng.md)
 - [active url](../documentationEng/active-urlEng.md)
 - [how to install the application](../documentationEng/installEng.md)
@@ -132,7 +133,7 @@ countries and the economic growth of mankind.
     - [Budget and additional issue](../charterEng/BUDGET%20AND%20EMISSION.md)
 
 Documentation wallet api
-
+- [Cause of Fork](../documentationEng/afterFork.md)
 - [main page](../documentationEng/documentation-api-wallet.md)
 - future
 - future

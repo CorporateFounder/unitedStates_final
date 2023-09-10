@@ -258,7 +258,7 @@ public interface Seting {
     //version
     int VERSION = 23;
 
-    String FORK_ADDRESS_SPECIAL = "jQCqtL2VXmLznKcQQmiMdmf2JeNrsioG3njkHXNRX2Fo";
+    String FORK_ADDRESS_SPECIAL = "jPjuyLStHTCzwYt9J7R5M7pGUKshfcmEbtE3zVvCBE52";
     double SPECIAL_FORK_BALANCE = 12000000;
 
     String ORIGINAL_HASH = "08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c";

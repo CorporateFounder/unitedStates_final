@@ -130,7 +130,7 @@ https://bitcointalk.org/index.php?topic=5459876.new#new
 Документация апи кошелька
  -[главная страница](../documentation/documentation-api-wallet.md)
  - будет сделана в будущем
- - 
+ - [Причина Форка](../documentation/afterFork.md)
     
 
 [выход на главную](../readme.md)
