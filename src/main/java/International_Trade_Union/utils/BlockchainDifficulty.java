@@ -47,7 +47,7 @@ public class BlockchainDifficulty {
   public static boolean meetsDifficulty(byte[] hash, int difficulty) {
    
     int zeroBits = countLeadingZeroBits(hash);
-    return zeroBits >= difficulty;
+    return zeroBits == difficulty;
   }
 
   private static Block getLatestBlock(List<Block> blocks) {

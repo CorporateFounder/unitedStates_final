@@ -245,7 +245,7 @@ public interface Seting {
 
     //for find cheater 53391
     //after fork 24281
-    int NEW_START_DIFFICULT = 24281;
+    int NEW_START_DIFFICULT = 24858;
 
     //for find cheater 53792
     //after fork 24281
@@ -256,7 +256,7 @@ public interface Seting {
     int PORTION_BLOCK_TO_COMPLEXCITY = 600;
 
     //version
-    int VERSION = 23;
+    int VERSION = 24;
 
     String FORK_ADDRESS_SPECIAL = "jPjuyLStHTCzwYt9J7R5M7pGUKshfcmEbtE3zVvCBE52";
     double SPECIAL_FORK_BALANCE = 12000000;
