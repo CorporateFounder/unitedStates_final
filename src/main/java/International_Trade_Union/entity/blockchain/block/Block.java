@@ -221,6 +221,7 @@ public final class Block implements Cloneable {
                     this.previousHash, this.minerAddress, this.founderAddress,
                     this.randomNumberProof, this.minerRewards, this.hashCompexity, this.timestamp, this.index);
             hash = block.hashForTransaction();
+
             System.out.printf("\tTrying %d to find a block: ThreadName %s:\n ", randomNumberProof , nameThread);
             Timestamp actualTime = new Timestamp(UtilsTime.getUniversalTimestamp());
             Long result = actualTime.toInstant().until(previus.toInstant(), ChronoUnit.SECONDS);
