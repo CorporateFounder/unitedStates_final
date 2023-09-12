@@ -126,7 +126,7 @@ public class UtilesNode {
             if (temporaryBlockchain.validatedBlockchain()) {
 
                 for (Block block : temporaryBlockchain.getBlockchainList()) {
-                    hashCountZeroTemporary += UtilsUse.hashCount(block.getHashBlock());
+                    hashCountZeroTemporary += UtilsUse.hashCount(block.getHashBlock(), block.getIndex());
                 }
 
 

@@ -1,11 +1,9 @@
 package International_Trade_Union.utils;
 
 
-import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.setings.Seting;
 
 import java.io.IOException;
-
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -17,8 +15,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 public class UtilsUse {
     private static MessageDigest digest;
@@ -182,12 +178,17 @@ public class UtilsUse {
     }
 
     //подсчитать количество нулей идущих подряд в hash
-    public static long hashCount(String hash) {
+    public static long hashCount(String hash, long index) {
         long count = 0;
-        for (int i = 0; i < hash.length(); i++) {
-            if (hash.charAt(i) == '0') count++;
-            else return count;
+        if(index < Seting.v3MeetsDifficulty){
+            for (int i = 0; i < hash.length(); i++) {
+                if (hash.charAt(i) == '0') count++;
+                else return count;
+            }
+        }else {
+            count = BlockchainDifficulty.countLeadingZeros(hash);
         }
+
         return count;
     }
 

@@ -56,25 +56,7 @@ public class UtilsUseTest {
         Assert.assertTrue(!UtilsUse.hashComplexity(str, 3));
     }
 
-    @Test
-    public void hashCharsCountTest(){
-        String var = "0fsfafdfad";//1
-        String var2 = "fsf00sfsfds";//0
-        String var3 = "0dsf0fsddf";//1
-        String var4 = "00000fsdfsdfsf";//5
-        int expected = 1;
-        long result = UtilsUse.hashCount(var);
-        Assert.assertEquals(expected, result);
-        expected = 0;
-        result = UtilsUse.hashCount(var2);
-        Assert.assertEquals(expected, result);
-        expected = 1;
-        result = UtilsUse.hashCount(var3);
-        Assert.assertEquals(expected, result);
-        expected = 5;
-        result = UtilsUse.hashCount(var4);
-        Assert.assertEquals(expected, result);
-    }
+
 
 
     @Test

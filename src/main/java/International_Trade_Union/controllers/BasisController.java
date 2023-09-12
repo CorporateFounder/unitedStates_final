@@ -968,7 +968,7 @@ public class BasisController {
                         bigSize = temporaryBlockchain.sizeBlockhain();
                     }
                     for (Block block : temporaryBlockchain.getBlockchainList()) {
-                        hashCountZeroTemporary += UtilsUse.hashCount(block.getHashBlock());
+                        hashCountZeroTemporary += UtilsUse.hashCount(block.getHashBlock(), block.getIndex());
                     }
 
                     if (blocks_current_size < temporaryBlockchain.sizeBlockhain() && hashCountZeroAll < hashCountZeroTemporary) {

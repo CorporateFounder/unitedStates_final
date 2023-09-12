@@ -113,7 +113,7 @@ public class Blockchain implements Cloneable {
         size++;
 
 
-        hashcount += UtilsUse.hashCount(block.getHashBlock());
+        hashcount += UtilsUse.hashCount(block.getHashBlock(), block.getIndex());
         if (validation == false) {
             System.out.println("false shorkCheck");
             map.put("block", block);
@@ -165,7 +165,7 @@ public class Blockchain implements Cloneable {
 
 
             System.out.println("size: " + blockList.size());
-            hashcount += UtilsUse.hashCount(blocks.get(i).getHashBlock());
+            hashcount += UtilsUse.hashCount(blocks.get(i).getHashBlock(), blocks.get(i).getIndex());
             if (validation == false) {
                 System.out.println("false shortCheck");
                 return new DataShortBlockchainInformation(size, validation, hashcount);
@@ -208,7 +208,7 @@ public class Blockchain implements Cloneable {
                         prevBlock = block;
                         continue;
                     }
-                    hashCount += UtilsUse.hashCount(block.getHashBlock());
+                    hashCount += UtilsUse.hashCount(block.getHashBlock(), block.getIndex());
                     valid = UtilsBlock.validationOneBlock(Seting.ADDRESS_FOUNDER,
                             prevBlock,
                             block,
@@ -242,7 +242,7 @@ public class Blockchain implements Cloneable {
                     prevBlock = block;
                     continue;
                 }
-                hashCount += UtilsUse.hashCount(block.getHashBlock());
+                hashCount += UtilsUse.hashCount(block.getHashBlock(), block.getIndex());
                 valid = UtilsBlock.validationOneBlock(Seting.ADDRESS_FOUNDER,
                         prevBlock,
                         block,
@@ -338,7 +338,7 @@ public class Blockchain implements Cloneable {
                         continue;
                     }
 
-                    hashCount += UtilsUse.hashCount(block.getHashBlock());
+                    hashCount += UtilsUse.hashCount(block.getHashBlock(), block.getIndex());
 
                     tempList.add(prevBlock);
                     if (tempList.size() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
