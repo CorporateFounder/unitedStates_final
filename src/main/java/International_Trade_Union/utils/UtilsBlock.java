@@ -207,7 +207,13 @@ public class UtilsBlock {
             difficulty = UtilsDIfficult.getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
         } else if(latestBlock.getIndex() >= Seting.CHANGE_MEET_DIFFICULTY && latestBlock.getIndex() < Seting.CHANGE_MEET_DIFFICULTY + 288){
             difficulty = 3;
-        }else if(latestBlock.getIndex() >= Seting.CHANGE_MEET_DIFFICULTY + 288){
+        }else if(latestBlock.getIndex() >= Seting.CHANGE_MEET_DIFFICULTY + 288 && latestBlock.getIndex() < Seting.v3MeetsDifficulty){
+            difficulty = UtilsDIfficult.getAdjustedDifficultyMedian(latestBlock,
+                    blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
+        }
+        else if(latestBlock.getIndex() >= Seting.v3MeetsDifficulty && latestBlock.getIndex() < Seting.v3MeetsDifficulty + 288){
+            difficulty = 2;
+        }else if(latestBlock.getIndex() >= Seting.v3MeetsDifficulty + 288){
             difficulty = UtilsDIfficult.getAdjustedDifficultyMedian(latestBlock,
                     blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
         }

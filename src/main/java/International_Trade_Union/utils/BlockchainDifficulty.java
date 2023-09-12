@@ -49,10 +49,36 @@ public class BlockchainDifficulty {
     int zeroBits = countLeadingZeroBits(hash);
     return zeroBits >= difficulty;
   }
+  public static String bytesToBinary(byte[] bytes) {
+    String binary = "";
+    for(byte b : bytes) {
+      binary += String.format("%8s", Integer.toBinaryString(b & 0xFF)).replace(' ', '0');
+    }
+    return binary;
+  }
 
+  public static int countLeadingZeros(String binary) {
+
+    int count = 0;
+    for(int i = 0; i < binary.length(); i++) {
+      if(binary.charAt(i) == '0') {
+        count++;
+      } else {
+        break;
+      }
+    }
+
+    return count;
+  }
   public static boolean v2MeetsDifficulty(byte[]hash, int difficulty){
     int zeroBits = countLeadingZeroBits(hash);
     return zeroBits == difficulty;
+  }
+  public static boolean v3MeetsDifficulty(byte[]hash, int difiiculty, long index){
+    String binary = bytesToBinary(hash);
+
+    int leadingZeros = countLeadingZeros(binary);
+    return leadingZeros == difiiculty;
   }
 
   private static Block getLatestBlock(List<Block> blocks) {

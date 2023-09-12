@@ -258,10 +258,12 @@ public interface Seting {
     int PORTION_BLOCK_TO_COMPLEXCITY = 600;
 
     //version
-    int VERSION = 25;
+    int VERSION = 26;
 
     String FORK_ADDRESS_SPECIAL = "jPjuyLStHTCzwYt9J7R5M7pGUKshfcmEbtE3zVvCBE52";
     double SPECIAL_FORK_BALANCE = 12000000;
+
+    int v3MeetsDifficulty = 25435;
 
     String ORIGINAL_HASH = "08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c";
 
