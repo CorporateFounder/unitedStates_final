@@ -201,17 +201,25 @@ public class UtilsBlock {
         Block latestBlock = blocks.get(blocks.size() - 1);
         if (latestBlock.getIndex() > Seting.NEW_START_DIFFICULT - 3
                 && latestBlock.getIndex() < Seting.NEW_START_DIFFICULT + 288) {
-            difficulty = 4;
+            difficulty = 3;
             return difficulty;
-        } else if (latestBlock.getIndex() > Seting.NEW_START_DIFFICULT + 288) {
+        } else if (latestBlock.getIndex() > Seting.NEW_START_DIFFICULT + 288 && latestBlock.getIndex() < Seting.CHANGE_MEET_DIFFICULTY) {
             difficulty = UtilsDIfficult.getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
-        } else if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
-
-            difficulty = UtilsDIfficult.getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
-            //более умеренная модель сложности
-        } else {
-            difficulty = latestBlock.getHashCompexity();
+        } else if(latestBlock.getIndex() >= Seting.CHANGE_MEET_DIFFICULTY && latestBlock.getIndex() < Seting.CHANGE_MEET_DIFFICULTY + 288){
+            difficulty = 3;
+        }else if(latestBlock.getIndex() >= Seting.CHANGE_MEET_DIFFICULTY + 288){
+            difficulty = UtilsDIfficult.getAdjustedDifficultyMedian(latestBlock,
+                    blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
         }
+//        else if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
+//
+//            difficulty = UtilsDIfficult.getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
+//            //более умеренная модель сложности
+//        } else {
+//            difficulty = latestBlock.getHashCompexity();
+//        }
+//
+
 
         return difficulty == 0 ? 1 : difficulty;
     }
@@ -228,28 +236,28 @@ public class UtilsBlock {
             System.out.println("genesis address not equals block founder: ");
             System.out.println("genesis address: " + addressFounder);
             System.out.println("block address: " + thisBlock.getFounderAddress());
-            return false;
+//            return false;
 
         }
         if(thisBlock.getHashCompexity() < 1){
             System.out.println("wrong: difficulty less 1: " + thisBlock.getHashCompexity());
-            return false;
+//            return false;
         }
         if(thisBlock == null){
             System.out.println("wrong: block is null: ");
-            return false;
+//            return false;
         }
         if(thisBlock.getHashBlock().isEmpty() || thisBlock.getHashBlock() == null){
             System.out.println("wrong: hash empty or null");
-            return false;
+//            return false;
         }
         if(thisBlock.getMinerAddress().isEmpty() || thisBlock.getMinerAddress() == null){
             System.out.println("wrong: miner address empty or null");
-            return false;
+//            return false;
         }
         if(thisBlock.getFounderAddress().isEmpty() || thisBlock.getFounderAddress() == null){
             System.out.println("wrong: miner address empty or null");
-            return false;
+//            return false;
         }
 
 
@@ -359,7 +367,6 @@ public class UtilsBlock {
 
             return false;
         }
-
 
         if (thisBlock.getIndex() > Seting.NEW_START_DIFFICULT) {
             int diff = UtilsBlock.difficulty(lastBlock, Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);

@@ -47,6 +47,11 @@ public class BlockchainDifficulty {
   public static boolean meetsDifficulty(byte[] hash, int difficulty) {
    
     int zeroBits = countLeadingZeroBits(hash);
+    return zeroBits >= difficulty;
+  }
+
+  public static boolean v2MeetsDifficulty(byte[]hash, int difficulty){
+    int zeroBits = countLeadingZeroBits(hash);
     return zeroBits == difficulty;
   }
 

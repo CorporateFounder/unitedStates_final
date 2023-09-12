@@ -39,7 +39,7 @@ public  static void printBitSet(byte[] bytes) {
         }else if(timeTaken > timeExpected * percentDown){
             return prevAdjustmentBlock.getHashCompexity() - 1;
         }else {
-            System.out.println("still");
+
             return prevAdjustmentBlock.getHashCompexity();
         }
     }
@@ -63,8 +63,8 @@ public  static void printBitSet(byte[] bytes) {
         long latestTime = latestBlockTimes.get(latestBlockTimes.size() / 2);
 
 
-        double percentGrow = 2.9;
-        double percentDown = 2.0;
+        double percentGrow = 2.6;
+        double percentDown = 1.6;
 
 
         long timeExpected = BLOCK_GENERATION_INTERVAL * DIFFICULTY_ADJUSTMENT_INTERVAL;

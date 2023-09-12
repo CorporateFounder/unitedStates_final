@@ -2,6 +2,7 @@ package International_Trade_Union.utils;
 
 
 
+import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.setings.Seting;
 
 import java.io.IOException;
@@ -113,7 +114,11 @@ public class UtilsUse {
         if(index < Seting.NEW_START_DIFFICULT){
 
             return hashComplexity(literral, hashComplexity);
-        }else {
+        }
+        else if (index >= Seting.CHANGE_MEET_DIFFICULTY){
+            return BlockchainDifficulty.v2MeetsDifficulty(literral.getBytes(), hashComplexity);
+        }
+            else {
 
             return BlockchainDifficulty.meetsDifficulty(literral.getBytes(), hashComplexity);
         }
