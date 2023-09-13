@@ -245,8 +245,9 @@ public final class Block implements Cloneable {
 
             }
 
+
             //если true, то прекращаем майнинг. Правильный блок найден
-            if (UtilsUse.chooseComplexity(hash.substring(0, hashCoplexity), hashCoplexity, index)) {
+            if (UtilsUse.chooseComplexity(hash, hashCoplexity, index)) {
                 System.out.println("block found: hash: " + hash);
                 break;
             }

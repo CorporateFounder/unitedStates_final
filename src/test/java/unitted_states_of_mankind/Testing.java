@@ -18,8 +18,7 @@ import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.bouncycastle.pqc.crypto.newhope.NHSecretKeyProcessor;
+
 import org.json.JSONException;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -212,10 +211,39 @@ public class Testing {
 
     @Test
     public void testHashDifficulty() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        String hash = "964d1b081b61dc7ba7029f38293b5316177ef58ef96a9cd6effa36a0373bc5b4";
+        String hash = "8c41b1ddc22ba3402ed0489952ba45161b279abb3b3b8ebc6bede062a21f83ff";
         hash = bytesToBinary(hash.getBytes());
        int count = BlockchainDifficulty.countLeadingZeros(hash);
+//       printBitSet(hash.getBytes());
+//       BlockchainDifficulty.printBinary(hash.getBytes());
         System.out.println(count);
+        System.out.println("**********************************************");
+        String hello = "hello";
+        int nonce = 0;
+        String testHash = "";
+        Timestamp actualTime = new Timestamp(UtilsTime.getUniversalTimestamp());
+
+
+
+        while (true){
+
+            testHash = UtilsUse.sha256hash(hello + nonce);
+            System.out.println("nonce: " + nonce);
+            hash = bytesToBinary(testHash.getBytes());
+            int countTemp = BlockchainDifficulty.countLeadingZeros(hash);
+            if (UtilsUse.chooseComplexity(hash, 3, 25842)) {
+                System.out.println("block found: hash: " + hash);
+                System.out.println("count: " + countTemp);
+                Timestamp lastIndex = new Timestamp(UtilsTime.getUniversalTimestamp());
+                Long result = actualTime.toInstant().until(lastIndex.toInstant(), ChronoUnit.MINUTES);
+                System.out.println("result: " + result);
+                break;
+            }
+            nonce++;
+
+        }
+
+        BlockchainDifficulty.printBinary(testHash.getBytes());
     }
 
     @Test
