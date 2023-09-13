@@ -755,6 +755,7 @@ public class BasisController {
                 BlockchainFactoryEnum.ORIGINAL);
         boolean isPortion = false;
         boolean isBigPortion = false;
+
         try {
             System.out.println(" :start resolve");
             Blockchain temporaryBlockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
