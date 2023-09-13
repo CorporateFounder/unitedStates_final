@@ -212,7 +212,7 @@ public class UtilsBlock {
             difficulty = UtilsDIfficult.getAdjustedDifficultyMedian(latestBlock,
                     blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
         }
-        else if(latestBlock.getIndex() >= Seting.v3MeetsDifficulty && latestBlock.getIndex() < Seting.v3MeetsDifficulty + 288){
+        else if(latestBlock.getIndex() > Seting.v3MeetsDifficulty && latestBlock.getIndex() < Seting.v3MeetsDifficulty + 288){
             difficulty = 2;
         }else if(latestBlock.getIndex() >= Seting.v3MeetsDifficulty + 288){
             difficulty = UtilsDIfficult.getAdjustedDifficultyMedian(latestBlock,

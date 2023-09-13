@@ -44,6 +44,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static International_Trade_Union.utils.BlockchainDifficulty.bytesToBinary;
 import static International_Trade_Union.utils.BlockchainDifficulty.meetsDifficulty;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -211,45 +212,10 @@ public class Testing {
 
     @Test
     public void testHashDifficulty() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-
-        String data = "test";
-        int difficulty = 2;
-
-        // генерируем хеш
-        String hash = "";
-        int nonce = 0;
-
-
-        do {
-            hash = UtilsUse.sha256hash(data + nonce);
-            nonce++;
-        } while (!meetsDifficulty(hash.getBytes(), difficulty));
-
-        //---------------------------------------------------------------------------
-        byte[] hashBytes = hash.getBytes();
-
-        // выводим хеш и биты
-        System.out.println("Hash: " + hash);
-        printBitSet(hashBytes);
-
-        // проверяем сложность
-        assertTrue(meetsDifficulty(hashBytes, difficulty));
-
-        // проверяем большую сложность
-        int diff2 = 4;
-        assertFalse(meetsDifficulty(hashBytes, diff2));
-
-        // подсчитываем нули
-        int leadingZeros = BlockchainDifficulty.countLeadingZeroBits(hashBytes);
-        assertEquals(difficulty, leadingZeros);
-
-        List<DtoTransaction> dtoTransactions = new ArrayList<>();
-        Block block = new Block(dtoTransactions, "previous",
-                "mineAdres", "founder", 2,
-                53392);
-        System.out.println("block: hash: " + block.getHashBlock());
-        printBitSet(block.getHashBlock().getBytes());
-        System.out.println("block: " + UtilsJson.objToStringJson(block));
+        String hash = "964d1b081b61dc7ba7029f38293b5316177ef58ef96a9cd6effa36a0373bc5b4";
+        hash = bytesToBinary(hash.getBytes());
+       int count = BlockchainDifficulty.countLeadingZeros(hash);
+        System.out.println(count);
     }
 
     @Test

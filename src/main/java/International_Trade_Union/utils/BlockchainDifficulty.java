@@ -74,7 +74,7 @@ public class BlockchainDifficulty {
     int zeroBits = countLeadingZeroBits(hash);
     return zeroBits == difficulty;
   }
-  public static boolean v3MeetsDifficulty(byte[]hash, int difiiculty, long index){
+  public static boolean v3MeetsDifficulty(byte[]hash, int difiiculty){
     String binary = bytesToBinary(hash);
 
     int leadingZeros = countLeadingZeros(binary);
