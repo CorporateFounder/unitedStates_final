@@ -223,7 +223,7 @@ public class UtilsBlock {
 
             if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
 
-                difficulty = UtilsDIfficult.getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
+                difficulty = UtilsDIfficult.v2getAdjustedDifficultyMedian(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
                 //более умеренная модель сложности
             } else {
                 difficulty = latestBlock.getHashCompexity();
@@ -374,8 +374,7 @@ public class UtilsBlock {
             System.out.println("does't start hash with 0");
 
             System.out.println("this block hash: " + thisBlock.getHashBlock());
-            if(thisBlock.getIndex() >= Seting.NEW_START_DIFFICULT)
-                BlockchainDifficulty.printBinary(thisBlock.getHashBlock().getBytes());
+
 
             return false;
         }

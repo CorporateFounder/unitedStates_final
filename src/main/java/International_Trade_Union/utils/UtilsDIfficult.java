@@ -63,7 +63,7 @@ public  static void printBitSet(byte[] bytes) {
         long latestTime = latestBlockTimes.get(latestBlockTimes.size() / 2);
 
 
-        double percentGrow = 4.0;
+        double percentGrow = 2.7;
         double percentDown = 1.6;
 
 

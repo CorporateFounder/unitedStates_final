@@ -80,6 +80,11 @@ public class BlockchainDifficulty {
     int leadingZeros = countLeadingZeros(binary);
     return leadingZeros == difiiculty;
   }
+  public static boolean v4MeetsDifficulty(String hash, int difficulty){
+    int leadingZeros =countLeadingZeroBits(hash.getBytes());
+    boolean isLeadingZerosInSympbol = UtilsUse.hashComplexity(hash, difficulty);
+    return isLeadingZerosInSympbol && leadingZeros >= difficulty;
+  }
 
   private static Block getLatestBlock(List<Block> blocks) {
     return blocks.get(blocks.size() - 1);

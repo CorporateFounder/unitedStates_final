@@ -234,11 +234,11 @@ public class Testing {
     @Test
     public void testHashDifficulty() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         String hash = "8c41b1ddc22ba3402ed0489952ba45161b279abb3b3b8ebc6bede062a21f83ff";
-        hash = bytesToBinary(hash.getBytes());
-        int count = countLeadingZeros(hash);
+//        hash = bytesToBinary(hash.getBytes());
+//        int count = countLeadingZeros(hash);
 //       printBitSet(hash.getBytes());
 //       BlockchainDifficulty.printBinary(hash.getBytes());
-        System.out.println(count);
+//        System.out.println(count);
         System.out.println("**********************************************");
         String hello = "папрарпарыек546нгу авпвкпкккккккккккккккккккккуке";
         int nonce = 0;
@@ -246,33 +246,41 @@ public class Testing {
         Timestamp actualTime = new Timestamp(UtilsTime.getUniversalTimestamp());
 
 
+        int diffInStr = 8;
+        int difficulty = 2;
         while (true) {
 
             testHash = UtilsUse.sha256hash(hello + nonce);
-            System.out.println("nonce: " + nonce);
 
 
-            hash = bytesToBinary(testHash.getBytes());
+
+            hash = testHash;
+//            hash = bytesToBinary(testHash.getBytes());
 
 //            String binary = bytesToBinary(hash.getBytes());
-//            int leadingZeros = countLeadingZeroBits(testHash.getBytes());
-            int leadingZeros = countLeadingZeros(hash);
-            boolean test = leadingZeros == 3;
+//            int leadingZeros = countLeadingZeros(binary);
+            int leadingZeros = countLeadingZeroBits(hash.getBytes());
+            boolean countInHash = UtilsUse.hashComplexity(hash, diffInStr);
+//            boolean countInHash = true;
+            boolean test = leadingZeros >= difficulty && countInHash;
+//            boolean test = countInHash;
 
             if (test) {
 
-                Timestamp lastIndex = new Timestamp(UtilsTime.getUniversalTimestamp());
-                Long result = actualTime.toInstant().until(lastIndex.toInstant(), ChronoUnit.SECONDS);
-                long time = lastIndex.getTime() - actualTime.getTime();
-                System.out.println("time: " + time);
-                System.out.println("result: " + result);
                 break;
             }
             nonce++;
 
         }
+        Timestamp last = new Timestamp(UtilsTime.getUniversalTimestamp());
+        Long result = actualTime.toInstant().until(last.toInstant(), ChronoUnit.SECONDS);
+        System.out.println("different time: " + result);
+        System.out.println("***********************************");
 //        printBitSet(testHash.getBytes());
-        BlockchainDifficulty.printBinary(testHash.getBytes());
+
+        System.out.println("***********************************");
+                BlockchainDifficulty.printBinary(hash.getBytes());
+        System.out.println("hash: " + hash);
     }
 
     @Test
