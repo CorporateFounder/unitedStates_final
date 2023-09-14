@@ -224,7 +224,6 @@ public class Testing {
             if (Scrypt.checkDifficulty(hash, 1)) {
                 // Блок найден
 
-
                 System.out.println("hash");
                 break;
             }

@@ -218,7 +218,7 @@ public class UtilsBlock {
                     blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
         } else if (latestBlock.getIndex() >= Seting.v4MeetsDifficulty && latestBlock.getIndex() < Seting.v4MeetsDifficulty + 288) {
             difficulty = 2;
-        } else if (latestBlock.getIndex() >= Seting.v4MeetsDifficulty) {
+        } else if (latestBlock.getIndex() >= Seting.v4MeetsDifficulty +288) {
             System.out.println("last version difficulty");
 
             if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
