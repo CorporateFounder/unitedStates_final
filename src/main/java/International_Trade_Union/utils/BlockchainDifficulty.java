@@ -1,6 +1,7 @@
 package International_Trade_Union.utils;
 
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.setings.Seting;
 
 import java.util.BitSet;
 import java.util.List;
@@ -83,7 +84,7 @@ public class BlockchainDifficulty {
   public static boolean v4MeetsDifficulty(String hash, int difficulty){
     int leadingZeros =countLeadingZeroBits(hash.getBytes());
     boolean isLeadingZerosInSympbol = UtilsUse.hashComplexity(hash, difficulty);
-    return isLeadingZerosInSympbol && leadingZeros >= difficulty;
+    return isLeadingZerosInSympbol && leadingZeros >= Seting.FIXED_BITE;
   }
 
   private static Block getLatestBlock(List<Block> blocks) {

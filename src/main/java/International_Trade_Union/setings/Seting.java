@@ -273,4 +273,5 @@ public interface Seting {
 
     int LIMIT_CHEATING = 10;
 
+    int FIXED_BITE = 2;
 }
