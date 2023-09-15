@@ -19,6 +19,7 @@ import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -223,16 +224,26 @@ public final class Block implements Cloneable {
             hash = block.hashForTransaction();
 
             System.out.printf("\tTrying %d to find a block: ThreadName %s:\n ", randomNumberProof , nameThread);
-            Timestamp actualTime = new Timestamp(UtilsTime.getUniversalTimestamp());
-            Long result = actualTime.toInstant().until(previus.toInstant(), ChronoUnit.SECONDS);
+            Instant instant1 = Instant.ofEpochMilli(UtilsTime.getUniversalTimestamp());
+            Instant instant2 = previus.toInstant();
+
+            Duration duration = Duration.between(instant1, instant2);
+            long seconds = duration.getSeconds();
 //          каждые десять секунд проверяем, что время между текущим и предыдущим запросом не больше 10
-            if (result > 10 || result < -10) {
-                previus = actualTime;
+
+
+            if (seconds > 10 || seconds < -10) {
+                long milliseconds = instant1.toEpochMilli();
+                previus  = new Timestamp(milliseconds);
+                previus.setTime(milliseconds);
+
                 //проверяет устаревание майнинга, если устарел - прекращает майнинг
+
                 int tempSize = UtilsStorage.getSize();
                 if (size < tempSize) {
                     Mining.miningIsObsolete = true;
                     System.out.println("someone mined a block before you, the search for this block is no longer relevant and outdated: " + hash);
+
                     return hash;
 
                 }

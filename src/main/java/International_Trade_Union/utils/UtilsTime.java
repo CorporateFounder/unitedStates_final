@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 
 public class UtilsTime {
     public static long getUniversalTimestamp() {
-        return ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond();
+        return ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond() * 1000L;
     }
 
 

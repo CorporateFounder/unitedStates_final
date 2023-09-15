@@ -39,6 +39,8 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -48,7 +50,24 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class Testing {
+    @Test
+    public void time() {
+        Timestamp timestamp = new Timestamp(UtilsTime.getUniversalTimestamp());
+        long milliseconds = timestamp.getTime();
 
+// Создание объекта Instant с использованием миллисекунд
+        Instant instant = Instant.ofEpochMilli(milliseconds);
+
+// Преобразование Instant в ZonedDateTime с временной зоной UTC
+        ZonedDateTime zonedDateTime = instant.atZone(ZoneOffset.UTC);
+
+// Форматирование ZonedDateTime в строку
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+                .withZone(ZoneOffset.UTC);
+        String formattedTime = zonedDateTime.format(formatter);
+
+        System.out.println(formattedTime); // Вывод отформатированного времени в UTC
+    }
 
     Map<String, Account> cheater = new HashMap<>();
 
@@ -253,7 +272,6 @@ public class Testing {
             testHash = UtilsUse.sha256hash(hello + nonce);
 
 
-
             hash = testHash;
 //            hash = bytesToBinary(testHash.getBytes());
 
@@ -279,7 +297,7 @@ public class Testing {
 //        printBitSet(testHash.getBytes());
 
         System.out.println("***********************************");
-                BlockchainDifficulty.printBinary(hash.getBytes());
+        BlockchainDifficulty.printBinary(hash.getBytes());
         System.out.println("hash: " + hash);
     }
 

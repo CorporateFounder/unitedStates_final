@@ -63,17 +63,24 @@ public class MainController {
                String stringJson = UtilsJson.objToStringJson(shortBlockchainInformation);
                UtilsFileSaveRead.save(stringJson, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
            }
-       } catch (IOException e) {
-           throw new RuntimeException(e);
-       } catch (NoSuchAlgorithmException e) {
-           throw new RuntimeException(e);
-       } catch (InvalidKeySpecException e) {
-           throw new RuntimeException(e);
-       } catch (SignatureException e) {
-           throw new RuntimeException(e);
-       } catch (NoSuchProviderException e) {
-           throw new RuntimeException(e);
-       } catch (InvalidKeyException e) {
+       } catch (Exception e) {
+           try {
+               BasisController.resolve_conflicts();
+           } catch (NoSuchAlgorithmException ex) {
+               throw new RuntimeException(ex);
+           } catch (InvalidKeySpecException ex) {
+               throw new RuntimeException(ex);
+           } catch (IOException ex) {
+               throw new RuntimeException(ex);
+           } catch (SignatureException ex) {
+               throw new RuntimeException(ex);
+           } catch (NoSuchProviderException ex) {
+               throw new RuntimeException(ex);
+           } catch (InvalidKeyException ex) {
+               throw new RuntimeException(ex);
+           } catch (JSONException ex) {
+               throw new RuntimeException(ex);
+           }
            throw new RuntimeException(e);
        }
     }
