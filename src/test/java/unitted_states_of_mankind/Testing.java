@@ -19,6 +19,7 @@ import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.json.JSONException;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,22 +52,23 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class Testing {
     @Test
-    public void time() {
-        Timestamp timestamp = new Timestamp(UtilsTime.getUniversalTimestamp());
-        long milliseconds = timestamp.getTime();
+    public void time() throws InterruptedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+            List<Block> transactionsAdded = new ArrayList<>();
+            Set<String> strings = new HashSet<>();
+            transactionsAdded = Mining.getBlockchain(
+                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                    BlockchainFactoryEnum.ORIGINAL).getBlockchainList();
 
-// Создание объекта Instant с использованием миллисекунд
-        Instant instant = Instant.ofEpochMilli(milliseconds);
+            for (Block block : transactionsAdded) {
+                for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
+                    strings.add(dtoTransaction.toSign());
+                }
 
-// Преобразование Instant в ZonedDateTime с временной зоной UTC
-        ZonedDateTime zonedDateTime = instant.atZone(ZoneOffset.UTC);
+            }
 
-// Форматирование ZonedDateTime в строку
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
-                .withZone(ZoneOffset.UTC);
-        String formattedTime = zonedDateTime.format(formatter);
+        System.out.println("all transactions");
+        strings.stream().forEach(System.out::println);
 
-        System.out.println(formattedTime); // Вывод отформатированного времени в UTC
     }
 
     Map<String, Account> cheater = new HashMap<>();
