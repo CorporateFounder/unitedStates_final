@@ -8,6 +8,7 @@ import International_Trade_Union.utils.UtilsJson;
 import International_Trade_Union.utils.UtilsStorage;
 import International_Trade_Union.utils.UtilsTime;
 import International_Trade_Union.utils.UtilsUse;
+import ch.qos.logback.core.pattern.FormatInfo;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 import lombok.Data;
@@ -24,6 +25,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.*;
@@ -32,13 +34,15 @@ import java.util.concurrent.atomic.AtomicReference;
 @JsonAutoDetect
 @Data
 public final class Block implements Cloneable {
+    private static volatile boolean blockFound = false;
     private static long randomNumberProofStatic = 0;
     private static int INCREMENT_VALUE = 50000;
     private static int THREAD_COUNT = 10;
 
-    private static boolean stopThread = false;
+
 
     private static boolean MULTI_THREAD = false;
+    private static volatile String foundHash = "";
 
     public static int getThreadCount() {
         return THREAD_COUNT;
@@ -103,7 +107,7 @@ public final class Block implements Cloneable {
         this.timestamp = new Timestamp(UtilsTime.getUniversalTimestamp());
 //        this.timestamp = Timestamp.valueOf( OffsetDateTime.now( ZoneOffset.UTC ).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         this.index = index;
-        this.hashBlock = findHash(hashCompexity);
+        this.hashBlock = chooseMultiString(hashCompexity, MULTI_THREAD);
 
     }
 
@@ -200,7 +204,121 @@ public final class Block implements Cloneable {
         return UtilsJson.objToStringJson(this);
     }
 
+    public String multipleFindHash(int hashCoplexity) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        System.out.println("find hash method");
+        if (!verifyesTransSign()) {
+            throw new NotValidTransactionException();
+        }
+        int differrentNumber = 0;
+        List<Thread> threads = new ArrayList<>();
+        for (int i = 0; i < THREAD_COUNT; i++) {
+            int finalDifferrentNumber = differrentNumber;
+            Thread thread = new Thread(() -> {
+                long nonce = randomNumberProofStatic + finalDifferrentNumber;
 
+                String tempHash = "";
+                int size = UtilsStorage.getSize();
+                Timestamp previus = new Timestamp(UtilsTime.getUniversalTimestamp());
+                String nameThread = Thread.currentThread().getName();
+                while (!blockFound){
+                    BlockForHash block = new BlockForHash(this.dtoTransactions,
+                            this.previousHash, this.minerAddress, this.founderAddress,
+                            nonce, this.minerRewards, this.hashCompexity, this.timestamp, this.index);
+                    System.out.printf("\tTrying %d to find a block: ThreadName %s:\n ", nonce , nameThread);
+                    Instant instant1 = Instant.ofEpochMilli(UtilsTime.getUniversalTimestamp());
+                    Instant instant2 = previus.toInstant();
+
+                    Duration duration = Duration.between(instant1, instant2);
+                    long seconds = duration.getSeconds();
+                    try {
+                        tempHash = block.hashForTransaction();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    if (seconds > 10 || seconds < -10) {
+                        long milliseconds = instant1.toEpochMilli();
+                        previus  = new Timestamp(milliseconds);
+                        previus.setTime(milliseconds);
+
+                        //проверяет устаревание майнинга, если устарел - прекращает майнинг
+
+                        int tempSize = UtilsStorage.getSize();
+                        if (size < tempSize) {
+                            Mining.miningIsObsolete = true;
+                            System.out.println("someone mined a block before you, the search for this block is no longer relevant and outdated: " + tempHash);
+
+                            synchronized (Block.class) {
+                                if (!blockFound) {
+                                    blockFound = true;
+                                }
+                            }
+                            System.out.println("Block found: hash: " + tempHash);
+                            break;
+
+                        }
+
+
+
+                    }
+
+                    //если true, то прекращаем майнинг
+                    if (Mining.isIsMiningStop()) {
+                        System.out.println("mining will be stopped");
+
+                        synchronized (Block.class) {
+                            if (!blockFound) {
+                                blockFound = true;
+                            }
+                        }
+                        System.out.println("Block found: hash: " + tempHash);
+                        break;
+
+                    }
+
+
+                    //если true, то прекращаем майнинг. Правильный блок найден
+                    if (UtilsUse.chooseComplexity(tempHash, hashCoplexity, index)) {
+                        System.out.println("block found: hash: " + tempHash);
+                        synchronized (Block.class) {
+                            if (!blockFound) {
+                                blockFound = true;
+
+                                foundHash = tempHash;
+                            }
+                        }
+                        System.out.println("Block found: hash: " + tempHash);
+                        foundHash = tempHash;
+                        break;
+                    }
+                    nonce++;
+                }
+
+            });
+
+            threads.add(thread);
+            thread.start();
+            differrentNumber += INCREMENT_VALUE;
+        }
+
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        blockFound = false;
+
+            return  foundHash;
+    }
+
+    public String chooseMultiString(int hashCompexity, boolean MULTI_THREAD) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        if(MULTI_THREAD){
+            return multipleFindHash(hashCompexity);
+        }else {
+            return findHash(hashCompexity);
+        }
+    }
     //TODO
     public String findHash(int hashCoplexity) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
         System.out.println("find hash method");

@@ -1413,36 +1413,36 @@ public class BasisController {
                     System.out.println(":response: " + response );
 
                     System.out.println(":BasisController: sendAllBlocksStorage: response: " + response );
-                    System.out.println("blocks: " + blocks);
+
 
                     //there is an up-to-date branch on the global server, download it and delete the obsolete branch.
                     //на глобальном сервере есть актуальная ветка, скачать ее и удалить устревшую ветку.
-                    if (response == HttpStatus.CONFLICT.value()) {
-                        System.out.println(":BasisController: sendAllBlocksStorage: start deleted 50 blocks:");
-                        System.out.println(":size before delete: " + blockchainSize);
-                       Blockchain blockchain1 = Mining.getBlockchain(
-                                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                                BlockchainFactoryEnum.ORIGINAL);
-                        List<Block> temporary = blockchain1.subBlock(0, blockchainSize - Seting.DELETED_PORTION);
-                        UtilsBlock.deleteFiles();
-                        blockchain1.setBlockchainList(temporary);
-                        UtilsBlock.saveBlocks(blockchain1.getBlockchainList(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
-                        blockchain1 = Mining.getBlockchain(
-                                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                                BlockchainFactoryEnum.ORIGINAL);
-
-                        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-                        blockchainSize = (int) shortDataBlockchain.getSize();
-                        blockchainValid = shortDataBlockchain.isValidation();
-
-                        UtilsBlock.deleteFiles();
-                        addBlock(blockchain1.getBlockchainList());
-                        System.out.println(":size after delete: " + blockchainSize);
-
-
-                        int result = resolve();
-                        System.out.println(":resolve: updated: " + result);
-                    }
+//                    if (response == HttpStatus.CONFLICT.value()) {
+//                        System.out.println(":BasisController: sendAllBlocksStorage: start deleted 50 blocks:");
+//                        System.out.println(":size before delete: " + blockchainSize);
+//                       Blockchain blockchain1 = Mining.getBlockchain(
+//                                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+//                                BlockchainFactoryEnum.ORIGINAL);
+//                        List<Block> temporary = blockchain1.subBlock(0, blockchainSize - Seting.DELETED_PORTION);
+//                        UtilsBlock.deleteFiles();
+//                        blockchain1.setBlockchainList(temporary);
+//                        UtilsBlock.saveBlocks(blockchain1.getBlockchainList(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
+//                        blockchain1 = Mining.getBlockchain(
+//                                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+//                                BlockchainFactoryEnum.ORIGINAL);
+//
+//                        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+//                        blockchainSize = (int) shortDataBlockchain.getSize();
+//                        blockchainValid = shortDataBlockchain.isValidation();
+//
+//                        UtilsBlock.deleteFiles();
+//                        addBlock(blockchain1.getBlockchainList());
+//                        System.out.println(":size after delete: " + blockchainSize);
+//
+//
+//                        int result = resolve();
+//                        System.out.println(":resolve: updated: " + result);
+//                    }
 
 
                 }
@@ -1455,8 +1455,6 @@ public class BasisController {
             } catch (IOException e) {
                 e.printStackTrace();
                 continue;
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
             }
 
         }
@@ -1689,6 +1687,7 @@ public class BasisController {
             System.out.println("block to send: " + block.getIndex());
             List<Block> sends = new ArrayList<>();
             sends.add(block);
+            System.out.println("hash: " + block.getHashBlock());
             sendAllBlocksToStorage(sends);
 
 

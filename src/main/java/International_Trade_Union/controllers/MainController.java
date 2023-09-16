@@ -253,6 +253,15 @@ public class MainController {
         return "redirect:/seting";
     }
 
+    @PostMapping("/changeMultiThread")
+    public String changeMultiThread(@RequestParam("thread") boolean thread) {
+        // Здесь можно добавить логику для изменения состояния многопоточности
+        // Например, установить значение переменной или выполнить другие действия в зависимости от значения параметра "reward"
+
+        // Возвращение перенаправления на главную страницу или другой URL
+        Block.setMultiThread(thread);
+        return "redirect:/seting"; // Замените "/" на ваш URL назначения
+    }
 
 
 
@@ -370,9 +379,11 @@ public class MainController {
 //        the miner must receive in order to add a transaction.: " +
 //        BasisController.getMinDollarRewards());
         System.out.println("pool: " + Block.getThreadCount());
+        System.out.println("multithread: " + Block.isMultiThread());
 
         model.addAttribute("minerRew", BasisController.getMinDollarRewards());
         model.addAttribute("pool",Block.getThreadCount());
+        model.addAttribute("multithread", Block.isMultiThread());
 
         return "seting";
     }

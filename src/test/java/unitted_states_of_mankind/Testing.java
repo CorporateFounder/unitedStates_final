@@ -6,6 +6,7 @@ import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.exception.NotValidTransactionException;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.governments.UtilsGovernment;
@@ -37,10 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -51,23 +49,122 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class Testing {
+    private static volatile boolean blockFound = false;
+    private static volatile String foundHash = "-";
     @Test
-    public void time() throws InterruptedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-            List<Block> transactionsAdded = new ArrayList<>();
-            Set<String> strings = new HashSet<>();
-            transactionsAdded = Mining.getBlockchain(
-                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                    BlockchainFactoryEnum.ORIGINAL).getBlockchainList();
+    public void multipleFindHash() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        System.out.println("find hash method");
+        int randomNumberProofStatic = 0;
+        int differrentNumber = 0;
+        int  INCREMENT_VALUE = 100000;
+        int hashCoplexity = 2;
+        List<Thread> threads = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            System.out.println(":i: " + i);
+            int finalDifferrentNumber = differrentNumber;
+            Thread thread = new Thread(() -> {
+                long nonce = randomNumberProofStatic + finalDifferrentNumber;
+                String tempHash = "";
+                int size = UtilsStorage.getSize();
+                Timestamp previus = new Timestamp(UtilsTime.getUniversalTimestamp());
+                String nameThread = Thread.currentThread().getName();
+                while (!blockFound){
 
-            for (Block block : transactionsAdded) {
-                for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
-                    strings.add(dtoTransaction.toSign());
+
+//                    System.out.printf("\tTrying %d to find a block: ThreadName %s:\n ", nonce , nameThread);
+                    Instant instant1 = Instant.ofEpochMilli(UtilsTime.getUniversalTimestamp());
+                    Instant instant2 = previus.toInstant();
+
+                    Duration duration = Duration.between(instant1, instant2);
+                    long seconds = duration.getSeconds();
+
+                        tempHash = UtilsUse.sha256hash("hello: " + nonce);
+
+
+                    if (seconds > 10 || seconds < -10) {
+                        long milliseconds = instant1.toEpochMilli();
+                        previus  = new Timestamp(milliseconds);
+                        previus.setTime(milliseconds);
+
+                        //проверяет устаревание майнинга, если устарел - прекращает майнинг
+
+//                        int tempSize = UtilsStorage.getSize();
+//                        if (size < tempSize) {
+//                            Mining.miningIsObsolete = true;
+//                            System.out.println("someone mined a block before you, the search for this block is no longer relevant and outdated: " + tempHash);
+//
+//                            synchronized (Block.class) {
+//                                if (!blockFound) {
+//                                    blockFound = true;
+//                                    Mining.miningIsObsolete = true;
+//                                    foundHash = tempHash;
+//                                }
+//                            }
+//                            System.out.println("Block found: hash: " + tempHash);
+//                            break;
+//
+//                        }
+
+                    }
+
+                    //если true, то прекращаем майнинг
+//                    if (Mining.isIsMiningStop()) {
+//                        System.out.println("mining will be stopped");
+//
+//                        synchronized (Block.class) {
+//                            if (!blockFound) {
+//                                blockFound = true;
+//                                Mining.miningIsObsolete = true;
+//                                foundHash = tempHash;
+//                            }
+//                        }
+//                        System.out.println("Block found: hash: " + tempHash);
+//
+//                        foundHash= tempHash;
+//                        break;
+//
+//                    }
+//
+
+                    //если true, то прекращаем майнинг. Правильный блок найден
+                    if (UtilsUse.chooseComplexity(tempHash, hashCoplexity, 30001)) {
+                        System.out.println("block found: hash: " + tempHash);
+                        synchronized (Testing.class) {
+                            if (!blockFound) {
+                                blockFound = true;
+//                                Mining.miningIsObsolete = true;
+                                foundHash = tempHash;
+                            }
+                        }
+                        System.out.println("Block found: hash: " + tempHash);
+                        foundHash = tempHash;
+                        break;
+                    }
+                    nonce++;
                 }
 
-            }
+            });
 
-        System.out.println("all transactions");
-        strings.stream().forEach(System.out::println);
+            differrentNumber += INCREMENT_VALUE;
+            threads.add(thread);
+            thread.start();
+        }
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("foundhash: " + foundHash);
+    }
+    @Test
+    public void actualTransactionsInServer() throws InterruptedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
+        System.out.println("size: " + temporaryDtoList.size());
+        for (DtoTransaction transaction : temporaryDtoList) {
+            System.out.println(transaction);
+        }
 
     }
 
@@ -230,27 +327,7 @@ public class Testing {
         System.out.printf("digital stock balance: %f\n", digitalStockAccount);
     }
 
-    @Test
-    public void testScrypt() {
-        long nonce = 0;
-        String hello = "hello world";
-        String hash = UtilsUse.sha256hash(hello + nonce);
-        while (true) {
 
-
-            // Хешируем блок с использованием Scrypt
-            hash = UtilsUse.sha256hash(hello + nonce);
-
-            // Проверяем соответствие сложности
-            if (Scrypt.checkDifficulty(hash, 1)) {
-                // Блок найден
-
-                System.out.println("hash");
-                break;
-            }
-            nonce++;
-        }
-    }
 
     @Test
     public void testHashDifficulty() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
