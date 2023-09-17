@@ -34,6 +34,7 @@
 
 
 <h4 th:text="'multithread: ' + ${multithread}"></h4>
+<h4 th:text="'new pc start with mining with: ' + ${number}"></h4>
 <form action="/changeMultiThread" method="post">
     <input type="hidden" name="thread" th:value="${multithread ? 'false' : 'true'}">
     <button type="submit" class="btn btn-success" th:text="${multithread ? 'Disable multithread' : 'Enable multithread'}"></button>

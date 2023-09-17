@@ -56,6 +56,14 @@ public final class Block implements Cloneable {
         return MULTI_THREAD;
     }
 
+    public static int getIncrementValue() {
+        return INCREMENT_VALUE;
+    }
+
+    public static void setIncrementValue(int incrementValue) {
+        INCREMENT_VALUE = incrementValue;
+    }
+
     public static void setMultiThread(boolean multiThread) {
         MULTI_THREAD = multiThread;
     }

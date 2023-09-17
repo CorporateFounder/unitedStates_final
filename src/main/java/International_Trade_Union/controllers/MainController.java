@@ -384,7 +384,11 @@ public class MainController {
         model.addAttribute("minerRew", BasisController.getMinDollarRewards());
         model.addAttribute("pool",Block.getThreadCount());
         model.addAttribute("multithread", Block.isMultiThread());
-
+        long startMiningNumber = Block.getRandomNumberProofStatic();
+        if(Block.isMultiThread()){
+            startMiningNumber += Block.getThreadCount() * Block.getIncrementValue();
+        }
+        model.addAttribute("number", startMiningNumber);
         return "seting";
     }
 
