@@ -296,8 +296,8 @@ public final class Block implements Cloneable {
                                 foundHash = tempHash;
                             }
                         }
-                        System.out.println("Block found: hash: " + tempHash);
-                        foundHash = tempHash;
+
+
                         break;
                     }
                     nonce++;
