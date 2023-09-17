@@ -33,12 +33,11 @@
 </form>
 
 
-<h4 th:text="'miner reward dollar: ' +${minerRew}"></h4>
-<form action="/setMinDollarRewards" method="post">
-    <input type="text" name="reward" placeholder="enter number of threads" class="form-control"><br>
-    <button type="submit" class="btn btn-success">miner rewards</button><br>
+<h4 th:text="'multithread: ' + ${multithread}"></h4>
+<form action="/changeMultiThread" method="post">
+    <input type="hidden" name="thread" th:value="${multithread ? 'false' : 'true'}">
+    <button type="submit" class="btn btn-success" th:text="${multithread ? 'Disable multithread' : 'Enable multithread'}"></button>
 </form>
-
 
 </div>
 

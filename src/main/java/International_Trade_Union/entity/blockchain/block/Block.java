@@ -206,6 +206,7 @@ public final class Block implements Cloneable {
 
     public String multipleFindHash(int hashCoplexity) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         System.out.println("find hash method");
+
         if (!verifyesTransSign()) {
             throw new NotValidTransactionException();
         }
@@ -282,6 +283,7 @@ public final class Block implements Cloneable {
                         synchronized (Block.class) {
                             if (!blockFound) {
                                 blockFound = true;
+                                this.randomNumberProof = nonce;
 
                                 foundHash = tempHash;
                             }
