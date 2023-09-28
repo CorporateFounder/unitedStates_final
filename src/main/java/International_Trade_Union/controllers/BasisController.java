@@ -2,10 +2,17 @@ package International_Trade_Union.controllers;
 
 import International_Trade_Union.entity.*;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
+import International_Trade_Union.entity.entities.EntityBlock;
+import International_Trade_Union.entity.repository.EntityBlockRepository;
+import International_Trade_Union.entity.repository.EntityDtoTransactionRepository;
+import International_Trade_Union.entity.repository.EntityLawsRepository;
+import International_Trade_Union.entity.services.BlockService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.catalina.core.ApplicationContext;
 import org.bouncycastle.crypto.signers.ISOTrailers;
 import org.json.JSONException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
@@ -46,6 +53,8 @@ import static International_Trade_Union.utils.UtilsBalance.calculateBalance;
 
 @Controller
 public class BasisController {
+    @Autowired
+    BlockService blockService;
 
     private static double minDollarRewards = 0;
     private static Block prevBlock = null;
@@ -1031,20 +1040,23 @@ public class BasisController {
      */
 
     public static void addBlock3(List<Block> originalBlocks, Map<String, Account> balances) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        for (Block block : originalBlocks) {
-            System.out.println(" :BasisController: addBlock3: blockchain is being updated: ");
-            UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-        }
-
-        //recalculation of the balance
-        //перерасчет баланса
+        List<EntityBlock> list = new ArrayList<>();
         List<String> signs = new ArrayList<>();
         Map<String, Laws> allLaws = new HashMap<>();
         List<LawEligibleForParliamentaryApproval> allLawsWithBalance = new ArrayList<>();
         for (Block block : originalBlocks) {
+            System.out.println(" :BasisController: addBlock3: blockchain is being updated: ");
+            UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
+            list.add(entityBlock);
             calculateBalance(balances, block, signs);
             balances = UtilsBalance.calculateBalanceFromLaw(balances, block, allLaws, allLawsWithBalance);
+
         }
+        BlockService.saveAll(list);
+        //recalculation of the balance
+        //перерасчет баланса
+
 
         Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
         SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
@@ -1068,13 +1080,16 @@ public class BasisController {
 
         System.out.println(" addBlock2 start: ");
 
+        List<EntityBlock> entityBlocks = new ArrayList<>();
         //write a new blockchain from scratch to the resources folder
         //записать с нуля новый блокчейн в папку resources
         for (Block block : originalBlocks) {
             System.out.println(" :BasisController: addBlock2: blockchain is being updated: ");
             UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
+            entityBlocks.add(entityBlock);
         }
-
+        BlockService.saveAll(entityBlocks);
         shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
         blockchainSize = (int) shortDataBlockchain.getSize();
         blockchainValid = shortDataBlockchain.isValidation();
@@ -1105,6 +1120,8 @@ public class BasisController {
     }
 
     public static void addBlock(List<Block> orignalBlocks) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+
+
         Blockchain blockchain1 = null;
         Map<String, Account> balances = new HashMap<>();
         Blockchain temporaryForValidation = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
@@ -1119,6 +1136,9 @@ public class BasisController {
         for (Block block : orignalBlocks) {
             System.out.println(" :BasisController: addBlock: blockchain is being updated: ");
             UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
+            BlockService.save(entityBlock);
+
         }
 
         blockchain1 = Mining.getBlockchain(
@@ -1152,6 +1172,8 @@ public class BasisController {
         //rewriting all existing laws
         //перезапись всех действующих законов
         UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+
+
 
         System.out.println(":BasisController: addBlock: finish");
     }

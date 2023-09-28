@@ -7,6 +7,13 @@ import International_Trade_Union.entity.SubBlockchainEntity;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.entities.EntityBlock;
+import International_Trade_Union.entity.entities.EntityDtoTransaction;
+import International_Trade_Union.entity.entities.EntityLaws;
+import International_Trade_Union.entity.repository.EntityBlockRepository;
+import International_Trade_Union.entity.repository.EntityDtoTransactionRepository;
+import International_Trade_Union.entity.repository.EntityLawsRepository;
+import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Account;
@@ -18,10 +25,12 @@ import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.function.ServerResponse;
 
 import java.io.BufferedReader;
@@ -39,9 +48,18 @@ import java.util.stream.Collectors;
 
 import static org.apache.tomcat.jni.Socket.send;
 
-@Controller
+@RestController
 public class TestController {
 
+    @Autowired
+    EntityBlockRepository entityBlockRepository;
+    @Autowired
+    EntityDtoTransactionRepository entityDtoTransactionRepository;
+    @Autowired
+    EntityLawsRepository entityLawsRepository;
+
+    @Autowired
+    BlockService blockService;
 
     public String send(@RequestParam String sender,
                        @RequestParam String recipient,
@@ -432,4 +450,49 @@ public class TestController {
         }
 
     }
+
+    @GetMapping("/testSaveBlockToDb")
+    @ResponseBody
+    public boolean testSaveDb() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+
+       Block block = Blockchain.indexFromFile(10, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        EntityBlock entityBlock =
+                UtilsBlockToEntityBlock.blockToEntityBlock(block);
+        System.out.println("entity block: " +  entityBlock.getIndex());
+        entityBlockRepository.save(entityBlock);
+  block = Blockchain.indexFromFile(11, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+         entityBlock =
+                UtilsBlockToEntityBlock.blockToEntityBlock(block);
+        System.out.println("entity block: " +  entityBlock.getIndex());
+
+//        entityBlockRepository.save(entityBlock);
+        BlockService.save(entityBlock);
+        return true;
+    }
+
+    @GetMapping("/testShowBlockDb")
+    @ResponseBody
+    public List<EntityBlock> testShowDb(){
+//        List<EntityBlock> entityBlocks =
+//                entityBlockRepository.findAll();
+
+        List<EntityBlock> entityBlocks =
+                BlockService.findAll();
+        return entityBlocks;
+    }
+
+    @GetMapping("/testSizeBlockDb")
+    @ResponseBody
+    public long testSize(){
+        return BlockService.count();
+    }
+
+    @GetMapping("/testDeleteFiles")
+    @ResponseBody
+    public boolean testDeleteFiles(){
+        UtilsBlock.deleteFiles();
+        return true;
+    }
+
+
 }

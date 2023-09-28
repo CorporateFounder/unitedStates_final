@@ -1,6 +1,7 @@
 package International_Trade_Union.utils;
 
 import International_Trade_Union.setings.Seting;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UtilsCreatedDirectory {
-
 
     public static void createPackages() throws IOException {
         List<String> files = new ArrayList<>();
@@ -34,7 +34,7 @@ public class UtilsCreatedDirectory {
         files.add(Seting.TEMPORARY_BLOCKCHAIN_FILE);
         files.add(Seting.BALANCE_REPORT_ON_DESTROYED_COINS);
         files.add(Seting.CURRENT_BUDGET_END_EMISSION);
-
+        files.add(Seting.H2_DB);
 
 
         for (String s : files) {
@@ -58,5 +58,10 @@ public class UtilsCreatedDirectory {
         }
 
 
+    }
+    public static String getJarDirectory() {
+        String jarPath = UtilsCreatedDirectory.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String jarDirectory = new File(jarPath).getParent();
+        return jarDirectory;
     }
 }

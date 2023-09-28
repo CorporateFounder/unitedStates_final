@@ -1,6 +1,7 @@
 package International_Trade_Union.setings;
 
 import International_Trade_Union.governments.Directors;
+import International_Trade_Union.utils.UtilsCreatedDirectory;
 import International_Trade_Union.utils.UtilsUse;
 
 
@@ -16,9 +17,6 @@ public interface Seting {
 
 
     Directors directors = new Directors();
-
-
-
 
 
     //За какой период последних блоков учитывать для отбора акционеров.
@@ -37,10 +35,8 @@ public interface Seting {
     double ALL_STOCK_VOTE = 1.0;
 
 
-
     //Минимальное значение чтобы Совет Корпоративных Верховных Судей могла избрать Верховного Судью
     int ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES = 2;
-
 
 
     //Минимальное количество остатка голосов чтобы Совет Акционеров
@@ -55,7 +51,6 @@ public interface Seting {
 
     //голос Верховного Судьи
     int ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE = 1;
-
 
 
     //голос должностных лиц,
@@ -96,15 +91,14 @@ public interface Seting {
     int HASH_COMPLEXITY_GENESIS = 1;
 
     //совет акционеров
-   int BOARD_OF_SHAREHOLDERS = 1500;
+    int BOARD_OF_SHAREHOLDERS = 1500;
 
     //ПОПРАВКА В УСТАВЕ
-   //требования к поправкам
+    //требования к поправкам
     String AMENDMENT_TO_THE_CHARTER = "AMENDMENT_TO_THE_CHARTER";
 
     //директора созданные Советом директоров
     String ADD_DIRECTOR = "ADD_DIRECTOR_";
-
 
 
     //бюджет должен формировать только палата представителей
@@ -129,8 +123,6 @@ public interface Seting {
 
     //Совет акционеров минимум 20% голосов
     int ORIGINAL_LIMIT_MINT_VOTE_BOARD_OF_SHAREHOLDERS_AMENDMENT = BOARD_OF_SHAREHOLDERS * 35 / 100;
-
-
 
 
     //    адресс основателя: здесь будет мой адрес. Сейчас заглушка
@@ -172,7 +164,9 @@ public interface Seting {
     double COUNT_BLOCK_IN_DAY = (DAY_SECOND / BLOCK_TIME);
 
 
-            String ORIGINAL_BLOCKCHAIN_FILE = "/resources/blockchain/";
+
+
+    String ORIGINAL_BLOCKCHAIN_FILE = "/resources/blockchain/";
     String ORIGINAL_BALANCE_FILE = "/resources/balance/";
     String ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE = "/resources/federalGovernment/federalGovernment.txt";
     String ORIGINAL_ALL_CORPORATION_LAWS_FILE = "/resources/federalLaws/";
@@ -191,6 +185,7 @@ public interface Seting {
     //отчет об уничтоженных монетах
     String BALANCE_REPORT_ON_DESTROYED_COINS = "/resources/balanceReportOnDestroyedCoins/";
     String CURRENT_BUDGET_END_EMISSION = "/resources/budgetEndEmission/";
+    String H2_DB = "/resources/h2DB/";
 
 
     //адресса внешних сервисов
@@ -211,7 +206,6 @@ public interface Seting {
     String TEST_CURRENT_LAWS = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/current laws/";
     String TEST_FEDERAL_VOTE = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/vote/";
     String TEST_ALL_FEDERAL_LAWS_WITH_BALANCE_FILE = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/allLawsWithBalance/";
-
 
 
     //Временный блокчейн для тестирования
