@@ -11,4 +11,6 @@ import java.util.List;
 @Repository
 public interface EntityBlockRepository extends JpaRepository<EntityBlock, Long> {
         List<EntityBlock> findAll();
+        List<EntityBlock> findAllByIdBetween(long from, long to);
+        EntityBlock findById(long id);
 }

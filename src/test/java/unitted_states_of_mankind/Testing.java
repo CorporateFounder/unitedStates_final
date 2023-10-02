@@ -6,6 +6,9 @@ import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.entities.EntityAccount;
+import International_Trade_Union.entity.entities.EntityBlock;
+import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.exception.NotValidTransactionException;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
@@ -23,6 +26,7 @@ import International_Trade_Union.vote.VoteEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.json.JSONException;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,14 +53,80 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class Testing {
+
+
     private static volatile boolean blockFound = false;
     private static volatile String foundHash = "-";
+
+    @Test
+    public void entityBalance() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        List<Account> accountList = balances.entrySet().stream()
+                .map(t->t.getValue())
+                .collect(Collectors.toList());
+
+        List<EntityAccount> entityAccounts = UtilsAccountToEntityAccount.accountsToEntityAccounts(balances);
+        List<Account> testAccount = UtilsAccountToEntityAccount.EntityAccountToAccount(entityAccounts);
+         assertEquals(testAccount, accountList);
+
+    }
+    @Test
+    public void entityBlock() throws IOException {
+        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"27MkHGZZnYkNtQMevRqBfAU2Pnu7LJEWC61AzMvAC31V3\",\"digitalDollar\":400.0,\"digitalStockBalance\":400.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIEHrC1uypFUgsXM/Z6yN/AM1qb+Q545RiU5FGFoFVvnGAiEA/adtMyE6ffnsOEVlXl+rbx2NstboFVEoY4D0EZuXfow=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":8.0,\"digitalStockBalance\":8.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIDXMAVvYsJLJLDVGm0bIfJhd58Jzv2OKrAlWVWH6mWlOAiACDeYNeQlkupje6M53315qV2W5VVHLLW+6nvh3zi32sw==\"}],\"previousHash\":\"00da347d3b3d4c9fc5c826fcff7b06569b673c63fc1afdaf7b9075b175f772be\",\"minerAddress\":\"27MkHGZZnYkNtQMevRqBfAU2Pnu7LJEWC61AzMvAC31V3\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":12,\"minerRewards\":0.0,\"hashCompexity\":1,\"timestamp\":1685946378876,\"index\":20,\"hashBlock\":\"039bf7b8b0be69125b93b26018df6b342d7c64305b6405cfa3b4813dae2bc682\"}");
+        EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
+        System.out.println("***************************************");
+
+        System.out.println(block);
+        System.out.println("***************************************");
+
+        Block testBlock = UtilsBlockToEntityBlock.entityBlockToBlock(entityBlock);
+        System.out.println(testBlock);
+
+        System.out.println("getHashCompexity: " + (block.getHashCompexity() == testBlock.getHashCompexity()));
+        System.out.println("getHashBlock: " + (block.getHashBlock().equals(testBlock.getHashBlock())));
+        System.out.println("getMinerRewards: " + (block.getMinerRewards() == testBlock.getMinerRewards()));
+        System.out.println("getFounderAddress: " + (block.getFounderAddress().equals(testBlock.getFounderAddress())));
+        System.out.println("getMinerAddress: " + (block.getMinerAddress().equals(testBlock.getMinerAddress())));
+        System.out.println("getPreviousHash: " + (block.getPreviousHash().equals(testBlock.getPreviousHash())));
+        System.out.println("getIndex: " + (block.getIndex() == testBlock.getIndex()));
+        System.out.println("getTimestamp: " + (block.getTimestamp().equals(testBlock.getTimestamp())));
+        System.out.println("getRandomNumberProof: " + (block.getRandomNumberProof() == testBlock.getRandomNumberProof()));
+        for (int i = 0; i < testBlock.getDtoTransactions().size(); i++) {
+            DtoTransaction transaction = block.getDtoTransactions().get(i);
+            DtoTransaction transaction1 = testBlock.getDtoTransactions().get(i);
+            System.out.println("getCustomer: " + (transaction.getCustomer().equals(transaction1.getCustomer())));
+            System.out.println("getSender: " + (transaction.getSender().equals(transaction1.getSender())));
+            System.out.println("getBonusForMiner: " + (transaction.getBonusForMiner() == transaction1.getBonusForMiner()));
+            System.out.println("getDigitalDollar: " + (transaction.getDigitalDollar() == transaction1.getDigitalDollar()));
+            System.out.println("getDigitalStockBalance: " + (transaction.getDigitalStockBalance() == transaction1.getDigitalStockBalance()));
+            System.out.println("getVoteEnum: " + (transaction.getVoteEnum().equals(transaction1.getVoteEnum())));
+            System.out.println("getSign: " + (transaction.getSign().equals(transaction1.getSign())));
+
+            System.out.println("transaction.getLaws(): " + transaction.getLaws());
+            System.out.println("transaction1.getLaws(): " + transaction1.getLaws());
+
+            if(transaction.getLaws().getHashLaw() == null && transaction1.getLaws().getHashLaw()== null){
+                System.out.println("getHashLaw true");
+            }
+            if(transaction.getLaws().getLaws() == null && transaction1.getLaws().getLaws()== null){
+                System.out.println("getLaws true");
+            }
+
+
+        }
+
+//        testBlock.getDtoTransactions().get(0).getLaws().setPacketLawName("32");
+        assertEquals(testBlock, block);
+
+
+    }
+
     @Test
     public void multipleFindHash() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         System.out.println("find hash method");
         int randomNumberProofStatic = 0;
         int differrentNumber = 0;
-        int  INCREMENT_VALUE = 100000;
+        int INCREMENT_VALUE = 100000;
         int hashCoplexity = 2;
         List<Thread> threads = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
@@ -68,7 +138,7 @@ public class Testing {
                 int size = UtilsStorage.getSize();
                 Timestamp previus = new Timestamp(UtilsTime.getUniversalTimestamp());
                 String nameThread = Thread.currentThread().getName();
-                while (!blockFound){
+                while (!blockFound) {
 
 
 //                    System.out.printf("\tTrying %d to find a block: ThreadName %s:\n ", nonce , nameThread);
@@ -78,12 +148,12 @@ public class Testing {
                     Duration duration = Duration.between(instant1, instant2);
                     long seconds = duration.getSeconds();
 
-                        tempHash = UtilsUse.sha256hash("hello: " + nonce);
+                    tempHash = UtilsUse.sha256hash("hello: " + nonce);
 
 
                     if (seconds > 10 || seconds < -10) {
                         long milliseconds = instant1.toEpochMilli();
-                        previus  = new Timestamp(milliseconds);
+                        previus = new Timestamp(milliseconds);
                         previus.setTime(milliseconds);
 
                         //проверяет устаревание майнинга, если устарел - прекращает майнинг
@@ -158,6 +228,7 @@ public class Testing {
         }
         System.out.println("foundhash: " + foundHash);
     }
+
     @Test
     public void actualTransactionsInServer() throws InterruptedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
@@ -326,7 +397,6 @@ public class Testing {
         System.out.printf("digital dollar balance: %f\n", digitalDollarAccount);
         System.out.printf("digital stock balance: %f\n", digitalStockAccount);
     }
-
 
 
     @Test

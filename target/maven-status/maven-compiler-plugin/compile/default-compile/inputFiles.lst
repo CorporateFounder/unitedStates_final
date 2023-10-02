@@ -63,6 +63,7 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\mode
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsBlock.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\GovernmentController.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsJson.java
+D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\repository\EntityAccountRepository.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\originalCorporateCharter\OriginalPreambleEng.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\vote\CurrentLawVotesEndBalance.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\LawsController.java
@@ -98,6 +99,7 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\vote
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\blockchain\block\Block.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsFileSaveRead.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\SaveBalances.java
+D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\entities\EntityAccount.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\entities\EntityDtoTransaction.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\ResultMiningData.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\TestController.java
@@ -108,6 +110,7 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\gove
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\entities\EntityLaws.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\node\Nodes.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\WebController\StorageController.java
+D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsAccountToEntityAccount.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\TransactionController.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\originalCorporateCharter\OriginalPreamble.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterEngDraft\ArticleTwoSpecialPositionEngDraft.java

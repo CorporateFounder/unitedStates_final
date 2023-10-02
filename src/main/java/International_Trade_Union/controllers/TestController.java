@@ -1,15 +1,13 @@
 package International_Trade_Union.controllers;
 
-import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.SubBlockchainEntity;
 import International_Trade_Union.entity.blockchain.Blockchain;
-import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.entities.EntityBlock;
-import International_Trade_Union.entity.entities.EntityDtoTransaction;
-import International_Trade_Union.entity.entities.EntityLaws;
+import International_Trade_Union.entity.repository.EntityAccountRepository;
 import International_Trade_Union.entity.repository.EntityBlockRepository;
 import International_Trade_Union.entity.repository.EntityDtoTransactionRepository;
 import International_Trade_Union.entity.repository.EntityLawsRepository;
@@ -25,28 +23,22 @@ import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.function.ServerResponse;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.apache.tomcat.jni.Socket.send;
 
 @RestController
 public class TestController {
@@ -57,6 +49,8 @@ public class TestController {
     EntityDtoTransactionRepository entityDtoTransactionRepository;
     @Autowired
     EntityLawsRepository entityLawsRepository;
+    @Autowired
+    EntityAccountRepository entityAccountRepository;
 
     @Autowired
     BlockService blockService;
@@ -147,6 +141,36 @@ public class TestController {
 
     }
 
+    @GetMapping("/testFindById")
+    @ResponseBody
+    public boolean testFindById() throws IOException {
+        int size = BasisController.getBlockchainSize();
+        Block block = Blockchain.indexFromFile(size-1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        EntityBlock tempBlock = entityBlockRepository.findById(size+1);
+        Block testBlock = UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock);
+        System.out.println("***********************************************");
+        System.out.println(testBlock);
+        System.out.println("***********************************************");
+        System.out.println(block);
+        return block.equals(testBlock);
+    }
+    @GetMapping("/testSubBlock")
+    @ResponseBody
+    public boolean testSubBlock() throws IOException {
+        int size = BasisController.getBlockchainSize();
+        int startSize = BasisController.getBlockchainSize() - Seting.PORTION_BLOCK_TO_COMPLEXCITY;
+        List<EntityBlock> entityBlocks =
+                entityBlockRepository.findAllByIdBetween(startSize+1, size);
+        List<Block> blocksDb = UtilsBlockToEntityBlock.entityBlocksToBlocks(entityBlocks);
+        List<Block> blocks = Blockchain.subFromFile(startSize, size-1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+
+        System.out.println("***********************************************************");
+        blocksDb.stream().forEach(t-> System.out.printf("index %d, hash %s: \n", t.getIndex(), t.getHashBlock()));
+
+        System.out.println("***********************************************************");
+        blocks.stream().forEach(t-> System.out.printf("index %d, hash %s: \n", t.getIndex(), t.getHashBlock()));
+        return blocks.equals(blocksDb);
+    }
     @GetMapping("/sendReward")
     @ResponseBody
     public void testBalance() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -351,29 +375,29 @@ public class TestController {
 
     @GetMapping("/testBlock")
     @ResponseBody
-    public int testBlock() throws IOException, CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        Blockchain tempblockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
+    public boolean testBlock() throws IOException, CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        Block prevBlock = Blockchain.indexFromFile(1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
-        //транзакции которые мы добавили в блок и теперь нужно удалить из файла, в папке resources/transactions
-        List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
-        System.out.println("temporaryDtoList: " + temporaryDtoList);
-        System.out.println("********************************************************");
-        //отказ от дублирующих транзакций
-        temporaryDtoList = UtilsBlock.validDto(tempblockchain.getBlockchainList(), temporaryDtoList);
-        System.out.println("temporaryDtoList: " + temporaryDtoList);
-        System.out.println("*********************************************************");
-        //отказ от транзакций которые меньше данного вознаграждения
-        temporaryDtoList = UtilsTransaction.reward(temporaryDtoList, 0);
-        System.out.println("**********************************************************");
+            List<Block> original = Blockchain.subFromFile(
+                    (int) (prevBlock.getIndex() - Seting.PORTION_BLOCK_TO_COMPLEXCITY),
+                    (int) (prevBlock.getIndex() + 1),
+                    Seting.ORIGINAL_BLOCKCHAIN_FILE
+            );
 
-        //раз в три для очищяет файлы в папке resources/sendedTransaction данная папка
-        //хранит уже добавленые в блокчейн транзации, чтобы повторно не добавлять в
-        //в блок уже добавленные транзакции
-
-        AllTransactions.clearUsedTransaction(AllTransactions.getInsanceSended());
-        return 0;
+        List<Block> lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                BlockService.findAllByIdBetween(
+                        prevBlock.getIndex() - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
+                        prevBlock.getIndex() + 1
+                )
+        );
+        System.out.println("**************************************************************");
+        original.forEach(t-> System.out.printf("index: %d, hash %s\n",
+                t.getIndex(), t.getHashBlock()));
+        System.out.println("**************************************************************");
+        lastDiff.forEach(t-> System.out.printf("index: %d, hash %s\n",
+                t.getIndex(), t.getHashBlock()));
+        System.out.println("***************************************************************");
+        return lastDiff.equals(original);
     }
 
     @GetMapping("/testBlock1")
@@ -466,7 +490,7 @@ public class TestController {
         System.out.println("entity block: " +  entityBlock.getIndex());
 
 //        entityBlockRepository.save(entityBlock);
-        BlockService.save(entityBlock);
+        BlockService.saveBlock(entityBlock);
         return true;
     }
 
@@ -484,7 +508,12 @@ public class TestController {
     @GetMapping("/testSizeBlockDb")
     @ResponseBody
     public long testSize(){
-        return BlockService.count();
+
+        long size = BasisController.getBlockchainSize();
+        long sizeDb = BlockService.countBlock();
+        System.out.println("size: " + size);
+        System.out.println("sizeDb: " + sizeDb);
+        return sizeDb;
     }
 
     @GetMapping("/testDeleteFiles")
@@ -492,6 +521,60 @@ public class TestController {
     public boolean testDeleteFiles(){
         UtilsBlock.deleteFiles();
         return true;
+    }
+
+    @GetMapping("/testCheckEqualsBlock")
+    @ResponseBody
+    public boolean checkBlock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        Block block = Blockchain.indexFromFile(20, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        EntityBlock entityBlock = entityBlockRepository.getReferenceById(21L);
+        Block testBlock = UtilsBlockToEntityBlock.entityBlockToBlock(entityBlock);
+
+        System.out.println("equals: " + block.equals(testBlock));
+        System.out.println("********************************************************");
+        System.out.println(block);
+        System.out.println("********************************************************");
+        System.out.println(testBlock);
+        return block.equals(testBlock);
+    }
+
+
+    @GetMapping("/testCheckBalance")
+    @ResponseBody
+    public boolean checkBalance() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        List<Account> accountList = balances.entrySet().stream()
+                .map(t->t.getValue())
+                .collect(Collectors.toList());
+
+
+        List<EntityAccount> entityAccountsList = UtilsAccountToEntityAccount.accountsToEntityAccounts(balances);
+        List<EntityAccount> entityResult = new ArrayList<>();
+        for (EntityAccount entityAccount : entityAccountsList) {
+            if(entityAccountRepository.findByAccount(entityAccount.getAccount()) != null){
+                EntityAccount temp = entityAccountRepository.findByAccount(entityAccount.getAccount());
+                temp.setDigitalDollarBalance(entityAccount.getDigitalDollarBalance());
+                temp.setDigitalStockBalance(entityAccount.getDigitalStockBalance());
+                entityResult.add(temp);
+            }else {
+                entityResult.add(entityAccount);
+            }
+        }
+
+
+        System.out.println("start save");
+
+
+
+        BlockService.saveAccountAll(entityResult);
+        System.out.println("finish save");
+
+        System.out.println("start find");
+        List<EntityAccount> entityAccounts = entityAccountRepository.findAll();
+        System.out.println("finish find");
+
+        List<Account> testAccount = UtilsAccountToEntityAccount.EntityAccountToAccount(entityAccounts);
+        return testAccount.equals(accountList);
     }
 
 

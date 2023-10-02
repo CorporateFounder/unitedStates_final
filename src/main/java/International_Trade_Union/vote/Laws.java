@@ -31,8 +31,14 @@ public class Laws {
         if (this == o) return true;
         if (!(o instanceof Laws)) return false;
         Laws laws = (Laws) o;
+        if(getHashLaw() == null && laws.getHashLaw() == null
+        && getPacketLawName() == null && laws.getPacketLawName() == null
+        && getLaws() == null && laws.getLaws() == null){
+            return true;
+        }
         return getHashLaw().equals(laws.getHashLaw());
     }
+
 
     @Override
     public int hashCode() {
