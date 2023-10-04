@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,16 +46,36 @@ public class BlockService {
 
     }
 
+    public static void deletedAll(){
+        blockService.deleteAll();
+        accountService.deleteAll();
+        lawService.deleteAll();
+        dtoService.deleteAll();
+
+        blockService.flush();
+        accountService.flush();
+        lawService.flush();
+        dtoService.findAll();
+
+
+    }
+
     public static void saveBlock(EntityBlock entityBlock) {
+
         blockService.save(entityBlock);
+        blockService.flush();
+
     }
 
     public static void saveAllBlock(List<EntityBlock> entityBlocks) {
         blockService.saveAll(entityBlocks);
+        blockService.flush();
     }
 
     public static void saveAccount(EntityAccount entityAccount){
+
         accountService.save(entityAccount);
+        accountService.flush();
     }
     public static void saveAccountAll(List<EntityAccount> entityAccounts){
 
@@ -70,6 +91,7 @@ public class BlockService {
             }
         }
         accountService.saveAll(entityResult);
+        accountService.flush();
 
     }
     public static EntityBlock findById(long id){

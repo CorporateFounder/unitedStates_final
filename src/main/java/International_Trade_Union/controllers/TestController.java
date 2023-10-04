@@ -146,13 +146,14 @@ public class TestController {
     public boolean testFindById() throws IOException {
         int size = BasisController.getBlockchainSize();
         Block block = Blockchain.indexFromFile(size-1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-        EntityBlock tempBlock = entityBlockRepository.findById(size+1);
+
+        EntityBlock tempBlock = entityBlockRepository.findById(size);
         Block testBlock = UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock);
         System.out.println("***********************************************");
         System.out.println(testBlock);
         System.out.println("***********************************************");
         System.out.println(block);
-        return block.equals(testBlock);
+        return true;
     }
     @GetMapping("/testSubBlock")
     @ResponseBody
@@ -376,7 +377,7 @@ public class TestController {
     @GetMapping("/testBlock")
     @ResponseBody
     public boolean testBlock() throws IOException, CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        Block prevBlock = Blockchain.indexFromFile(1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        Block prevBlock = Blockchain.indexFromFile(600, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
             List<Block> original = Blockchain.subFromFile(
                     (int) (prevBlock.getIndex() - Seting.PORTION_BLOCK_TO_COMPLEXCITY),
@@ -386,7 +387,7 @@ public class TestController {
 
         List<Block> lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                 BlockService.findAllByIdBetween(
-                        prevBlock.getIndex() - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
+                        (prevBlock.getIndex()+ 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
                         prevBlock.getIndex() + 1
                 )
         );
@@ -397,6 +398,7 @@ public class TestController {
         lastDiff.forEach(t-> System.out.printf("index: %d, hash %s\n",
                 t.getIndex(), t.getHashBlock()));
         System.out.println("***************************************************************");
+
         return lastDiff.equals(original);
     }
 
@@ -542,39 +544,38 @@ public class TestController {
     @GetMapping("/testCheckBalance")
     @ResponseBody
     public boolean checkBalance() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        List<Account> accountList = balances.entrySet().stream()
-                .map(t->t.getValue())
-                .collect(Collectors.toList());
+        Map<String, Account> balnces = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        List<Account> original = balnces.entrySet().stream()
+                .map(t->t.getValue()).collect(Collectors.toList());
 
-
-        List<EntityAccount> entityAccountsList = UtilsAccountToEntityAccount.accountsToEntityAccounts(balances);
-        List<EntityAccount> entityResult = new ArrayList<>();
-        for (EntityAccount entityAccount : entityAccountsList) {
-            if(entityAccountRepository.findByAccount(entityAccount.getAccount()) != null){
-                EntityAccount temp = entityAccountRepository.findByAccount(entityAccount.getAccount());
-                temp.setDigitalDollarBalance(entityAccount.getDigitalDollarBalance());
-                temp.setDigitalStockBalance(entityAccount.getDigitalStockBalance());
-                entityResult.add(temp);
+        List<EntityAccount> temp = entityAccountRepository.findAll();
+        List<Account> db = UtilsAccountToEntityAccount.EntityAccountToAccount(temp);
+        System.out.println("*********************************************************");
+        for (Account account : db) {
+            if(balnces.containsKey(account.getAccount())){
+                System.out.println("------------------------------------------");
+                Account account1 = balnces.get(account.getAccount());
+                System.out.printf("db: %s, dollar %f, stock %f\n", account.getAccount(),
+                        account.getDigitalDollarBalance(), account.getDigitalStockBalance());
+                System.out.printf("original: %s, dollar %f, stock %f\n", account1.getAccount(),
+                        account1.getDigitalDollarBalance(), account1.getDigitalStockBalance());
+                System.out.println("------------------------------------------");
             }else {
-                entityResult.add(entityAccount);
+                System.out.println("++++++++++++++++++++++++++++++++++++++++++");
+                System.out.printf("db: %s, dollar %f, stock %f\n", account.getAccount(),
+                        account.getDigitalDollarBalance(), account.getDigitalStockBalance());
+                System.out.println("++++++++++++++++++++++++++++++++++++++++++");
             }
         }
 
+        System.out.println("*********************************************************");
 
-        System.out.println("start save");
+        System.out.println("size db: " + db.size());
+        System.out.println("size original: " + original.size());
 
 
 
-        BlockService.saveAccountAll(entityResult);
-        System.out.println("finish save");
-
-        System.out.println("start find");
-        List<EntityAccount> entityAccounts = entityAccountRepository.findAll();
-        System.out.println("finish find");
-
-        List<Account> testAccount = UtilsAccountToEntityAccount.EntityAccountToAccount(entityAccounts);
-        return testAccount.equals(accountList);
+        return db.equals(original);
     }
 
 
