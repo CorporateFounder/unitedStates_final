@@ -545,6 +545,7 @@ public class TestController {
         EntityBlock entityBlock = entityBlockRepository.findById(45909);
 //        Block originalBlock = blocks.get(2219);
         Block originalBlock = blocks.get(45908);
+//        originalBlock.getDtoTransactions().get(0).getLaws().setPacketLawName("wrong test");
         Block testBlock = UtilsBlockToEntityBlock.entityBlockToBlock(entityBlock);
         System.out.println("__________________________________________");
         System.out.println("originalBlock getHashBlock: " + originalBlock.getHashBlock());
