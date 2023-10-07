@@ -154,7 +154,7 @@ public class TestController {
         System.out.println(testBlock);
         System.out.println("***********************************************");
         System.out.println(block);
-        return true;
+        return block.equals(testBlock);
     }
 
     @GetMapping("/testSubBlock")
@@ -163,15 +163,22 @@ public class TestController {
         int size = BasisController.getBlockchainSize();
         int startSize = BasisController.getBlockchainSize() - Seting.PORTION_BLOCK_TO_COMPLEXCITY;
         List<EntityBlock> entityBlocks =
-                entityBlockRepository.findAllByIdBetween(startSize + 1, size);
+                entityBlockRepository.findAllByIdBetween(startSize + 1, size -1);
         List<Block> blocksDb = UtilsBlockToEntityBlock.entityBlocksToBlocks(entityBlocks);
         List<Block> blocks = Blockchain.subFromFile(startSize, size - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
         System.out.println("***********************************************************");
-        blocksDb.stream().forEach(t -> System.out.printf("index %d, hash %s: \n", t.getIndex(), t.getHashBlock()));
+        System.out.println(blocksDb.get(0).getIndex() + " hash: " + blocksDb.get(0).getHashBlock());
+        System.out.println(blocksDb.get(blocksDb.size()-1).getIndex() +
+                " hash: " + blocksDb.get(blocksDb.size()-1).getHashBlock());
 
         System.out.println("***********************************************************");
-        blocks.stream().forEach(t -> System.out.printf("index %d, hash %s: \n", t.getIndex(), t.getHashBlock()));
+        System.out.println(blocks.get(0).getIndex() + " hash: " + blocks.get(0).getHashBlock());
+        System.out.println(blocks.get(blocks.size()-1).getIndex() +
+                " hash: " + blocks.get(blocks.size()-1).getHashBlock());
+        System.out.println("***********************************************************");
+        System.out.println("blocks size: " + blocks.size());
+        System.out.println("blocksDb size: " + blocksDb.size());
         return blocks.equals(blocksDb);
     }
 
