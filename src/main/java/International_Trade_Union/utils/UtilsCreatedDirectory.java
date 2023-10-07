@@ -11,6 +11,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UtilsCreatedDirectory {
+    public static void createPackage(String filename) throws IOException {
+        File f = new File(filename);
+        if (!filename.contains(".txt") && !f.exists() ) {
+            System.out.println("is directory: " + Files.isDirectory(Paths.get(filename)) + " : " + filename);
+            Files.createDirectories(f.toPath());
+
+
+        } else if (!f.exists()) {
+            Files.createDirectories(Paths.get(filename).getParent());
+            Files.createFile(Paths.get(filename));
+
+
+        }
+
+    }
 
     public static void createPackages() throws IOException {
         List<String> files = new ArrayList<>();
@@ -40,25 +55,25 @@ public class UtilsCreatedDirectory {
         for (String s : files) {
             // specify an abstract pathname in the File object
             File f = new File(s);
-                if(!s.contains(".txt") && !f.exists() ){
+            if (!s.contains(".txt") && !f.exists()) {
 
-                    System.out.println("is directory: " + Files.isDirectory(Paths.get(s)) + " : " + s);
-                    Files.createDirectories(f.toPath());
-
-
-
-                } else if (!f.exists()) {
-                    Files.createDirectories(Paths.get(s).getParent());
-                    Files.createFile(Paths.get(s));
+                System.out.println("is directory: " + Files.isDirectory(Paths.get(s)) + " : " + s);
+                Files.createDirectories(f.toPath());
 
 
-                }
+            } else if (!f.exists()) {
+                Files.createDirectories(Paths.get(s).getParent());
+                Files.createFile(Paths.get(s));
+
+
+            }
 
 
         }
 
 
     }
+
     public static String getJarDirectory() {
         String jarPath = UtilsCreatedDirectory.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         String jarDirectory = new File(jarPath).getParent();

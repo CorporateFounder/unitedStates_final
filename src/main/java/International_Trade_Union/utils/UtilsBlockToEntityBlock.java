@@ -9,6 +9,7 @@ import International_Trade_Union.vote.Laws;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UtilsBlockToEntityBlock {
@@ -49,17 +50,39 @@ public class UtilsBlockToEntityBlock {
                     transaction.getVoteEnum(),
                     transaction.getSign()
             );
+            entityLaws.setEntityDtoTransaction(entityDtoTransaction);
             entityDtoTransaction.setEntityBlock(null); // Поле будет заполнено при преобразовании блока
             entityDtoTransactions.add(entityDtoTransaction);
+//
         }
 
         return entityDtoTransactions;
     }
+    public static String listToString(List<String> list) {
+        // Проверить, что список не равен null
+        if (list == null) {
+            return null;
+        }
+        // Использовать метод String.join() для объединения элементов списка в одну строку с разделителем ","
+        return String.join("#", list);
+    }
 
+    public static List<String> stringToList(String str) {
+        // Проверить, что строка не равна null
+        if (str == null) {
+            return null;
+        }
+        // Использовать метод String.split() для разбиения строки на массив подстрок по разделителю ","
+        String[] array = str.split("#");
+        // Преобразовать массив в список с помощью метода Arrays.asList()
+        return Arrays.asList(array);
+    }
     public static EntityLaws lawsToEntity(Laws laws) {
 
+        boolean isNull = laws.getLaws() == null? true :false;
         EntityLaws entityLaws = new EntityLaws(
                 laws.getPacketLawName(),
+                isNull,
                 laws.getLaws(),
                 laws.getHashLaw()
         );
@@ -143,10 +166,20 @@ public class UtilsBlockToEntityBlock {
             System.out.println("getHashLaw");
             hash = entityLaws.getHashLaw();
         }
-        Laws laws = new Laws(
-               name,
-                strings);
-        laws.setHashLaw(hash);
+        Laws laws;
+        if(entityLaws.isLawsIsNull()){
+             laws = new Laws(
+                    name,
+                    null);
+            laws.setHashLaw(hash);
+        }else {
+            laws = new Laws(
+                    name,
+                    strings);
+            laws.setHashLaw(hash);
+        }
+
+
 
 
         return laws;

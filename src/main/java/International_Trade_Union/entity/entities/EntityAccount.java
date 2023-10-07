@@ -3,12 +3,13 @@ package International_Trade_Union.entity.entities;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
-import org.hibernate.annotations.NaturalId;
+import org.springframework.data.annotation.Id;
+
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Id;
+
 import java.util.Objects;
 
 @Data
@@ -17,7 +18,7 @@ import java.util.Objects;
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
 public class EntityAccount {
-    @Id
+    @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -55,4 +56,6 @@ public class EntityAccount {
     public int hashCode() {
         return Objects.hash(getAccount());
     }
+
+
 }

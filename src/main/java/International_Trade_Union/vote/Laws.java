@@ -31,12 +31,52 @@ public class Laws {
         if (this == o) return true;
         if (!(o instanceof Laws)) return false;
         Laws laws = (Laws) o;
-        if(getHashLaw() == null && laws.getHashLaw() == null
-        && getPacketLawName() == null && laws.getPacketLawName() == null
-        && getLaws() == null && laws.getLaws() == null){
+
+
+        boolean hashOriginal = false;
+        boolean hash = false;
+        boolean nameOriginal = false;
+        boolean name = false;
+        boolean stringsOriginal = false;
+        boolean strings = false;
+
+        if(getHashLaw() == null ){
+            hashOriginal = true;
+        }
+        if(laws.getHashLaw() == null ){
+            hash = true;
+        }
+        if(getPacketLawName() == null ){
+            nameOriginal = true;
+        }
+        if(laws.getPacketLawName() == null){
+            name = true;
+        }
+
+        if(getLaws() == null){
+            stringsOriginal = true;
+        }
+        if(laws.getLaws() == null){
+            strings = true;
+        }
+        if(hashOriginal && hash && nameOriginal && name && stringsOriginal && strings){
             return true;
         }
-        return getHashLaw().equals(laws.getHashLaw());
+
+        if(!hashOriginal ^ !hash || !nameOriginal ^ !name || !stringsOriginal ^ !strings){
+            return false;
+        }
+
+
+
+
+        if(getHashLaw().equals(laws.getHashLaw())
+                && getPacketLawName().equals(laws.getPacketLawName())
+                && getLaws().equals(laws.getLaws())){
+            return true;
+        }else {
+            return false;
+        }
     }
 
 

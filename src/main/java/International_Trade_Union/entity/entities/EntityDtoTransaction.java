@@ -3,31 +3,28 @@ package International_Trade_Union.entity.entities;
 
 import International_Trade_Union.vote.VoteEnum;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Arrays;
 
+
+@Getter
+@Setter
 @Entity
-@Data
 @Table(name = "entity_dto_transaction")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EntityDtoTransaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
-    public Long getId() {
-        return id;
-    }
 
     public EntityDtoTransaction() {
     }
@@ -58,6 +55,7 @@ public class EntityDtoTransaction {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "entity_block_id")
+    @JsonIgnore
     private EntityBlock entityBlock;
     // Остальные поля класса
 
@@ -68,5 +66,20 @@ public class EntityDtoTransaction {
 
     public void setEntityBlock(EntityBlock entityBlock) {
         this.entityBlock = entityBlock;
+    }
+
+    @Override
+    public String toString() {
+        return "EntityDtoTransaction{" +
+                "id=" + id +
+                ", sender='" + sender + '\'' +
+                ", customer='" + customer + '\'' +
+                ", digitalDollar=" + digitalDollar +
+                ", digitalStockBalance=" + digitalStockBalance +
+                ", entityLaws=" + entityLaws +
+                ", bonusForMiner=" + bonusForMiner +
+                ", voteEnum=" + voteEnum +
+                ", sign=" + Arrays.toString(sign) +
+                '}';
     }
 }

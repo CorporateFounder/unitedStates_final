@@ -2,31 +2,25 @@ package International_Trade_Union.entity.entities;
 
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EntityBlock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
-    public Long getId() {
-        return id;
-    }
 
     public EntityBlock() {
     }
@@ -43,8 +37,7 @@ public class EntityBlock {
         this.index = index;
         this.hashBlock = hashBlock;
     }
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "entity_block_id")
+    @OneToMany(mappedBy = "entityBlock", cascade = CascadeType.ALL)
     private List<EntityDtoTransaction> dtoTransactions;
     private String previousHash;
     private String minerAddress;
@@ -55,4 +48,21 @@ public class EntityBlock {
     private Timestamp timestamp;
     private long index;
     private String hashBlock;
+
+    @Override
+    public String toString() {
+        return "EntityBlock{" +
+                "id=" + id +
+                ", dtoTransactions=" + dtoTransactions +
+                ", previousHash='" + previousHash + '\'' +
+                ", minerAddress='" + minerAddress + '\'' +
+                ", founderAddress='" + founderAddress + '\'' +
+                ", randomNumberProof=" + randomNumberProof +
+                ", minerRewards=" + minerRewards +
+                ", hashCompexity=" + hashCompexity +
+                ", timestamp=" + timestamp +
+                ", index=" + index +
+                ", hashBlock='" + hashBlock + '\'' +
+                '}';
+    }
 }

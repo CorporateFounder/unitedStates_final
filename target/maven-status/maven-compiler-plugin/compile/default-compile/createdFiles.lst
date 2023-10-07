@@ -77,7 +77,6 @@ International_Trade_Union\sheduled\SchedulerConfig.class
 International_Trade_Union\utils\base\Base58.class
 International_Trade_Union\controllers\BasisController.class
 International_Trade_Union\controllers\BlockchainCheckController.class
-International_Trade_Union\utils\UtilesNode.class
 International_Trade_Union\originalCorporateCharter\OriginalPreamble.class
 International_Trade_Union\utils\UtilsDIfficult.class
 International_Trade_Union\utils\UtilsJson$3.class
