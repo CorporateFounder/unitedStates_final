@@ -541,7 +541,8 @@ public class TestController {
                 BlockchainFactoryEnum.ORIGINAL);
         List<Block> blocks = blockchain1.getBlockchainList();
 
-        EntityBlock entityBlock = entityBlockRepository.findById(2220);
+//        EntityBlock entityBlock = entityBlockRepository.findById(2220);
+        EntityBlock entityBlock = entityBlockRepository.findById(45909);
 //        Block originalBlock = blocks.get(2219);
         Block originalBlock = blocks.get(45908);
         Block testBlock = UtilsBlockToEntityBlock.entityBlockToBlock(entityBlock);
@@ -587,43 +588,23 @@ public class TestController {
         System.out.println("entityBlock getTimestamp: " + entityBlock.getTimestamp());
         System.out.println("testBlock getTimestamp: " + testBlock.getTimestamp());
 
-        System.out.println("__________________________________________");
-        for (int i = 0; i < originalBlock.getDtoTransactions().size(); i++) {
-            DtoTransaction originalDto = originalBlock.getDtoTransactions().get(i);
-            EntityDtoTransaction entityDto = entityBlock.getDtoTransactions().get(i);
-            DtoTransaction fromEntityDto = testBlock.getDtoTransactions().get(i);
-            DtoTransaction testFirst = new DtoTransaction(
-                    originalDto.getSender(),
-                    originalDto.getCustomer(),
-                    originalDto.getDigitalDollar(),
-                    originalDto.getDigitalStockBalance(),
-                    originalDto.getLaws(),
-                    originalDto.getBonusForMiner(),
-                    originalDto.getVoteEnum());
-            DtoTransaction testEntity = new DtoTransaction(
-                    fromEntityDto.getSender(),
-                    fromEntityDto.getCustomer(),
-                    fromEntityDto.getDigitalDollar(),
-                    fromEntityDto.getDigitalStockBalance(),
-                    fromEntityDto.getLaws(),
-                    fromEntityDto.getBonusForMiner(),
-                    fromEntityDto.getVoteEnum()
-            );
-            System.out.printf("testFirst %s, toSign: %s\n", testFirst, testFirst.toSign());
-            System.out.printf("testEntity %s toSign: %s\n", testEntity, testEntity.toSign());
-            System.out.println("equals testFirst, testEntity: " + testFirst.equals(testEntity));
-            System.out.println("++++++++++++++++++++++++++++++++++++++++");
-            System.out.println("originalBlock getDtoTransactions().get(i): " + originalDto);
-            System.out.println("entityBlock getTimestamp: " + entityDto);
-            System.out.println("testBlock getTimestamp: " + fromEntityDto);
-            System.out.println("++++++++++++++++++++++++++++++++++++++++");
-            Laws original = originalBlock.getDtoTransactions().get(i).getLaws();
-            Laws fromEntity = testBlock.getDtoTransactions().get(i).getLaws();
-            System.out.println(original.equals(fromEntity));
-            System.out.println("++++++++++++++++++++++++++++++++++++++++");
+        for (int j = 0; j < blocks.size(); j++) {
+            entityBlock = entityBlockRepository.findById(j+1);
+            testBlock = UtilsBlockToEntityBlock.entityBlockToBlock(entityBlock);
+            Block block = blocks.get(j);
+            System.out.println("block: index: " + block.getIndex() + " testBlock: " +
+                    testBlock.getIndex() + " entityBlock: " + entityBlock.getIndex());
+
+            if(!block.equals(testBlock)){
+                System.out.println("wrong: ");
+                System.out.println("block:\n " + block);
+                System.out.println("--------------------------");
+                System.out.println("testBlock:\n" + testBlock);
+                break;
+            }
         }
-        System.out.println("__________________________________________");
-        return testBlocks.equals(blocks);
+//        System.out.println("__________________________________________");
+       return UtilsBlockToEntityBlock.compareLists(blocks, testBlocks);
     }
 
 

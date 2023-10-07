@@ -30,10 +30,11 @@ public class EntityLaws {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    boolean lawsIsNull;
 
     String packetLawName;
 
-     boolean lawsIsNull;
+
     @ElementCollection
     @Type(type = "org.hibernate.type.TextType")
     List<String> laws;
@@ -45,9 +46,9 @@ public class EntityLaws {
     public EntityLaws() {
     }
 
-    public EntityLaws(String packetLawName, boolean lawsIsNull, List<String> laws, String hashLaw) {
-        this.packetLawName = packetLawName;
+    public EntityLaws(boolean lawsIsNull, String packetLawName, List<String> laws, String hashLaw) {
         this.lawsIsNull = lawsIsNull;
+        this.packetLawName = packetLawName;
         this.laws = laws;
         this.hashLaw = hashLaw;
     }
@@ -58,6 +59,7 @@ public class EntityLaws {
                 ", id=" + id +
                 ", packetLawName='" + packetLawName + '\'' +
                 ", laws=" + laws +
+                ", isNull=" + lawsIsNull +
                 ", hashLaw='" + hashLaw + '\'' +
                 '}';
     }

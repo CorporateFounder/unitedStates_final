@@ -13,6 +13,21 @@ import java.util.Arrays;
 import java.util.List;
 
 public class UtilsBlockToEntityBlock {
+
+    public static boolean compareLists(List<Block> list1, List<Block> list2) {
+
+        if (list1.size() != list2.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < list1.size(); i++) {
+            if (!list1.get(i).equals(list2.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
     public static EntityBlock blockToEntityBlock(Block block) {
         List<EntityDtoTransaction> entityDtoTransactions =
                 dtoTransactionToEntity(block.getDtoTransactions());
@@ -81,8 +96,8 @@ public class UtilsBlockToEntityBlock {
 
         boolean isNull = laws.getLaws() == null? true :false;
         EntityLaws entityLaws = new EntityLaws(
-                laws.getPacketLawName(),
                 isNull,
+                laws.getPacketLawName(),
                 laws.getLaws(),
                 laws.getHashLaw()
         );
@@ -144,45 +159,22 @@ public class UtilsBlockToEntityBlock {
         return dtoTransactions;
     }
     public static Laws entityLawsToLaws(EntityLaws entityLaws) throws IOException {
-        String name = null;
-        List<String> strings = null;
-        String hash = null;
+        String name = entityLaws.getPacketLawName() == null? null: entityLaws.getPacketLawName();
+        List<String> strings = entityLaws.getLaws() == null? null: entityLaws.getLaws();
+        String hash = entityLaws.getHashLaw() == null? null: entityLaws.getHashLaw();
 
-        if(entityLaws == null){
-            return new Laws();
-        }
 
-        if(entityLaws.getPacketLawName() != null){
-            System.out.println("getPacketLawName: ");
-            name = entityLaws.getPacketLawName();
-        }
-
-        if(entityLaws.getLaws() != null){
-            System.out.println("getLaws");
-            strings = entityLaws.getLaws();
-        }
-
-        if(entityLaws.getHashLaw() != null){
-            System.out.println("getHashLaw");
-            hash = entityLaws.getHashLaw();
-        }
         Laws laws;
+
+        laws = new Laws(name, strings);
+
+
         if(entityLaws.isLawsIsNull()){
-             laws = new Laws(
-                    name,
-                    null);
-            laws.setHashLaw(hash);
-        }else {
-            laws = new Laws(
-                    name,
-                    strings);
-            laws.setHashLaw(hash);
+            laws.setLaws(null);
         }
-
-
-
-
+        laws.setHashLaw(hash);
         return laws;
+
     }
 
 }
