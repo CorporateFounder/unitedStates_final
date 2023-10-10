@@ -390,17 +390,7 @@ public class BasisController {
                         //Test start algorithm
 
                         List<Block> lastDiff = new ArrayList<>();
-//                        if (blockchainSize > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
-////                            lastDiff = Blockchain.subFromFile(blockchainSize - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-////                                    blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-//
-//                            lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
-//                                    BlockService.findAllByIdBetween(
-//                                            (prevBlock.getIndex()+ 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-//                                            prevBlock.getIndex() + 1
-//                                    )
-//                            );
-//                        }
+
                         SubBlockchainEntity subBlockchainEntity = null;
                         String subBlockchainJson = null;
                         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
@@ -529,8 +519,8 @@ public class BasisController {
                             if (blockchainSize > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
                                 lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                                         BlockService.findAllByIdBetween(
-                                                (prevBlock.getIndex()+ 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-                                                prevBlock.getIndex() + 1
+                                                (blockchainSize) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
+                                                blockchainSize
                                         )
                                 );
                             }
