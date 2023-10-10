@@ -390,17 +390,17 @@ public class BasisController {
                         //Test start algorithm
 
                         List<Block> lastDiff = new ArrayList<>();
-                        if (blockchainSize > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
-//                            lastDiff = Blockchain.subFromFile(blockchainSize - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-//                                    blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-
-                            lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
-                                    BlockService.findAllByIdBetween(
-                                            (prevBlock.getIndex()+ 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-                                            prevBlock.getIndex() + 1
-                                    )
-                            );
-                        }
+//                        if (blockchainSize > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
+////                            lastDiff = Blockchain.subFromFile(blockchainSize - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
+////                                    blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+//
+//                            lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+//                                    BlockService.findAllByIdBetween(
+//                                            (prevBlock.getIndex()+ 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
+//                                            prevBlock.getIndex() + 1
+//                                    )
+//                            );
+//                        }
                         SubBlockchainEntity subBlockchainEntity = null;
                         String subBlockchainJson = null;
                         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
@@ -431,8 +431,8 @@ public class BasisController {
                                 if (blockchainSize > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
                                     lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                                             BlockService.findAllByIdBetween(
-                                                    (prevBlock.getIndex()+ 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-                                                    prevBlock.getIndex() + 1
+                                                    (blockchainSize) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
+                                                    blockchainSize
                                             )
                                     );
                                 }
@@ -448,6 +448,7 @@ public class BasisController {
                                 System.out.println("sublocks: " + subBlocks.size());
 
                                 if (blockchainSize > 1 && !temp.isValidation()) {
+                                    System.out.println("error resolve 2 in portion upper > 500");
                                     return -10;
                                 }
                                 addBlock3(subBlocks, balances);
@@ -478,8 +479,8 @@ public class BasisController {
                                     if (blockchainSize > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
                                         lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                                                 BlockService.findAllByIdBetween(
-                                                        (prevBlock.getIndex()+ 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-                                                        prevBlock.getIndex() + 1
+                                                        (blockchainSize) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
+                                                        blockchainSize
                                                 )
                                         );
                                     }
@@ -544,6 +545,7 @@ public class BasisController {
                             System.out.println("sublocks: " + subBlocks.size());
 
                             if (temp.getSize() > 1 && !temp.isValidation()) {
+                                System.out.println("error resolve 2 in portion upper < 500");
                                 return -10;
                             }
                             addBlock3(subBlocks, balances);
@@ -994,68 +996,7 @@ public class BasisController {
         System.out.println(":BasisController: addBlock2: finish: " + originalBlocks.size());
     }
 
-    public static void addBlock(List<Block> orignalBlocks) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
-
-        Blockchain blockchain1 = null;
-        Map<String, Account> balances = new HashMap<>();
-        Blockchain temporaryForValidation = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
-        temporaryForValidation.setBlockchainList(orignalBlocks);
-        //delete all files from resources folder
-        //удалить все файлы из папки resources
-//        UtilsBlock.deleteFiles();
-        System.out.println(" addBlock start: ");
-
-        List<EntityBlock> entityBlocks = new ArrayList<>();
-        //write a new blockchain from scratch to the resources folder
-        //записать с нуля новый блокчейн в папку resources
-        for (Block block : orignalBlocks) {
-            System.out.println(" :BasisController: addBlock: blockchain is being updated: ");
-            UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-            EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
-            entityBlocks.add(entityBlock);
-
-        }
-        BlockService.saveAllBlock(entityBlocks);
-        List<EntityAccount> entityBalances = UtilsAccountToEntityAccount
-                .accountsToEntityAccounts(balances);
-        BlockService.saveAccountAll(entityBalances);
-
-        blockchain1 = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
-        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-        blockchainSize = (int) shortDataBlockchain.getSize();
-        blockchainValid = shortDataBlockchain.isValidation();
-        prevBlock = Blockchain.indexFromFile(blockchainSize - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-
-        String json = UtilsJson.objToStringJson(shortDataBlockchain);
-        UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
-        //recalculation of the balance
-        //перерасчет баланса
-        balances = UtilsBalance.calculateBalances(blockchain1.getBlockchainList());
-        Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
-        SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
-
-
-        //получение и отображение законов, а также сохранение новых законов
-        //и изменение действующих законов
-        Map<String, Laws> allLaws = UtilsLaws.getLaws(blockchain1.getBlockchainList(), Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
-
-        //возвращает все законы с балансом
-        List<LawEligibleForParliamentaryApproval> allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances,
-                Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-
-        //removal of obsolete laws
-        //удаление устаревших законов
-        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-        //rewriting all existing laws
-        //перезапись всех действующих законов
-        UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-
-
-        System.out.println(":BasisController: addBlock: finish");
-    }
 
     public static void getBlock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         int size = 0;
