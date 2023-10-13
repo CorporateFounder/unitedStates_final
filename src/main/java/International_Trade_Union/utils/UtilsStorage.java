@@ -1,5 +1,6 @@
 package International_Trade_Union.utils;
 
+import International_Trade_Union.setings.Seting;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -8,9 +9,13 @@ import java.net.SocketException;
 
 public class UtilsStorage {
     public static int getSize(){
+        String address = "http://194.87.236.238:80";
+        for (String s : Seting.ORIGINAL_ADDRESSES) {
+            address = s;
+        }
         String sizeStr = "-1";
         try {
-            sizeStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/size");
+            sizeStr = UtilUrl.readJsonFromUrl(address+ "/size");
         }catch (NoRouteToHostException e){
             System.out.println("home page you cannot connect to global server," +
                     "you can't give size global server");

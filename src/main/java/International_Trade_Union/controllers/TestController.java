@@ -157,15 +157,28 @@ public class TestController {
         return block.equals(testBlock);
     }
 
+    @GetMapping("/testSendBlock")
+    @ResponseBody
+    public boolean sendTest() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        System.out.println("test send Block ");
+        for (int i = 1; i < BasisController.getBlockchainSize() ; i++) {
+            System.out.println("test send block " + i);
+            List list = new ArrayList();
+            list.add(UtilsBlockToEntityBlock.entityBlockToBlock(entityBlockRepository.findById(i)));
+            BasisController.sendAllBlocksToStorage(list);
+        }
+        return true;
+    }
+
     @GetMapping("/testSubBlock")
     @ResponseBody
     public boolean testSubBlock() throws IOException {
         int size = BasisController.getBlockchainSize();
         int startSize = BasisController.getBlockchainSize() - Seting.PORTION_BLOCK_TO_COMPLEXCITY;
         List<EntityBlock> entityBlocks =
-                entityBlockRepository.findAllByIdBetween(startSize + 1, size -1);
+                entityBlockRepository.findAllByIdBetween(startSize + 1, size );
         List<Block> blocksDb = UtilsBlockToEntityBlock.entityBlocksToBlocks(entityBlocks);
-        List<Block> blocks = Blockchain.subFromFile(startSize, size - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        List<Block> blocks = Blockchain.subFromFile(startSize, size, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
         System.out.println("***********************************************************");
         System.out.println(blocksDb.get(0).getIndex() + " hash: " + blocksDb.get(0).getHashBlock());
@@ -179,6 +192,26 @@ public class TestController {
         System.out.println("***********************************************************");
         System.out.println("blocks size: " + blocks.size());
         System.out.println("blocksDb size: " + blocksDb.size());
+
+        Block prevBlock = BasisController.getPrevBlock();
+        List<Block> tempBlockchain = Blockchain.subFromFile(
+                (int) ((prevBlock.getIndex() + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY),
+                (int) (prevBlock.getIndex() + 1), Seting.ORIGINAL_BLOCKCHAIN_FILE
+        );
+        List<Block> tempBlockchain2 =UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                BlockService.findAllByIdBetween(
+                        (prevBlock.getIndex()+ 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY + 1,
+                        prevBlock.getIndex() + 1
+                )
+        );
+        System.out.println("***********************************************************");
+        System.out.println("tempblochain size: " + tempBlockchain.get(tempBlockchain.size()-1).getIndex());
+        System.out.println("tempblochain1 size : " + tempBlockchain2.get(tempBlockchain2.size()-1).getIndex());
+        System.out.println("tempblochain: " + tempBlockchain.get(0).getIndex());
+        System.out.println("tempblochain1: " + tempBlockchain2.get(0).getIndex());
+
+        System.out.println("***********************************************************");
+
         return blocks.equals(blocksDb);
     }
 

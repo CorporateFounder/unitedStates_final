@@ -12,6 +12,8 @@ import International_Trade_Union.originalCorporateCharter.OriginalPreamble;
 import International_Trade_Union.originalCorporateCharter.OriginalPreambleEng;
 
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +42,8 @@ import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
+    @Autowired
+    BasisController basisController;
     private static DataShortBlockchainInformation shortBlockchainInformation;
     private static int globalSize = 0;
 
@@ -90,12 +94,18 @@ public class MainController {
             return "redirect:/processUpdating";
         }
 
+        String address = "http://194.87.236.238:80";
+        for (String s : Seting.ORIGINAL_ADDRESSES) {
+            address = s;
+        }
+        System.out.println("address: " + address);
+
         String stringShort = UtilsFileSaveRead.read(Seting.TEMPORARY_BLOCKCHAIN_FILE);
     if(stringShort != null && !stringShort.isEmpty())
         shortBlockchainInformation = UtilsJson.jsonToDataShortBlockchainInformation(stringShort);
         String sizeStr = "-1";
         try {
-            sizeStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/size");
+            sizeStr = UtilUrl.readJsonFromUrl(address + "/size");
         }catch (NoRouteToHostException e){
             System.out.println("home page you cannot connect to global server," +
                     "you can't give size global server");
@@ -117,7 +127,7 @@ public class MainController {
 
         String versionStr = "-1";
         try {
-            versionStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/version");
+            versionStr = UtilUrl.readJsonFromUrl(address + "/version");
         }catch (NoRouteToHostException e){
             System.out.println("home page you cannot connect to global server," +
                     "you can't give version global server");
@@ -132,7 +142,7 @@ public class MainController {
         String difficultOneBlock =  ":";
         String difficultAllBlockchain = ":";
         try {
-            String json = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/difficultyBlockchain");
+            String json = UtilUrl.readJsonFromUrl(address + "/difficultyBlockchain");
              infoDificultyBlockchain = UtilsJson.jsonToInfoDifficulty(json);
 
         }catch (NoRouteToHostException e){

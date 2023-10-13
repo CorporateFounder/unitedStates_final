@@ -50,6 +50,8 @@ public class UtilsCreatedDirectory {
         files.add(Seting.BALANCE_REPORT_ON_DESTROYED_COINS);
         files.add(Seting.CURRENT_BUDGET_END_EMISSION);
         files.add(Seting.H2_DB);
+        files.add(Seting.ORIGINAL_TEMPORARY_BLOCKS);
+        files.add(Seting.ORIGINAL_TEMPORARY_SHORT);
 
 
         for (String s : files) {

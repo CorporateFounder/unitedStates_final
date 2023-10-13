@@ -61,6 +61,7 @@ International_Trade_Union\utils\SaveBalances.class
 International_Trade_Union\utils\UtilsCreatedDirectory.class
 International_Trade_Union\node\Nodes.class
 International_Trade_Union\utils\UtilsUse.class
+International_Trade_Union\entity\blockchain\block\Blockchain.class
 International_Trade_Union\utils\UtilsBalance.class
 International_Trade_Union\exception\NotValidTransactionException.class
 International_Trade_Union\config\BLockchainFactory.class

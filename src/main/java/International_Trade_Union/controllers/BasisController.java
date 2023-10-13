@@ -65,6 +65,9 @@ public class BasisController {
     private static boolean blockchainValid = false;
     private static Set<String> excludedAddresses = new HashSet<>();
 
+    public static Block getPrevBlock() {
+        return prevBlock;
+    }
 
     public static int getDifficultExpected() {
         return difficultExpected;
@@ -202,12 +205,6 @@ public class BasisController {
                 BlockchainFactoryEnum.ORIGINAL);
         return blockchain1;
     }
-
-    //    public static synchronized void setBlockchain(Blockchain blockchain) {
-//        BasisController.blockchain = blockchain;
-//    }
-
-
     static {
         try {
             //creates all resource folders to work with
@@ -318,13 +315,13 @@ public class BasisController {
 
         int result = resovle2();
 //        int result = -1;
-
-        System.out.println("resovle2: " + result);
-        if (result != 0) {
-            result = resolve();
-            System.out.println("resovle: " + result);
-        }
-        System.out.println("resolve" + result);
+//
+//        System.out.println("resovle2: " + result);
+//        if (result != 0) {
+//            result = resolve();
+//            System.out.println("resovle: " + result);
+//        }
+//        System.out.println("resolve" + result);
 
         return result;
     }
@@ -369,9 +366,8 @@ public class BasisController {
                 try {
                     //if the address is localhost, it skips
                     //если адрес локального хоста, он пропускает
-                    if (s.contains("localhost") || s.contains("127.0.0.1"))
+                    if (Seting.IS_TEST == false && (s.contains("localhost") || s.contains("127.0.0.1")))
                         continue;
-
 
                     String sizeStr = UtilUrl.readJsonFromUrl(s + "/size");
                     Integer size = Integer.valueOf(sizeStr);
@@ -380,7 +376,6 @@ public class BasisController {
                         bigSize = size;
                     }
 //
-
                     //if the size from the storage is larger than on the local server, start checking
                     //если размер с хранилища больше чем на локальном сервере, начать проверку
                     System.out.println("resolve2 size: " + size + " blocks_current_size: " + blocks_current_size);
@@ -412,7 +407,7 @@ public class BasisController {
                                 System.out.println("1:sublockchainJson: " + subBlockchainJson);
                                 List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
                                 System.out.println("1:download sub block: " + subBlocks.size());
-                                finish = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + Seting.PORTION_DOWNLOAD;
+                                finish = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + Seting.PORTION_DOWNLOAD + 1;
                                 start = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + 1;
 
 
@@ -421,8 +416,8 @@ public class BasisController {
                                 if (blockchainSize > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
                                     lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                                             BlockService.findAllByIdBetween(
-                                                    (blockchainSize) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-                                                    blockchainSize
+                                                    (prevBlock.getIndex()+ 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY + 1,
+                                                    prevBlock.getIndex() + 1
                                             )
                                     );
                                 }
@@ -441,7 +436,7 @@ public class BasisController {
                                     System.out.println("error resolve 2 in portion upper > 500");
                                     return -10;
                                 }
-                                addBlock3(subBlocks, balances);
+                                addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                                 if (!temp.isValidation()) {
                                     temp = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
                                 }
@@ -467,10 +462,10 @@ public class BasisController {
 
                                     balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
                                     if (blockchainSize > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
-                                        lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                                        lastDiff =UtilsBlockToEntityBlock.entityBlocksToBlocks(
                                                 BlockService.findAllByIdBetween(
-                                                        (blockchainSize) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-                                                        blockchainSize
+                                                        (prevBlock.getIndex()+ 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY + 1,
+                                                        prevBlock.getIndex() + 1
                                                 )
                                         );
                                     }
@@ -487,7 +482,7 @@ public class BasisController {
                                     if (blockchainSize > 1 && !temp.isValidation()) {
                                         return -10;
                                     }
-                                    addBlock3(subBlocks, balances);
+                                    addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                                     if (!temp.isValidation()) {
                                         temp = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
                                     }
@@ -519,8 +514,8 @@ public class BasisController {
                             if (blockchainSize > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
                                 lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                                         BlockService.findAllByIdBetween(
-                                                (blockchainSize) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-                                                blockchainSize
+                                                (prevBlock.getIndex()+ 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY + 1,
+                                                prevBlock.getIndex() + 1
                                         )
                                 );
                             }
@@ -538,7 +533,7 @@ public class BasisController {
                                 System.out.println("error resolve 2 in portion upper < 500");
                                 return -10;
                             }
-                            addBlock3(subBlocks, balances);
+                            addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                             if (!temp.isValidation()) {
                                 temp = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
                             }
@@ -655,7 +650,7 @@ public class BasisController {
                 try {
                     //if the address is localhost, it skips
                     //если адрес локального хоста, он пропускает
-                    if (s.contains("localhost") || s.contains("127.0.0.1"))
+                    if (Seting.IS_TEST == false && (s.contains("localhost") || s.contains("127.0.0.1")))
                         continue;
 
                     System.out.println("start:BasisController:resolve conflicts: address: " + s + "/size");
@@ -704,8 +699,7 @@ public class BasisController {
                                     subBlockchainEntity = new SubBlockchainEntity(start, finish);
                                     subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
                                     subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
-                                    System.out.println("subblocks: " + subBlocks.get(0).getIndex() + ":"
-                                            + subBlocks.get(subBlocks.size() - 1).getIndex());
+
                                     emptyList.addAll(subBlocks);
                                 }
                             }
@@ -760,6 +754,7 @@ public class BasisController {
 
 
                         if (blockchainSize > 1 && !tempShort.isValidation()) {
+                            System.out.println(" strategy download 1 error");
                             return -10;
                         }
 
@@ -910,14 +905,14 @@ public class BasisController {
      * производит перезапись блокчейна в файлы
      */
 
-    public static void addBlock3(List<Block> originalBlocks, Map<String, Account> balances) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+    public static void addBlock3(List<Block> originalBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         List<EntityBlock> list = new ArrayList<>();
         List<String> signs = new ArrayList<>();
         Map<String, Laws> allLaws = new HashMap<>();
         List<LawEligibleForParliamentaryApproval> allLawsWithBalance = new ArrayList<>();
         for (Block block : originalBlocks) {
             System.out.println(" :BasisController: addBlock3: blockchain is being updated: ");
-            UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            UtilsBlock.saveBLock(block, filename);
             EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
             list.add(entityBlock);
             calculateBalance(balances, block, signs);
@@ -1018,11 +1013,11 @@ public class BasisController {
             if(size > Seting.PORTION_DOWNLOAD){
                 list = blockchain.subBlock(size, Seting.PORTION_DOWNLOAD);
 
-                addBlock3(list, balances);
+                addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
             }else {
                 list = blockchain.subBlock(size, blockchain.sizeBlockhain());
-                addBlock3(list, balances);
+                addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                 break;
             }
             Block block = list.get(list.size()-1);
@@ -1373,9 +1368,11 @@ public class BasisController {
 
             resolve_conflicts();
 
-            List<Block> tempBlockchain = Blockchain.subFromFile(
-                    blockchainSize - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-                    blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE
+            List<Block> tempBlockchain = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                    BlockService.findAllByIdBetween(
+                            (blockchainSize ) - Seting.PORTION_BLOCK_TO_COMPLEXCITY +1,
+                            blockchainSize
+                    )
             );
             Block prevBlock = tempBlockchain.get(tempBlockchain.size() - 1);
             long index = prevBlock.getIndex() + 1;
@@ -1383,10 +1380,14 @@ public class BasisController {
             Account miner = balances.get(User.getUserAddress());
             minerShow = miner;
 
+            String address = "http://194.87.236.238:80";
+            for (String s : Seting.ORIGINAL_ADDRESSES) {
+                address = s;
+            }
 
             String sizeStr = "-1";
             try {
-                sizeStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/size");
+                sizeStr = UtilUrl.readJsonFromUrl(address + "/size");
             } catch (NoRouteToHostException e) {
                 System.out.println("home page you cannot connect to global server," +
                         "you can't give size global server");
@@ -1468,7 +1469,13 @@ public class BasisController {
             //транзакции которые мы добавили в блок и теперь нужно удалить из файла, в папке resources/transactions
             List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
             //отказ от дублирующих транзакций
-            List<Block> temp = Blockchain.subFromFile(blockchainSize - Seting.CHECK_DTO, blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+//            List<Block> temp = Blockchain.subFromFile(blockchainSize - Seting.CHECK_DTO, blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            List<Block> temp =UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                    BlockService.findAllByIdBetween(
+                            (blockchainSize) - Seting.CHECK_DTO + 1,
+                            blockchainSize
+                    )
+            );
             temporaryDtoList = UtilsBlock.validDto(temp, temporaryDtoList);
             //блокировка читеров
 
@@ -1527,7 +1534,8 @@ public class BasisController {
                 );
             }
 
-            String addresFounder = Blockchain.indexFromFile(0, Seting.ORIGINAL_BLOCKCHAIN_FILE).getFounderAddress();
+//            String addresFounder = Blockchain.indexFromFile(0, Seting.ORIGINAL_BLOCKCHAIN_FILE).getFounderAddress();
+            String addresFounder = BlockService.findById(1).getFounderAddress();
             if (!block.getFounderAddress().equals(addresFounder)) {
                 System.out.println("wrong address founder: ");
             }

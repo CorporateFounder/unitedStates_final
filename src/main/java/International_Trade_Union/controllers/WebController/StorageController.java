@@ -1,6 +1,7 @@
 package International_Trade_Union.controllers.WebController;
 
 import International_Trade_Union.entity.InfoDificultyBlockchain;
+import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.UtilUrl;
 import International_Trade_Union.utils.UtilsJson;
 import org.json.JSONException;
@@ -23,9 +24,14 @@ public class StorageController {
     @GetMapping("/globalSize")
     @ResponseBody
     public int globalSize(){
+
+        String address = "http://194.87.236.238:80";
+        for (String s : Seting.ORIGINAL_ADDRESSES) {
+            address = s;
+        }
         String sizeStr = "-1";
         try {
-            sizeStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/size");
+            sizeStr = UtilUrl.readJsonFromUrl(address + "/size");
         }catch (NoRouteToHostException e){
             System.out.println("home page you cannot connect to global server," +
                     "you can't give size global server");
@@ -52,9 +58,13 @@ public class StorageController {
     @GetMapping("/globalVersion")
     @ResponseBody
     public int globalVersion(){
+        String address = "http://194.87.236.238:80";
+        for (String s : Seting.ORIGINAL_ADDRESSES) {
+            address = s;
+        }
         String versionStr = "-1";
         try {
-            versionStr = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/version");
+            versionStr = UtilUrl.readJsonFromUrl(address + "/version");
         }catch (NoRouteToHostException e){
             System.out.println("home page you cannot connect to global server," +
                     "you can't give version global server");
@@ -81,8 +91,13 @@ public class StorageController {
         InfoDificultyBlockchain infoDificultyBlockchain = new InfoDificultyBlockchain(-1, -1);
         String difficultOneBlock =  ":";
         String difficultAllBlockchain = ":";
+
+        String address = "http://194.87.236.238:80";
+        for (String s : Seting.ORIGINAL_ADDRESSES) {
+            address = s;
+        }
         try {
-            String json = UtilUrl.readJsonFromUrl("http://194.87.236.238:80" + "/difficultyBlockchain");
+            String json = UtilUrl.readJsonFromUrl(address + "/difficultyBlockchain");
             infoDificultyBlockchain = UtilsJson.jsonToInfoDifficulty(json);
 
         }catch (NoRouteToHostException e){
