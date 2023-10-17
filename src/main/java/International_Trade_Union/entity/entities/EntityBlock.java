@@ -25,7 +25,17 @@ public class EntityBlock {
     public EntityBlock() {
     }
 
-    public EntityBlock(List<EntityDtoTransaction> dtoTransactions, String previousHash, String minerAddress, String founderAddress, long randomNumberProof, double minerRewards, int hashCompexity, Timestamp timestamp, long index, String hashBlock) {
+    public EntityBlock( List<EntityDtoTransaction> dtoTransactions,
+                        String previousHash,
+                        String minerAddress,
+                        String founderAddress,
+                        long randomNumberProof,
+                        double minerRewards,
+                        int hashCompexity,
+                        Timestamp timestamp,
+                        long index,
+                        String hashBlock,
+                        long specialIndex) {
         this.dtoTransactions = dtoTransactions;
         this.previousHash = previousHash;
         this.minerAddress = minerAddress;
@@ -36,6 +46,7 @@ public class EntityBlock {
         this.timestamp = timestamp;
         this.index = index;
         this.hashBlock = hashBlock;
+        this.specialIndex = specialIndex;
     }
     @OneToMany(mappedBy = "entityBlock", cascade = CascadeType.ALL)
     private List<EntityDtoTransaction> dtoTransactions;
@@ -48,6 +59,9 @@ public class EntityBlock {
     private Timestamp timestamp;
     private long index;
     private String hashBlock;
+
+    //специальный индекс блока который позволит отделить блоки
+    private long specialIndex;
 
     @Override
     public String toString() {

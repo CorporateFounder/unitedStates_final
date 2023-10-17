@@ -31,6 +31,7 @@ public class EntityDtoTransaction {
 
 
     public EntityDtoTransaction(String sender, String customer, double digitalDollar, double digitalStockBalance, EntityLaws entityLaws, double bonusForMiner, VoteEnum voteEnum, byte[] sign) {
+
         this.sender = sender;
         this.customer = customer;
         this.digitalDollar = digitalDollar;

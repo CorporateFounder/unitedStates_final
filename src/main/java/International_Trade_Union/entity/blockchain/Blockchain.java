@@ -16,6 +16,9 @@ import lombok.Data;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.StandardOpenOption;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
@@ -71,7 +74,7 @@ public class Blockchain implements Cloneable {
         //transactions
         List<DtoTransaction> transactions = new ArrayList<>();
 
-        DtoTransaction gold = new DtoTransaction(Seting.BASIS_ADDRESS, ADDRESS_FOUNDER,
+        DtoTransaction gold = new DtoTransaction(Seting.BASIS_ADDRESS, Seting.ADDRESS_FOUNDER,
                 Seting.FOUNDERS_REMUNERATION_DIGITAL_DOLLAR, Seting.FOUNDERS_REMNUNERATION_DIGITAL_STOCK, new Laws(), 0.0, VoteEnum.YES);
         PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(Seting.BASIS_PASSWORD));
         byte[] signGold = UtilsSecurity.sign(privateKey, gold.toSign());
@@ -454,7 +457,78 @@ public class Blockchain implements Cloneable {
 
         return block;
     }
+    // Константа для размера буфера
+    public static Block indexFromFileBing(int index, String filename) throws JsonProcessingException {
+        if(index == 0){
+            Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":6.5E7,\"digitalStockBalance\":6.5E7,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIDDW9fKvwUY0aXpvamxOU6pypicO3eCqEVM9LDFrIpjIAiEA81Zh7yCBbJOLrAzx4mg5HS0hMdqvB0obO2CZARczmfY=\"}],\"previousHash\":\"0234a350f4d56ae45c5ece57b08c54496f372bc570bd83a465fb6d2d85531479\",\"minerAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":12,\"minerRewards\":0.0,\"hashCompexity\":1,\"timestamp\":1685942742706,\"index\":1,\"hashBlock\":\"08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c\"}");
+            return block;
+        }
 
+        File folder = new File(filename);
+        File[] files = folder.listFiles(); // получаем массив файлов
+        Arrays.sort(files); // сортируем файлы по имени
+        int left = 0; // левая граница поиска
+        int right = files.length - 1; // правая граница поиска
+        while (left <= right) { // пока границы не сомкнутся
+            int mid = (left + right) / 2; // находим середину
+            File file = files[mid]; // берем файл в середине
+            if (file.isDirectory()) { // если это директория, пропускаем ее
+                left = mid + 1;
+                continue;
+            }
+            List<String> list = UtilsFileSaveRead.reads(file.getAbsolutePath()); // читаем содержимое файла
+            Block first = UtilsJson.jsonToBLock(list.get(0)); // получаем первый блок в файле
+            Block last = UtilsJson.jsonToBLock(list.get(list.size() - 1)); // получаем последний блок в файле
+            if (first.getIndex() <= index && index <= last.getIndex()) { // если индекс находится в диапазоне файла
+                return binarySearchBlock(list, index); // ищем блок бинарным поиском внутри файла
+            } else if (index < first.getIndex()) { // если индекс меньше первого блока в файле
+                right = mid - 1; // сдвигаем правую границу налево
+            } else { // если индекс больше последнего блока в файле
+                left = mid + 1; // сдвигаем левую границу направо
+            }
+        }
+        return null; // если индекс не найден, возвращаем null
+    }
+    // метод для бинарного поиска блока в списке строк с json-объектами
+    public static Block binarySearchBlock(List<String> list, int index) throws JsonProcessingException {
+        int left = 0; // левая граница поиска
+        int right = list.size() - 1; // правая граница поиска
+        while (left <= right) { // пока границы не сомкнутся
+            int mid = (left + right) / 2; // находим середину
+            String s = list.get(mid); // берем строку в середине
+            Block block = UtilsJson.jsonToBLock(s); // преобразуем ее в блок
+            if (block.getIndex() == index) { // если индекс совпадает с искомым
+                return block; // возвращаем блок
+            } else if (index < block.getIndex()) { // если индекс меньше блока в середине
+                right = mid - 1; // сдвигаем правую границу налево
+            } else { // если индекс больше блока в середине
+                left = mid + 1; // сдвигаем левую границу направо
+            }
+        }
+        return null; // если индекс не найден, возвращаем null
+    }
+    public static boolean compareLists(List<Block> list1, List<Block> list2) {
+
+        if (list1.size() != list2.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < list1.size(); i++) {
+            if (!list1.get(i).equals(list2.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    public static List<Block> subFromFileBing(int indexFrom, int indexTo, String filename) throws JsonProcessingException {
+        List<Block> blocks = new ArrayList<>();
+        for (int i = indexFrom; i < indexTo; i++) {
+            Block temp = indexFromFileBing(i, filename);
+            blocks.add(temp);
+        }
+        return blocks;
+    }
     public static List<Block> subFromFile(int indexFrom, int indexTo, String filename) throws JsonProcessingException {
         File folder = new File(filename);
         Block block = null;

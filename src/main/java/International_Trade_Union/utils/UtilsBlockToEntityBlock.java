@@ -14,21 +14,15 @@ import java.util.List;
 
 public class UtilsBlockToEntityBlock {
 
-    public static boolean compareLists(List<Block> list1, List<Block> list2) {
 
-        if (list1.size() != list2.size()) {
-            return false;
-        }
-
-        for (int i = 0; i < list1.size(); i++) {
-            if (!list1.get(i).equals(list2.get(i))) {
-                return false;
-            }
-        }
-
-        return true;
-    }
     public static EntityBlock blockToEntityBlock(Block block) {
+
+        long specialIndex = 0;
+        if(block.getHashBlock().equals("08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c")){
+            specialIndex = 0;
+        }else {
+            specialIndex = block.getIndex();
+        }
         List<EntityDtoTransaction> entityDtoTransactions =
                 dtoTransactionToEntity(block.getDtoTransactions());
         EntityBlock entityBlock = new EntityBlock(
@@ -41,7 +35,8 @@ public class UtilsBlockToEntityBlock {
                 block.getHashCompexity(),
                 block.getTimestamp(),
                 block.getIndex(),
-                block.getHashBlock()
+                block.getHashBlock(),
+                specialIndex
         );
 
         for (EntityDtoTransaction dtoTransaction : entityDtoTransactions) {
@@ -96,6 +91,7 @@ public class UtilsBlockToEntityBlock {
 
         boolean isNull = laws.getLaws() == null? true :false;
         EntityLaws entityLaws = new EntityLaws(
+
                 isNull,
                 laws.getPacketLawName(),
                 laws.getLaws(),

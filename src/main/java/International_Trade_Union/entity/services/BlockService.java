@@ -60,6 +60,22 @@ public class BlockService {
 
     }
 
+    public static EntityLawsRepository getLawService() {
+        return lawService;
+    }
+
+    public EntityBlockRepository getEntityBlockRepository() {
+        return entityBlockRepository;
+    }
+
+    public EntityLawsRepository getEntityLawsRepository() {
+        return entityLawsRepository;
+    }
+
+    public EntityAccountRepository getEntityAccountRepository() {
+        return entityAccountRepository;
+    }
+
     public static void saveBlock(EntityBlock entityBlock) {
 
         blockService.save(entityBlock);
@@ -97,9 +113,15 @@ public class BlockService {
     public static EntityBlock findById(long id){
         return blockService.findById(id);
     }
+    public static EntityBlock findBySpecialIndex(long specialIndex){
+        return blockService.findBySpecialIndex(specialIndex);
+    }
 
     public static List<EntityBlock> findAllByIdBetween(long from, long to){
         return blockService.findAllByIdBetween(from, to);
+    }
+    public static List<EntityBlock> findBySpecialIndexBetween(long from, long to){
+        return blockService.findBySpecialIndexBetween(from, to);
     }
 
     public static List<EntityBlock> findAll() {

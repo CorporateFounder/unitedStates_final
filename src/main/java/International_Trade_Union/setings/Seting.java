@@ -188,7 +188,7 @@ public interface Seting {
     String ORIGINAL_TEMPORARY_BLOCKS = "/resources/temporaryBlocks/";
     String ORIGINAL_TEMPORARY_SHORT = "/resources/short/shortBlockchain.txt";
 
-    boolean IS_TEST = true;
+    boolean IS_TEST = false;
 
     //адресса внешних сервисов
 //    Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");

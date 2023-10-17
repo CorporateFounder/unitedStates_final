@@ -1,5 +1,6 @@
 package International_Trade_Union.controllers;
 
+import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.SubBlockchainEntity;
@@ -55,6 +56,8 @@ public class TestController {
 
     @Autowired
     BlockService blockService;
+
+
 
     public String send(@RequestParam String sender,
                        @RequestParam String recipient,
@@ -142,11 +145,57 @@ public class TestController {
 
     }
 
+
+    @GetMapping("/testLaws")
+    @ResponseBody
+    public List<Laws> listLaws() throws IOException {
+        List<Laws> laws = new ArrayList<>();
+        for (int i = 0; i < BasisController.getBlockchainSize(); i++) {
+            EntityBlock special = entityBlockRepository.findBySpecialIndex(0L);
+            Block bySpecialIndex = UtilsBlockToEntityBlock.entityBlockToBlock(special);
+            for (DtoTransaction transaction : bySpecialIndex.getDtoTransactions()) {
+                Laws temp = transaction.getLaws();
+                if(temp.getLaws() != null && temp.getLaws().size() > 0){
+                    laws.add(temp);
+                }
+            }
+
+        }
+        System.out.println("size laws: " + laws.size());
+        return laws;
+    }
+    @GetMapping("/testGenesisBlock")
+    @ResponseBody
+    public List<Block> testGenesisBlock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        int index = 1;
+        Block block = Blockchain.indexFromFile(index, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        Blockchain blockchain1 = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
+        Block genesis = blockchain1.genesisBlock();
+        List<Block> gen =new ArrayList<>();
+        gen.add(block);
+        gen.add(genesis);
+        return gen;
+    }
+    @GetMapping("/testIndexFromFileBing")
+    @ResponseBody
+    public boolean testBingIndexFromFile() throws IOException {
+        int index = 400;
+        Block block = Blockchain.indexFromFile(index, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        Block block1 = Blockchain.indexFromFileBing(index, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        System.out.println("block index: " + block.getIndex());
+        System.out.println("block1 index: " + block1.getIndex());
+        return block.equals(block1);
+//        return true;
+    }
+
     @GetMapping("/testFindById")
     @ResponseBody
     public boolean testFindById() throws IOException {
-        int size = BasisController.getBlockchainSize();
+//        int size = BasisController.getBlockchainSize();
+        int size = 1;
         Block block = Blockchain.indexFromFile(size - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+
+
 
         EntityBlock tempBlock = entityBlockRepository.findById(size);
         Block testBlock = UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock);
@@ -154,6 +203,15 @@ public class TestController {
         System.out.println(testBlock);
         System.out.println("***********************************************");
         System.out.println(block);
+        System.out.println("***********************************************");
+        Block bing = Blockchain.indexFromFileBing(size-1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        System.out.println(bing);
+        System.out.println("***********************************************");
+        System.out.println("index special");
+        EntityBlock special = entityBlockRepository.findBySpecialIndex(0L);
+        Block bySpecialIndex = UtilsBlockToEntityBlock.entityBlockToBlock(special);
+        System.out.printf("bySpecialIndex: index: %d, specialIndex: %d, hash %s\n",
+                bySpecialIndex.getIndex(), special.getSpecialIndex(), bySpecialIndex.getHashBlock());
         return block.equals(testBlock);
     }
 
@@ -161,7 +219,7 @@ public class TestController {
     @ResponseBody
     public boolean sendTest() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         System.out.println("test send Block ");
-        for (int i = 1; i < BasisController.getBlockchainSize() ; i++) {
+        for (int i = 1; i < BasisController.getBlockchainSize(); i++) {
             System.out.println("test send block " + i);
             List list = new ArrayList();
             list.add(UtilsBlockToEntityBlock.entityBlockToBlock(entityBlockRepository.findById(i)));
@@ -173,46 +231,97 @@ public class TestController {
     @GetMapping("/testSubBlock")
     @ResponseBody
     public boolean testSubBlock() throws IOException {
-        int size = BasisController.getBlockchainSize();
-        int startSize = BasisController.getBlockchainSize() - Seting.PORTION_BLOCK_TO_COMPLEXCITY;
-        List<EntityBlock> entityBlocks =
-                entityBlockRepository.findAllByIdBetween(startSize + 1, size );
-        List<Block> blocksDb = UtilsBlockToEntityBlock.entityBlocksToBlocks(entityBlocks);
+//        int size = BasisController.getBlockchainSize();
+        int size = 601;
+//        int startSize = BasisController.getBlockchainSize() - Seting.PORTION_BLOCK_TO_COMPLEXCITY;
+        int startSize = 601 - Seting.PORTION_BLOCK_TO_COMPLEXCITY;
+
+        List<Block> blocksDb = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                BlockService.findAllByIdBetween(
+                        (size) - Seting.PORTION_BLOCK_TO_COMPLEXCITY + 1,
+                        size
+                )
+        );
         List<Block> blocks = Blockchain.subFromFile(startSize, size, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        List<Block> bing = Blockchain.subFromFileBing(startSize, size, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        List<EntityBlock> tempSpecialIndex = BlockService.findBySpecialIndexBetween(startSize, size -1);
+        List<Block> specialIndex = UtilsBlockToEntityBlock.entityBlocksToBlocks(tempSpecialIndex);
 
-        System.out.println("***********************************************************");
-        System.out.println(blocksDb.get(0).getIndex() + " hash: " + blocksDb.get(0).getHashBlock());
-        System.out.println(blocksDb.get(blocksDb.size()-1).getIndex() +
-                " hash: " + blocksDb.get(blocksDb.size()-1).getHashBlock());
 
-        System.out.println("***********************************************************");
-        System.out.println(blocks.get(0).getIndex() + " hash: " + blocks.get(0).getHashBlock());
-        System.out.println(blocks.get(blocks.size()-1).getIndex() +
-                " hash: " + blocks.get(blocks.size()-1).getHashBlock());
-        System.out.println("***********************************************************");
-        System.out.println("blocks size: " + blocks.size());
-        System.out.println("blocksDb size: " + blocksDb.size());
 
+
+//        Block prevBlock = BasisController.getPrevBlock();
         Block prevBlock = BasisController.getPrevBlock();
         List<Block> tempBlockchain = Blockchain.subFromFile(
                 (int) ((prevBlock.getIndex() + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY),
                 (int) (prevBlock.getIndex() + 1), Seting.ORIGINAL_BLOCKCHAIN_FILE
         );
-        List<Block> tempBlockchain2 =UtilsBlockToEntityBlock.entityBlocksToBlocks(
+        List<Block> tempBlockchain2 = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                 BlockService.findAllByIdBetween(
-                        (prevBlock.getIndex()+ 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY + 1,
+                        (prevBlock.getIndex() + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY + 1,
+                        prevBlock.getIndex() + 3
+                )
+        );
+
+        List<Block> tempSpecialIndex4 = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                BlockService.findBySpecialIndexBetween(
+                        (prevBlock.getIndex() + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY ,
                         prevBlock.getIndex() + 1
                 )
         );
+
+        System.out.println("**************************************************");
+        List<EntityBlock> temps = BlockService.findAll();
+        temps.stream().forEach(t-> System.out.printf("id %d, index: %d, hash %s\n", t.getId(), t.getIndex(), t.getHashBlock()));
+
+        System.out.println("**************************************************");
+
+        List<Block> tempBlockchain3 = Blockchain.subFromFileBing((int) ((prevBlock.getIndex() + 1) -
+                        Seting.PORTION_BLOCK_TO_COMPLEXCITY), (int) (prevBlock.getIndex() + 1),
+                Seting.ORIGINAL_BLOCKCHAIN_FILE);
         System.out.println("***********************************************************");
-        System.out.println("tempblochain size: " + tempBlockchain.get(tempBlockchain.size()-1).getIndex());
-        System.out.println("tempblochain1 size : " + tempBlockchain2.get(tempBlockchain2.size()-1).getIndex());
+        System.out.println("tempblochain size: " + tempBlockchain.get(tempBlockchain.size() - 1).getIndex());
+        System.out.println("tempblochain1 size : " + tempBlockchain2.get(tempBlockchain2.size() - 1).getIndex());
+        System.out.println("tempblochain3 size : " + tempBlockchain3.get(tempBlockchain3.size() - 1).getIndex());
+        System.out.println("tempSpecialIndex4 size : " + tempSpecialIndex4.get(tempSpecialIndex4.size() - 1).getIndex());
         System.out.println("tempblochain: " + tempBlockchain.get(0).getIndex());
         System.out.println("tempblochain1: " + tempBlockchain2.get(0).getIndex());
+        System.out.println("tempblochain3: " + tempBlockchain3.get(0).getIndex());
+        System.out.println("tempSpecialIndex4: " + tempSpecialIndex4.get(0).getIndex());
 
         System.out.println("***********************************************************");
+        System.out.println("***********************************************************");
+        System.out.println("blocks");
+        System.out.println(blocks.get(0).getIndex() + " hash: " + blocks.get(0).getHashBlock());
+        System.out.println(blocks.get(blocks.size() - 1).getIndex() +
+                " hash: " + blocks.get(blocks.size() - 1).getHashBlock());
+        System.out.println("***********************************************************");
+        System.out.println("bing");
 
-        return blocks.equals(blocksDb);
+        System.out.println(bing.get(0).getIndex() + " hash: " + bing.get(0).getHashBlock());
+        System.out.println(bing.get(bing.size() - 1).getIndex() +
+                " hash: " + bing.get(bing.size() - 1).getHashBlock());
+        System.out.println("***********************************************************");
+
+
+        System.out.println("blockDb");
+        System.out.println(blocksDb.get(0).getIndex() + " hash: " + blocksDb.get(0).getHashBlock());
+        System.out.println(blocksDb.get(blocksDb.size() - 1).getIndex() +
+                " hash: " + blocksDb.get(blocksDb.size() - 1).getHashBlock());
+        System.out.println("***********************************************************");
+        System.out.println("special index");
+        System.out.println(specialIndex.get(0).getIndex() + " hash: " + specialIndex.get(0).getHashBlock());
+        System.out.println(specialIndex.get(specialIndex.size() - 1).getIndex() +
+                " hash: " + specialIndex.get(specialIndex.size() - 1).getHashBlock());
+        System.out.println("***********************************************************");
+
+        System.out.println("blocks size: " + blocks.size());
+        System.out.println("blocksDb size: " + blocksDb.size());
+        System.out.println("bing size: " + bing.size());
+        System.out.println("specialIndex size: " + specialIndex.size());
+
+//        return blocks.equals(blocksDb);
+        return Blockchain.compareLists(blocks, bing);
     }
 
     @GetMapping("/sendReward")
@@ -630,13 +739,13 @@ public class TestController {
         System.out.println("testBlock getTimestamp: " + testBlock.getTimestamp());
 
         for (int j = 0; j < blocks.size(); j++) {
-            entityBlock = entityBlockRepository.findById(j+1);
+            entityBlock = entityBlockRepository.findById(j + 1);
             testBlock = UtilsBlockToEntityBlock.entityBlockToBlock(entityBlock);
             Block block = blocks.get(j);
             System.out.println("block: index: " + block.getIndex() + " testBlock: " +
                     testBlock.getIndex() + " entityBlock: " + entityBlock.getIndex());
 
-            if(!block.equals(testBlock)){
+            if (!block.equals(testBlock)) {
                 System.out.println("wrong: ");
                 System.out.println("block:\n " + block);
                 System.out.println("--------------------------");
@@ -645,7 +754,7 @@ public class TestController {
             }
         }
 //        System.out.println("__________________________________________");
-       return UtilsBlockToEntityBlock.compareLists(blocks, testBlocks);
+        return Blockchain.compareLists(blocks, testBlocks);
     }
 
 

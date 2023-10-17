@@ -18,6 +18,9 @@ import lombok.Data;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.StandardOpenOption;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
@@ -457,6 +460,13 @@ public class Blockchain implements Cloneable {
         return valid;
     }
 
+    // Константа для размера буфера
+    private static final int BUFFER_SIZE = 1024;
+
+    // Метод для поиска блока из файла по индексу
+    // Метод для поиска блока из файла по индексу
+
+
     public static Block indexFromFile(int index, String filename) throws JsonProcessingException {
         File folder = new File(filename);
         Block block = null;
@@ -490,6 +500,56 @@ public class Blockchain implements Cloneable {
         }
 
 
+        return block;
+    }
+
+    public static Block indexFromFileBing(int index, String filename) throws IOException {
+        // Открываем файл как канал
+        FileChannel channel = FileChannel.open(new File(filename).toPath(), StandardOpenOption.READ);
+        // Отображаем файл в памяти как байт-буфер
+        MappedByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
+        // Преобразуем искомую строку в массив байтов в той же кодировке, что и файл
+        byte[] searchBytes = ("{\"index\":" + index + ",").getBytes(channel.map(FileChannel.MapMode.READ_ONLY, 0, BUFFER_SIZE).toString());
+        // Создаем переменную для хранения найденного блока
+        Block block = null;
+        // Создаем переменную для хранения текущей позиции в буфере
+        int position = 0;
+        // Пока не достигнем конца файла
+        while (position < buffer.limit()) {
+            // Проверяем, совпадает ли текущий байт с первым байтом искомой строки
+            if (buffer.get(position) == searchBytes[0]) {
+                // Создаем флаг для проверки полного совпадения
+                boolean match = true;
+                // Перебираем остальные байты искомой строки
+                for (int i = 1; i < searchBytes.length; i++) {
+                    // Если какой-то байт не совпадает, то сбрасываем флаг и выходим из цикла
+                    if (buffer.get(position + i) != searchBytes[i]) {
+                        match = false;
+                        break;
+                    }
+                }
+                // Если флаг остался истинным, то мы нашли нужный блок
+                if (match) {
+                    // Создаем буфер для хранения байтов блока
+                    byte[] blockBytes = new byte[BUFFER_SIZE];
+                    // Копируем байты блока из основного буфера в новый буфер
+                    for (int i = 0; i < BUFFER_SIZE; i++) {
+                        blockBytes[i] = buffer.get(position + i);
+                    }
+                    // Преобразуем байты блока в строку
+                    String blockString = new String(blockBytes, channel.map(FileChannel.MapMode.READ_ONLY, 0, BUFFER_SIZE).toString());
+                    // Преобразуем строку в объект блока
+                    block = UtilsJson.jsonToBLock(blockString);
+                    // Выходим из цикла
+                    break;
+                }
+            }
+            // Увеличиваем позицию на единицу
+            position++;
+        }
+        // Закрываем канал
+        channel.close();
+        // Возвращаем найденный блок или null, если не нашли
         return block;
     }
 

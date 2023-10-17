@@ -46,7 +46,7 @@ public class EntityLaws {
     public EntityLaws() {
     }
 
-    public EntityLaws(boolean lawsIsNull, String packetLawName, List<String> laws, String hashLaw) {
+    public EntityLaws( boolean lawsIsNull, String packetLawName, List<String> laws, String hashLaw) {
         this.lawsIsNull = lawsIsNull;
         this.packetLawName = packetLawName;
         this.laws = laws;
