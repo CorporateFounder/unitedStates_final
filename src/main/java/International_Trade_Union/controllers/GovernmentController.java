@@ -70,7 +70,7 @@ public class GovernmentController {
             if (higherSpecialPositions.isElectedByCEO()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, true, false, false));
-            } else if (higherSpecialPositions.isElectedByFractions()) {
+            } else if (higherSpecialPositions.isElectedByBoardOfDirectors()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, false, true, false));
             } else if (higherSpecialPositions.isElectedByCorporateCouncilOfReferees()) {
@@ -83,6 +83,7 @@ public class GovernmentController {
             }
 
         }
+
         //подсчитать голоса за все проголосованные заканы
         List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
                 lawEligibleForParliamentaryApprovals,

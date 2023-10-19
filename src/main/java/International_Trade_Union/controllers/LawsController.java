@@ -2,7 +2,6 @@ package International_Trade_Union.controllers;
 
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.blockchain.Blockchain;
-import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.governments.Director;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
@@ -306,7 +305,7 @@ public class LawsController {
             if (higherSpecialPositions.isElectedByCEO()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, true, false, false));
-            } else if (higherSpecialPositions.isElectedByFractions()) {
+            } else if (higherSpecialPositions.isElectedByBoardOfDirectors()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, false, true, false));
             } else if (higherSpecialPositions.isElectedByCorporateCouncilOfReferees()) {
@@ -368,8 +367,8 @@ public class LawsController {
         //позиции избираемые только всеми участниками
         List<CurrentLawVotesEndBalance> electedByBoardOfDirectors = current.stream()
                 .filter(t -> directors.isofficeOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
-                .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
-                        && t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0 ||
+                .filter(t ->
+                        t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0 ||
                         t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                                 && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
@@ -535,79 +534,7 @@ public class LawsController {
     /**
      * Отображается в браузере список всех принятых бюджетов и эмиссий
      */
-    @GetMapping("/budget_end_emission")
-    public String allBudgetEndEmission(Model model) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
-        if (BasisController.isUpdating() || BasisController.isMining()) {
-            return "redirect:/processUpdating";
-        }
-
-
-        int index = BasisController.getBlockchainSize();
-
-        int day = index % Seting.LAW_MONTH_VOTE;
-        Map<String, Account> balances = new HashMap<>();
-        //считывать баланс
-        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        Account Budget = balances.get(Seting.BUDGET);
-        if (Budget == null)
-            Budget = new Account(Seting.BUDGET, 0, 0);
-        model.addAttribute("dollar", Budget.getDigitalDollarBalance());
-        model.addAttribute("stock", Budget.getDigitalStockBalance());
-        model.addAttribute("emission", Seting.EMISSION_BUDGET);
-        model.addAttribute("day", day);
-        List<CurrentLawVotesEndBalance> current =
-                UtilsCurrentLawVotesEndBalance.readLine(Seting.CURRENT_BUDGET_END_EMISSION);
-        model.addAttribute("title", "adopted budgets and emissions");
-        model.addAttribute("currentLaw", current);
-        return "budget_end_emission.html";
-    }
-
-    @GetMapping("/budget_end_emission_15_day")
-    public String budgetEndEmissision15day(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        if (BasisController.isUpdating() || BasisController.isMining()) {
-            return "redirect:/processUpdating";
-        }
-
-
-        Directors directors = new Directors();
-        Blockchain blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
-
-        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        //считывать баланс
-
-
-        List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
-                UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-
-        //получить совет акционеров из файла
-        List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blockchain.getBlockchainList(), Seting.BOARDS_BLOCK);
-
-        //подсчитать голоса за все проголосованные заканы
-        List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
-                lawEligibleForParliamentaryApprovals,
-                balances,
-                boardOfShareholders,
-                blockchain.getBlockchainList(),
-                Seting.LAW_MONTH_VOTE);
-
-
-        List<CurrentLawVotesEndBalance> budget = current.stream()
-                .filter(t -> t.getPackageName().equals(Seting.BUDGET))
-                .collect(Collectors.toList());
-
-        List<CurrentLawVotesEndBalance> emission = current.stream()
-                .filter(t -> t.getPackageName().equals(Seting.EMISSION))
-                .collect(Collectors.toList());
-
-        budget.addAll(emission);
-        model.addAttribute("title", "budgets and issues for which you can vote now.");
-        model.addAttribute("currentLaw", budget);
-        return "budget_end_emission_15_day";
-
-    }
 
     /**
      * Отображается в браузере, список всех пакета законов
@@ -646,7 +573,7 @@ public class LawsController {
             if (higherSpecialPositions.isElectedByCEO()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, true, false, false));
-            } else if (higherSpecialPositions.isElectedByFractions()) {
+            } else if (higherSpecialPositions.isElectedByBoardOfDirectors()) {
                 fIndPositonHelperDataMap.put(higherSpecialPositions,
                         new FIndPositonHelperData(higherSpecialPositions, false, false, false, true, false));
             } else if (higherSpecialPositions.isElectedByCorporateCouncilOfReferees()) {

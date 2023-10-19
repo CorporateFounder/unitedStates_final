@@ -19,14 +19,14 @@ public class Directors {
         Director BOARD_OF_DIRECTORS = new Director("BOARD_OF_DIRECTORS", 201, false, false, false, true, false);
 
         Director GENERAL_EXECUTIVE_DIRECTOR = new Director("GENERAL_EXECUTIVE_DIRECTOR", 1, false, true, false, false, true);
-        Director HIGH_JUDGE = new Director("HIGH_JUDGE",1, false, false, true, false, false);
-        Director FRACTION = new Director("FRACTION", 200, false, false, false, true, false);
+
+
         directors.add(CORPORATE_COUNCIL_OF_REFEREES);
         directors.add(BOARD_OF_DIRECTORS);
-        directors.add(FRACTION);
+//
 
         directors.add(GENERAL_EXECUTIVE_DIRECTOR);
-        directors.add(HIGH_JUDGE);
+
 
     }
 
@@ -106,7 +106,7 @@ public class Directors {
 
     public  boolean isElectedByFractions(String  str){
         List<String> list = directors.stream()
-                .filter(t->t.isElectedByFractions())
+                .filter(t->t.isElectedByBoardOfDirectors())
                 .map(t->t.getName())
                 .collect(Collectors.toList());
 

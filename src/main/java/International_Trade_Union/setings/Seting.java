@@ -8,7 +8,7 @@ import International_Trade_Union.utils.UtilsUse;
 import java.util.Set;
 
 public interface Seting {
-    boolean IS_TEST = false;
+    boolean IS_TEST = true;
     // значение используется для вычисления процентов
     int HUNDRED_PERCENT = 100;
     // значение используется как константа года,
@@ -156,7 +156,7 @@ public interface Seting {
     int LAW_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 1;
 
     //используется для утверждения бюджета и эмиссии
-    int LAW_MONTH_VOTE = IS_TEST ? 3: (int) (FIFTEEN_DAYS * Seting.COUNT_BLOCK_IN_DAY);
+    int LAW_MONTH_VOTE = IS_TEST ? 5: (int) (FIFTEEN_DAYS * Seting.COUNT_BLOCK_IN_DAY);
 
 
     // сколько секунд в сутках

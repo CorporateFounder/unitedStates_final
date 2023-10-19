@@ -901,6 +901,7 @@ public class BasisController {
         List<String> signs = new ArrayList<>();
         Map<String, Laws> allLaws = new HashMap<>();
         List<LawEligibleForParliamentaryApproval> allLawsWithBalance = new ArrayList<>();
+
         for (Block block : originalBlocks) {
             System.out.println(" :BasisController: addBlock3: blockchain is being updated: ");
             UtilsBlock.saveBLock(block, filename);
@@ -908,6 +909,10 @@ public class BasisController {
             list.add(entityBlock);
             calculateBalance(balances, block, signs);
             balances = UtilsBalance.calculateBalanceFromLaw(balances, block, allLaws, allLawsWithBalance);
+
+            //получение и отображение законов, а также сохранение новых законов
+            //и изменение действующих законов
+            allLaws = UtilsLaws.getLaws(block, Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE, allLaws);
 
         }
         BlockService.saveAllBlock(list);
@@ -919,10 +924,15 @@ public class BasisController {
         SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
 
 
+
+
+        //возвращает все законы с балансом
+        allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances,
+                Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+
         //removal of obsolete laws
         //удаление устаревших законов
-//        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-
+        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
         //rewriting all existing laws
         //перезапись всех действующих законов
         UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);

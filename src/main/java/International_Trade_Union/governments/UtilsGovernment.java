@@ -206,14 +206,14 @@ public class UtilsGovernment {
             }
         }
 
-        List<String> houseOfRepresentativies = new ArrayList<>();
+//        List<String> houseOfRepresentativies = new ArrayList<>();
         List<String> chamberOfSumpremeJudges = new ArrayList<>();
         List<String> boardOfDirectors = new ArrayList<>();
 
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance: current) {
             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString())){
                 if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
-                    houseOfRepresentativies.add(currentLawVotesEndBalance.getLaws().get(0));
+                    boardOfDirectors.add(currentLawVotesEndBalance.getLaws().get(0));
                 }
 
             }
@@ -225,11 +225,7 @@ public class UtilsGovernment {
             }
 
 
-//            if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.FRACTION.toString())){
-//                if(currentLawVotesEndBalance.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE){
-//                    fractions.put(currentLawVotesEndBalance.getLaws().get(0), currentLawVotesEndBalance.getVotes());
-//                }
-//            }
+
 
         }
 
@@ -240,11 +236,10 @@ public class UtilsGovernment {
 
                 double vote = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).votesLaw(balances, yesAverage, noAverage);
                 int supremeVotes  = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteGovernment(balances, chamberOfSumpremeJudges);
-                int houseOfRepresentativiesVotes = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteGovernment(balances, houseOfRepresentativies);
                 int boardOfDirectorsVotes = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteGovernment(balances, boardOfDirectors);
 
                 currentLawVotesEndBalance.setVotes(vote);
-                currentLawVotesEndBalance.setVotesBoardOfDirectors(houseOfRepresentativiesVotes);
+                currentLawVotesEndBalance.setVotesBoardOfDirectors(boardOfDirectorsVotes);
                 currentLawVotesEndBalance.setVotesCorporateCouncilOfReferees(supremeVotes);
                 currentLawVotesEndBalance.setVotesBoardOfDirectors(boardOfDirectorsVotes);
             }
@@ -264,11 +259,7 @@ public class UtilsGovernment {
                 }
             }
 
-            if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.HIGH_JUDGE.toString())){
-                if(currentLawVotesEndBalance.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES){
-                    hightJudge.add(currentLawVotesEndBalance.getLaws().get(0));
-                }
-            }
+
         }
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : current) {
             if(votesMap.containsKey(currentLawVotesEndBalance.getAddressLaw())){
@@ -280,7 +271,6 @@ public class UtilsGovernment {
             }
 
         }
-
 
         return current;
 

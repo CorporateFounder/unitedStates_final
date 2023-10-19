@@ -8,7 +8,6 @@ import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.governments.Director;
 import International_Trade_Union.governments.Directors;
-import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.FIndPositonHelperData;
 import International_Trade_Union.model.User;
 import International_Trade_Union.setings.Seting;
@@ -78,7 +77,7 @@ public class UtilsBalance {
                 if (higherSpecialPositions.isElectedByCEO()) {
                     fIndPositonHelperDataMap.put(higherSpecialPositions,
                             new FIndPositonHelperData(higherSpecialPositions, false, false, true, false, false));
-                } else if (higherSpecialPositions.isElectedByFractions()) {
+                } else if (higherSpecialPositions.isElectedByBoardOfDirectors()) {
                     fIndPositonHelperDataMap.put(higherSpecialPositions,
                             new FIndPositonHelperData(higherSpecialPositions, false, false, false, true, false));
                 } else if (higherSpecialPositions.isElectedByCorporateCouncilOfReferees()) {
@@ -91,131 +90,7 @@ public class UtilsBalance {
                 }
 
             }
-//            List<Block> blocks = blockchain.getBlockchainList().subList(blockchain.sizeBlockhain()-Seting.LAW_MONTH_VOTE, blockchain.sizeBlockhain());
-           long size = block.getIndex()+1;
-           List<Block> blocks = Blockchain.subFromFile((int) (size-Seting.LAW_MONTH_VOTE), (int) size, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-
-            //подсчитать голоса за все проголосованные заканы
-            List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotesOnlyStock(
-                    lawEligibleForParliamentaryApprovals,
-                    balances,
-                    blocks,
-                    Seting.LAW_MONTH_VOTE);
-
-            List<CurrentLawVotesEndBalance> budget = current.stream().
-                    filter(t->t.getPackageName().equals(Seting.BUDGET))
-                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
-                    .limit(1)
-                    .collect(Collectors.toList());
-
-
-            List<CurrentLawVotesEndBalance> emission = current.stream().
-                    filter(t->t.getPackageName().equals(Seting.EMISSION))
-                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
-                    .limit(1)
-                    .collect(Collectors.toList());
-            budget.addAll(emission);
-
-            System.out.println("calculateBalanceFromLaw: ");
-            for (CurrentLawVotesEndBalance voting : budget) {
-
-                //траты с бюджета собственных бюджетов
-                if(voting.getPackageName().equals(Seting.BUDGET)){
-
-                    UtilsCurrentLawVotesEndBalance.saveBudget(voting, Seting.CURRENT_BUDGET_END_EMISSION);
-
-                    System.out.println("BUDGET: " + voting.getPackageName());
-                    if(voting.getVotes() >= Seting.LIMIT_VOTING_FOR_BUDJET_END_EMISSION){
-                        System.out.println("BUDGET: votes: " + voting.getVotes());
-                        for (String s : voting.getLaws()) {
-                            Account sender = getBalance(voting.getPackageName(), balances);
-                            String[] account = s.split(" ");
-                            double sendDollar = 0;
-                            double sendStock = 0;
-                            Account customer = new Account("emtpy", 0, 0);
-                            try {
-                             customer = getBalance(account[0], balances);
-
-                                sendDollar = Double.parseDouble(account[1]);
-                                sendStock = Double.parseDouble(account[2]);
-                            }catch (Exception e){
-                                System.out.println("UtilsBalance: calculateBalanceFromLaw: error: Budget");
-                                System.out.println("Number format exception");
-                                continue;
-                            }
-                            System.out.println("calculateBalanceFromLaw: BUDGET: sender before dollar:  "
-                                    + sender.getDigitalDollarBalance());
-                            System.out.println("calculateBalanceFromLaw: BUDGET: sender before stock:  "
-                                    + sender.getDigitalStockBalance());
-
-                            System.out.println("calculateBalanceFromLaw: BUDGET: customer before dollar:  "
-                                    + customer.getDigitalDollarBalance());
-                            System.out.println("calculateBalanceFromLaw: BUDGET: customer before stock:  "
-                                    + customer.getDigitalStockBalance());
-                            if(sender.getDigitalDollarBalance() >= sendDollar){
-                                sender.setDigitalDollarBalance(sender.getDigitalDollarBalance()-sendDollar);
-                                customer.setDigitalDollarBalance(customer.getDigitalDollarBalance()+sendDollar);
-                            }
-                            if(sender.getDigitalStockBalance() >= sendStock){
-                                sender.setDigitalStockBalance(sender.getDigitalStockBalance()-sendStock);
-                                customer.setDigitalStockBalance(customer.getDigitalStockBalance()+sendStock);
-                            }
-
-                            balances.put(sender.getAccount(), sender);
-                            balances.put(customer.getAccount(), customer);
-
-                            System.out.println("calculateBalanceFromLaw: BUDGET: sender after dollar:  "
-                                    + sender.getDigitalDollarBalance());
-                            System.out.println("calculateBalanceFromLaw: BUDGET: sender after stock:  "
-                                    + sender.getDigitalStockBalance());
-
-                            System.out.println("calculateBalanceFromLaw: BUDGET: customer after dollar:  "
-                                    + customer.getDigitalDollarBalance());
-                            System.out.println("calculateBalanceFromLaw: BUDGET: customer after stock:  "
-                                    + customer.getDigitalStockBalance());
-                        }
-
-                    }
-                }
-
-                //эмиссия денег
-                if(voting.getPackageName().equals(Seting.EMISSION)){
-                    UtilsCurrentLawVotesEndBalance.saveBudget(voting, Seting.CURRENT_BUDGET_END_EMISSION);
-
-                    Account sender = new Account(Seting.EMISSION,
-                            Seting.EMISSION_BUDGET, 0);
-                    if(voting.getVotes() >= Seting.LIMIT_VOTING_FOR_BUDJET_END_EMISSION){
-
-                        for (String s : voting.getLaws()) {
-
-                            String[] account = s.split(" ");
-                            double sendDollar = 0;
-                            Account customer = new Account("empty", 0, 0);
-                            try {
-                                customer = getBalance(account[0], balances);
-                                sendDollar = Double.parseDouble(account[1]);
-
-                            }catch (Exception e){
-                                System.out.println("UtilsBalance: calculateBalanceFromLaw: error");
-                                continue;
-                            }
-                            if(sender.getDigitalDollarBalance() >= sendDollar){
-                                sender.setDigitalDollarBalance(sender.getDigitalDollarBalance()-sendDollar);
-                                customer.setDigitalDollarBalance(customer.getDigitalDollarBalance()+sendDollar);
-                            }
-
-
-                            balances.put(sender.getAccount(), sender);
-                            balances.put(customer.getAccount(), customer);
-                        }
-
-                    }
-                    sender = new Account(Seting.EMISSION,
-                            0, 0);
-                    balances.put(sender.getAccount(), sender);
-                }
-
-            }
+//
 
         }
 

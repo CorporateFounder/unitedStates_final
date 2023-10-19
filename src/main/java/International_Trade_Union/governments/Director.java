@@ -16,7 +16,7 @@ public class Director {
     private  int count;
 
     private boolean electedByCEO;
-    private boolean electedByFractions;
+    private boolean electedByBoardOfDirectors;
 
 
     private boolean electedByCorporateCouncilOfReferees;
@@ -38,7 +38,7 @@ public class Director {
     }
 
     public boolean isAppointedByTheGovernment(){
-        if(electedByCEO || electedByFractions || electedByCorporateCouncilOfReferees)
+        if(electedByCEO || electedByBoardOfDirectors || electedByCorporateCouncilOfReferees)
             return true;
         else return false;
     }
