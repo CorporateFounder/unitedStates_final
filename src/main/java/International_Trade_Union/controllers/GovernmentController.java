@@ -94,24 +94,24 @@ public class GovernmentController {
 
 
 
-        //минимальное значение количество положительных голосов для того чтобы закон действовал,
-        //позиции избираемые акциями совета директоров
-//        List<CurrentLawVotesEndBalance> electedByStockBoardOfDirectors = current.stream()
-//                .filter(t -> directors.isElectedByStocks(t.getPackageName()))
-//                .filter(t -> t.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString()))
-//                .filter(t -> t.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE)
-//                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
-//                .limit(directors.getDirector(NamePOSITION.BOARD_OF_DIRECTORS.toString()).getCount())
-//                .collect(Collectors.toList());
-
-
-        List<CurrentLawVotesEndBalance> electedFraction = current.stream()
+//        минимальное значение количество положительных голосов для того чтобы закон действовал,
+//        позиции избираемые акциями совета директоров
+        List<CurrentLawVotesEndBalance> electedByStockBoardOfDirectors = current.stream()
                 .filter(t -> directors.isElectedByStocks(t.getPackageName()))
-                .filter(t -> t.getPackageName().equals(NamePOSITION.FRACTION.toString()))
+                .filter(t -> t.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString()))
                 .filter(t -> t.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
-                .limit(directors.getDirector(NamePOSITION.FRACTION.toString()).getCount())
+                .limit(directors.getDirector(NamePOSITION.BOARD_OF_DIRECTORS.toString()).getCount())
                 .collect(Collectors.toList());
+
+
+//        List<CurrentLawVotesEndBalance> electedFraction = current.stream()
+//                .filter(t -> directors.isElectedByStocks(t.getPackageName()))
+//                .filter(t -> t.getPackageName().equals(NamePOSITION.FRACTION.toString()))
+//                .filter(t -> t.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE)
+//                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+//                .limit(directors.getDirector(NamePOSITION.FRACTION.toString()).getCount())
+//                .collect(Collectors.toList());
 
 
         //минимальное значение количество положительных голосов для того чтобы закон действовал,
@@ -129,7 +129,7 @@ public class GovernmentController {
         //позиции созданные всеми участниками
         List<CurrentLawVotesEndBalance> createdByBoardOfDirectors = current.stream()
                 .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
-                .filter(t->t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                .filter(t->t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .collect(Collectors.toList());
         //добавление позиций созданных советом директоров
@@ -138,18 +138,18 @@ public class GovernmentController {
         }
 
         //позиции избираемые только всеми участниками
-        List<CurrentLawVotesEndBalance> electedByFraction = current.stream()
+        List<CurrentLawVotesEndBalance> electedByBoardOfShareholders = current.stream()
                 .filter(t -> directors.isElectedByFractions(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
-                .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0
-                || t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                || t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                 && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                 .collect(Collectors.toList());
 
 
         //групируем по списку
-        Map<String, List<CurrentLawVotesEndBalance>> group = electedByFraction.stream()
+        Map<String, List<CurrentLawVotesEndBalance>> group = electedByBoardOfShareholders.stream()
                 .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));
 
         Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();
@@ -174,7 +174,7 @@ public class GovernmentController {
 
 
         //избираемые GENERAL_EXECUTIVE_DIRECTOR
-        List<CurrentLawVotesEndBalance> electedByGeneralExecutiveDirector = electedByFraction.stream()
+        List<CurrentLawVotesEndBalance> electedByGeneralExecutiveDirector = electedByBoardOfShareholders.stream()
                 .filter(t -> directors.isElectedCEO(t.getPackageName()))
                 .filter(t -> NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString().equals(t.getPackageName()))
                 .filter(t -> t.getVoteGeneralExecutiveDirector() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_GENERAL_EXECUTIVE_DIRECTOR)
@@ -192,7 +192,7 @@ public class GovernmentController {
         //добавляет законы, которые создают новые должности утверждается всеми
         List<CurrentLawVotesEndBalance> addDirectors = current.stream()
                 .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
-                .filter(t->t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS
+                .filter(t->t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .collect(Collectors.toList());
 
@@ -207,9 +207,9 @@ public class GovernmentController {
 
         current = new ArrayList<>();
         current.addAll(addDirectors);
-        current.addAll(electedFraction);
+        current.addAll(electedByStockBoardOfDirectors);
         current.addAll(electedByStockCorporateCouncilOfReferees);
-        current.addAll(electedByFraction);
+        current.addAll(electedByBoardOfShareholders);
         current.addAll(electedByCorporateCouncilOfReferees);
         current.addAll(electedByGeneralExecutiveDirector);
         current.addAll(electedByHightJudge);

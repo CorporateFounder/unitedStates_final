@@ -465,6 +465,7 @@ public class UtilsBlock {
 
         UtilsFileSaveRead.deleteFile(Seting.TEMPORARY_BLOCKCHAIN_FILE);
         UtilsFileSaveRead.deleteFile(Seting.ORIGINAL_TEMPORARY_SHORT);
+        UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_ALL_CLASSIC_LAWS);
 
     }
 

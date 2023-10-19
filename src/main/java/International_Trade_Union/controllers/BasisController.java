@@ -1366,10 +1366,19 @@ public class BasisController {
             resolve_conflicts();
 
 
-            List<Block> tempBlockchain = Blockchain.subFromFile(
-                    blockchainSize - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-                    blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE
+            List<Block> tempBlockchain;
+//                    = Blockchain.subFromFile(
+//                    blockchainSize - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
+//                    blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE
+//            );
+
+            tempBlockchain  = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                    BlockService.findBySpecialIndexBetween(
+                            (blockchainSize) - Seting.PORTION_BLOCK_TO_COMPLEXCITY ,
+                            blockchainSize-1
+                    )
             );
+
             Block prevBlock = tempBlockchain.get(tempBlockchain.size()-1);
             long index = prevBlock.getIndex()+1;
             Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
@@ -1465,7 +1474,19 @@ public class BasisController {
             //транзакции которые мы добавили в блок и теперь нужно удалить из файла, в папке resources/transactions
             List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
             //отказ от дублирующих транзакций
-            List<Block> temp = Blockchain.subFromFile(blockchainSize - Seting.CHECK_DTO, blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            List<Block> temp
+
+//                   = Blockchain.subFromFile(
+//                            blockchainSize - Seting.CHECK_DTO,
+//                            blockchainSize,
+//                            Seting.ORIGINAL_BLOCKCHAIN_FILE);
+
+            =  UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                    BlockService.findBySpecialIndexBetween(
+                            (blockchainSize) - Seting.CHECK_DTO,
+                            blockchainSize-1
+                    )
+            );
             temporaryDtoList = UtilsBlock.validDto(temp, temporaryDtoList);
             //блокировка читеров
 
@@ -1525,7 +1546,7 @@ public class BasisController {
             }
 
 //            String addresFounder = Blockchain.indexFromFile(0, Seting.ORIGINAL_BLOCKCHAIN_FILE).getFounderAddress();
-            String addresFounder = BlockService.findById(1).getFounderAddress();
+            String addresFounder = BlockService.findBySpecialIndex(0).getFounderAddress();
             if (!block.getFounderAddress().equals(addresFounder)) {
                 System.out.println("wrong address founder: ");
             }

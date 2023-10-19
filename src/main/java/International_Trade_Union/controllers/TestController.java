@@ -151,7 +151,7 @@ public class TestController {
     public List<Laws> listLaws() throws IOException {
         List<Laws> laws = new ArrayList<>();
         for (int i = 0; i < BasisController.getBlockchainSize(); i++) {
-            EntityBlock special = entityBlockRepository.findBySpecialIndex(0L);
+            EntityBlock special = entityBlockRepository.findBySpecialIndex(i);
             Block bySpecialIndex = UtilsBlockToEntityBlock.entityBlockToBlock(special);
             for (DtoTransaction transaction : bySpecialIndex.getDtoTransactions()) {
                 Laws temp = transaction.getLaws();

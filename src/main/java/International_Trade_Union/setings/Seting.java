@@ -1,18 +1,20 @@
 package International_Trade_Union.setings;
 
 import International_Trade_Union.governments.Directors;
+import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.utils.UtilsUse;
 
 
 import java.util.Set;
 
 public interface Seting {
+    boolean IS_TEST = false;
     // значение используется для вычисления процентов
     int HUNDRED_PERCENT = 100;
     // значение используется как константа года,
     // в данной системе отсутствует високосный год
     int YEAR = 360;
-    int FIFTEEN_DAYS = 15;
+    int FIFTEEN_DAYS = IS_TEST ? 5: 15;
 
 
     Directors directors = new Directors();
@@ -35,18 +37,19 @@ public interface Seting {
 
 
     //Минимальное значение чтобы Совет Корпоративных Верховных Судей могла избрать Верховного Судью
-    int ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES = 2;
+    int ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES = IS_TEST ? 1: 2;
 
 
     //Минимальное количество остатка голосов чтобы Совет Акционеров
     //утверждал вместе с остальными участниками в утверждении законов.
-    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS = 10; //100;
+    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS =IS_TEST ? 1: 100;  //100;
 
     //голос Генерального Исполнительного Директора
     int ORIGINAL_LIMIT_MIN_VOTE_GENERAL_EXECUTIVE_DIRECTOR = 1;
 
     //фракционный голос минимум 15.0
-    double ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS = 15.0;
+    double ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS = IS_TEST ? 1.0: 15.0;
+    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS =IS_TEST ? 1: 10;
 
     //голос Верховного Судьи
     int ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE = 1;
@@ -103,6 +106,10 @@ public interface Seting {
     //бюджет должен формировать только палата представителей
     String BUDGET = "BUDGET";
     String EMISSION = "EMISSION";
+
+    //классические законы должны действовать постоянно,
+    //пока их не отменять либо верховный суд, либо совет директоров
+    String CURRENT_LAW = "CURRENT_LAW";
     //сколько голосов нужно
     int LIMIT_VOTING_FOR_BUDJET_END_EMISSION = 300000;
     double EMISSION_BUDGET = 25000;
@@ -117,8 +124,8 @@ public interface Seting {
     //палата судей минимум 5 голосов
     int ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES_AMENDMENT = 5;// 5;
     //палата представителей 20% голосов
-//    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_AMENDMENT =
-//           directors.getDirector(NamePOSITION.BOARD_OF_DIRECTORS.toString()).getCount() * 20 / 100;
+    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_AMENDMENT =
+           directors.getDirector(NamePOSITION.BOARD_OF_DIRECTORS.toString()).getCount() * 20 / 100;
 
     //Совет акционеров минимум 20% голосов
     int ORIGINAL_LIMIT_MINT_VOTE_BOARD_OF_SHAREHOLDERS_AMENDMENT = BOARD_OF_SHAREHOLDERS * 35 / 100;
@@ -149,7 +156,7 @@ public interface Seting {
     int LAW_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 1;
 
     //используется для утверждения бюджета и эмиссии
-    int LAW_MONTH_VOTE = (int) (FIFTEEN_DAYS * Seting.COUNT_BLOCK_IN_DAY);
+    int LAW_MONTH_VOTE = IS_TEST ? 3: (int) (FIFTEEN_DAYS * Seting.COUNT_BLOCK_IN_DAY);
 
 
     // сколько секунд в сутках
@@ -173,6 +180,7 @@ public interface Seting {
     String ORIGINAL_CORPORATE_VOTE_FILE = "/resources/vote/";
 
     String ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE = "/resources/allLawsWithBalance/";
+    String ORIGINAL_ALL_CLASSIC_LAWS = "/resources/allClassicLaws/";
     String ORGINAL_ALL_TRANSACTION_FILE = "/resources/transactions/";
 
     String ORIGINAL_ALL_SENDED_TRANSACTION_FILE = "/resources/sendedTransaction/";
@@ -188,7 +196,7 @@ public interface Seting {
     String ORIGINAL_TEMPORARY_BLOCKS = "/resources/temporaryBlocks/";
     String ORIGINAL_TEMPORARY_SHORT = "/resources/short/shortBlockchain.txt";
 
-    boolean IS_TEST = false;
+
 
     //адресса внешних сервисов
 //    Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");
