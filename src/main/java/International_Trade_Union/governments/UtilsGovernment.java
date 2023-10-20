@@ -146,18 +146,17 @@ public class UtilsGovernment {
             List<LawEligibleForParliamentaryApproval> approvalList,
             Map<String, Account> balances,
             List<Account> BoardOfShareholders,
-            List<Block> blocks,
-            int limitBlocks
+            Map<String, CurrentLawVotes> votesMap
     ) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         //действующие законы чьи голоса больше ORIGINAL_LIMIT_MIN_VOTE
         List<CurrentLawVotesEndBalance> current = new ArrayList<>();
-        Map<String, CurrentLawVotes> votesMap = null;
+//        Map<String, CurrentLawVotes> votesMap = null;
         List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
-        if (blocks.size() > limitBlocks) {
-            votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks.subList(blocks.size() - limitBlocks, blocks.size()));
-        } else {
-            votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks);
-        }
+//        if (blocks.size() > limitBlocks) {
+//            votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks.subList(blocks.size() - limitBlocks, blocks.size()));
+//        } else {
+//            votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks);
+//        }
 
 
 

@@ -3,6 +3,8 @@ package International_Trade_Union.controllers;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
+import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Director;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
@@ -47,9 +49,16 @@ public class GovernmentController {
 
 
         Directors directors = new Directors();
-        Blockchain blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
+//        Blockchain blockchain = Mining.getBlockchain(
+//                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+//                BlockchainFactoryEnum.ORIGINAL);
+
+        List<Block> blocksList = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                BlockService.findBySpecialIndexBetween(
+                        BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE,
+                        BasisController.getBlockchainSize() -1
+                )
+        );
 
         Map<String, Account> balances = new HashMap<>();
         //считывать баланс
@@ -59,11 +68,10 @@ public class GovernmentController {
                 UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
         //получить совет акционеров из файла
-        List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blockchain.getBlockchainList(), Seting.BOARDS_BLOCK);
+        List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blocksList, Seting.BOARDS_BLOCK);
 
 
-        //TODO доработать оптимизацию
-        //TODO избавиться от find position в данном методе
+
         //отфильтровать по типам голосов
         Map<Director, FIndPositonHelperData> fIndPositonHelperDataMap = new HashMap<>();
         for (Director higherSpecialPositions : directors.getDirectors()) {
@@ -84,13 +92,29 @@ public class GovernmentController {
 
         }
 
+        //подсчет происходит с базы данных, таким образом вычисления происходят быст
+        Map<String, CurrentLawVotes> votesMap = new HashMap<>();
+        List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
+        if (BasisController.getBlockchainSize() > Seting.LAW_YEAR_VOTE) {
+
+            for (int i = BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE; i < BasisController.getBlockchainSize(); i++) {
+                votesMap = UtilsCurrentLaw.calculateVote(votesMap, accounts,
+                        UtilsBlockToEntityBlock.entityBlockToBlock(BlockService.findBySpecialIndex(i)));
+            }
+
+        } else {
+            for (int i = 0; i < BasisController.getBlockchainSize(); i++) {
+                votesMap = UtilsCurrentLaw.calculateVote(votesMap, accounts,
+                        UtilsBlockToEntityBlock.entityBlockToBlock(BlockService.findBySpecialIndex(i)));
+            }
+        }
+
         //подсчитать голоса за все проголосованные заканы
         List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
                 lawEligibleForParliamentaryApprovals,
                 balances,
                 boardOfShareholders,
-                blockchain.getBlockchainList(),
-                Seting.LAW_YEAR_VOTE);
+                votesMap);
 
 
 
@@ -246,12 +270,29 @@ public class GovernmentController {
 
         List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blockchain.getBlockchainList(), Seting.BOARDS_BLOCK);
 
+        //подсчет происходит с базы данных, таким образом вычисления происходят быст
+        Map<String, CurrentLawVotes> votesMap = new HashMap<>();
+        List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
+        if (BasisController.getBlockchainSize() > Seting.LAW_YEAR_VOTE) {
+
+            for (int i = BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE; i < BasisController.getBlockchainSize(); i++) {
+                votesMap = UtilsCurrentLaw.calculateVote(votesMap, accounts,
+                        UtilsBlockToEntityBlock.entityBlockToBlock(BlockService.findBySpecialIndex(i)));
+            }
+
+        } else {
+            for (int i = 0; i < BasisController.getBlockchainSize(); i++) {
+                votesMap = UtilsCurrentLaw.calculateVote(votesMap, accounts,
+                        UtilsBlockToEntityBlock.entityBlockToBlock(BlockService.findBySpecialIndex(i)));
+            }
+        }
+
+        //подсчитать голоса за все проголосованные заканы
         List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
                 lawEligibleForParliamentaryApprovals,
                 balances,
                 boardOfShareholders,
-                blockchain.getBlockchainList(),
-                Seting.LAW_YEAR_VOTE);
+                votesMap);
 
 
         List<String> positions = directors.getDirectors().stream().map(t->t.getName()).collect(Collectors.toList());
