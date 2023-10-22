@@ -144,6 +144,8 @@ public class LawsController {
         redirectAttrs.addFlashAttribute("reward", reward);
         redirectAttrs.addFlashAttribute("vote", VoteEnum.NO);
         dtoTransaction.setSign(sign);
+        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
+        redirectAttrs.addFlashAttribute("sign", encoded);
         Directors directors = new Directors();
         if (dtoTransaction.verify()) {
 
@@ -232,6 +234,8 @@ public class LawsController {
         redirectAttrs.addFlashAttribute("reward", reward);
         redirectAttrs.addFlashAttribute("vote", vote);
         dtoTransaction.setSign(sign);
+        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
+        redirectAttrs.addFlashAttribute("sign", encoded);
         Directors directors = new Directors();
         if (dtoTransaction.verify()) {
 
@@ -704,7 +708,8 @@ public class LawsController {
         redirectAttrs.addFlashAttribute("reward", rewardD);
         redirectAttrs.addFlashAttribute("vote", "YES");
         dtoTransaction.setSign(sign);
-
+        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
+        redirectAttrs.addFlashAttribute("sign", encoded);
         Directors directors = new Directors();
         if (dtoTransaction.verify()) {
 
@@ -802,7 +807,8 @@ public class LawsController {
         redirectAttrs.addFlashAttribute("reward", rewardD);
         redirectAttrs.addFlashAttribute("vote", "YES");
         dtoTransaction.setSign(sign);
-
+        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
+        redirectAttrs.addFlashAttribute("sign", encoded);
         Directors directors = new Directors();
         if (dtoTransaction.verify()) {
 

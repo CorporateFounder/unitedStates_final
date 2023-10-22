@@ -353,6 +353,8 @@ public class GovernmentController {
         redirectAttrs.addFlashAttribute("reward", rewardD);
         redirectAttrs.addFlashAttribute("vote", "YES");
         dtoTransaction.setSign(sign);
+        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
+        redirectAttrs.addFlashAttribute("sign", encoded);
 
         if (dtoTransaction.verify() && UtilsGovernment.checkPostionSenderEqualsLaw(sender, law)) {
             redirectAttrs.addFlashAttribute("sending", "success");

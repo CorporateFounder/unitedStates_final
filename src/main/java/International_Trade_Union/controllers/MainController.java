@@ -326,6 +326,8 @@ public class MainController {
                 VoteEnum.YES);
         PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));
         byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
+
+
         System.out.println("Main Controller: new transaction: vote: " +VoteEnum.YES);
         redirectAttrs.addFlashAttribute("title", "sending result!!!");
         redirectAttrs.addFlashAttribute("sender", sender);
@@ -334,7 +336,10 @@ public class MainController {
         redirectAttrs.addFlashAttribute("stock", stock);
         redirectAttrs.addFlashAttribute("reward", reward);
         redirectAttrs.addFlashAttribute("vote", VoteEnum.YES);
+
         dtoTransaction.setSign(sign);
+        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
+        redirectAttrs.addFlashAttribute("sign", encoded);
         Directors directors = new Directors();
         if(dtoTransaction.verify()){
 
