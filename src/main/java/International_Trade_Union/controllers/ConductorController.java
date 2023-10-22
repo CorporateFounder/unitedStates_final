@@ -4,6 +4,8 @@ import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.entities.EntityDtoTransaction;
+import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Account;
@@ -17,6 +19,7 @@ import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -29,6 +32,9 @@ import java.util.stream.Collectors;
 
 @RestController
 public class ConductorController {
+
+    @Autowired
+    BlockService blockService;
     /**
      * created account
      * Params: nothing
@@ -200,4 +206,40 @@ public class ConductorController {
     public Block blockFromHash(@RequestParam String hash) throws JsonProcessingException {
         return Blockchain.hashFromFile(hash, Seting.ORIGINAL_BLOCKCHAIN_FILE);
     }
+
+
+
+    @GetMapping("/conductorBlock")
+    @ResponseBody
+    public Block  block(@RequestParam Integer index) throws IOException {
+        if(index < 0 ){
+            index = 0;
+        }
+        if(index > BasisController.getBlockchainSize() -1){
+            index = BasisController.getBlockchainSize() - 1;
+        }
+        return UtilsBlockToEntityBlock.entityBlockToBlock(
+                BlockService.findBySpecialIndex(index)
+        );
+    }
+
+    @GetMapping("/conductorHashTran")
+    @ResponseBody
+    public DtoTransaction transaction(@RequestParam String hash) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        List<EntityDtoTransaction> entityDtoTransactions =
+                BlockService.findAllDto();
+        EntityDtoTransaction entityDtoTransaction = null;
+        try {
+             entityDtoTransaction = BlockService.findBySign(hash);
+
+            if(entityDtoTransaction == null){
+                return null;
+            }
+        }catch (Exception e){
+           return null;
+        }
+
+        return UtilsBlockToEntityBlock.entityToDto(entityDtoTransaction);
+    }
+
 }

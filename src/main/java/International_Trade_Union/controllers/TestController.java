@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
@@ -532,29 +533,43 @@ public class TestController {
     @GetMapping("/testBlock")
     @ResponseBody
     public boolean testBlock() throws IOException, CloneNotSupportedException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        Block prevBlock = Blockchain.indexFromFile(600, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        Block genesis = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":6.5E7,\"digitalStockBalance\":6.5E7,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIDDW9fKvwUY0aXpvamxOU6pypicO3eCqEVM9LDFrIpjIAiEA81Zh7yCBbJOLrAzx4mg5HS0hMdqvB0obO2CZARczmfY=\"}],\"previousHash\":\"0234a350f4d56ae45c5ece57b08c54496f372bc570bd83a465fb6d2d85531479\",\"minerAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":12,\"minerRewards\":0.0,\"hashCompexity\":1,\"timestamp\":1685942742706,\"index\":1,\"hashBlock\":\"08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c\"}");
+        DtoTransaction genesisDto = genesis.getDtoTransactions().get(0);
 
-        List<Block> original = Blockchain.subFromFile(
-                (int) (prevBlock.getIndex() - Seting.PORTION_BLOCK_TO_COMPLEXCITY),
-                (int) (prevBlock.getIndex() + 1),
-                Seting.ORIGINAL_BLOCKCHAIN_FILE
-        );
+        EntityBlock block = BlockService.findBySpecialIndex(0);
+        Block h2 = UtilsBlockToEntityBlock.entityBlockToBlock(block);
+//        EntityDtoTransaction entityDtoTransaction = BlockService.findByIdDto(2497L);
+        EntityDtoTransaction entityDtoTransaction = BlockService.findBySign("MEUCIDDW9fKvwUY0aXpvamxOU6pypicO3eCqEVM9LDFrIpjIAiEA81Zh7yCBbJOLrAzx4mg5HS0hMdqvB0obO2CZARczmfY=");
 
-        List<Block> lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
-                BlockService.findAllByIdBetween(
-                        (prevBlock.getIndex() + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-                        prevBlock.getIndex() + 1
-                )
-        );
-        System.out.println("**************************************************************");
-        original.forEach(t -> System.out.printf("index: %d, hash %s\n",
-                t.getIndex(), t.getHashBlock()));
-        System.out.println("**************************************************************");
-        lastDiff.forEach(t -> System.out.printf("index: %d, hash %s\n",
-                t.getIndex(), t.getHashBlock()));
-        System.out.println("***************************************************************");
+        DtoTransaction h2Dto = UtilsBlockToEntityBlock.EntityDto(entityDtoTransaction);
+        System.out.println("*****************************************");
+        System.out.println(genesisDto);
+        System.out.println("*****************************************");
+        System.out.println(h2Dto);
+        System.out.println("*****************************************");
+        byte[] original = entityDtoTransaction.getSign().toString().getBytes(StandardCharsets.UTF_8);
+        byte[] h2Byte = entityDtoTransaction.getSign();
 
-        return lastDiff.equals(original);
+        Base64.Encoder encoder = Base64.getEncoder();
+        // создаем объект декодера
+        Base64.Decoder decoder = Base64.getDecoder();
+
+// декодируем строку обратно в массив байтов
+        byte[] decoded = decoder.decode("encoded");
+
+// кодируем массив байтов в строку
+
+        System.out.println("---------------------------------------------");
+
+        String encoded = encoder.encodeToString(genesisDto.getSign());
+        System.out.println("genesisDto:" + encoded);
+        System.out.println("---------------------------------------------");
+
+        String encoded2 = encoder.encodeToString(h2Dto.getSign());
+        System.out.println("h2Dto: " + encoded2);
+        System.out.println("---------------------------------------------");
+
+        return h2Dto.equals(genesisDto);
     }
 
     @GetMapping("/testBlock1")

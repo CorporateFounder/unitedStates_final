@@ -2,6 +2,7 @@ package International_Trade_Union.entity.services;
 
 import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.entities.EntityBlock;
+import International_Trade_Union.entity.entities.EntityDtoTransaction;
 import International_Trade_Union.entity.repository.EntityAccountRepository;
 import International_Trade_Union.entity.repository.EntityBlockRepository;
 import International_Trade_Union.entity.repository.EntityDtoTransactionRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Component
@@ -109,6 +111,21 @@ public class BlockService {
         accountService.saveAll(entityResult);
         accountService.flush();
 
+    }
+
+    public static EntityDtoTransaction findBySign(String sign){
+        Base64.Decoder decoder = Base64.getDecoder();
+
+// декодируем строку обратно в массив байтов
+        byte[] decoded = decoder.decode(sign);
+        return dtoService.findBySign(decoded);
+
+    }
+    public static List<EntityDtoTransaction> findAllDto(){
+        return dtoService.findAll();
+    }
+    public static EntityDtoTransaction findByIdDto(long id){
+        return dtoService.findById(id);
     }
     public static EntityBlock findById(long id){
         return blockService.findById(id);

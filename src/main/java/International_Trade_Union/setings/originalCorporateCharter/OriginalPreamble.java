@@ -1,4 +1,4 @@
-package International_Trade_Union.originalCorporateCharter;
+package International_Trade_Union.setings.originalCorporateCharter;
 
 public interface OriginalPreamble {
     String ARTICLE_0 =

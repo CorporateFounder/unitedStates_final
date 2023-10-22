@@ -1,9 +1,9 @@
 package International_Trade_Union.controllers;
 
-import International_Trade_Union.originalCorporateCharter.OriginalCHARTER;
-import International_Trade_Union.originalCorporateCharter.OriginalCHARTER_ENG;
-import International_Trade_Union.originalCorporateCharter.OriginalPreamble;
-import International_Trade_Union.originalCorporateCharter.OriginalPreambleEng;
+import International_Trade_Union.setings.originalCorporateCharter.OriginalCHARTER;
+import International_Trade_Union.setings.originalCorporateCharter.OriginalCHARTER_ENG;
+import International_Trade_Union.setings.originalCorporateCharter.OriginalPreamble;
+import International_Trade_Union.setings.originalCorporateCharter.OriginalPreambleEng;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

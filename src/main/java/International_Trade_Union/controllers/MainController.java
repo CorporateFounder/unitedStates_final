@@ -8,12 +8,11 @@ import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Mining;
-import International_Trade_Union.originalCorporateCharter.OriginalPreamble;
-import International_Trade_Union.originalCorporateCharter.OriginalPreambleEng;
+import International_Trade_Union.setings.originalCorporateCharter.OriginalPreamble;
+import International_Trade_Union.setings.originalCorporateCharter.OriginalPreambleEng;
 
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package International_Trade_Union.originalCorporateCharter;
+package International_Trade_Union.setings.originalCorporateCharter;
 
 public interface OriginalCHARTER {
     String LAW_1 = "# КАК ИЗБИРАЮТСЯ ЗАКОНЫ. \n" +

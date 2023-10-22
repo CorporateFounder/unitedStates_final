@@ -151,9 +151,9 @@ public interface Seting {
     //которые не позже четырех лет для законов и должностей,
     //голоса отданные за законы должны обновляться каждые четыре года
     //как и за должности
-    int POSITION_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 1;
+    int POSITION_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 4;
     //подсчет голосов для законов в годах
-    int LAW_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 1;
+    int LAW_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 4;
 
     //используется для утверждения бюджета и эмиссии
     int LAW_MONTH_VOTE = IS_TEST ? 5: (int) (FIFTEEN_DAYS * Seting.COUNT_BLOCK_IN_DAY);
