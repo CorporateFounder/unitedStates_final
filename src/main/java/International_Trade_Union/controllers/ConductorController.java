@@ -195,11 +195,11 @@ public class ConductorController {
         return result;
     }
 
-    /**find block from index*/
-    @GetMapping("/block")
-    public Block block(@RequestParam int index) throws JsonProcessingException {
-        return Blockchain.indexFromFile(index, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-    }
+//    /**find block from index*/
+//    @GetMapping("/block")
+//    public Block block(@RequestParam int index) throws JsonProcessingException {
+//        return Blockchain.indexFromFile(index, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+//    }
 
     /**find block from hash*/
     @GetMapping("/blockHash")

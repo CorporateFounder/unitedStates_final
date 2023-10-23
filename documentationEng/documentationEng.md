@@ -30,40 +30,37 @@ Silvio Gesell free money, Austrian School of Economics and Elements of the labor
 Hi all.
 Before downloading, I would like you to read the text below.
 My cryptocurrency was inspired by the US Constitution and the parliamentary system of government.
-My system has implemented a system that allows all participants to create laws and approve laws through democratic procedures.
-Imagine a world where a resident of the United States, Mexico, Canada or other regions will elect their representatives and approve laws,
-and also using direct democracy, but I need you to participate, I am a developer and can modify
-code to make the legislative system better. Together we will be like the founding fathers of digital democracy.
+My system implements a system that allows all participants to create laws and approve laws through democratic procedures.
+Imagine a world where residents of the USA, Mexico, Canada or other regions elect their representatives and approve laws,
+and also through direct democracy, but I need you to participate, I am a developer and can modify
+code so that the legal system becomes better. We will all be like the founding fathers of digital democracy.
 
-What are its benefits.
-1. There are 576 blocks per day, for each block is given if the block index is even (difficulty * 30) of coins, if not even
-   (difficulty * 30) + 1 coins. where difficulty is equal to the number of zeros in the hash.
-2. Two unique digital dollar coins and digital shares.
-3. No halving, instead, the restriction occurs by burning coins from all accounts in the amount
-   0.2% semi-annually for digital dollars and 0.4% for digital stocks.
-4. Unique electoral system inspired by the principles of Libertarianism, the English Parliament and
-   the US constitution.
-5. It has a unique mining system based on SHA-256.
-6. Unique anti-centralization system. Such rules
-   how the same address cannot mine a block twice in a row, and
-   rule, if the index is even, only those whose balance of shares is even and not zero can mine,
-   and if the index is not even, then that's it.
-   Makes this system decentralized.
+What are its advantages.
+1. There are 576 blocks in a day, for each block it is given if the block index is even (difficulty * 30) coins, if not even
+   (difficulty * 30) + 1 coin. where difficulty is equal to the number of zeros in the hash.
+2. Two unique digital dollar and digital stock coins.
+3. There is no halving; instead, the limitation occurs by burning coins from all accounts in the amount
+   0.2% every six months for digital dollars and 0.4% for digital stocks.
+4. A unique electoral system inspired by the principles of libertarianism, the English and New Zealand parliaments and
+   US Constitution.
+5. It has a unique mining system built on the basis of SHA-256 (A valid block must have the number
+   zeros in the hash string equal to the amount of complexity and the number of zeros in the hash bits must be 2).
+
 6. Difficulty adapts every 288 blocks.
-7. An election system that allows you to create your own faction and directly vote according to the rules of the network.
-8. Budgetary system, the state budget, which can be spent with the help of shareholders' votes.
-9. Unique system of government, consisting of elements of the English parliament and a charter inspired by the constitution
-   US and libertarian principles, including the NAP.
-10. The ability to mine blocks directly on the local server, which automatically connects to the global server, which only stores,
-    updates and returns the current blockchain.
-11. All settings are made taking into account knowledge in the field of Macroeconomics and took into account such schools as Milton Friedman's Monetarism,
-    Austrian School of Economics (Mises, Hayek), Silvio Gezel - money with demurrage and other books.
-12. The algorithm is designed in such a way that over time the economy will grow more steadily and have a more stable exchange rate,
-    which will prevent future crises such as the Deflationary Spiral and Stagflation, as well as allow for the optimal development of all of humanity.
-    the total number of coins never exceeds 10 billion dollars and 5 billion shares if the difficulty is not higher than 10.
-13. Ultimately, this system will be able to function as a Confederation or Federation for humanity
-    and eliminate such problems as financial crises (Deflationary Spiral, Stagflation, Galloping inflation, etc.)
-    Pandemics, Space Threats, Environmental Issues and will reduce the occurrence of military conflicts.
+7. An election system that allows you to elect your representatives to different branches of government and directly vote for them.
+8. A unique system of government consisting of elements of the English parliament and a charter inspired by the constitution
+   USA and libertarian principles, including NAP.
+9. The ability to mine blocks directly on a local server, which automatically connects to the global server, which only stores,
+   updates and returns the current blockchain.
+10. All settings are made taking into account knowledge in the field of Macroeconomics and such schools as Milton Friedman’s Monetarism were taken into account,
+    Austrian School of Economics (Mises, Hayek), Silvio Gesel - money with demurrage and other books.
+11. The algorithm is designed in such a way that over time the economy will grow more steadily and have a more stable rate,
+    which will prevent future crises such as Deflationary Spiral and Stagflation, and allow for the optimal development of all humanity.
+    the total number of coins never exceeds 10 billion dollars and 5 billion shares unless the difficulty is higher than 10.
+12. Ultimately this system will be able to function as a Confederation or Federation for humanity
+    and eliminate problems such as financial crises (Deflationary Spiral, Stagflation, Galloping Inflation, etc.)
+    Pandemics, Space Threats, Environmental problems and will reduce the occurrence of military conflicts.
+
 
 ## Mission.
 Using a new economic model that is resistant to deflationary and inflationary crises,
@@ -89,6 +86,7 @@ countries and the economic growth of mankind.
 - Kinger
 - richman
 - just_mine_it
+- Boss ZD
 - and many others whose names I could not write because I do not know Chinese
 
 ## CONTENT
