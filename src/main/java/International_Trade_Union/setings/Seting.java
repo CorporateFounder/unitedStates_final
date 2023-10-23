@@ -8,13 +8,13 @@ import International_Trade_Union.utils.UtilsUse;
 import java.util.Set;
 
 public interface Seting {
-    boolean IS_TEST = false;
+    boolean IS_TEST = true;
     // значение используется для вычисления процентов
     int HUNDRED_PERCENT = 100;
     // значение используется как константа года,
     // в данной системе отсутствует високосный год
     int YEAR = 360;
-    int FIFTEEN_DAYS = IS_TEST ? 5: 15;
+    int FIFTEEN_DAYS =  15;
 
 
     Directors directors = new Directors();
@@ -37,19 +37,19 @@ public interface Seting {
 
 
     //Минимальное значение чтобы Совет Корпоративных Верховных Судей могла избрать Верховного Судью
-    int ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES = IS_TEST ? 1: 2;
+    int ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES =  2;
 
 
     //Минимальное количество остатка голосов чтобы Совет Акционеров
     //утверждал вместе с остальными участниками в утверждении законов.
-    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS =IS_TEST ? 1: 100;  //100;
+    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS = 100;  //100;
 
     //голос Генерального Исполнительного Директора
     int ORIGINAL_LIMIT_MIN_VOTE_GENERAL_EXECUTIVE_DIRECTOR = 1;
 
     //фракционный голос минимум 15.0
-    double ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS = IS_TEST ? 1.0: 15.0;
-    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS =IS_TEST ? 1: 10;
+    double ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS = 15.0;
+    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS =  10;
 
     //голос Верховного Судьи
     int ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE = 1;
@@ -156,7 +156,7 @@ public interface Seting {
     int LAW_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 4;
 
     //используется для утверждения бюджета и эмиссии
-    int LAW_MONTH_VOTE = IS_TEST ? 5: (int) (FIFTEEN_DAYS * Seting.COUNT_BLOCK_IN_DAY);
+    int LAW_MONTH_VOTE = (int) (FIFTEEN_DAYS * Seting.COUNT_BLOCK_IN_DAY);
 
 
     // сколько секунд в сутках

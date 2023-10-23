@@ -414,6 +414,13 @@ public class BasisController {
                                 finish = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + Seting.PORTION_DOWNLOAD + 1;
                                     start = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + 1; //вот здесь возможно сделать + 2
 
+
+                                System.out.println("****************************************************");
+                                System.out.println("size: "+subBlocks.size());
+                                System.out.println("sub.get(0): " + subBlocks.get(0));
+                                System.out.println("sub.get(1): " + subBlocks.get(1));
+                                System.out.println("sub.get(size-1): " + subBlocks.get(subBlocks.size()-1));
+                                System.out.println("****************************************************");
                                 //смешение в + 2 нужно потому что база данных h2 имеет особеность sub
                                 //если наш не включает послдений символ, к примеру если нашему дать запрос sub(0, 10)
                                 //то он вернет 0,1,2,3,4,5,6,7,8,9 то h2 repository вернет также и 10

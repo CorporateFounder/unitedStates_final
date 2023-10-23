@@ -392,9 +392,9 @@ public class UtilsBlock {
 
         if (thisBlock.getIndex() > Seting.NEW_CHECK_UTILS_BLOCK && !thisBlock.getHashBlock().equals(thisBlock.hashForTransaction())) {
             System.out.println("false hash added wrong hash");
-//            System.out.println("actual: " + thisBlock.getHashBlock());
-//            System.out.println("expected: " + thisBlock.hashForTransaction());
-            System.out.println("address: " + thisBlock.getMinerAddress());
+            System.out.println("actual: " + thisBlock.getHashBlock());
+            System.out.println("expected: " + thisBlock.hashForTransaction());
+            System.out.println("miner address: " + thisBlock.getMinerAddress());
 
 
 //            //for find cheater

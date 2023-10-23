@@ -309,7 +309,7 @@ public class UtilsLaws {
 
         }
         saveLaws(lawsForSave, fileLaws);
-        System.out.println("UtilsLaws: getLaws: lawMap size: " + lawsMap.size() + " index: " + block.getIndex());
+
         return lawsMap;
     }
     public static List<LawEligibleForParliamentaryApproval> getCurrentLaws(Map<String, Laws> lawsMap, Map<String, Account> balances, String fileCurrentLaws) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
