@@ -25,8 +25,7 @@ import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import jdk.swing.interop.SwingInterOpUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,6 +56,7 @@ public class TestController {
 
     @Autowired
     BlockService blockService;
+
 
 
 

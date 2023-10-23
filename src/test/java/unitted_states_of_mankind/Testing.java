@@ -4,7 +4,9 @@ import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
+import International_Trade_Union.entity.SubBlockchainEntity;
 import International_Trade_Union.entity.blockchain.Blockchain;
+import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.entities.EntityBlock;
@@ -57,6 +59,57 @@ public class Testing {
 
     private static volatile boolean blockFound = false;
     private static volatile String foundHash = "-";
+
+    @Test
+    public void testServer() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        int finish = 0 + Seting.PORTION_DOWNLOAD;
+        int start = 0;
+
+        SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(start, finish);
+
+
+        System.out.println("1:sublockchainEntity: " + subBlockchainEntity);
+        String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
+        System.out.println("1:sublockchainJson: " + subBlockchainJson);
+        String localhost = "http://localhost:8083";
+        String server = "http://194.87.236.238:80";
+        List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson,localhost  + "/sub-blocks"));
+        List<Block> subBlocks1 = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson,server  + "/sub-blocks"));
+        System.out.println("******************************************");
+        Block one = subBlocks.get(0);
+        System.out.println(one);
+
+        System.out.println("******************************************");
+        Block two = subBlocks1.get(0);
+        System.out.println(two);
+        System.out.println("******************************************");
+        System.out.println(one.equals(two));
+        System.out.println(one.getHashBlock().equals(two.getHashBlock()));
+        System.out.println(one.getDtoTransactions().get(0)
+                .getLaws().equals(two.getDtoTransactions().get(0).getLaws()));
+
+
+//        List<Block> subBlocks = UtilsBlock.readLineObject("C://resources/blockchain/");
+        System.out.println("1:download sub block: " + subBlocks.size());
+        Block prev = null;
+        for (int i = 0; i < subBlocks.size(); i++) {
+            if(prev == null){
+                prev = subBlocks.get(i);
+               if(!prev.getHashBlock().equals(prev.hashForTransaction())){
+                    System.out.printf("wrong hash genesis: index: %d, actual %s, expected %s\n"
+                    , prev.getIndex(), prev.getHashBlock(), prev.hashForTransaction());
+                }
+                continue;
+            }
+            if(!subBlocks.get(i).getHashBlock().equals(subBlocks.get(i).hashForTransaction())){
+                System.out.printf("wrong hash: index: %d, actual %s, expected %s\n"
+                        , subBlocks.get(i).getIndex(), subBlocks.get(i).getHashBlock(), subBlocks.get(i).hashForTransaction());
+            }
+            System.out.println();
+        }
+
+
+    }
 
     @Test
     public void entityBalance() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
