@@ -8,6 +8,7 @@ import International_Trade_Union.entity.entities.EntityLaws;
 import International_Trade_Union.vote.Laws;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +34,7 @@ public class UtilsBlockToEntityBlock {
                 block.getRandomNumberProof(),
                 block.getMinerRewards(),
                 block.getHashCompexity(),
-                block.getTimestamp(),
+                block.getTimestamp().getTime(),
                 block.getIndex(),
                 block.getHashBlock(),
                 specialIndex
@@ -97,25 +98,8 @@ public class UtilsBlockToEntityBlock {
 
         return entityDtoTransactions;
     }
-    public static String listToString(List<String> list) {
-        // Проверить, что список не равен null
-        if (list == null) {
-            return null;
-        }
-        // Использовать метод String.join() для объединения элементов списка в одну строку с разделителем ","
-        return String.join("#", list);
-    }
 
-    public static List<String> stringToList(String str) {
-        // Проверить, что строка не равна null
-        if (str == null) {
-            return null;
-        }
-        // Использовать метод String.split() для разбиения строки на массив подстрок по разделителю ","
-        String[] array = str.split("#");
-        // Преобразовать массив в список с помощью метода Arrays.asList()
-        return Arrays.asList(array);
-    }
+
     public static EntityLaws lawsToEntity(Laws laws) {
 
         boolean isNull = laws.getLaws() == null? true :false;
@@ -152,7 +136,7 @@ public class UtilsBlockToEntityBlock {
                 entityBlock.getRandomNumberProof(),
                 entityBlock.getMinerRewards(),
                 entityBlock.getHashCompexity(),
-                entityBlock.getTimestamp(),
+                new Timestamp(entityBlock.getTimestamp()),
                 entityBlock.getIndex(),
                 entityBlock.getHashBlock()
         );
@@ -187,13 +171,8 @@ public class UtilsBlockToEntityBlock {
         String name = entityLaws.getPacketLawName() == null? null: entityLaws.getPacketLawName();
         List<String> strings = entityLaws.getLaws() == null? null: entityLaws.getLaws();
         String hash = entityLaws.getHashLaw() == null? null: entityLaws.getHashLaw();
-
-
         Laws laws;
-
         laws = new Laws(name, strings);
-
-
         if(entityLaws.isLawsIsNull()){
             laws.setLaws(null);
         }

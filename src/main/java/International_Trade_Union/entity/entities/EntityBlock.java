@@ -21,7 +21,6 @@ public class EntityBlock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     public EntityBlock() {
     }
 
@@ -32,7 +31,7 @@ public class EntityBlock {
                         long randomNumberProof,
                         double minerRewards,
                         int hashCompexity,
-                        Timestamp timestamp,
+                        long timestamp,
                         long index,
                         String hashBlock,
                         long specialIndex) {
@@ -56,7 +55,9 @@ public class EntityBlock {
     private long randomNumberProof;
     private double minerRewards;
     private int hashCompexity;
-    private Timestamp timestamp;
+
+
+    private long timestamp;
     private long index;
     private String hashBlock;
 

@@ -8,7 +8,7 @@ import International_Trade_Union.utils.UtilsUse;
 import java.util.Set;
 
 public interface Seting {
-    boolean IS_TEST = true;
+    boolean IS_TEST = false;
     // значение используется для вычисления процентов
     int HUNDRED_PERCENT = 100;
     // значение используется как константа года,

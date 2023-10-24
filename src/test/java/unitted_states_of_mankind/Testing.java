@@ -73,8 +73,11 @@ public class Testing {
         System.out.println("1:sublockchainJson: " + subBlockchainJson);
         String localhost = "http://localhost:8083";
         String server = "http://194.87.236.238:80";
-        List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson,localhost  + "/sub-blocks"));
-        List<Block> subBlocks1 = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson,server  + "/sub-blocks"));
+        List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson,server  + "/sub-blocks"));
+        List<Block> subBlocks1 = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson,localhost  + "/sub-blocks"));
+        List<Block> fromFile = UtilsBlock.readLineObject("C://resources/blockchain");
+        Block from = fromFile.get(0);
+
         System.out.println("******************************************");
         Block one = subBlocks.get(0);
         System.out.println(one);
@@ -84,9 +87,19 @@ public class Testing {
         System.out.println(two);
         System.out.println("******************************************");
         System.out.println(one.equals(two));
-        System.out.println(one.getHashBlock().equals(two.getHashBlock()));
-        System.out.println(one.getDtoTransactions().get(0)
-                .getLaws().equals(two.getDtoTransactions().get(0).getLaws()));
+        System.out.println("hash: " + one.getHashBlock().equals(two.getHashBlock()));
+        System.out.println("getPreviousHash: " + one.getPreviousHash().equals(two.getPreviousHash()));
+        System.out.println("getMinerAddress: " + one.getMinerAddress().equals(two.getMinerAddress()));
+        System.out.println("getFounderAddress: " + one.getFounderAddress().equals(two.getFounderAddress()));
+        System.out.println("getDtoTransactions: " + one.getDtoTransactions().equals(two.getDtoTransactions()));
+        System.out.println("getIndex: " + (one.getIndex() == two.getIndex()));
+
+        System.out.println("from: " + from.getTimestamp());
+        System.out.println("one: " + one.getTimestamp());
+        System.out.println("two: " + two.getTimestamp());
+
+        System.out.println(one.getHashBlock().equals(one.hashForTransaction()));
+        System.out.println(two.getHashBlock().equals(two.hashForTransaction()));
 
 
 //        List<Block> subBlocks = UtilsBlock.readLineObject("C://resources/blockchain/");
