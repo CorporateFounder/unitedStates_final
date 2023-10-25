@@ -47,8 +47,7 @@ public interface Seting {
     //голос Генерального Исполнительного Директора
     int ORIGINAL_LIMIT_MIN_VOTE_GENERAL_EXECUTIVE_DIRECTOR = 1;
 
-    //фракционный голос минимум 15.0
-    double ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS = 15.0;
+
     int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS =  10;
 
     //голос Верховного Судьи

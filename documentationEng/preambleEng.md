@@ -99,7 +99,8 @@ your votes both FOR and AGAINST a candidate or law.
 You can also split your votes equally among several
 participants. For each candidate, a rating is calculated, rating
 this is the sum of all votes FOR minus all votes AGAINST, equals RATING.
-All Government consists of three branches of government.
+All Government consists of three branches of government
+.
 
 1. The legislative branch consists of the Parliament of the Council of Directors.
    their number is 201 accounts. One count equals one vote.
@@ -195,7 +196,8 @@ you want to vote against the remaining 4 at the same time,
 and each of them will receive minus 25 votes, votes divided by the number
 candidates AGAINST, so you voted for 6 candidates,
 2 of them received +50, four of them -25.
-Every law, like every position, has its ownoh hash, for which the participants
+Every law, like every position, has its own
+oh hash, for which the participants
 can cast votes and thus take part in the vote.
 
 ### 11. Sanctions
@@ -217,4 +219,10 @@ against the radical, and all participants lose their coins, but the radical
 thus the radical loses all his hundred shares. But others too
 participants also lose their shares, 20 each.
 
+## What does this mean for the whole society.
+This coin stimulates investment by burning coins, which
+in turn reduces unemployment, as well as poverty, as well as
+the exchange rate becomes stable to fluctuations. Also index indicators
+ginnies will provide a more equitable distribution of income, and
+help reduce the stratification of society.
   [back to home](./documentationEng.md)

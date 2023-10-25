@@ -105,7 +105,6 @@ countries and the economic growth of mankind.
 - [how voting works in the network](../documentationEng/voting-in-networkEng.md)
 - [post creation](../documentationEng/create-positionEng.md)
 - [resolve problems](../documentationEng/solving-common-problems.md)
-- [BUDGET AND EMISSION](../documentationEng/how_to_create_a_budget_and_emission.md)
 - [statistic](../documentationEng/statistics.md)
 - [EXPLANATION WHY THE COIN WILL RAISE](../documentationEng/EXPLAIN.md)
 
@@ -117,18 +116,17 @@ countries and the economic growth of mankind.
     - [How Laws Are Chosen.](../charterEng/HOW_LAWS_ARE_CHOSEN.md)
     - [VOTE_STOCK (How voting is done with shares.)](../charterEng/VOTE_STOCK.md)
     - [ONE_VOTE (One vote)](../charterEng/ONE_VOTE.md)
-    - [VOTE_FRACTION-how a faction is elected and votes](../charterEng/VOTE_FRACTION.md)
     - [Mechanism for maintaining fines](../charterEng/MECHANISM_FOR_REDUCING_THE_NUMBER_OF_SHARES.md)
     - [Who has the right to create Laws](../charterEng/WHO_HAS_THE_RIGHT_TO_CREATE_LAWS.md)
     - [Powers of the Corporate Council of Supreme Judges](../charterEng/POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES.md)
-    - [How the Chief Judge is elected](../charterEng/HOW_THE_CHIEF_JUDGE_IS_CHOSEN.md)
     - [Corporation Property](../charterEng/PROPERTY_OF_THE_CORPORATION.md)
     - [CEO-GENERAL_EXECUTIVE_DIRECTOR](../charterEng/GENERAL_EXECUTIVE_DIRECTOR.md)
     - [Why is money demurrage used here](../charterEng/EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE.md)
     - [Right of Free Speech](../charterEng/FREEDOM_OF_SPEECH.md)
     - [Natural Rights](../charterEng/RIGHTS.md)
     - [Legislative Power](../charterEng/POWER.md)
-    - [Budget and additional issue](../charterEng/BUDGET%20AND%20EMISSION.md)
+    - [board of directors](../documentation/board-of-directors.md)
+   
 
 Documentation wallet api
 - [Cause of Fork](../documentationEng/afterFork.md)

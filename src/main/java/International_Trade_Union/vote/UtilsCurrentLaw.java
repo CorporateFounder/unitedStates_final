@@ -213,7 +213,7 @@ public class UtilsCurrentLaw {
                             curentLawVotesEndBalance.get(corp.getKey())
                                     .stream()
                                     .filter(t->directors.isElectedByFractions(t.getPackageName()))
-                                    .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_FRACTIONS)
+                                    .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS)
                                     .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesBoardOfDirectors).reversed())
                                     .collect(Collectors.toList());
 

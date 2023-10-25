@@ -252,14 +252,12 @@ public class UtilsGovernment {
             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString())){
                 if(currentLawVotesEndBalance.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                 && currentLawVotesEndBalance.getVotes() >= Seting.ALL_STOCK_VOTE
-                && currentLawVotesEndBalance.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                 ){
                     primeMinister.add(currentLawVotesEndBalance.getLaws().get(0));
                 }
             }
-
-
         }
+
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : current) {
             if(votesMap.containsKey(currentLawVotesEndBalance.getAddressLaw())){
                 int primeMinisterVotes = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteGovernment(balances, primeMinister);

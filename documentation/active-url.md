@@ -78,6 +78,44 @@ public synchronized ResponseEntity<String>resolve_blocks_conflict(@RequestBody L
 ***@PostMapping("/nodes/resolve_from_to_block")
 public synchronized ResponseEntity<String> resolve_conflict(@RequestBody List<Block> blocks)***
 ***http://194.87.236.238:80/nodes/resolve_from_to_block***
+
+
+получить pub end priv key
+http://localhost:8082/keys
+
+Обновить локальный блокчейн
+http://localhost:8082/updating
+
+Получить баланс адрес
+http://localhost:8082/account
+
+Получить баланс доллара
+http://localhost:8082/dollar
+
+Получить баланс акций
+http://localhost:8082/stock
+
+Отправить сумму 
+http://localhost:8082/sendCoin
+
+@GetMapping("/sendCoin")
+public String send(@RequestParam String sender,
+@RequestParam String recipient,
+@RequestParam Double dollar,
+@RequestParam Double stock,
+@RequestParam Double reward,
+@RequestParam String password)
+
+Получить блок по индексу
+@GetMapping("/conductorBlock")
+@ResponseBody
+public Block  block(@RequestParam Integer index)
+
+Получить транзакцию по ее хэш
+@GetMapping("/conductorHashTran")
+@ResponseBody
+public DtoTransaction transaction(@RequestParam String hash)
+
 ````java
 
 @JsonAutoDetect

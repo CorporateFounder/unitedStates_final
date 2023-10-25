@@ -15,7 +15,7 @@ public class Directors {
     public Directors() {
 
         directors = new ArrayList<>();
-        Director CORPORATE_COUNCIL_OF_REFEREES = new Director("CORPORATE_COUNCIL_OF_REFEREES", 55, false, false, false, true, false);
+        Director CORPORATE_COUNCIL_OF_REFEREES = new Director("CORPORATE_COUNCIL_OF_REFEREES", 50, false, false, false, true, false);
         Director BOARD_OF_DIRECTORS = new Director("BOARD_OF_DIRECTORS", 201, false, false, false, true, false);
 
         Director GENERAL_EXECUTIVE_DIRECTOR = new Director("GENERAL_EXECUTIVE_DIRECTOR", 1, false, true, false, false, true);

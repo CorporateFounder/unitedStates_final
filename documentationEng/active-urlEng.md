@@ -71,6 +71,44 @@ Sends from localhost to external storage from the selected index, to the selecte
 ***@PostMapping("/nodes/resolve_from_to_block")
 public synchronized ResponseEntity<String> resolve_conflict(@RequestBody List<Block> blocks)***
 ***http://194.87.236.238:80/nodes/resolve_from_to_block***
+
+
+
+get pub end priv key
+http://localhost:8082/keys
+
+Update local blockchain
+http://localhost:8082/updating
+
+Get balance address
+http://localhost:8082/account
+
+Get dollar balance
+http://localhost:8082/dollar
+
+Get stock balance
+http://localhost:8082/stock
+
+Send amount
+http://localhost:8082/sendCoin
+
+@GetMapping("/sendCoin")
+public String send(@RequestParam String sender,
+@RequestParam String recipient,
+@RequestParam Double dollar,
+@RequestParam Double stock,
+@RequestParam Double reward,
+@RequestParam String password)
+
+Get block by index
+@GetMapping("/conductorBlock")
+@ResponseBody
+public Block block(@RequestParam Integer index)
+
+Get a transaction by its hash
+@GetMapping("/conductorHashTran")
+@ResponseBody
+public DtoTransaction transaction(@RequestParam String hash)
 ````java
 
 @JsonAutoDetect

@@ -50,7 +50,7 @@ public class ConductorController {
     @GetMapping("/updating")
     @ResponseBody
     public Integer updating() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        return BasisController.resolve();
+        return BasisController.resovle2();
     }
 
     /**

@@ -4,18 +4,18 @@ To see the Board of Shareholders and how many are currently active, please login
 
 ![Board of Shareholders](../screenshots/board-of-shareholdersEng.png)
 OriginalCHARTER.POWERS_OF_THE_BOARD_OF_SHAREHOLDERS: Powers of the board of shareholders.
-Council of Shareholders Participates in the approval of Laws (Amendments to the Articles of Association).
-The Board of Shareholders also participates in the approval of amendments to the Charter of the International Trade Union Corporation AMENDMENT_TO_THE_CHARTER.
-The Board of Shareholders can also participate in voting when electing CORPORATE_COUNCIL_OF_REFEREES and FRACTIONS candidates using
-real voting rules for VOTE_STOCK candidates.
+The Council of Shareholders Participates in the approval of Amendments to the Charter.
+The Board of Shareholders also participates in approving changes to the charter of the Corporation of the International Trade Union AMENDMENT_TO_THE_CHARTER.
+
 
 OriginalCHARTER.HOW_SHAREHOLDERS_BOARD_IS_ELECTED: HOW SHAREHOLDERS ARE ELECTED.
 The Board of Shareholders consists of one thousand five hundred accounts (1500) with the largest number of shares,
-but only those accounts are taken into account, from the activity of which more than a year has not passed (Activity - mining or sending money, creating a law, sending fines,
+but only those accounts whose activity has not passed more than a year are taken into account (Activity - mining or sending money, creating a law, sending fines,
 Applying for a position and creating a new position).
 Formula: The current year is equal to one year, and if the account was active in this range, it is taken into account.
-All accounts are sorted in descending order of the number of digital shares, and the 1500 accounts with the most shares are selected. Recalculation occurs every block.
+All accounts are sorted in descending order of number of digital shares, and the 1,500 accounts with the most shares are selected. Recalculation occurs every block.
 An example of a section of the code on the election of the Board of Shareholders:
+
 
 ## How the Board of Shareholders is determined,
 

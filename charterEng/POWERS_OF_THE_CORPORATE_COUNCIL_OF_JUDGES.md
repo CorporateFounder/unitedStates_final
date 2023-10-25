@@ -1,27 +1,26 @@
 # POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES Judicial Power.
-Approves the Chief Justice.
-Participates in the voting on the introduction of amendments.
+Participates in voting for the implementation of amendments.
 
-The judicial power of the International Trade Union Corporation is vested in
-one Supreme Court and such inferior courts as the Corporation International
-The Merchant Union may issue and establish from time to time.
-Judges of both the supreme and inferior courts hold their offices, with good conduct and
-in due time receive remuneration for their services.
-Remuneration must be given from the budget established by laws.
-Judicial power extends to all cases of law and justice,
-including those initiated by members to challenge the misappropriation of funds,
-arising under these Articles, the laws of the International Trade Union Corporation and treaties,
-imprisoned or to be imprisoned according to their authority.
-to controversy,
-in which the International Trade Union will be party to a dispute between two or more members of the network.
-No judgment shall be secret, but justice shall be administered openly and free of charge, completely and without delay,
+The judicial power of the International Trade Union Corporation belongs to
+one Supreme Court (CORPORATE_COUNCIL_OF_REFEREES) and such subordinate courts as Corporation International
+The Trade Union may from time to time issue and establish.
+Judges of both the Supreme and Subordinate Courts hold office upon good behavior and
+receive remuneration for their services in a timely manner.
+Remuneration must be given from the budget established by law.
+Judicial power extends to all matters according to law and equity,
+including those initiated by members to challenge the illegal expenditure of funds,
+arising in accordance with this Charter, the laws of the International Trade Union Corporation and treaties,
+prisoners or who will be concluded in accordance with their authority.
+To the controversy,
+in which the International Trade Union will be a party to a dispute between two or more network participants.
+No trial should be secret, but justice should be administered openly and freely, completely and promptly,
 and every person shall have legal protection against injury to life, liberty, or property.
-Supreme Court CORPORATE_COUNCIL_OF_REFEREES and Chief Justice HIGH_JUDGE.
+Supreme Court CORPORATE_COUNCIL_OF_REFEREES.
 
 ## How the Corporate Council of Judges is elected.
-The Corporate Council of Judges consists of 55 accounts and is elected by the Network Members,
-with the scoring system described in VOTE_STOCK, similar to Board of Directors and Factions.
-The 55 accounts that received the most votes are selected.
+The Corporate Council of Judges consists of 50 accounts and is elected by the Network Participants,
+with the counting system described in VOTE_STOCK, similar to the Board of Directors.
+The 50 accounts that received the most votes are selected.
 ![stock votes](../screenshots/stock_vote.png)
 ````
 //minimum value for the number of positive votes for the law to be valid,

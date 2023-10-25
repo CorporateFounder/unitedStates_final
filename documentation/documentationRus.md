@@ -100,7 +100,6 @@ https://bitcointalk.org/index.php?topic=5459876.new#new
 - [как происходит голосование в сети](../documentation/voting-in-network.md)
 - [создание должности](../documentation/create-postion.md)
 - [Решения проблем](../documentation/solving-common-problems.md)
-- [БЮДЖЕТ И ЭМИССИЯ](../documentation/how_to_create_a_budget_and_emission.md)
 - [статистика](../documentation/statistics.md)
 - [ОБЯСНЕНИЕ ПОЧЕМУ МОНЕТА БУДЕТ ДОРОЖАТЬ](../documentation/EXPLAIN.md)
 
@@ -110,18 +109,17 @@ https://bitcointalk.org/index.php?topic=5459876.new#new
     - [Как Избираются Законы.](../charter/HOW_LAWS_ARE_CHOSEN.md)
     - [VOTE_STOCK (Как с помощью акций происходит голосование.)](../charter/VOTE_STOCK.md)
     - [ONE_VOTE (Один голос)](../charter/ONE_VOTE.md)
-    - [VOTE_FRACTION-как избирается и голосует фаркция](../charter/VOTE_FRACTION.md)
     - [Механизм ведения штрафов](../charter/MECHANISM_FOR_REDUCING_THE_NUMBER_OF_SHARES.md)
     - [Кто имеет права создавать Законы](../charter/WHO_HAS_THE_RIGHT_TO_CREATE_LAWS.md)
     - [Полномочия Корпоративного Совета Верховных Судей](../charter/POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES.md)
-    - [Как избирается верховный Судья](../charter/HOW_THE_CHIEF_JUDGE_IS_CHOSEN.md)
     - [Собственность Корпорации](../charter/PROPERTY_OF_THE_CORPORATION.md)
     - [Генеральный Исполнительный Директор-GENERAL_EXECUTIVE_DIRECTOR](../charter/GENERAL_EXECUTIVE_DIRECTOR.md)
     - [Почему здесь используется демерредж денег](../charter/EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE.md)
     - [Право Свободы слова](../charter/FREEDOM_OF_SPEECH.md)
     - [Естественные права](../charter/RIGHTS.md)
     - [Законодательная Власть](../charter/POWER.md)
-    - [Бюджет и дополнительная Эмиссия](../charter/BUDGET%20AND%20EMISSION.md)
+    - [совет директоров](../documentation/board-of-directors.md)
+    
 
 
 Документация апи кошелька
