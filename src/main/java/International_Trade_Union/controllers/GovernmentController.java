@@ -130,14 +130,6 @@ public class GovernmentController {
                 .collect(Collectors.toList());
 
 
-//        List<CurrentLawVotesEndBalance> electedFraction = current.stream()
-//                .filter(t -> directors.isElectedByStocks(t.getPackageName()))
-//                .filter(t -> t.getPackageName().equals(NamePOSITION.FRACTION.toString()))
-//                .filter(t -> t.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE)
-//                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
-//                .limit(directors.getDirector(NamePOSITION.FRACTION.toString()).getCount())
-//                .collect(Collectors.toList());
-
 
         //минимальное значение количество положительных голосов для того чтобы закон действовал,
         //позиции избираемые акциями CORPORATE_COUNCIL_OF_REFEREES

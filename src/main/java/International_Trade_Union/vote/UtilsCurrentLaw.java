@@ -27,6 +27,8 @@ public class UtilsCurrentLaw {
         Base base = new Base58();
         List<String> signs = new ArrayList<>();
         for (int j = 0; j < block.getDtoTransactions().size(); j++) {
+            System.out.println("calculate voting: index: " + block.getIndex());
+
             DtoTransaction transaction = block.getDtoTransactions().get(j);
             if(signs.contains(transaction.getSign())){
                 System.out.println("this transaction signature has already been used and is not valid");

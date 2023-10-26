@@ -50,6 +50,7 @@ public class UtilsGovernment {
                 .collect(Collectors.toList());
 
         for (Block block : minersHaveMoreStock) {
+            System.out.println("calculating board of shareholder: index:  " + block.getIndex());
             for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
                 boardAccounts.add(new Account(dtoTransaction.getSender(), 0, 0));
             }
@@ -150,14 +151,6 @@ public class UtilsGovernment {
     ) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         //действующие законы чьи голоса больше ORIGINAL_LIMIT_MIN_VOTE
         List<CurrentLawVotesEndBalance> current = new ArrayList<>();
-//        Map<String, CurrentLawVotes> votesMap = null;
-        List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
-//        if (blocks.size() > limitBlocks) {
-//            votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks.subList(blocks.size() - limitBlocks, blocks.size()));
-//        } else {
-//            votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks);
-//        }
-
 
 
         //подсчитать средннее количество раз сколько он проголосовал за
@@ -166,8 +159,12 @@ public class UtilsGovernment {
         Map<String, Integer> noAverage = UtilsCurrentLaw.calculateAverageVotesNo(votesMap);
 
 
+        int index = 0;
         //подсчитываем голоса для для обычных законов и законов позиций
         for (LawEligibleForParliamentaryApproval lawEligibleForParliamentaryApproval : approvalList) {
+            System.out.println("calculate governments: index: " + index );
+            index++;
+
             if (votesMap.containsKey(lawEligibleForParliamentaryApproval.getLaws().getHashLaw())) {
                 String address = lawEligibleForParliamentaryApproval.getLaws().getHashLaw();
                 String packageName = lawEligibleForParliamentaryApproval.getLaws().getPacketLawName();
