@@ -184,16 +184,22 @@ public class UtilsUse {
     //подсчитать количество нулей идущих подряд в hash
     public static long hashCount(String hash, long index) {
         long count = 0;
-        if(index < Seting.v3MeetsDifficulty){
-            for (int i = 0; i < hash.length(); i++) {
-                if (hash.charAt(i) == '0') count++;
-                else return count;
-            }
-        }else {
-            hash = bytesToBinary(hash.getBytes());
-            count = BlockchainDifficulty.countLeadingZeros(hash);
-        }
+//        if(index < Seting.v3MeetsDifficulty){
+//            for (int i = 0; i < hash.length(); i++) {
+//                if (hash.charAt(i) == '0') count++;
+//                else return count;
+//            }
+//        }else {
+//            hash = bytesToBinary(hash.getBytes());
+//            count = BlockchainDifficulty.countLeadingZeros(hash);
+//        }
 
+
+        //оптимизирован код
+        for (int i = 0; i < hash.length(); i++) {
+            if (hash.charAt(i) == '0') count++;
+            else return count;
+        }
         return count;
     }
 
