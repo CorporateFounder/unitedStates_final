@@ -3,10 +3,14 @@ package unitted_states_of_mankind.utilsTest;
 
 import International_Trade_Union.utils.UtilsTime;
 import International_Trade_Union.utils.UtilsUse;
+import International_Trade_Union.utils.base.Base;
+import International_Trade_Union.utils.base.Base58;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -21,68 +25,73 @@ public class TestAlgorithmBitcoin {
         long sizeZ = UtilsUse.hashCount(hashTest, 66500);
         System.out.println("size: " + sizeZ);
     }
-
     @Test
-    public void bitcount(){
-        int size = countZeros(hashTest.getBytes());
-        System.out.println("size: " + size);
-    }
-    @Test
-    public void miningTest(){
+    public void bitcoin(){
 
-            int diff = 1;
+        Timestamp lastIndex = new Timestamp(UtilsTime.getUniversalTimestamp());
 
-            for (int i = 0; i < hashTest.length(); i++) {
 
-                Timestamp lastIndex = new Timestamp(UtilsTime.getUniversalTimestamp());
+        //1) second 187, diff 32
+        //2) second 117 diff 32
+        //3) second 89 diff 32
+        //4) second 9 diff 32
+        //5) second 317 diff 32
+        //6) second 213 diff 32
 
-                int count = 0;
+        //1) second 274 diff 33
+        //2) second 309 diff 33
+        //3) second 10 diff 33
+        //4) second 32 diff 33
+        //5) second 232 diff 33
 
-                while (true){
-                    String hash = "hello world";
-                    hash += count;
+        //1) second 211 diff 34
+        //2) second 274 diff 34
+        //3) second 177 diff 34
+        //4) second diff 34
 
-                    hash = UtilsUse.sha256hash(hash);
-                    int size = countZeros(hash.getBytes());
-                    System.out.println("size: " + size);
-                    if(size == diff){
-                        System.out.println("size zero: " + size);
-                        break;
-                    }
-                    count++;
-                }
-                Timestamp actualTime = new Timestamp(UtilsTime.getUniversalTimestamp());
-                Long result = actualTime.toInstant().until(lastIndex.toInstant(), ChronoUnit.SECONDS);
-                System.out.println("second: " + result);
-                if(result > 150){
-                    break;
-                }
-                else {
-                    diff++;
-                }
+        int diff = 34;
+        String text = "dse r3ww3r";
+        int nonce = 0;
+        String result = text + nonce;
+        while (true){
+            result = text + nonce;
+            if(checkHash(result, diff)){
+                break;
+            }
+            nonce++;
+
         }
+        Timestamp actualTime = new Timestamp(UtilsTime.getUniversalTimestamp());
+        Long time = actualTime.toInstant().until(lastIndex.toInstant(), ChronoUnit.SECONDS);
+        System.out.println("*******************************************");
+        System.out.println(checkHash(result, diff));
+        System.out.println("time: " + time);
+        System.out.println(result);
 
+        Base base = new Base58();
+        System.out.println("hash " + base.encode(UtilsUse.sha256(result)));
     }
-    public static int countZeros(byte[] hashBytes) {
-        int count = 0;
-        for (byte b : hashBytes) {
-            if (b == 0) {
-                count += 8;
-            } else {
-                count += Integer.bitCount(b);
+
+
+
+    public static boolean checkHash(String blockHash, int difficulty) {
+
+        // Получаем количество ведущих нулей из сложности
+        int leadingZeros = difficulty;
+
+        // Преобразуем хеш в byte array
+        byte[] hashBytes = UtilsUse.sha256(blockHash);
+
+        // Проверяем, что хеш начинается с нужного кол-ва нулей
+        for(int i=0; i < leadingZeros/8; i++) {
+            if (hashBytes[i] != 0) {
+                return false;
             }
         }
-        return count;
-    }
 
+        // Хеш прошел проверку
+        return true;
 
-
-    public static boolean isBlockValid(BigInteger blockHash, int blockHeight, BigInteger target) {
-        // Получить target из сложности
-
-
-        // Проверить, меньше ли хеш блока target
-        return blockHash.compareTo(target) <= 0;
     }
 
 
