@@ -186,16 +186,11 @@ public class ConductorController {
     @ResponseBody
     public Boolean isTransactionGet(@RequestParam String sign) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         boolean result = false;
-        EntityDtoTransaction entityDtoTransaction = BlockService.findBySign(sign);
-        if(entityDtoTransaction != null){
 
-            DtoTransaction dtoTransaction = UtilsBlockToEntityBlock.entityToDto(
-                    entityDtoTransaction
-            );
-            String dbSign = Base64.getEncoder().encode(dtoTransaction.getSign()).toString();
-            if(sign.equals(dbSign)){
-                result = true;
-            }
+        EntityDtoTransaction entityDtoTransaction = BlockService.findBySign(sign);
+        System.out.println("entity: "+entityDtoTransaction);
+        if(entityDtoTransaction != null){
+            result = true;
         }
         return result;
     }
