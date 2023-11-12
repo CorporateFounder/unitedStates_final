@@ -113,6 +113,10 @@ public class BlockService {
 
     }
 
+    public static EntityBlock findByHashBlock(String hashBlock){
+        return blockService.findByHashBlock(hashBlock);
+    }
+
     public static EntityDtoTransaction findBySign(String sign){
         Base64.Decoder decoder = Base64.getDecoder();
 

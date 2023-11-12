@@ -40,6 +40,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -50,6 +51,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static International_Trade_Union.setings.Seting.BLOCK_GENERATION_INTERVAL;
+import static International_Trade_Union.setings.Seting.DIFFICULTY_ADJUSTMENT_INTERVAL;
 import static International_Trade_Union.utils.BlockchainDifficulty.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,6 +62,57 @@ public class Testing {
 
     private static volatile boolean blockFound = false;
     private static volatile String foundHash = "-";
+
+
+
+
+    public static int countLeadingZeroBits(byte[] hash) {
+        int bitLength = hash.length * 8;
+        BitSet bits = BitSet.valueOf(hash);
+
+        int count = 0;
+        while (count < bitLength && !bits.get(count)) {
+            count++;
+        }
+
+        return count;
+    }
+
+    @Test
+    public void testCountLeadingZeroBits(){
+        int nonce = 0;
+        int diff = 5;
+        Timestamp lastIndex = new Timestamp(UtilsTime.getUniversalTimestamp());
+        String hash = "";
+        while (true){
+            String text = "hello world" + nonce;
+            hash = UtilsUse.sha256hash(text);
+            if(countLeadingZeroBits(hash.getBytes()) == diff){
+                break;
+            }
+            nonce++;
+        }
+        System.out.println("check: "+(countLeadingZeroBits(hash.getBytes()) == diff));
+        System.out.println("hash: " + hash);
+
+        Timestamp actualTime = new Timestamp(UtilsTime.getUniversalTimestamp());
+
+
+        Long result = actualTime.toInstant().until(lastIndex.toInstant(), ChronoUnit.SECONDS);
+        System.out.println("result: " + result);
+    }
+    @Test
+    public void testChangeDiff(){
+        int index = 72609;
+        while (true){
+            if(index % 288 == 0){
+                break;
+            }
+            index++;
+        }
+        System.out.println("index: " + index);
+    }
+
 
     @Test
     public void testServer() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {

@@ -42,6 +42,9 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static International_Trade_Union.setings.Seting.BLOCK_GENERATION_INTERVAL;
+import static International_Trade_Union.setings.Seting.DIFFICULTY_ADJUSTMENT_INTERVAL;
+
 @RestController
 public class TestController {
 
@@ -146,7 +149,126 @@ public class TestController {
 
     }
 
+    public static int v2getAdjustedDifficultyMedianTest(Block latestBlock, List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL,
+                                                        double percentGrow){
+        Block prevAdjustmentBlock = blocks.get(blocks.size() - DIFFICULTY_ADJUSTMENT_INTERVAL);
+        // Медианное время от индекса 0 до 10 из blocks
+        List<Long> adjustmentBlockTimes = new ArrayList<>();
+        for (int i = 0; i < Math.min(DIFFICULTY_ADJUSTMENT_INTERVAL, blocks.size()); i++) {
+            adjustmentBlockTimes.add(blocks.get(i).getTimestamp().getTime());
+        }
+        Collections.sort(adjustmentBlockTimes);
+        long prevTime = adjustmentBlockTimes.get(adjustmentBlockTimes.size() / 2);
 
+        // Включает время latestBlock и 10 последних индексов из blocks
+        List<Long> latestBlockTimes = new ArrayList<>();
+        latestBlockTimes.add(latestBlock.getTimestamp().getTime());
+        for (int i = Math.max(blocks.size() - 30, 0); i < blocks.size(); i++) {
+            latestBlockTimes.add(blocks.get(i).getTimestamp().getTime());
+        }
+        Collections.sort(latestBlockTimes);
+        long latestTime = latestBlockTimes.get(latestBlockTimes.size() / 2);
+
+
+
+        double percentDown = 1.6;
+
+
+        long timeExpected = BLOCK_GENERATION_INTERVAL * DIFFICULTY_ADJUSTMENT_INTERVAL;
+        long timeTaken = latestTime - prevTime;
+
+        System.out.println("timeTaken: " + timeTaken);
+        System.out.println("timeTaken < timeExpected / percentGrow: " + (timeTaken < timeExpected / percentGrow)
+                + ": " + (timeExpected/percentGrow));
+        System.out.println("timeTaken > timeExpected * percentDown: " + (timeTaken > timeExpected * percentDown)
+                + ": " + (timeExpected * percentDown));
+
+        if(timeTaken < timeExpected / percentGrow){
+            return prevAdjustmentBlock.getHashCompexity() + 1;
+        }else if(timeTaken > timeExpected * percentDown){
+            return prevAdjustmentBlock.getHashCompexity() - 1;
+        }else {
+            return prevAdjustmentBlock.getHashCompexity();
+        }
+    }
+
+    public static int getAdjustedDifficultyTest(Block latestBlock, List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL){
+        Block prevAdjustmentBlock = blocks.get(blocks.size() - DIFFICULTY_ADJUSTMENT_INTERVAL);
+
+        double percentGrow = 2.0;
+        double percentDown = 2.0;
+
+        long timeExpected = BLOCK_GENERATION_INTERVAL * DIFFICULTY_ADJUSTMENT_INTERVAL;
+        long timeTaken = latestBlock.getTimestamp().getTime() - prevAdjustmentBlock.getTimestamp().getTime();
+
+        if(timeTaken < timeExpected / percentGrow){
+            return prevAdjustmentBlock.getHashCompexity() + 1;
+        }else if(timeTaken > timeExpected * percentDown){
+            return prevAdjustmentBlock.getHashCompexity() - 1;
+        }else {
+
+            return prevAdjustmentBlock.getHashCompexity();
+        }
+    }
+
+    @GetMapping("/testDiff")
+    @ResponseBody
+    public int diff() throws IOException, CloneNotSupportedException {
+        int diff= 0;
+        List<Block> lastDiff = new ArrayList<>();
+//        Block prevBlock = BasisController.getPrevBlock().clone();
+        Block prevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(
+                BlockService.findBySpecialIndex( 71647L)
+        );
+
+        if (prevBlock.getIndex() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
+            lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                    BlockService.findBySpecialIndexBetween(
+                            (prevBlock.getIndex() + 1)  - DIFFICULTY_ADJUSTMENT_INTERVAL,
+                            prevBlock.getIndex()+1
+                    )
+            );
+
+            System.out.println("+++++++++++++++++++++++++++++++++++");
+            lastDiff.stream().forEach(t-> System.out.println("time: " + t.getTimestamp()));
+            System.out.println("+++++++++++++++++++++++++++++++++++");
+            Block latestBlock = lastDiff.get(lastDiff.size() - 1);
+            diff = v2getAdjustedDifficultyMedianTest(latestBlock,
+                    lastDiff, BLOCK_GENERATION_INTERVAL,
+                    DIFFICULTY_ADJUSTMENT_INTERVAL, 2.7);
+
+            System.out.println("classic diff: " + diff);
+
+            System.out.println("**********************");
+            double diff2_6 = v2getAdjustedDifficultyMedianTest(latestBlock,
+                    lastDiff, BLOCK_GENERATION_INTERVAL,
+                    DIFFICULTY_ADJUSTMENT_INTERVAL, 2.6);
+            System.out.println("diff 2.6: " + diff2_6);
+            System.out.println("**********************");
+            double diff_2_5 = v2getAdjustedDifficultyMedianTest(latestBlock,
+                    lastDiff, BLOCK_GENERATION_INTERVAL,
+                    DIFFICULTY_ADJUSTMENT_INTERVAL, 2.5);
+            System.out.println("diff 2.5: " +diff_2_5);
+            System.out.println("***********************");
+            double diff_2_0 = v2getAdjustedDifficultyMedianTest(latestBlock,
+                    lastDiff, BLOCK_GENERATION_INTERVAL,
+                    DIFFICULTY_ADJUSTMENT_INTERVAL, 2.7);
+            System.out.println("diff 2.0: " + diff_2_0);
+            System.out.println("************************");
+            double diff_1_0 = v2getAdjustedDifficultyMedianTest(latestBlock,
+                    lastDiff, BLOCK_GENERATION_INTERVAL,
+                    DIFFICULTY_ADJUSTMENT_INTERVAL, 1);
+            System.out.println("diff 1.0: " + diff_1_0);
+            System.out.println("************************");
+            System.out.println("************************");
+            double classicDif = getAdjustedDifficultyTest(latestBlock,
+                    lastDiff, BLOCK_GENERATION_INTERVAL,
+                    DIFFICULTY_ADJUSTMENT_INTERVAL);
+            System.out.println("classicDif: " + classicDif);
+            System.out.println("************************");
+        }
+        return diff;
+    }
     @GetMapping("/testLaws")
     @ResponseBody
     public List<Laws> listLaws() throws IOException {
@@ -218,13 +340,14 @@ public class TestController {
 
     @GetMapping("/testSendBlock")
     @ResponseBody
-    public boolean sendTest() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public boolean sendTest() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, InterruptedException {
         System.out.println("test send Block ");
-        for (int i = 1; i < BasisController.getBlockchainSize(); i++) {
+        for (int i = 71647; i < BasisController.getBlockchainSize(); i++) {
             System.out.println("test send block " + i);
             List list = new ArrayList();
             list.add(UtilsBlockToEntityBlock.entityBlockToBlock(entityBlockRepository.findById(i)));
             BasisController.sendAllBlocksToStorage(list);
+            Thread.sleep(1000);
         }
         return true;
     }

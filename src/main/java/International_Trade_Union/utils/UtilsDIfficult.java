@@ -24,6 +24,7 @@ public  static void printBitSet(byte[] bytes) {
 
 
     /**получить сложность*/
+
     public static int getAdjustedDifficulty(Block latestBlock, List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL){
         Block prevAdjustmentBlock = blocks.get(blocks.size() - DIFFICULTY_ADJUSTMENT_INTERVAL);
 
@@ -42,6 +43,9 @@ public  static void printBitSet(byte[] bytes) {
             return prevAdjustmentBlock.getHashCompexity();
         }
     }
+
+    //    int DIFFICULTY_ADJUSTMENT_INTERVAL = 288
+    //    long BLOCK_GENERATION_INTERVAL = 150000
 
     public static int v2getAdjustedDifficultyMedian(Block latestBlock, List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL){
         Block prevAdjustmentBlock = blocks.get(blocks.size() - DIFFICULTY_ADJUSTMENT_INTERVAL);
@@ -69,6 +73,7 @@ public  static void printBitSet(byte[] bytes) {
 
         long timeExpected = BLOCK_GENERATION_INTERVAL * DIFFICULTY_ADJUSTMENT_INTERVAL;
         long timeTaken = latestTime - prevTime;
+
 
         if(timeTaken < timeExpected / percentGrow){
             return prevAdjustmentBlock.getHashCompexity() + 1;

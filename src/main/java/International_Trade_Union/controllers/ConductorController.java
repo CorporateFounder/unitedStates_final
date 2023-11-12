@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,6 +58,7 @@ public class ConductorController {
      * get find end get account
      */
     @GetMapping("/account")
+    @ResponseBody
     public Account account(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
         Account account = UtilsBalance.getBalance(address, balances);
@@ -68,6 +70,7 @@ public class ConductorController {
      * get dollar balance
      */
     @GetMapping("/dollar")
+    @ResponseBody
     public Double dollar(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
         Account account = UtilsBalance.getBalance(address, balances);
@@ -78,6 +81,7 @@ public class ConductorController {
      * get stock balance
      */
     @GetMapping("/stock")
+    @ResponseBody
     public Double stock(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
         Account account = UtilsBalance.getBalance(address, balances);
@@ -88,6 +92,7 @@ public class ConductorController {
      * send dollar or stock (if return wrong-its not sending if return sign its success)
      */
     @GetMapping("/sendCoin")
+    @ResponseBody
     public String send(@RequestParam String sender,
                        @RequestParam String recipient,
                        @RequestParam Double dollar,
@@ -178,19 +183,19 @@ public class ConductorController {
      * whether the transaction was added to the blockchain, find with sign
      */
     @GetMapping("/isTransactionAdd")
+    @ResponseBody
     public Boolean isTransactionGet(@RequestParam String sign) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         boolean result = false;
-        Blockchain blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
-        for (Block block : blockchain.getBlockchainList()) {
-            for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
-                if (dtoTransaction.toSign().equals(sign)) {
-                    result = true;
-                    return result;
-                }
-            }
+        EntityDtoTransaction entityDtoTransaction = BlockService.findBySign(sign);
+        if(entityDtoTransaction != null){
 
+            DtoTransaction dtoTransaction = UtilsBlockToEntityBlock.entityToDto(
+                    entityDtoTransaction
+            );
+            String dbSign = Base64.getEncoder().encode(dtoTransaction.getSign()).toString();
+            if(sign.equals(dbSign)){
+                result = true;
+            }
         }
         return result;
     }
@@ -203,8 +208,13 @@ public class ConductorController {
 
     /**find block from hash*/
     @GetMapping("/blockHash")
-    public Block blockFromHash(@RequestParam String hash) throws JsonProcessingException {
-        return Blockchain.hashFromFile(hash, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+    @ResponseBody
+    public Block blockFromHash(@RequestParam String hash) throws IOException {
+//        return Blockchain.hashFromFile(hash, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        Block block = UtilsBlockToEntityBlock.entityBlockToBlock(
+                BlockService.findByHashBlock(hash)
+        );
+        return block;
     }
 
 

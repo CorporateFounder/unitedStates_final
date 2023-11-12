@@ -15,4 +15,6 @@ public interface EntityBlockRepository extends JpaRepository<EntityBlock, Long> 
         EntityBlock findBySpecialIndex(long specialIndex);
         EntityBlock findById(long id);
 
+        EntityBlock findByHashBlock(String hashBlock);
+
 }
