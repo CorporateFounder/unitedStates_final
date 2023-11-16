@@ -65,6 +65,16 @@ public class Testing {
 
 
 
+    @Test
+    public  void showBalance() throws IOException, JSONException {
+//        String address = "http://194.87.236.238:80/account?address=nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43";
+        String address = "http://localhost:8083/account?address=nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43";
+        String json = UtilUrl.readJsonFromUrl(address);
+        Account account = (Account) UtilsJson.jsonToListBLock(json, Account.class);
+        System.out.printf("dollar %f.0000000000000000 stock %f.0000000000000000 \n",
+                account.getDigitalDollarBalance(), account.getDigitalStockBalance());
+    }
+
 
     public static int countLeadingZeroBits(byte[] hash) {
         int bitLength = hash.length * 8;

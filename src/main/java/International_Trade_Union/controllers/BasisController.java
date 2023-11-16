@@ -919,8 +919,6 @@ public class BasisController {
         SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
 
 
-
-
         //возвращает все законы с балансом
         allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances,
                 Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
