@@ -230,11 +230,7 @@ public class MainController {
         return "home";
     }
 
-    @GetMapping("/delete")
-    public String delete(Model model){
-        UtilsBlock.deleteFiles();
-        return "home";
-    }
+
 
     @PostMapping("/setPool")
     public String setPool(@RequestParam(value = "setPool") String setPool){
