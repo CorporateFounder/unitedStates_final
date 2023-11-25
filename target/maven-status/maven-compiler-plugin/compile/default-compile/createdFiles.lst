@@ -48,6 +48,7 @@ International_Trade_Union\setings\Seting.class
 International_Trade_Union\controllers\MainController.class
 International_Trade_Union\CorporateCharterDraft\ArticleTwoSpecialPositionDraft.class
 International_Trade_Union\utils\BlockchainDifficulty.class
+International_Trade_Union\entity\blockchain\Blockchain$1.class
 International_Trade_Union\statistics\Statistic.class
 International_Trade_Union\vote\UtilsLaws.class
 International_Trade_Union\entity\ResultMiningData.class

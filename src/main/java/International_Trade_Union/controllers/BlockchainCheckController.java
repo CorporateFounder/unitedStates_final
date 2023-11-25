@@ -46,7 +46,7 @@ public class BlockchainCheckController {
 
 
             System.out.println("check: " + check);
-            System.out.println("blockchain: " + blockchain.validatedBlockchain());
+
             return check;}
         catch (IOException e){
             e.printStackTrace();
