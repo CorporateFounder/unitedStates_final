@@ -202,7 +202,7 @@ public class MainController {
             System.out.println("**************************************");
 
 //            System.exit(1);
-//            UtilsBlock.deleteFiles();
+            UtilsBlock.deleteFiles();
         }
         model.addAttribute("validation", validation);
 
