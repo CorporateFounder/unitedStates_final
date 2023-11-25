@@ -114,6 +114,7 @@ public class MainController {
                     "you can't give size global server");
             sizeStr = "-1";
         }
+
         Integer sizeG = Integer.valueOf(sizeStr);
         globalSize = sizeG;
         model.addAttribute("title", "Corporation International Trade Union.");
