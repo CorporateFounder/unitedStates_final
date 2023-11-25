@@ -508,7 +508,7 @@ public class UtilsBlock {
                 block.getHashBlock().equals(Seting.ORIGINAL_HASH);
             }
             if (index != block.getIndex()) {
-                System.out.println("wrong blockchain missing block: " + index + " index: " + block.getIndex());
+                System.out.println("method: validation: wrong blockchain missing block: " + index + " index: " + block.getIndex());
                 validated = false;
                 return validated;
             }
