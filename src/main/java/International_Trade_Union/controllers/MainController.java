@@ -195,10 +195,12 @@ public class MainController {
 
 
         if(validation == false){
-            System.out.println("deleted blockchain files");
+            System.out.println("*****************************************************");
+            System.out.println("deleted blockchain files: " + validation);
 
 //            System.exit(1);
             UtilsBlock.deleteFiles();
+            System.out.println("*****************************************************");
         }
         model.addAttribute("validation", validation);
 

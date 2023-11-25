@@ -38,11 +38,7 @@ public class BlockchainCheckController {
 //            boolean check = blockchain.validatedBlockchain();
             DataShortBlockchainInformation data = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
             boolean check = data.isValidation();
-            if(check == false){
-                System.out.println("deleted blockchain files");
 
-                UtilsBlock.deleteFiles();
-            }
 
 
             System.out.println("check: " + check);
