@@ -314,7 +314,10 @@ public class Blockchain implements Cloneable {
         long hashCount = 0;
 
         List<Block> tempList = new ArrayList<>();
-        for (final File fileEntry : folder.listFiles()) {
+        List<File> folders = new ArrayList<>(List.of(folder.listFiles()));
+        folders = folders.stream().sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
+
+        for (final File fileEntry : folders) {
             if (fileEntry.isDirectory()) {
                 System.out.println("is directory " + fileEntry.getAbsolutePath());
             } else {
