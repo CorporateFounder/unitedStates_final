@@ -5,7 +5,6 @@ import International_Trade_Union.entity.InfoDificultyBlockchain;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import International_Trade_Union.entity.blockchain.block.Block;
-import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Mining;
@@ -94,7 +93,7 @@ public class MainController {
             return "redirect:/processUpdating";
         }
 
-        String address = "http://194.87.236.238:82";
+        String address = "http://194.87.236.238:80";
         for (String s : Seting.ORIGINAL_ADDRESSES) {
             address = s;
         }
@@ -196,12 +195,13 @@ public class MainController {
 
 
         if(validation == false){
-            System.out.println("*****************************************************");
-            System.out.println("deleted blockchain files: " + validation);
+            System.out.println("deleted blockchain files");
+            System.out.println("**************************************");
+            System.out.println("wrong blockchain");
+            System.out.println("**************************************");
 
 //            System.exit(1);
-            UtilsBlock.deleteFiles();
-            System.out.println("*****************************************************");
+//            UtilsBlock.deleteFiles();
         }
         model.addAttribute("validation", validation);
 
@@ -219,9 +219,6 @@ public class MainController {
         model.addAttribute("info2", "every 180 days, 0.2% of digital dollars and 0.4% of digital shares" +
                 " are withdrawn from the account.");
         model.addAttribute("demerage", "now is the day: ");
-        if(block == null){
-           block = UtilsBlockToEntityBlock.entityBlockToBlock(BlockService.findBySpecialIndex(BlockService.countBlock()-1));
-        }
         if(block.getIndex() != 0){
            int day = (int) (block.getIndex() / Seting.COUNT_BLOCK_IN_DAY % (Seting.YEAR / Seting.HALF_YEAR));
             model.addAttribute("demerage", "now is the day: " + day);
@@ -232,6 +229,11 @@ public class MainController {
         return "home";
     }
 
+    @GetMapping("/delete")
+    public String delete(Model model){
+        UtilsBlock.deleteFiles();
+        return "home";
+    }
 
     @PostMapping("/setPool")
     public String setPool(@RequestParam(value = "setPool") String setPool){
