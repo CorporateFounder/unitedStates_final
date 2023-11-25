@@ -270,6 +270,7 @@ public class MainController {
         return "redirect:/seting";
     }
 
+
     @PostMapping("/changeMultiThread")
     public String changeMultiThread(@RequestParam("thread") boolean thread) {
         // Здесь можно добавить логику для изменения состояния многопоточности
