@@ -93,7 +93,7 @@ public class MainController {
             return "redirect:/processUpdating";
         }
 
-        String address = "http://194.87.236.238:80";
+        String address = "http://194.87.236.238:82";
         for (String s : Seting.ORIGINAL_ADDRESSES) {
             address = s;
         }
