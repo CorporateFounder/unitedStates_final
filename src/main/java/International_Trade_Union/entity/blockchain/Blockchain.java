@@ -779,6 +779,7 @@ public class Blockchain implements Cloneable {
         return list;
     }
 
+
     @Override
     public List<Block> clone() throws CloneNotSupportedException {
         List<Block> result = new ArrayList<>();
