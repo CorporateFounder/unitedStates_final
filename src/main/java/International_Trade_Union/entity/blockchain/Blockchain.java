@@ -770,6 +770,7 @@ public class Blockchain implements Cloneable {
         return result;
     }
 
+
     public static List<Block> clone(int start, int finish, List<Block> blocks) throws CloneNotSupportedException {
         List<Block> list = new ArrayList<>();
         for (int i = start; i < finish; i++) {
