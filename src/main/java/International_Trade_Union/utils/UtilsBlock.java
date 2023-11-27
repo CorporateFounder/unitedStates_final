@@ -427,6 +427,7 @@ public class UtilsBlock {
 
 
         if (!actualPrevHash.equals(recordedPrevHash)) {
+
             System.out.println("Blockchain is invalid, expected: " + recordedPrevHash + " actual: " + actualPrevHash);
             System.out.println("index block: " + thisBlock.getIndex());
             System.out.println("wrong chain hash");

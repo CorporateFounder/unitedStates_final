@@ -512,6 +512,8 @@ public class BasisController {
                                 }
                             }
                         } else {
+
+                            //здесь нужно проверить
                             //If the difference is not greater than PORTION_DOWNLOAD, then downloads once a portion of this difference
                             //Если разница не больше PORTION_DOWNLOAD, то скачивает один раз порцию эту разницу
                             subBlockchainEntity = new SubBlockchainEntity(blocks_current_size, size);
@@ -523,6 +525,8 @@ public class BasisController {
                             System.out.println("3:sublockchainJson: " + subBlockchainJson);
                             List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
                             System.out.println("3:download sub block: " + subBlocks.size());
+                            System.out.println("prev block:" + prevBlock);
+                            System.out.println("3: block " + subBlocks.get(0));
                             balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
                             if (blockchainSize > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
                                 lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(

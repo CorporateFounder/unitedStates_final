@@ -196,8 +196,9 @@ public class MainController {
 
 
         if(validation == false){
-            System.out.println("deleted blockchain files");
+
             System.out.println("**************************************");
+            System.out.println("deleted blockchain files");
             System.out.println("wrong blockchain");
             System.out.println("**************************************");
 
