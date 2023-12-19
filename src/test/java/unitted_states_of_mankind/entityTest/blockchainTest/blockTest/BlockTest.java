@@ -145,7 +145,7 @@ public class BlockTest {
 //        Block block = SomeTransactionsConfigSim.someTransactions(blockchain, 1,list, Seting.BLOCK_GENERATION_INTERVAL_TEST, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL_TEST);
         TransactionsTest transactionsTest = new TransactionsTest();
        List<DtoTransaction> transactions = transactionsTest.getTransactions();
-        int difficulty = UtilsBlock.difficulty(blockchain.getBlockchainList(), Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
+        long difficulty = UtilsBlock.difficulty(blockchain.getBlockchainList(), Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
         Block block = new Block(transactions, blockchain.getHashBlock(blockchain.sizeBlockhain()-1), list.get(0).getPublicKey(), Seting.ADDRESS_FOUNDER_TEST, difficulty, blockchain.sizeBlockhain());
 
         Timestamp after = new Timestamp(System.currentTimeMillis());

@@ -18,7 +18,7 @@ public class UtilsStatistics {
         double allDigitalDollar = 0;
         double allDigitalStock = 0;
 
-        List<Integer> listDifficult = new ArrayList<>();
+        List<Long> listDifficult = new ArrayList<>();
 
         //стандартная модель
         double velocity_of_money_dollar = 0;
@@ -165,7 +165,7 @@ public class UtilsStatistics {
         return statistic;
     }
 
-    public static int mode(List<Integer> list) {
+    public static int mode(List<Long> list) {
         int maxValue = 0, maxCount = 0;
 
         for (int i = 0; i < list.size(); ++i) {
@@ -175,7 +175,7 @@ public class UtilsStatistics {
             }
             if (count > maxCount) {
                 maxCount = count;
-                maxValue = list.get(i);
+                maxValue = Math.toIntExact(list.get(i));
             }
         }
 

@@ -25,7 +25,7 @@ public class EntityBlock {
                         String founderAddress,
                         long randomNumberProof,
                         double minerRewards,
-                        int hashCompexity,
+                        long hashCompexity,
                         long timestamp,
                         long index,
                         String hashBlock,
@@ -49,7 +49,7 @@ public class EntityBlock {
     private String founderAddress;
     private long randomNumberProof;
     private double minerRewards;
-    private int hashCompexity;
+    private long hashCompexity;
 
 
     private long timestamp;

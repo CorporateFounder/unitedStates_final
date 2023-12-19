@@ -99,7 +99,8 @@ public class TestDifficulty {
             }else {
                 System.out.println("true hash");
             }
-            if (!UtilsUse.chooseComplexity(block.getHashBlock(), block.getHashCompexity(), block.getIndex())) {
+            String target = BlockchainDifficulty.calculateTarget(block.getHashCompexity());
+            if (!UtilsUse.chooseComplexity(block.getHashBlock(), block.getHashCompexity(), block.getIndex(), target)) {
                 System.out.println("does't start hash with 0");
 
                 System.out.println("this block hash: " + block.getHashBlock());

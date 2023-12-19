@@ -1,26 +1,30 @@
 package International_Trade_Union.model;
 
 
-
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
-import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.*;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
-import International_Trade_Union.vote.*;
-import International_Trade_Union.utils.*;
+import International_Trade_Union.vote.LawEligibleForParliamentaryApproval;
+import International_Trade_Union.vote.Laws;
+import International_Trade_Union.vote.UtilsLaws;
+import International_Trade_Union.vote.VoteEnum;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
@@ -79,7 +83,6 @@ public class Mining {
             block = blockchain.getBlock(blockchain.sizeBlockhain() - 1);
             balances = UtilsBalance.calculateBalance(balances, block, signs);
             //test
-            //test
             Map<String, Laws> allLaws = new HashMap<>();
 
             for (int i = blockchain.sizeBlockhain()-Seting.LAW_MONTH_VOTE; i < blockchain.sizeBlockhain(); i++) {
@@ -92,7 +95,6 @@ public class Mining {
             //возвращает все законы с голосами проголосовавшими за них
             List<LawEligibleForParliamentaryApproval> allLawsWithBalance =
                     UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-           balances = UtilsBalance.calculateBalanceFromLaw(balances, block, allLaws, allLawsWithBalance);
         }
 
 
@@ -185,7 +187,7 @@ public class Mining {
                 continue;
             }
         }
-        int difficulty = UtilsBlock.difficulty(blockchain, blockGenerationInterval, DIFFICULTY_ADJUSTMENT_INTERVAL);
+        long difficulty = UtilsBlock.difficulty(blockchain, blockGenerationInterval, DIFFICULTY_ADJUSTMENT_INTERVAL);
 
 
         Block prevBlock = blockchain.get(blockchain.size()-1);
@@ -208,6 +210,26 @@ public class Mining {
                 founderDigigtalReputationReward = 8;
             }
 
+        }
+        if(index > Seting.CHECK_UPDATING_VERSION) {
+            minerRewards = difficulty * Seting.MONEY;
+            digitalReputationForMiner= difficulty * Seting.MONEY;
+            minerRewards += index%2 == 0 ? 0 : 1;
+            digitalReputationForMiner += index%2 == 0 ? 0 : 1;
+        }
+
+        if(index > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX){
+            long money = (index - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
+                    / (576 * Seting.YEAR);
+            money = (long) (Seting.MULTIPLIER - money);
+            money = money < 1 ? 1: money;
+
+
+            double G = UtilsUse.blocksReward(forAdd, prevBlock.getDtoTransactions());
+            minerRewards = (Seting.V28_REWARD + G) * money;
+            digitalReputationForMiner = (Seting.V28_REWARD + G) * money;
+            founderReward = minerRewards/Seting.DOLLAR;
+            founderDigigtalReputationReward = digitalReputationForMiner/Seting.STOCK;
         }
         Base base = new Base58();
 
@@ -239,15 +261,10 @@ public class Mining {
         //определение сложности и создание блока
 
 
-        BasisController.setDifficultExpected(difficulty);
+
         System.out.println("Mining: miningBlock: difficulty: " + difficulty + " index: " + index);
 
-        if(index > Seting.CHECK_UPDATING_VERSION) {
-            minerRewards = difficulty * Seting.MONEY;
-            digitalReputationForMiner= difficulty * Seting.MONEY;
-            minerRewards += index%2 == 0 ? 0 : 1;
-            digitalReputationForMiner += index%2 == 0 ? 0 : 1;
-        }
+
 
         if(index == Seting.SPECIAL_BLOCK_FORK && minner.getAccount().equals(Seting.FORK_ADDRESS_SPECIAL)){
             minerRewards = SPECIAL_FORK_BALANCE;

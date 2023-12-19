@@ -26,49 +26,72 @@ This coin is based on economic schools and takes into account macroeconomics. Ba
 Silvio Gesell free money, Austrian School of Economics and Elements of the labor theory of value.
 
 
-## Preamble
+Preamble
 Hi all.
-Before downloading, I would like you to read the text below.
-My cryptocurrency was inspired by the US Constitution and the parliamentary system of government.
-My system implements a system that allows all participants to create laws and approve laws through democratic procedures.
-Imagine a world where residents of the USA, Mexico, Canada or other regions elect their representatives and approve laws,
-and also through direct democracy, but I need you to participate, I am a developer and can modify
-code so that the legal system becomes better. We will all be like the founding fathers of digital democracy.
+Before downloading, I would like to read the text below.
+My meeting was inspired by the US Constitution and the leadership of the parliamentary system.
+My system implements a system that allows all creators to create and approve laws through democratic procedures.
+Imagine a world where the people of the United States, Mexico, Canada or other regions elect their representatives and recommend laws.
+and also through the principle of democracy, but I need your participation, I am a developer and can change
+code to make the legal system better. We will all be like the founding fathers of digital democracy.
+What are its advantages?
+1. There are 576 blocks per day, for each block you get (5+coefficient) * multiplier. Where the initial multiplier is 29, but decreases by one every year, but cannot be lower than one. The coefficient can be zero or 3. If you block this data above, select the unique sender in the previous block:
+   sender's target transaction amount in the previous block: , the name of the number of unique senders, not including the base address, greater than the previous block, and subsequent all transactions greater than the previous block, not including the founder and miner reward.
+2. Two unique digital dollars and digital cryptocurrency coins.
+3. A unique electoral system inspired by the principles of libertarianism, the parliaments of England and New Zealand and the US Constitution.
+4. Has a mining development system built on SHA-256, the block is valid if the conditions are effectively applied.
+   public static String CalcultTarget(long complexity) {
+   // Maximum target value (all f)
 
-What are its advantages.
-1. There are 576 blocks in a day, for each block it is given if the block index is even (difficulty * 30) coins, if not even
-   (difficulty * 30) + 1 coin. where difficulty is equal to the number of zeros in the hash.
-2. Two unique digital dollar and digital stock coins.
-3. There is no halving; instead, the limitation occurs by burning coins from all accounts in the amount
-   0.2% every six months for digital dollars and 0.4% for digital stocks.
-4. A unique electoral system inspired by the principles of libertarianism, the English and New Zealand parliaments and
-   US Constitution.
-5. It has a unique mining system built on the basis of SHA-256 (A valid block must have the number
-   zeros in the hash string equal to the amount of complexity and the number of zeros in the hash bits must be 2).
+// String maxTarget = CalculationMaxTarget(difficulty);
+Line maxTarget =Setting.MAX_TARGET;
 
-6. Difficulty adapts every 288 blocks.
-7. An election system that allows you to elect your representatives to different branches of government and directly vote for them.
-8. A unique system of government consisting of elements of the English parliament and a charter inspired by the constitution
+      // Target calculation: maxTarget / difficulty
+      BigInteger maxTargetValue = new BigInteger(maxTarget, 16);
+      BigInteger targetValue = maxTargetValue.divide(BigInteger.valueOf(difficulty));
+
+      // Convert target values in text to hexadecimal
+      String target = targetValue.toString(16);
+
+      // Zero padding up to 64 characters
+      while (target.length() < 64) {
+        target = "0" + target;
+      }
+
+      return target;
+    }
+    public static boolean isValidHash(String hash, String target) {
+      boolean result = hash.compareTo(target) <= 0;
+      return result;
+    }
+
+6. Difficulty changes in 288 blocks.
+7. An electoral system that allows you to separate your representatives from different branches of government and directly vote for them.
+8. A unique system of government consisting of elements of parliament and the statutes of parliament based on the constitution.
    USA and libertarian principles, including NAP.
-9. The ability to mine blocks directly on a local server, which automatically connects to the global server, which only stores,
-   updates and returns the current blockchain.
-10. All settings are made taking into account knowledge in the field of Macroeconomics and such schools as Milton Friedman’s Monetarism were taken into account,
-    Austrian School of Economics (Mises, Hayek), Silvio Gesel - money with demurrage and other books.
-11. The algorithm is designed in such a way that over time the economy will grow more steadily and have a more stable rate,
-    which will prevent future crises such as Deflationary Spiral and Stagflation, and allow for the optimal development of all humanity.
-    the total number of coins never exceeds 10 billion dollars and 5 billion shares unless the difficulty is higher than 10.
-12. Ultimately this system will be able to function as a Confederation or Federation for humanity
-    and eliminate problems such as financial crises (Deflationary Spiral, Stagflation, Galloping Inflation, etc.)
-    Pandemics, Space Threats, Environmental problems and will reduce the occurrence of military conflicts.
+9. The ability to mine blocks directly on a local server, which automatically connects to a global server that only hosts storage,
+   updates and restores the current balance.
+10. All settings are made taking into account knowledge in the field of macroeconomics and were taken into account in such schools as Milton Friedman's monetarism,
+    Austrian School of Economics (Mises, Hayek), Silvio Gesel - idle money and other books.
+11. The algorithm is designed in such a way that over time the economy will grow more steadily and at a more stable pace,
+    which prevent future crises such as deflationary spiral and stagflation, and best ensure the development of all humanity, the total number of coins in 29 years will reach a maximum of less than a billion (844635200.000000.00000000) with the fundamental fact that participants will always receive an additional
+    for coefficient (3). The minimum amount for 29 years, if the coefficient is not obtained, will be about half a billion (570272000.000000.00000000)
+    with this increase in the total mass annually in 29 years there will be a minimum of min 1051200.000000.00000000 one million per year and a maximum of 1681920.000000.00000000
 
+
+
+
+12. Ultimately this system will be able to function as a Confederation or Federation of Humanity.
+    and solve problems such as financial crises (deflationary spiral, stagflation, runaway inflation, etc.)
+    Pandemics, space threats, environmental issues and international mitigation.
 
 ## Mission.
-Using a new economic model that is resistant to deflationary and inflationary crises,
-unite humanity into a single democratic trading network. Our digital democracy is resilient to stuffing
-and parliament represents all sections of society. First of all, we are creating a democratic platform,
-where the views of all participants must be heard. The goal is to unite people of different views, different religions,
-regions and social groups to solve social and economic problems, as well as reduce conflicts between
-countries and the economic growth of mankind.
+use an economic model that is resistant to new deflationary and inflationary crises,
+this means in a single democratic trading network. Our digital democracy is resistant to stuffing
+Parliament represents all sectors of society. First of all, we are creating a democratic platform,
+where there should be unique opinions of all participants. The goal is to know people of different views, different religions,
+regional and social groups to solve social and economic problems, as well as take into account the differences between
+countries and the economic growth of humanity..
 
 ## Благодарность всему сообществу bitcointalks и дискорд
 

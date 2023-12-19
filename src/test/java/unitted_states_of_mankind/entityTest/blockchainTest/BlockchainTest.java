@@ -62,7 +62,7 @@ public class BlockchainTest {
         TransactionsTest transactionsTest = new TransactionsTest(1, list);
 
         List<DtoTransaction> transactions = transactionsTest.getTransactions();
-        int difficulty = UtilsBlock.difficulty(blockchain.getBlockchainList(), Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
+        long difficulty = UtilsBlock.difficulty(blockchain.getBlockchainList(), Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
         Block block = new Block(transactions, blockchain.getHashBlock(blockchain.sizeBlockhain()-1), list.get(0).getPublicKey(), Seting.ADDRESS_FOUNDER_TEST, difficulty, blockchain.sizeBlockhain());
 
         blockchain.addBlock(block);
@@ -98,7 +98,7 @@ public class BlockchainTest {
         List<AccountSimulation> list = GenerateAccountsSimulation.accountSimulations(2);
         TransactionsTest transactionsTest = new TransactionsTest(1, list);
         List<DtoTransaction> transactions = transactionsTest.getTransactions();
-        int difficulty = UtilsBlock.difficulty(blockchain.getBlockchainList(), Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
+        long difficulty = UtilsBlock.difficulty(blockchain.getBlockchainList(), Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
         Block block = new Block(transactions, blockchain.getHashBlock(blockchain.sizeBlockhain()-1), list.get(0).getPublicKey(), Seting.ADDRESS_FOUNDER_TEST, difficulty, blockchain.sizeBlockhain());
 
 //        Block block = SomeTransactionsConfigSim.someTransactions(blockchain, 1, list, Seting.BLOCK_GENERATION_INTERVAL_TEST, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL_TEST);
@@ -134,7 +134,7 @@ public class BlockchainTest {
         Blockchain blockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.TEST);
         TransactionsTest transactionsTest = new TransactionsTest(1, list);
         List<DtoTransaction> transactions = transactionsTest.getTransactions();
-        int difficulty = UtilsBlock.difficulty(blockchain.getBlockchainList(), Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
+        long difficulty = UtilsBlock.difficulty(blockchain.getBlockchainList(), Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
         Block firstBlock = new Block(transactions, blockchain.getHashBlock(blockchain.sizeBlockhain()-1), list.get(0).getPublicKey(), Seting.ADDRESS_FOUNDER_TEST, difficulty, blockchain.sizeBlockhain());
 
          transactions = transactionsTest.getTransactions();

@@ -83,8 +83,8 @@ public interface Seting {
     //каждые сколько месяцев снимать
     int HALF_YEAR = 2;
 
-    //стоимость создания закона 5
-    double COST_LAW = 5;
+    //стоимость создания закона 3
+    double COST_LAW = 3;
     //с чего начинается адрес пакета закона
     //сокращенно корпорация
     String NAME_LAW_ADDRESS_START = "LIBER";
@@ -262,7 +262,7 @@ public interface Seting {
     int PORTION_BLOCK_TO_COMPLEXCITY = 600;
 
     //version
-    int VERSION = 27;
+    int VERSION = 28;
 
     String FORK_ADDRESS_SPECIAL = "jPjuyLStHTCzwYt9J7R5M7pGUKshfcmEbtE3zVvCBE52";
     double SPECIAL_FORK_BALANCE = 12000000;
@@ -275,10 +275,25 @@ public interface Seting {
     //для проверки транзакции в майнинга повторяющихся блоков.
     int CHECK_DTO = 300;
 
-    int LIMIT_CHEATING = 10;
+
 
     int FIXED_BITE = 2;
 
     //количество транзакций после которых будет проверяться вознаграждение.
     int TRANSACTIONS_COUNT_MINIMUM = 1000;
+
+    //изменение алгоритма добычи
+    int V28_CHANGE_ALGORITH_DIFF_INDEX = 133750;
+
+    //мультипликатор
+    int MULTIPLIER = 29;
+    int STANDART_FOR_TARGET = 100;
+    //деление для вычисление дохода основателя
+    int DOLLAR = 10;
+    int STOCK = 10;
+    String MAX_TARGET = "00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+
+    //фиксированная награда за блок 5 монет
+    double V28_REWARD = 5;
+    double COEFFICIENT = 3;
 }

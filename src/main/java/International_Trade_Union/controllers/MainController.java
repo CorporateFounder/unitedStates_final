@@ -217,14 +217,6 @@ public class MainController {
 
         //дата сколько осталось до уничтожения монет
 
-        model.addAttribute("info", "In this system, a year is 360 days, and a day is 576 blocks.");
-        model.addAttribute("info2", "every 180 days, 0.2% of digital dollars and 0.4% of digital shares" +
-                " are withdrawn from the account.");
-        model.addAttribute("demerage", "now is the day: ");
-        if(block.getIndex() != 0){
-           int day = (int) (block.getIndex() / Seting.COUNT_BLOCK_IN_DAY % (Seting.YEAR / Seting.HALF_YEAR));
-            model.addAttribute("demerage", "now is the day: " + day);
-        }
 //
 //        Block.setMultiThread(true);
 

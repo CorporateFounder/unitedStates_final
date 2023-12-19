@@ -149,7 +149,7 @@ public class TestController {
 
     }
 
-    public static int v2getAdjustedDifficultyMedianTest(Block latestBlock, List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL,
+    public static long v2getAdjustedDifficultyMedianTest(Block latestBlock, List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL,
                                                         double percentGrow){
         Block prevAdjustmentBlock = blocks.get(blocks.size() - DIFFICULTY_ADJUSTMENT_INTERVAL);
         // Медианное время от индекса 0 до 10 из blocks
@@ -192,7 +192,7 @@ public class TestController {
         }
     }
 
-    public static int getAdjustedDifficultyTest(Block latestBlock, List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL){
+    public static long getAdjustedDifficultyTest(Block latestBlock, List<Block> blocks, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL){
         Block prevAdjustmentBlock = blocks.get(blocks.size() - DIFFICULTY_ADJUSTMENT_INTERVAL);
 
         double percentGrow = 2.0;
@@ -213,8 +213,8 @@ public class TestController {
 
     @GetMapping("/testDiff")
     @ResponseBody
-    public int diff() throws IOException, CloneNotSupportedException {
-        int diff= 0;
+    public long diff() throws IOException, CloneNotSupportedException {
+        long diff= 0;
         List<Block> lastDiff = new ArrayList<>();
 //        Block prevBlock = BasisController.getPrevBlock().clone();
         Block prevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(
@@ -712,7 +712,7 @@ public class TestController {
                 BlockchainFactoryEnum.ORIGINAL);
         List<Block> blocks = blockchain.getBlockchainList();
         System.out.println("blockchain size: " + blockchain.sizeBlockhain());
-        int diff = 0;
+        long diff = 0;
 
         for (int i = 0; i < 600; i++) {
 

@@ -4,10 +4,7 @@ import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.exception.NotValidTransactionException;
 import International_Trade_Union.model.Mining;
 
-import International_Trade_Union.utils.UtilsJson;
-import International_Trade_Union.utils.UtilsStorage;
-import International_Trade_Union.utils.UtilsTime;
-import International_Trade_Union.utils.UtilsUse;
+import International_Trade_Union.utils.*;
 import ch.qos.logback.core.pattern.FormatInfo;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
@@ -74,7 +71,7 @@ public final class Block implements Cloneable {
     private String founderAddress;
     private long randomNumberProof;
     private double minerRewards;
-    private int hashCompexity;
+    private long hashCompexity;
     private Timestamp timestamp;
     private long index;
     private String hashBlock;
@@ -105,7 +102,7 @@ public final class Block implements Cloneable {
         Block.randomNumberProofStatic = randomNumberProofStatic;
     }
 
-    public Block(List<DtoTransaction> dtoTransactions, String previousHex, String minerAddress, String founderAddress, int hashCompexity, long index) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+    public Block(List<DtoTransaction> dtoTransactions, String previousHex, String minerAddress, String founderAddress, long hashCompexity, long index) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
         this.dtoTransactions = dtoTransactions;
         this.previousHash = previousHex;
         this.minerAddress = minerAddress;
@@ -119,7 +116,7 @@ public final class Block implements Cloneable {
 
     }
 
-    public Block(List<DtoTransaction> dtoTransactions, String previousHash, String minerAddress, String founderAddress, long randomNumberProof, double minerRewards, int hashCompexity, Timestamp timestamp, long index, String hashBlock) {
+    public Block(List<DtoTransaction> dtoTransactions, String previousHash, String minerAddress, String founderAddress, long randomNumberProof, double minerRewards, long hashCompexity, Timestamp timestamp, long index, String hashBlock) {
         this.dtoTransactions = dtoTransactions;
         this.previousHash = previousHash;
         this.minerAddress = minerAddress;
@@ -141,7 +138,7 @@ public final class Block implements Cloneable {
         private String founderAddress;
         private long randomNumberProof;
         private double minerRewards;
-        private int hashCompexity;
+        private long hashCompexity;
         private Timestamp timestamp;
         private long index;
 
@@ -156,7 +153,7 @@ public final class Block implements Cloneable {
                             String founderAddress,
                             long randomNumberProof,
                             double minerRewards,
-                            int hashCompexity,
+                            long hashCompexity,
                             Timestamp timestamp,
                             long index) {
             this.transactions = transactions;
@@ -212,12 +209,14 @@ public final class Block implements Cloneable {
         return UtilsJson.objToStringJson(this);
     }
 
-    public String multipleFindHash(int hashCoplexity) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public String multipleFindHash(long hashCoplexity) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         System.out.println("find hash method");
 
         if (!verifyesTransSign()) {
             throw new NotValidTransactionException();
         }
+
+        String target = BlockchainDifficulty.calculateTarget(hashCoplexity);
         int differrentNumber = 0;
         List<Thread> threads = new ArrayList<>();
         for (int i = 0; i < THREAD_COUNT; i++) {
@@ -233,7 +232,7 @@ public final class Block implements Cloneable {
                     BlockForHash block = new BlockForHash(this.dtoTransactions,
                             this.previousHash, this.minerAddress, this.founderAddress,
                             nonce, this.minerRewards, this.hashCompexity, this.timestamp, this.index);
-                    System.out.printf("\tTrying %d to find a block: ThreadName %s:\n ", nonce , nameThread);
+//                    System.out.printf("\tTrying %d to find a block: ThreadName %s:\n ", nonce , nameThread);
                     Instant instant1 = Instant.ofEpochMilli(UtilsTime.getUniversalTimestamp());
                     Instant instant2 = previus.toInstant();
 
@@ -286,7 +285,7 @@ public final class Block implements Cloneable {
 
 
                     //если true, то прекращаем майнинг. Правильный блок найден
-                    if (UtilsUse.chooseComplexity(tempHash, hashCoplexity, index)) {
+                    if (UtilsUse.chooseComplexity(tempHash, hashCoplexity, index, target)) {
                         System.out.println("block found: hash: " + tempHash);
                         synchronized (Block.class) {
                             if (!blockFound) {
@@ -322,7 +321,7 @@ public final class Block implements Cloneable {
             return  foundHash;
     }
 
-    public String chooseMultiString(int hashCompexity, boolean MULTI_THREAD) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public String chooseMultiString(long hashCompexity, boolean MULTI_THREAD) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         if(MULTI_THREAD){
             return multipleFindHash(hashCompexity);
         }else {
@@ -330,18 +329,20 @@ public final class Block implements Cloneable {
         }
     }
     //TODO
-    public String findHash(int hashCoplexity) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+    public String findHash(long hashCoplexity) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
         System.out.println("find hash method");
         if (!verifyesTransSign()) {
             throw new NotValidTransactionException();
         }
 
+        String target = BlockchainDifficulty.calculateTarget(hashCoplexity);
         this.randomNumberProof = randomNumberProofStatic;
         String hash = "";
         //используется для определения кто-нибудь уже успел добыть блок.
         int size = UtilsStorage.getSize();
         Timestamp previus = new Timestamp(UtilsTime.getUniversalTimestamp());
         String nameThread = Thread.currentThread().getName();
+        System.out.println("difficulty: " + this.hashCompexity);
         while (true) {
             //перебирает число nonce чтобы найти хеш
             this.randomNumberProof++;
@@ -351,7 +352,7 @@ public final class Block implements Cloneable {
                     this.randomNumberProof, this.minerRewards, this.hashCompexity, this.timestamp, this.index);
             hash = block.hashForTransaction();
 
-            System.out.printf("\tTrying %d to find a block: ThreadName %s:\n ", randomNumberProof , nameThread);
+//            System.out.printf("\tTrying %d to find a block: ThreadName %s:\n ", randomNumberProof , nameThread);
             Instant instant1 = Instant.ofEpochMilli(UtilsTime.getUniversalTimestamp());
             Instant instant2 = previus.toInstant();
 
@@ -386,7 +387,7 @@ public final class Block implements Cloneable {
 
 
             //если true, то прекращаем майнинг. Правильный блок найден
-            if (UtilsUse.chooseComplexity(hash, hashCoplexity, index)) {
+            if (UtilsUse.chooseComplexity(hash, hashCoplexity, index, target)) {
                 System.out.println("block found: hash: " + hash);
                 break;
             }

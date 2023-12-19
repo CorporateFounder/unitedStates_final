@@ -25,12 +25,14 @@ International_Trade_Union\vote\UtilsCurrentLaw.class
 International_Trade_Union\CorporateCharterEngDraft\ArticleFiveCharterSupremacyEngDraft.class
 International_Trade_Union\entity\InfoDemerageMoney.class
 International_Trade_Union\controllers\ConductorController.class
+International_Trade_Union\utils\UtilsBlock$1.class
 International_Trade_Union\controllers\DemerageControlller.class
 International_Trade_Union\entity\entities\EntityDtoTransaction.class
 International_Trade_Union\entity\repository\EntityAccountRepository.class
 International_Trade_Union\utils\UtilsBlock.class
 International_Trade_Union\entity\blockchain\DataShortBlockchainInformation.class
 International_Trade_Union\entity\entities\EntityLaws.class
+International_Trade_Union\utils\UtilsBlock$4.class
 International_Trade_Union\statistics\UtilsStatistics.class
 International_Trade_Union\model\Keys.class
 International_Trade_Union\setings\originalCorporateCharter\OriginalCHARTER.class
@@ -39,6 +41,7 @@ International_Trade_Union\utils\UtilsSecurity.class
 International_Trade_Union\setings\originalCorporateCharter\OriginalPreamble.class
 International_Trade_Union\model\CreateAccount.class
 International_Trade_Union\utils\UtilsJson$4.class
+International_Trade_Union\entity\blockchain\Blockchain$2.class
 International_Trade_Union\config\BLockchainFactory$1.class
 International_Trade_Union\controllers\StatisticsController.class
 International_Trade_Union\controllers\WebController\WebBasisController.class
@@ -64,7 +67,7 @@ International_Trade_Union\utils\UtilsCreatedDirectory.class
 International_Trade_Union\node\Nodes.class
 International_Trade_Union\utils\UtilsUse.class
 International_Trade_Union\setings\originalCorporateCharter\OriginalPreambleEng.class
-International_Trade_Union\entity\blockchain\block\Blockchain.class
+International_Trade_Union\utils\UtilsBlock$2.class
 International_Trade_Union\utils\UtilsBalance.class
 International_Trade_Union\exception\NotValidTransactionException.class
 International_Trade_Union\config\BLockchainFactory.class
@@ -76,6 +79,7 @@ International_Trade_Union\entity\AddressUrl.class
 International_Trade_Union\entity\DtoTransaction\DtoTransaction.class
 International_Trade_Union\utils\UtilsBlockToEntityBlock.class
 International_Trade_Union\controllers\ConstitutionController.class
+International_Trade_Union\entity\blockchain\Blockchain$3.class
 International_Trade_Union\simulation\AccountSimulation.class
 International_Trade_Union\sheduled\SchedulerConfig.class
 International_Trade_Union\utils\base\Base58.class
@@ -83,6 +87,7 @@ International_Trade_Union\controllers\BasisController.class
 International_Trade_Union\controllers\BlockchainCheckController.class
 International_Trade_Union\utils\UtilsDIfficult.class
 International_Trade_Union\utils\UtilsJson$3.class
+International_Trade_Union\entity\blockchain\Blockchain$6.class
 International_Trade_Union\controllers\WebController\StorageController.class
 International_Trade_Union\CorporateCharterDraft\ArticleOneLegistratureDraft.class
 International_Trade_Union\controllers\TestController.class
@@ -104,11 +109,13 @@ International_Trade_Union\controllers\TransactionController.class
 International_Trade_Union\CorporateCharterDraft\CorporateCharter.class
 International_Trade_Union\CorporateCharterEngDraft\ArticleThreeJudiciaryEngDraft.class
 International_Trade_Union\CorporateCharterEngDraft\PreambleEngDraft.class
+International_Trade_Union\entity\blockchain\Blockchain$5.class
 International_Trade_Union\utils\UtilsJson$1.class
 International_Trade_Union\controllers\BoardOfShareholdersController.class
 International_Trade_Union\network\AllTransactions.class
 International_Trade_Union\UnitedStatesApplication.class
 International_Trade_Union\controllers\TransactionsController.class
+International_Trade_Union\utils\UtilsBlock$3.class
 International_Trade_Union\controllers\CreateAccountController.class
 International_Trade_Union\entity\SendBlocksEndInfo.class
 International_Trade_Union\model\Account.class
@@ -121,6 +128,7 @@ International_Trade_Union\utils\base\Base.class
 International_Trade_Union\utils\UtilsTime.class
 International_Trade_Union\utils\UtilsJson$2.class
 International_Trade_Union\utils\UtilsCurrentLawVotesEndBalance.class
+International_Trade_Union\entity\blockchain\Blockchain$4.class
 International_Trade_Union\entity\entities\EntityBlock.class
 International_Trade_Union\entity\SubBlockchainEntity.class
 International_Trade_Union\vote\VoteEnum.class

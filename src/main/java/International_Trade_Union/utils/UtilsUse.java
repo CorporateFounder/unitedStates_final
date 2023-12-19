@@ -1,6 +1,8 @@
 package International_Trade_Union.utils;
 
 
+import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
+import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.setings.Seting;
 
 import java.io.IOException;
@@ -15,8 +17,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static International_Trade_Union.utils.BlockchainDifficulty.bytesToBinary;
+import java.util.stream.Collectors;
 
 public class UtilsUse {
     private static MessageDigest digest;
@@ -29,6 +30,79 @@ public class UtilsUse {
         }
     }
 
+
+    // Метод, который вычисляет экономический рост или спад блокчейна в процентах
+    //Пусть
+    // At - средняя сумма транзакций в текущем блоке,
+    // Ap - средняя сумма транзакций в предыдущем блоке,
+    // Nt - количество транзакций в текущем блоке,
+    // Np- количество транзакций в предыдущем блоке,
+    // Ut - количество уникальных адресов в текущем блоке,
+    // Up - количество уникальных адресов в предыдущем блоке.
+    // Тогда экономический рост или спад блокчейна в процентах можно выразить как:
+    //G=(Ap/At)*(Nt/Np)*(Ut/Up)-1
+    //Эта формула учитывает, что если средняя сумма транзакций уменьшается, то экономика растет, а если количество транзакций и уникальных адресов увеличивается, то экономика также растет. Если G>0, то экономика блокчейна растет, а если G<0, то экономика блокчейна снижается.
+    //формула
+    public static double growth (double Ap, double At, double Np, double Nt, double Up, double Ut) {
+        // Веса для каждого показателя
+        double wA = 1.1; // Вес для средней суммы транзакций
+        double wN = 0.99; // Вес для количества транзакций
+        double wU = 1.21; // Вес для количества уникальных адресов
+        // Формула, которая учитывает ваши критерии и логику
+        double G = (wA*(Ap / At)) * (wN*(Nt / Np)) * (wU*(Ut / Up)) - 1;
+        // Возвращаем результат
+
+
+        //Награда дополнительная не может быть ниже нуля и выше 10
+        G = G > 10? 10: G;
+        G = G < 0? 0: G;
+        G = Math.round(G);
+        return G;
+    }
+
+    public static double sumDollarFromTransactions(Block block){
+        double sum = 0;
+        for (DtoTransaction transaction : block.getDtoTransactions()) {
+            sum += transaction.getDigitalDollar();
+        }
+        return sum;
+    }
+    //получение уникальных адрессов
+    public static int uniqAddress(Block block){
+        List<String> address = new ArrayList<>();
+        for (DtoTransaction transaction : block.getDtoTransactions()) {
+            address.add(transaction.getSender());
+        }
+        return address.stream().distinct().collect(Collectors.toList()).size();
+    }
+
+    //ПОДСЧЕТ НАГРАДЫ
+    public static double blocksReward(List<DtoTransaction> acutal, List<DtoTransaction> prev){
+      long actualUniqAddress = acutal.stream()
+              .filter(t->!t.getSender().equals(Seting.BASIS_ADDRESS))
+              .map(t->t.getSender())
+              .distinct()
+              .count();
+
+      long prevUniqAddress = prev.stream()
+              .filter(t->!t.getSender().equals(Seting.BASIS_ADDRESS))
+              .map(t->t.getSender())
+              .distinct()
+              .count();
+
+      double actualSumDollar = acutal.stream()
+              .filter(t->!t.getSender().equals(Seting.BASIS_ADDRESS))
+              .mapToDouble(t->t.getDigitalDollar())
+              .sum();
+
+      double prevSumDollar = prev.stream()
+              .filter(t->!t.getSender().equals(Seting.BASIS_ADDRESS))
+              .mapToDouble(t->t.getDigitalDollar())
+              .sum();
+
+      return  actualUniqAddress > prevUniqAddress && actualSumDollar > prevSumDollar?Seting.COEFFICIENT:0;
+
+    }
     //    одно число от другого в процентах
     public static Double percentDifferent(Double first, Double second) {
         return (first / second - 1) * Seting.HUNDRED_PERCENT;
@@ -108,7 +182,7 @@ public class UtilsUse {
     }
 
 
-    public static boolean chooseComplexity(String literral, int hashComplexity, long index) {
+    public static boolean chooseComplexity(String literral, long hashComplexity, long index, String target) {
         boolean result = false;
         if (index < Seting.NEW_START_DIFFICULT) {
 
@@ -124,12 +198,19 @@ public class UtilsUse {
         }else if (index > Seting.v4MeetsDifficulty){
             result = BlockchainDifficulty.v4MeetsDifficulty(literral, hashComplexity);
         }
+        if(index > Seting.v4MeetsDifficulty && index <= Seting.V28_CHANGE_ALGORITH_DIFF_INDEX){
+            result = BlockchainDifficulty.v4MeetsDifficulty(literral, hashComplexity);
+        }else if(index > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX){
+
+            result = BlockchainDifficulty.isValidHash(literral, target);
+        }
     return result;
     }
 
-    public static boolean hashComplexity(String literral, int hashComplexity) {
 
-        String regex = "^[0]{" + Integer.toString(hashComplexity) + "}";
+    public static boolean hashComplexity(String literral, long hashComplexity) {
+
+        String regex = "^[0]{" + Long.toString(hashComplexity) + "}";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(literral);
         return matcher.find();

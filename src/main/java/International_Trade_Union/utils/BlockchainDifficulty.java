@@ -3,6 +3,7 @@ package International_Trade_Union.utils;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.setings.Seting;
 
+import java.math.BigInteger;
 import java.util.BitSet;
 import java.util.List;
 
@@ -14,38 +15,11 @@ public class BlockchainDifficulty {
       System.out.print(binary);
     }
   }
-  public static int getAdjustedDifficulty(Block latestBlock, List<Block> blocks,
-                                          long blockInterval, int difficultyInterval) {
-    
-    Block prevAdjustmentBlock = getPreviousAdjustmentBlock(blocks, difficultyInterval); 
-
-    long expectedTime = blockInterval * difficultyInterval;
-    long actualTime = latestBlock.getTimestamp().getTime() - prevAdjustmentBlock.getTimestamp().getTime();
-
-    if(actualTime < expectedTime / 2.6) {
-      return prevAdjustmentBlock.getHashCompexity() + 1;
-    }
-    else if(actualTime > expectedTime * 1.3) {
-      return prevAdjustmentBlock.getHashCompexity() - 1;
-    }
-    else {
-      return prevAdjustmentBlock.getHashCompexity();
-    }
-  }
-
-  public static int getDifficulty(List<Block> blocks, long blockInterval, int difficultyInterval) {
-    
-    Block latestBlock = getLatestBlock(blocks); 
-    int difficulty = latestBlock.getHashCompexity();
 
 
-      difficulty = getAdjustedDifficulty(latestBlock, blocks, blockInterval, difficultyInterval);
 
 
-    return Math.max(1, difficulty); 
-  }
-
-  public static boolean meetsDifficulty(byte[] hash, int difficulty) {
+  public static boolean meetsDifficulty(byte[] hash, long difficulty) {
    
     int zeroBits = countLeadingZeroBits(hash);
     return zeroBits >= difficulty;
@@ -71,22 +45,52 @@ public class BlockchainDifficulty {
 
     return count;
   }
-  public static boolean v2MeetsDifficulty(byte[]hash, int difficulty){
+  public static boolean v2MeetsDifficulty(byte[]hash, long difficulty){
     int zeroBits = countLeadingZeroBits(hash);
     return zeroBits == difficulty;
   }
-  public static boolean v3MeetsDifficulty(byte[]hash, int difiiculty){
+  public static boolean v3MeetsDifficulty(byte[]hash, long difiiculty){
     String binary = bytesToBinary(hash);
 
     int leadingZeros = countLeadingZeros(binary);
     return leadingZeros == difiiculty;
   }
-  public static boolean v4MeetsDifficulty(String hash, int difficulty){
+  public static boolean v4MeetsDifficulty(String hash, long difficulty){
     int leadingZeros =countLeadingZeroBits(hash.getBytes());
     boolean isLeadingZerosInSympbol = UtilsUse.hashComplexity(hash, difficulty);
     return isLeadingZerosInSympbol && leadingZeros >= Seting.FIXED_BITE;
   }
 
+
+  //ПОСЛЕДНЕЕ ОБНОВЛЕНИЕ, АНАЛОГ БИТКОИНА, НО УЛУЧШЕННЫЙ
+  //***********************************************************************************************************
+  public static String calculateTarget(long difficulty) {
+    // Максимальное значение цели (все f)
+
+//        String maxTarget = calculateMaxTarget(difficulty);
+    String maxTarget =Seting.MAX_TARGET;
+
+    // Вычисление таргета: maxTarget / difficulty
+    BigInteger maxTargetValue = new BigInteger(maxTarget, 16);
+    BigInteger targetValue = maxTargetValue.divide(BigInteger.valueOf(difficulty));
+
+    // Преобразование значения таргета в строку в шестнадцатеричной системе
+    String target = targetValue.toString(16);
+
+    // Дополнение нулями до 64 символов
+    while (target.length() < 64) {
+      target = "0" + target;
+    }
+
+    return target;
+  }
+  public static boolean isValidHash(String hash, String target) {
+    boolean result = hash.compareTo(target) <= 0;
+    return result;
+  }
+  // Метод для вычисления таргета на основе сложности
+
+  //***********************************************************************************************************
   private static Block getLatestBlock(List<Block> blocks) {
     return blocks.get(blocks.size() - 1);
   }

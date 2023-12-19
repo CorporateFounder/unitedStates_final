@@ -51,8 +51,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static International_Trade_Union.setings.Seting.BLOCK_GENERATION_INTERVAL;
-import static International_Trade_Union.setings.Seting.DIFFICULTY_ADJUSTMENT_INTERVAL;
+import static International_Trade_Union.setings.Seting.*;
 import static International_Trade_Union.utils.BlockchainDifficulty.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,13 +59,171 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Testing {
 
 
+    public static void main(String[] args) throws JsonProcessingException {
+        String actualJ = "{\"dtoTransactions\":[{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":138.0,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIDoHB7j6VJr3G6IOmZpVFd4DtouNNYgVB/Uhjx2Fwd5PAiEAyMu+wNd6y8wugT3Ki8BtLPmS5+93HfCb60p03L5dvTE=\"},{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":20.0,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":1.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIGhhp8zYarceDMl15uZGcggP8yR7PWduOkpA6PX5od8eAiAMB1LaXsNfxE/s9mccnb54Eon3JL26/1CeVtZSLcbYvQ==\"},{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":3.0,\"digitalStockBalance\":1.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":1.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDfCZ9t3s+cRtPSKj7yvBIj2G33sGnOKWlesm+Z9WuVKgIgfM/MfJ4r4B/zSfb6Ky/A+bTVo9s1G+Rb1LZQMFaexRA=\"},{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":1.0,\"digitalStockBalance\":1.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":1.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDZxb1O8Q+s9W90iZrWwSZiRhCIKik6/oaUAQ/EvpUO3wIhAPN0ZrZzuuTI3jyMXEWeYVHKarh75+kCwEgu6WDwNDcp\"},{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":1.0,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":1.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDbPQc4eN0RNwnJKsIKVUN7twNqD9DARORJKIyy/e2fcwIgVjaNcJlBPwlpaIWfGyUjZZkkSZgcV4yTUjHGtD3kyzo=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":13.0,\"digitalStockBalance\":13.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDDOJXTnc5Gg6EMpkeK6rqmK/53chJORZHZQ4yANboy7gIhAOlVnGwv4ylPF9wn8JUg6OUwDczgj2p64dXr870vMISG\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"BUDGET\",\"digitalDollar\":130.0,\"digitalStockBalance\":130.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":4.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQC8AJYMNWwko4ybq2rm2OrZHHgOai6Aze6VMiUsJ9eqkQIgdpRmZETcUlBwZc51UMUE/O/b0v94za+6tR2kbBPcvdo=\"}],\"previousHash\":\"00000777a26bed8b58d10f344d94bd3048348b66cce633223aff1b39efd204b7\",\"minerAddress\":\"BUDGET\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":515012,\"minerRewards\":8.0,\"hashCompexity\":1,\"timestamp\":1702731467000,\"index\":127488,\"hashBlock\":\"00000caf287b044cec2445d666528697af51a95e079bf09a8c8e4abf5813ee77\"}";
+        String prevJ = "{\"dtoTransactions\":[{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":145.0,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCTFqeYDMUThwkeM4D2tueoUc5Vz2PqoHt4wvSZHWJ7PgIhAO4kKiHYEcZcbbmZT54WVQ9GazDvovTdo3gtQFYX+GOb\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":13.0,\"digitalStockBalance\":13.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDfMGbzuDX/CzVlybjFgR48xpKKCg7NKj4SkayKiyQxxQIgCO1RDGyWBYAO61jk2cZ8tQweqtFTqvkYzBnQ62HSu+Y=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"BUDGET\",\"digitalDollar\":130.0,\"digitalStockBalance\":130.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCID8bfgSNZPlip+WSHSLrVB8VGlp81QWdTXgkXeUde8ikAiEAi2d7UjxFifMVA/uZvOigPvZ00HoSrvcp5sfL9AhMlYg=\"}],\"previousHash\":\"000005b2203e97829d6cfb01b36f4ae9e9fb50ff7a608d0532d4da702a968e7b\",\"minerAddress\":\"BUDGET\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":425566,\"minerRewards\":0.0,\"hashCompexity\":1,\"timestamp\":1702731065000,\"index\":127487,\"hashBlock\":\"00000777a26bed8b58d10f344d94bd3048348b66cce633223aff1b39efd204b7\"}";
+        Block actual = UtilsJson.jsonToBLock(actualJ);
+        Block prev = UtilsJson.jsonToBLock(prevJ);
+       double G =  UtilsUse.blocksReward(actual.getDtoTransactions(), prev.getDtoTransactions());
+        System.out.println("G: " + G);
+        double reward = (5+G) * 26;
+        reward = reward/ DOLLAR;
+        System.out.println("Reward: " + reward);
+    }
+
     private static volatile boolean blockFound = false;
     private static volatile String foundHash = "-";
 
+    @Test
+    public void testFindBlock() {
+        String hash = "fdgfgdg";
+
+        //перебирает число nonce чтобы найти хеш
+        int randomNumberProof = 0;
+        //используется для определения кто-нибудь уже успел добыть блок.
+
+        String target = MiningUtils.calculateTarget(1);
+        while (true) {
+
+            //перебирает число nonce чтобы найти хеш
+
+
+//            hash = UtilsUse.sha256hash("hello" + randomNumberProof);
+            hash = MiningUtils.calculateHash("hello" + randomNumberProof);
+
+            System.out.println("random: " + randomNumberProof);
+
+            //если true, то прекращаем майнинг. Правильный блок найден
+//            if (UtilsUse.chooseComplexity(hash, 1, 122499)) {
+//                System.out.println("block found: hash: " + hash);
+//                break;
+//            }//если true, то прекращаем майнинг. Правильный блок найден
+//            String target = BlockchainDifficulty.calculateTarget(1);
+            //33290382
+            if (MiningUtils.isValidHash(hash, target)) {
+                System.out.println("block found: hash: " + hash);
+                break;
+            }
+            randomNumberProof++;
+        }
+        System.out.println("hash: " + hash);
+    }
+
+    // Метод, который вычисляет экономический рост или спад блокчейна в процентах
+    //Пусть
+    // At - средняя сумма транзакций в текущем блоке,
+    // Ap - средняя сумма транзакций в предыдущем блоке,
+    // Nt - количество транзакций в текущем блоке,
+    // Np- количество транзакций в предыдущем блоке,
+    // Ut - количество уникальных адресов в текущем блоке,
+    // Up - количество уникальных адресов в предыдущем блоке.
+    // Тогда экономический рост или спад блокчейна в процентах можно выразить как:
+    //G=(Ap/At)*(Nt/Np)*(Ut/Up)-1
+    //Эта формула учитывает, что если средняя сумма транзакций уменьшается, то экономика растет, а если количество транзакций и уникальных адресов увеличивается, то экономика также растет. Если G>0, то экономика блокчейна растет, а если G<0, то экономика блокчейна снижается.
+    //формула
+    public static double growth(double Ap, double At, double Np, double Nt, double Up, double Ut) {
+        // Веса для каждого показателя
+        double wA = 1.1; // Вес для средней суммы транзакций
+        double wN = 0.99; // Вес для количества транзакций
+        double wU = 1.21; // Вес для количества уникальных адресов
+        // Формула, которая учитывает ваши критерии и логику
+        double G = (wA * (Ap / At)) * (wN * (Nt / Np)) * (wU * (Ut / Up)) - 1;
+        // Возвращаем результат
+
+
+        //Награда дополнительная не может быть ниже нуля и выше 10
+        G = G > 10 ? 10 : G;
+        G = G < 0 ? 0 : G;
+        G = Math.round(G);
+        return G;
+    }
+
+    @Test
+    public void economic() {
+
+
+        double Ap = 270; // Ap - средняя сумма транзакций в предыдущем блоке,
+        double At = 40;  // At - средняя сумма транзакций в текущем блоке,
+        double Nt = 1;   // Nt - количество транзакций в текущем блоке,
+        double Np = 2;   // Np- количество транзакций в предыдущем блоке,
+        double Ut = 2;   // Ut - количество уникальных адресов в текущем блоке,
+        double Up = 3;   // Up - количество уникальных адресов в предыдущем блоке
+
+        Double G = growth(Ap, At, Np, Nt, Up, Ut);
+
+        System.out.println("G " + G);
+
+    }
 
 
     @Test
-    public  void showBalance() throws IOException, JSONException {
+    public void allCoundDollar() {
+        int reward = 5;
+        int mult = 29;
+        double sum = 113000000;
+        for (int i = 0; i < mult; i++) {
+            int step = mult - i;
+            step = step < 1 ? 1 : step;
+            sum += (reward * step) * 576 * 365;
+        }
+        System.out.printf("sum %f.00000000\n", sum);
+        double min = 5 * 576 * 365;
+        double max = 8 * 576 * 365;
+        System.out.printf("min %f.00000000\n", min);
+        System.out.printf("max %f.00000000\n", max);
+
+    }
+
+    @Test
+    public void testReward() {
+        int V28 = 1;
+        int index = 7072;
+        int diff = 8;
+        int reductionPeriod = 576 * 14;
+        if (index > V28) {
+            int step1 = index - V28;
+            int step2 = reductionPeriod;
+            int step3 = step1 / step2;
+            long money = (index - V28)
+                    / (576 * 14);
+
+
+            System.out.println("step1: " + step1);
+            System.out.println("step2: " + step2);
+            System.out.println("step3: " + step3);
+
+            money = (long) (Seting.MONEY - money);
+            System.out.println("result: " + (index - V28));
+            System.out.println();
+            System.out.println("money: " + money);
+            money = money < 1 ? 1 : money;
+            System.out.println("diff: " + (diff * money));
+            System.out.println("money: " + money);
+            System.out.println("index: " + index);
+
+
+        }
+        displayBlockCountdown(V28, index, 14);
+    }
+
+    public static void displayBlockCountdown(int v28, int index, int periodInDays) {
+        int blocksPerDay = 576;
+
+        if (index > v28) {
+            // Вычисляем, сколько блоков прошло с последнего снижения
+            int blocksSinceReduction = (index - v28) % (blocksPerDay * periodInDays);
+
+            // Оставшиеся блоки до следующего снижения
+            int blocksRemaining = (blocksPerDay * periodInDays) - blocksSinceReduction;
+
+
+            System.out.println("Blocks remaining: " + blocksRemaining);
+
+        }
+    }
+
+    @Test
+    public void showBalance() throws IOException, JSONException {
 //        String address = "http://194.87.236.238:80/account?address=nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43";
         String address = "http://localhost:8083/account?address=nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43";
         String json = UtilUrl.readJsonFromUrl(address);
@@ -89,20 +246,20 @@ public class Testing {
     }
 
     @Test
-    public void testCountLeadingZeroBits(){
+    public void testCountLeadingZeroBits() {
         int nonce = 0;
         int diff = 5;
         Timestamp lastIndex = new Timestamp(UtilsTime.getUniversalTimestamp());
         String hash = "";
-        while (true){
+        while (true) {
             String text = "hello world" + nonce;
             hash = UtilsUse.sha256hash(text);
-            if(countLeadingZeroBits(hash.getBytes()) == diff){
+            if (countLeadingZeroBits(hash.getBytes()) == diff) {
                 break;
             }
             nonce++;
         }
-        System.out.println("check: "+(countLeadingZeroBits(hash.getBytes()) == diff));
+        System.out.println("check: " + (countLeadingZeroBits(hash.getBytes()) == diff));
         System.out.println("hash: " + hash);
 
         Timestamp actualTime = new Timestamp(UtilsTime.getUniversalTimestamp());
@@ -111,11 +268,12 @@ public class Testing {
         Long result = actualTime.toInstant().until(lastIndex.toInstant(), ChronoUnit.SECONDS);
         System.out.println("result: " + result);
     }
+
     @Test
-    public void testChangeDiff(){
-        int index = 72609;
-        while (true){
-            if(index % 288 == 0){
+    public void testChangeDiff() {
+        int index = 122200;
+        while (true) {
+            if (index % 288 == 0) {
                 break;
             }
             index++;
@@ -137,8 +295,8 @@ public class Testing {
         System.out.println("1:sublockchainJson: " + subBlockchainJson);
         String localhost = "http://localhost:8083";
         String server = "http://194.87.236.238:80";
-        List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson,server  + "/sub-blocks"));
-        List<Block> subBlocks1 = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson,localhost  + "/sub-blocks"));
+        List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, server + "/sub-blocks"));
+        List<Block> subBlocks1 = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, localhost + "/sub-blocks"));
         List<Block> fromFile = UtilsBlock.readLineObject("C://resources/blockchain");
         Block from = fromFile.get(0);
 
@@ -170,15 +328,15 @@ public class Testing {
         System.out.println("1:download sub block: " + subBlocks.size());
         Block prev = null;
         for (int i = 0; i < subBlocks.size(); i++) {
-            if(prev == null){
+            if (prev == null) {
                 prev = subBlocks.get(i);
-               if(!prev.getHashBlock().equals(prev.hashForTransaction())){
+                if (!prev.getHashBlock().equals(prev.hashForTransaction())) {
                     System.out.printf("wrong hash genesis: index: %d, actual %s, expected %s\n"
-                    , prev.getIndex(), prev.getHashBlock(), prev.hashForTransaction());
+                            , prev.getIndex(), prev.getHashBlock(), prev.hashForTransaction());
                 }
                 continue;
             }
-            if(!subBlocks.get(i).getHashBlock().equals(subBlocks.get(i).hashForTransaction())){
+            if (!subBlocks.get(i).getHashBlock().equals(subBlocks.get(i).hashForTransaction())) {
                 System.out.printf("wrong hash: index: %d, actual %s, expected %s\n"
                         , subBlocks.get(i).getIndex(), subBlocks.get(i).getHashBlock(), subBlocks.get(i).hashForTransaction());
             }
@@ -192,14 +350,15 @@ public class Testing {
     public void entityBalance() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
         List<Account> accountList = balances.entrySet().stream()
-                .map(t->t.getValue())
+                .map(t -> t.getValue())
                 .collect(Collectors.toList());
 
         List<EntityAccount> entityAccounts = UtilsAccountToEntityAccount.accountsToEntityAccounts(balances);
         List<Account> testAccount = UtilsAccountToEntityAccount.EntityAccountToAccount(entityAccounts);
-         assertEquals(testAccount, accountList);
+        assertEquals(testAccount, accountList);
 
     }
+
     @Test
     public void entityBlock() throws IOException {
         Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"27MkHGZZnYkNtQMevRqBfAU2Pnu7LJEWC61AzMvAC31V3\",\"digitalDollar\":400.0,\"digitalStockBalance\":400.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIEHrC1uypFUgsXM/Z6yN/AM1qb+Q545RiU5FGFoFVvnGAiEA/adtMyE6ffnsOEVlXl+rbx2NstboFVEoY4D0EZuXfow=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":8.0,\"digitalStockBalance\":8.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIDXMAVvYsJLJLDVGm0bIfJhd58Jzv2OKrAlWVWH6mWlOAiACDeYNeQlkupje6M53315qV2W5VVHLLW+6nvh3zi32sw==\"}],\"previousHash\":\"00da347d3b3d4c9fc5c826fcff7b06569b673c63fc1afdaf7b9075b175f772be\",\"minerAddress\":\"27MkHGZZnYkNtQMevRqBfAU2Pnu7LJEWC61AzMvAC31V3\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":12,\"minerRewards\":0.0,\"hashCompexity\":1,\"timestamp\":1685946378876,\"index\":20,\"hashBlock\":\"039bf7b8b0be69125b93b26018df6b342d7c64305b6405cfa3b4813dae2bc682\"}");
@@ -235,10 +394,10 @@ public class Testing {
             System.out.println("transaction.getLaws(): " + transaction.getLaws());
             System.out.println("transaction1.getLaws(): " + transaction1.getLaws());
 
-            if(transaction.getLaws().getHashLaw() == null && transaction1.getLaws().getHashLaw()== null){
+            if (transaction.getLaws().getHashLaw() == null && transaction1.getLaws().getHashLaw() == null) {
                 System.out.println("getHashLaw true");
             }
-            if(transaction.getLaws().getLaws() == null && transaction1.getLaws().getLaws()== null){
+            if (transaction.getLaws().getLaws() == null && transaction1.getLaws().getLaws() == null) {
                 System.out.println("getLaws true");
             }
 
@@ -326,8 +485,9 @@ public class Testing {
 //                    }
 //
 
+                    String target = BlockchainDifficulty.calculateTarget(hashCoplexity);
                     //если true, то прекращаем майнинг. Правильный блок найден
-                    if (UtilsUse.chooseComplexity(tempHash, hashCoplexity, 30001)) {
+                    if (UtilsUse.chooseComplexity(tempHash, hashCoplexity, 30001, target)) {
                         System.out.println("block found: hash: " + tempHash);
                         synchronized (Testing.class) {
                             if (!blockFound) {

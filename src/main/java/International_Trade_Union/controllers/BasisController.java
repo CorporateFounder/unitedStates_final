@@ -56,7 +56,7 @@ public class BasisController {
     private static double minDollarRewards = 0;
     private static Block prevBlock = null;
     private static Account minerShow = null;
-    private static int difficultExpected = 0;
+    private static long difficultExpected = 0;
     private static boolean mining = false;
     private static boolean updating = false;
     private static DataShortBlockchainInformation shortDataBlockchain = null;
@@ -70,11 +70,11 @@ public class BasisController {
         return prevBlock;
     }
 
-    public static int getDifficultExpected() {
+    public static long getDifficultExpected() {
         return difficultExpected;
     }
 
-    public static void setDifficultExpected(int difficultExpected) {
+    public static void setDifficultExpected(long difficultExpected) {
         BasisController.difficultExpected = difficultExpected;
     }
 

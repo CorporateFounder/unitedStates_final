@@ -1,5 +1,6 @@
 package unitted_states_of_mankind;
 
+import International_Trade_Union.utils.BlockchainDifficulty;
 import International_Trade_Union.utils.UtilsUse;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class MultiThreadExample {
                 int localDifferent = threadDifferent;
                 String localHash = "";
 
+                String target = BlockchainDifficulty.calculateTarget(2);
                 while (!blockFound) {
                     try {
                         localHash = UtilsUse.sha256hash(strBlock + localNonce);
@@ -33,7 +35,7 @@ public class MultiThreadExample {
                         continue;
                     }
                     System.out.println("thread name: " + Thread.currentThread().getName());
-                    if (UtilsUse.chooseComplexity(localHash, 2, 29674)) {
+                    if (UtilsUse.chooseComplexity(localHash, 2, 29674, target)) {
                         synchronized (MultiThreadExample.class) {
                             if (!blockFound) {
                                 blockFound = true;

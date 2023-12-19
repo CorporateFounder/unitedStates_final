@@ -109,8 +109,8 @@ public class UtilsBalance {
 
         Base base = new Base58();
         System.out.println("start calculateBalance");
-        double percent = Seting.ANNUAL_MAINTENANCE_FREE_DIGITAL_DOLLAR_YEAR / Seting.HALF_YEAR;
-        double digitalReputationPercent = Seting.ANNUAL_MAINTENANCE_FREE_DIGITAL_STOCK_YEAR / Seting.HALF_YEAR;
+//        double percent = Seting.ANNUAL_MAINTENANCE_FREE_DIGITAL_DOLLAR_YEAR / Seting.HALF_YEAR;
+//        double digitalReputationPercent = Seting.ANNUAL_MAINTENANCE_FREE_DIGITAL_STOCK_YEAR / Seting.HALF_YEAR;
             int i = (int) block.getIndex();
 
 
@@ -155,6 +155,11 @@ public class UtilsBalance {
                         digitalReputationForMiner += block.getIndex()%2 == 0 ? 0 : 1;
                     }
 
+                    if(block.getIndex() > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX){
+                       minerRewards = 200;
+                        digitalReputationForMiner = 200;
+                    }
+
                     if(block.getIndex() == Seting.SPECIAL_BLOCK_FORK && block.getMinerAddress().equals(Seting.FORK_ADDRESS_SPECIAL)){
                         minerRewards = SPECIAL_FORK_BALANCE;
                         digitalReputationForMiner = SPECIAL_FORK_BALANCE;
@@ -164,6 +169,9 @@ public class UtilsBalance {
                     if(sender.getAccount().equals(Seting.BASIS_ADDRESS) ){
                        if(i > 1 && (transaction.getDigitalDollar() > minerRewards || transaction.getDigitalStockBalance() > digitalReputationForMiner )){
                            System.out.println("rewards cannot be upper than " + minerRewards);
+                           System.out.println("rewards cannot be upper than " + digitalReputationForMiner);
+                           System.out.println("rewards dollar: " + transaction.getDigitalDollar());
+                           System.out.println("rewards stock: " + transaction.getDigitalStockBalance());
                            continue;
                        }
                         if(!customer.getAccount().equals(block.getFounderAddress()) && !customer.getAccount().equals(block.getMinerAddress())){
@@ -184,27 +192,27 @@ public class UtilsBalance {
             }
 
 
-        if (i != 0 && i / Seting.COUNT_BLOCK_IN_DAY % (Seting.YEAR / Seting.HALF_YEAR) == 0.0) {
-            InfoDemerageMoney demerageMoney = new InfoDemerageMoney();
-            for (Map.Entry<String, Account> changeBalance : balances.entrySet()) {
-                Account change = changeBalance.getValue();
-
-                if(changeBalance.getValue().getAccount().equals(User.getUserAddress())){
-                    demerageMoney.setAddress(User.getUserAddress());
-                    demerageMoney.setBeforeDollar(changeBalance.getValue().getDigitalDollarBalance());
-                    demerageMoney.setBeforeStock(changeBalance.getValue().getDigitalStockBalance());
-                }
-                change.setDigitalStockBalance(change.getDigitalStockBalance() - UtilsUse.countPercents(change.getDigitalStockBalance(), digitalReputationPercent));
-                change.setDigitalDollarBalance(change.getDigitalDollarBalance() - UtilsUse.countPercents(change.getDigitalDollarBalance(), percent));
-
-                if(changeBalance.getValue().getAccount().equals(User.getUserAddress())){
-                    demerageMoney.setAfterDollar(changeBalance.getValue().getDigitalDollarBalance());
-                    demerageMoney.setAfterStock(changeBalance.getValue().getDigitalStockBalance());
-                    demerageMoney.setIndexBlock(i);
-                   UtilsDemerage.saveDemarege(demerageMoney, Seting.BALANCE_REPORT_ON_DESTROYED_COINS);
-                }
-            }
-        }
+//        if (i != 0 && i / Seting.COUNT_BLOCK_IN_DAY % (Seting.YEAR / Seting.HALF_YEAR) == 0.0) {
+//            InfoDemerageMoney demerageMoney = new InfoDemerageMoney();
+//            for (Map.Entry<String, Account> changeBalance : balances.entrySet()) {
+//                Account change = changeBalance.getValue();
+//
+//                if(changeBalance.getValue().getAccount().equals(User.getUserAddress())){
+//                    demerageMoney.setAddress(User.getUserAddress());
+//                    demerageMoney.setBeforeDollar(changeBalance.getValue().getDigitalDollarBalance());
+//                    demerageMoney.setBeforeStock(changeBalance.getValue().getDigitalStockBalance());
+//                }
+//                change.setDigitalStockBalance(change.getDigitalStockBalance() - UtilsUse.countPercents(change.getDigitalStockBalance(), digitalReputationPercent));
+//                change.setDigitalDollarBalance(change.getDigitalDollarBalance() - UtilsUse.countPercents(change.getDigitalDollarBalance(), percent));
+//
+//                if(changeBalance.getValue().getAccount().equals(User.getUserAddress())){
+//                    demerageMoney.setAfterDollar(changeBalance.getValue().getDigitalDollarBalance());
+//                    demerageMoney.setAfterStock(changeBalance.getValue().getDigitalStockBalance());
+//                    demerageMoney.setIndexBlock(i);
+//                   UtilsDemerage.saveDemarege(demerageMoney, Seting.BALANCE_REPORT_ON_DESTROYED_COINS);
+//                }
+//            }
+//        }
 
         System.out.println("finish calculateBalance");
         return balances;
