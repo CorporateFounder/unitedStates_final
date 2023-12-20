@@ -200,11 +200,14 @@ public class UtilsUse {
         }
         if(index > Seting.v4MeetsDifficulty && index <= Seting.V28_CHANGE_ALGORITH_DIFF_INDEX){
             result = BlockchainDifficulty.v4MeetsDifficulty(literral, hashComplexity);
-        }else if(index > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX){
-
+        }else if(index > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX && index <= Seting.V29_CHANGE_ALGO_DIFF_INDEX){
             result = BlockchainDifficulty.isValidHash(literral, target);
+        } else if (index > Seting.V29_CHANGE_ALGO_DIFF_INDEX) {
+
+            result = BlockchainDifficulty.isValidHashV29(literral, (int) (Seting.STANDART_FOR_TARGET - hashComplexity));
         }
-    return result;
+
+        return result;
     }
 
 

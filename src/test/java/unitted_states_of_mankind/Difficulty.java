@@ -10,9 +10,23 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class Difficulty {
+    //classic
+    //84 nonce: 44894647
+    //time second: -141
+    //83 nonce: 83540483
+    //time second: -151
+
+
+    //new algo
+    //81 nonce: 70817701
+    //time second: -151
+    //85 nonce: 91899023
+    //time second: -151
+    //85 nonce: 51052923
+    //time second: -151
     public static void main(String[] args) {
         String hash = "0000000000b7d33dc2fdf61c21a2e395e6a635cb14b8d106aca81403b5676041";
-        System.out.println(getBitSum(hash));
+        System.out.println(getBitSum2(hash));
         Block block = new Block();
         block.setHashBlock("0000000000b7d33dc2fdf61c21a2e395e6a635cb14b8d106aca81403b5676041");
         int diff = 104;
@@ -24,7 +38,7 @@ public class Difficulty {
             Timestamp lastTime = new Timestamp(UtilsTime.getUniversalTimestamp());
             long nonce = 0;
             while (true){
-                hash = UtilsUse.sha256hash("hello kitty " + "" + nonce);
+                hash = UtilsUse.sha256hash("butter fly world " + "" + nonce);
 
 
 
@@ -38,7 +52,7 @@ public class Difficulty {
                     System.out.println("*********************************");
                     break;
                 }
-                if(result < -150){
+                if(result < -350){
                     break;
                 }
                 nonce++;
@@ -47,12 +61,31 @@ public class Difficulty {
             Timestamp actualTime = new Timestamp(UtilsTime.getUniversalTimestamp());
             Long result = actualTime.toInstant().until(lastTime.toInstant(), ChronoUnit.SECONDS);
 
-            if(result < -150){
+            if(result > -150){
                 originalDiff--;
             }else {
+                System.out.println("finish: ");
+                System.out.println("*********************************");
+                System.out.println("hash: " + hash + " originalDiff: " + originalDiff);
+                System.out.println("nonce: " + nonce);
+                System.out.println("time second: " + result);
+                System.out.println("*********************************");
                 break;
             }
         }
+    }
+    public static int getBitSum2(String hash) {
+        int bitSum = 0;
+        String hashUpper = hash.toUpperCase();
+        for (int i = 0; i < hashUpper.length(); i += 2) {
+            String hex = hashUpper.substring(i, i + 2);
+            int hexValue = Integer.parseInt(hex, 16);
+            while (hexValue > 0) {
+                bitSum += hexValue & 1;
+                hexValue >>= 1;
+            }
+        }
+        return bitSum;
     }
 
     // Функция, которая вычисляет сумму битов в хэше блока
@@ -77,16 +110,17 @@ public class Difficulty {
         // Получить хэш блока
         String hash = block.getHashBlock();
         // Вычислить сумму битов в хэше
-        int bitSum = getBitSum(hash);
+        int bitSum = getBitSum2(hash);
         // Проверить, меньше ли или равна сумма битов заданному уровню сложности
         return bitSum <= difficulty;
     }
 
     public static boolean isValidHash(String hash, int difficulty){
         // Вычислить сумму битов в хэше
-        int bitSum = getBitSum(hash);
+        int bitSum = getBitSum2(hash);
         // Проверить, меньше ли или равна сумма битов заданному уровню сложности
-        return bitSum <= difficulty;
+//        return bitSum <= difficulty;
+        return bitSum <= difficulty ;
     }
 
     // Функция, которая регулирует сложность майнинга в зависимости от времени нахождения блоков

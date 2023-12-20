@@ -66,8 +66,7 @@ public class BlockchainDifficulty {
   //***********************************************************************************************************
   public static String calculateTarget(long difficulty) {
     // Максимальное значение цели (все f)
-
-//        String maxTarget = calculateMaxTarget(difficulty);
+    //    String MAX_TARGET = "00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
     String maxTarget =Seting.MAX_TARGET;
 
     // Вычисление таргета: maxTarget / difficulty
@@ -91,6 +90,57 @@ public class BlockchainDifficulty {
   // Метод для вычисления таргета на основе сложности
 
   //***********************************************************************************************************
+  // Функция, которая вычисляет сумму битов в хэше блока
+  public static int getBitSum(String hash) {
+    // Преобразовать хэш в двоичную строку
+    String binary = new BigInteger(hash, 16).toString(2);
+    // Инициализировать сумму битов
+    int bitSum = 0;
+    // Перебрать все символы в двоичной строке
+    for (char c : binary.toCharArray()) {
+      // Если символ равен '1', увеличить сумму битов на 1
+      if (c == '1') {
+        bitSum++;
+      }
+    }
+    // Вернуть сумму битов
+    return bitSum;
+  }
+
+  public static int getBitSum2(String hash) {
+    int bitSum = 0;
+    String hashUpper = hash.toUpperCase();
+    for (int i = 0; i < hashUpper.length(); i += 2) {
+      String hex = hashUpper.substring(i, i + 2);
+      int hexValue = Integer.parseInt(hex, 16);
+      while (hexValue > 0) {
+        bitSum += hexValue & 1;
+        hexValue >>= 1;
+      }
+    }
+    return bitSum;
+  }
+
+
+
+  public static boolean isValidHashV29(String hash, int difficulty){
+    // Вычислить сумму битов в хэше
+    int bitSum = getBitSum2(hash);
+    // Проверить, меньше ли или равна сумма битов заданному уровню сложности
+    return bitSum <= difficulty;
+  }
+
+  // Функция, которая проверяет, валиден ли блок по заданному критерию и операции
+  public static boolean isValidBlockV29(Block block, int difficulty) {
+    // Получить хэш блока
+    String hash = block.getHashBlock();
+    // Вычислить сумму битов в хэше
+    int bitSum = getBitSum2(hash);
+    // Проверить, меньше ли или равна сумма битов заданному уровню сложности
+    return bitSum <= difficulty;
+  }
+ //***********************************************************************************************
+
   private static Block getLatestBlock(List<Block> blocks) {
     return blocks.get(blocks.size() - 1);
   }

@@ -262,7 +262,7 @@ public interface Seting {
     int PORTION_BLOCK_TO_COMPLEXCITY = 600;
 
     //version
-    int VERSION = 28;
+    int VERSION = 29;
 
     String FORK_ADDRESS_SPECIAL = "jPjuyLStHTCzwYt9J7R5M7pGUKshfcmEbtE3zVvCBE52";
     double SPECIAL_FORK_BALANCE = 12000000;
@@ -284,6 +284,7 @@ public interface Seting {
 
     //изменение алгоритма добычи
     int V28_CHANGE_ALGORITH_DIFF_INDEX = 133750;
+    int V29_CHANGE_ALGO_DIFF_INDEX = 138488;
 
     //мультипликатор
     int MULTIPLIER = 29;
