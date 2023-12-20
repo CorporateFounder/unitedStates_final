@@ -263,7 +263,6 @@ public interface Seting {
 
     //version
     int VERSION = 29;
-
     String FORK_ADDRESS_SPECIAL = "jPjuyLStHTCzwYt9J7R5M7pGUKshfcmEbtE3zVvCBE52";
     double SPECIAL_FORK_BALANCE = 12000000;
 
