@@ -346,8 +346,18 @@ public class UtilsBlock {
             }
         }
 
-        //testing method
-        if(Seting.IS_TEST && latestBlock.getIndex() == Seting.V28_CHANGE_ALGORITH_DIFF_INDEX - 1){
+        else if (latestBlock.getIndex() >= Seting.V29_CHANGE_ALGO_DIFF_INDEX && latestBlock.getIndex() < Seting.V29_CHANGE_ALGO_DIFF_INDEX + 288) {
+
+            difficulty = 5;
+        } else if (latestBlock.getIndex() >= Seting.V29_CHANGE_ALGO_DIFF_INDEX +288) {
+            if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
+                difficulty = UtilsDIfficult.v28_changeAlgorith_diff(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
+                //более умеренная модель сложности
+            } else {
+                difficulty = latestBlock.getHashCompexity();
+            }
+        }
+        if(Seting.IS_TEST && latestBlock.getIndex() == Seting.V29_CHANGE_ALGO_DIFF_INDEX -1){
             difficulty = 1;
         }
 
