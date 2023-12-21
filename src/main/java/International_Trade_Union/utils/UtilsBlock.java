@@ -483,14 +483,14 @@ public class UtilsBlock {
 
                     }
                     else if(thisBlock.getIndex() > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX){
-                        if(transaction.getDigitalDollar() != minerReward/Seting.DOLLAR){
+                        if(transaction.getDigitalDollar() < minerReward/Seting.DOLLAR || transaction.getDigitalDollar() > minerReward){
                             System.out.printf("wrong founder reward dollar: index: %d, " +
                                     " expected : %f, dollar actual: %f: ", thisBlock.getIndex(),
                                     (minerReward/Seting.DOLLAR), transaction.getDigitalDollar());
                             validated = false;
                             break;
                         }
-                        if (transaction.getDigitalStockBalance() != minerPowerReward / Seting.STOCK){
+                        if (transaction.getDigitalStockBalance() < minerPowerReward/Seting.STOCK || transaction.getDigitalStockBalance() > minerPowerReward){
                             System.out.printf("wrong founder reward stock: index: %d, " +
                                             " expected : %f, dollar actual: %f: ", thisBlock.getIndex(),
                                     (minerPowerReward/Seting.STOCK), transaction.getDigitalStockBalance());
