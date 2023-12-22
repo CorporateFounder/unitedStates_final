@@ -486,8 +486,9 @@ public class Testing {
 //
 
                     String target = BlockchainDifficulty.calculateTarget(hashCoplexity);
+                    BigInteger bigTarget = BlockchainDifficulty.calculateTargetV30(hashCoplexity);
                     //если true, то прекращаем майнинг. Правильный блок найден
-                    if (UtilsUse.chooseComplexity(tempHash, hashCoplexity, 30001, target)) {
+                    if (UtilsUse.chooseComplexity(tempHash, hashCoplexity, 30001, target, bigTarget)) {
                         System.out.println("block found: hash: " + tempHash);
                         synchronized (Testing.class) {
                             if (!blockFound) {

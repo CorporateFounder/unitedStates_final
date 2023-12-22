@@ -1,5 +1,6 @@
 package International_Trade_Union.entity.blockchain.block;
 
+import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.exception.NotValidTransactionException;
 import International_Trade_Union.model.Mining;
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Data;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -217,6 +219,7 @@ public final class Block implements Cloneable {
         }
 
         String target = BlockchainDifficulty.calculateTarget(hashCoplexity);
+        BigInteger bigTarget = BlockchainDifficulty.calculateTargetV30(hashCoplexity);
         int differrentNumber = 0;
         List<Thread> threads = new ArrayList<>();
         for (int i = 0; i < THREAD_COUNT; i++) {
@@ -285,7 +288,7 @@ public final class Block implements Cloneable {
 
 
                     //если true, то прекращаем майнинг. Правильный блок найден
-                    if (UtilsUse.chooseComplexity(tempHash, hashCoplexity, index, target)) {
+                    if (UtilsUse.chooseComplexity(tempHash, hashCoplexity, index, target, bigTarget)) {
                         System.out.println("block found: hash: " + tempHash);
                         synchronized (Block.class) {
                             if (!blockFound) {
@@ -336,6 +339,7 @@ public final class Block implements Cloneable {
         }
 
         String target = BlockchainDifficulty.calculateTarget(hashCoplexity);
+        BigInteger bigTarget = BlockchainDifficulty.calculateTargetV30(hashCoplexity);
         this.randomNumberProof = randomNumberProofStatic;
         String hash = "";
         //используется для определения кто-нибудь уже успел добыть блок.
@@ -387,7 +391,7 @@ public final class Block implements Cloneable {
 
 
             //если true, то прекращаем майнинг. Правильный блок найден
-            if (UtilsUse.chooseComplexity(hash, hashCoplexity, index, target)) {
+            if (UtilsUse.chooseComplexity(hash, hashCoplexity, index, target, bigTarget)) {
                 System.out.println("block found: hash: " + hash);
                 break;
             }

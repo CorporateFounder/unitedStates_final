@@ -3,6 +3,7 @@ package unitted_states_of_mankind;
 import International_Trade_Union.utils.BlockchainDifficulty;
 import International_Trade_Union.utils.UtilsUse;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class MultiThreadExample {
                 String localHash = "";
 
                 String target = BlockchainDifficulty.calculateTarget(2);
+                BigInteger bigTarget = BlockchainDifficulty.calculateTargetV30(2);
                 while (!blockFound) {
                     try {
                         localHash = UtilsUse.sha256hash(strBlock + localNonce);
@@ -35,7 +37,7 @@ public class MultiThreadExample {
                         continue;
                     }
                     System.out.println("thread name: " + Thread.currentThread().getName());
-                    if (UtilsUse.chooseComplexity(localHash, 2, 29674, target)) {
+                    if (UtilsUse.chooseComplexity(localHash, 2, 29674, target, bigTarget)) {
                         synchronized (MultiThreadExample.class) {
                             if (!blockFound) {
                                 blockFound = true;

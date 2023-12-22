@@ -161,4 +161,17 @@ public class BlockchainDifficulty {
         return count;
     }
 
+    //************************************************************************************************
+    //v30
+    public static BigInteger calculateTargetV30(long difficulty) {
+        BigInteger maxTarget = new BigInteger(Seting.MAX_TARGET_v30, 16);
+      return maxTarget.divide(BigInteger.valueOf(difficulty));
+
+    }
+
+  public static boolean isValidHashV30(String hash, BigInteger target) {
+    BigInteger hashInt = new BigInteger(hash, 16);
+    return hashInt.compareTo(target) <= 0;
+  }
+
 }

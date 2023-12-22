@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -100,7 +101,8 @@ public class TestDifficulty {
                 System.out.println("true hash");
             }
             String target = BlockchainDifficulty.calculateTarget(block.getHashCompexity());
-            if (!UtilsUse.chooseComplexity(block.getHashBlock(), block.getHashCompexity(), block.getIndex(), target)) {
+            BigInteger bigTarget = BlockchainDifficulty.calculateTargetV30(block.getHashCompexity());
+            if (!UtilsUse.chooseComplexity(block.getHashBlock(), block.getHashCompexity(), block.getIndex(), target, bigTarget)) {
                 System.out.println("does't start hash with 0");
 
                 System.out.println("this block hash: " + block.getHashBlock());

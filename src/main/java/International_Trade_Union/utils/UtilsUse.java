@@ -7,6 +7,7 @@ import International_Trade_Union.setings.Seting;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -182,7 +183,7 @@ public class UtilsUse {
     }
 
 
-    public static boolean chooseComplexity(String literral, long hashComplexity, long index, String target) {
+    public static boolean chooseComplexity(String literral, long hashComplexity, long index, String target, BigInteger bigTarget) {
         boolean result = false;
         if (index < Seting.NEW_START_DIFFICULT) {
 
@@ -202,9 +203,10 @@ public class UtilsUse {
             result = BlockchainDifficulty.v4MeetsDifficulty(literral, hashComplexity);
         }else if(index > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX && index <= Seting.V29_CHANGE_ALGO_DIFF_INDEX){
             result = BlockchainDifficulty.isValidHash(literral, target);
-        } else if (index > Seting.V29_CHANGE_ALGO_DIFF_INDEX) {
-
+        } else if (index > Seting.V29_CHANGE_ALGO_DIFF_INDEX && index <= Seting.V30_INDEX_ALGO) {
             result = BlockchainDifficulty.isValidHashV29(literral, (int) (Seting.STANDART_FOR_TARGET - hashComplexity));
+        }else if(index > Seting.V30_INDEX_ALGO){
+            result = BlockchainDifficulty.isValidHashV30(literral, bigTarget);
         }
 
         return result;
