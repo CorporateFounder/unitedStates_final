@@ -40,32 +40,24 @@ What are its advantages?
 2. Two unique digital dollars and digital cryptocurrency coins.
 3. A unique electoral system inspired by the principles of libertarianism, the parliaments of England and New Zealand and the US Constitution.
 4. Has a mining development system built on SHA-256, the block is valid if the conditions are effectively applied.
-   public static String CalcultTarget(long complexity) {
-   // Maximum target value (all f)
+   mining algorithm:
+   a hash is valid if hash is less than or equal to the target. MAX_TARGET = "0000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+   MAX_TARGET / DIFFICULT = TARGET since version 30, difficulty can change every 144 blocks.
+````
+    // String MAX_TARGET_v30 = "0000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+      public static BigInteger calculateTargetV30(long difficulty) {
+         BigInteger maxTarget = new BigInteger(Setting.MAX_TARGET_v30, 16);
+       return maxTarget.divide(BigInteger.valueOf(difficulty));
 
-// String maxTarget = CalculationMaxTarget(difficulty);
-Line maxTarget =Setting.MAX_TARGET;
+     }
 
-      // Target calculation: maxTarget / difficulty
-      BigInteger maxTargetValue = new BigInteger(maxTarget, 16);
-      BigInteger targetValue = maxTargetValue.divide(BigInteger.valueOf(difficulty));
+     public static boolean isValidHashV30(String hash, BigInteger target) {
+     BigInteger hashInt = new BigInteger(hash, 16);
+     return hashInt.compareTo(target) <= 0;
+     }
+   ````
 
-      // Convert target values in text to hexadecimal
-      String target = targetValue.toString(16);
-
-      // Zero padding up to 64 characters
-      while (target.length() < 64) {
-        target = "0" + target;
-      }
-
-      return target;
-    }
-    public static boolean isValidHash(String hash, String target) {
-      boolean result = hash.compareTo(target) <= 0;
-      return result;
-    }
-
-6. Difficulty changes in 288 blocks.
+6. Difficulty changes every 288 blocks. But since version 30, starting from index N, the difficulty changes every 144
 7. An electoral system that allows you to separate your representatives from different branches of government and directly vote for them.
 8. A unique system of government consisting of elements of parliament and the statutes of parliament based on the constitution.
    USA and libertarian principles, including NAP.

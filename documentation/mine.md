@@ -18,31 +18,27 @@
 
 Здесь реализована уникальная система майнинга, которая стимулирует плавный рост стоимости монеты, не позволяя ей сильно падать когда происходит зима и устойчива к сильной волатильности, но при этом стоимость растет. Чтобы добывать вам нужно зайти в localhost:8082/ если ваш адрес уже отображается на главной странице, войдите во вкладку меню и сначала нажмите настройки, после установите многопоточность и количество потоков, (очень редко в некоторых версиях пк многопоточность может не работать коректно, тогда отключите ее).
 После снова войдите в меню справа сверху и нажмите get a block, нажмите кнопку старт и дальше нажмите на надпись Corporation international trade union, вы должны увидеть как is mining true, на информационом окне. Так же иногда бывает is updating тоже true, что означает система скачивает блокчейн. В консоли ничего не будет отображаться, так как если бы мы выводили информацию туда, то майнинг замедлился бы для однопоточной в шесть раз. Если хотите отключить майнинг нажмите кнопку стоп два раза, после чего нажмите на надпись corporation intertation trade union, если все остановилось правильно, то информационое окно исчезнет. Ни вкоем случае не прерывайте процес майнинга отключением командной строки во время майнинга или обновления, так как в этот момент происходит перезапись блокчейна и баланса. Когда информационное окно отключиться майнинг прекратиться. Блок является действительным если хэш удовлетворяет цели по данной формуле:
-public static String calculateTarget(long difficulty) {
-// Максимальное значение цели (все f)
 
-//        String maxTarget = calculateMaxTarget(difficulty);
-String maxTarget =Seting.MAX_TARGET;
 
-    // Вычисление таргета: maxTarget / difficulty
-    BigInteger maxTargetValue = new BigInteger(maxTarget, 16);
-    BigInteger targetValue = maxTargetValue.divide(BigInteger.valueOf(difficulty));
+алгоритм майнинга:
+хэш является действительным, если hash меньше или равно цели. MAX_TARGET = "0000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+MAX_TARGET / DIFFICULT = TARGET с версии 30, сложность может изменяться каждые 144 блока.
+````
+    // String MAX_TARGET_v30 = "0000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+      public static BigInteger calculateTargetV30(long difficulty) {
+         BigInteger maxTarget = new BigInteger(Setting.MAX_TARGET_v30, 16);
+       return maxTarget.divide(BigInteger.valueOf(difficulty));
 
-    // Преобразование значения таргета в строку в шестнадцатеричной системе
-    String target = targetValue.toString(16);
+     }
 
-    // Дополнение нулями до 64 символов
-    while (target.length() < 64) {
-      target = "0" + target;
-    }
+     public static boolean isValidHashV30(String hash, BigInteger target) {
+     BigInteger hashInt = new BigInteger(hash, 16);
+     return hashInt.compareTo(target) <= 0;
+     }
 
-    return target;
-}
-public static boolean isValidHash(String hash, String target) {
-boolean result = hash.compareTo(target) <= 0;
-return result;
-}
 
+
+````
 награда за майнинг вычисляется по формуле (5+коэфицент) * мультипликатор. Где мультипликатор равен 29, но каждый год уменьшается на единицу, пока не достигнет 1.
 Коэфицент может быть 0 или 3, чтобы он стал 3, нужно выполнить два условия. 1. Сумма всех транзакций за текущий блок должна быть больше чем в предыдущем блоке,
 не считая награду основателя и награду майнера. 2. Количество разных отправителей в этом блоке должно быть больше чем в предыдущем блоке, не считая базовый адрес,
