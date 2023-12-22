@@ -299,4 +299,5 @@ public interface Seting {
     //фиксированная награда за блок 5 монет
     double V28_REWARD = 5;
     double COEFFICIENT = 3;
+
 }
