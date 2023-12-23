@@ -217,15 +217,24 @@ public class BasisController {
 
             //a shorthand object that stores information about the blockchain
             //сокращенный объект, который хранит информацию о блокчейне
-            shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-            blockchainSize = (int) shortDataBlockchain.getSize();
-            blockchainValid = shortDataBlockchain.isValidation();
 
-            prevBlock = Blockchain.indexFromFile(blockchainSize - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            String json = UtilsFileSaveRead.read(Seting.TEMPORARY_BLOCKCHAIN_FILE);
+            if(!json.isEmpty() || !json.isBlank()){
+                shortDataBlockchain = UtilsJson.jsonToDataShortBlockchainInformation(json);
+
+            }else {
+                shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+
 //            prevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(BlockService.findById((long) blockchainSize+1));
 
-            String json = UtilsJson.objToStringJson(shortDataBlockchain);
-            UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
+                 json = UtilsJson.objToStringJson(shortDataBlockchain);
+                UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
+            }
+            blockchainSize = (int) shortDataBlockchain.getSize();
+            blockchainValid = shortDataBlockchain.isValidation();
+            prevBlock = Blockchain.indexFromFile(blockchainSize - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+
+
 
 
         } catch (NoSuchAlgorithmException e) {

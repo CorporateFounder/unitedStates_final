@@ -156,8 +156,8 @@ public class UtilsBalance {
                     }
 
                     if(block.getIndex() > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX){
-                       minerRewards = 200;
-                        digitalReputationForMiner = 200;
+                       minerRewards = 261;
+                        digitalReputationForMiner = 261;
                     }
 
                     if(block.getIndex() == Seting.SPECIAL_BLOCK_FORK && block.getMinerAddress().equals(Seting.FORK_ADDRESS_SPECIAL)){

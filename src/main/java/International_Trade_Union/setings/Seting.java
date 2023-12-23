@@ -295,6 +295,7 @@ public interface Seting {
 
     int V30_INDEX_ALGO = 142081;
     int V30_INDEX_DIFF = 142425;
+    int V30_1_FIXED_DIFF = 143182;
     String MAX_TARGET_v30 = "00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
 
     //фиксированная награда за блок 5 монет

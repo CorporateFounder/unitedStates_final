@@ -271,9 +271,9 @@ public class Testing {
 
     @Test
     public void testChangeDiff() {
-        int index = 142344;
+        int index = 143183;
         while (true) {
-            if (index % 144 == 0) {
+            if (index % 288 == 0) {
                 break;
             }
             index++;
