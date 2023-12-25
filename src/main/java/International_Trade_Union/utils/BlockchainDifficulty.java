@@ -163,6 +163,7 @@ public class BlockchainDifficulty {
 
     //************************************************************************************************
     //v30
+//    String MAX_TARGET_v30 = "00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
     public static BigInteger calculateTargetV30(long difficulty) {
         BigInteger maxTarget = new BigInteger(Seting.MAX_TARGET_v30, 16);
       return maxTarget.divide(BigInteger.valueOf(difficulty));

@@ -262,7 +262,7 @@ public interface Seting {
     int PORTION_BLOCK_TO_COMPLEXCITY = 600;
 
     //version
-    int VERSION = 30;
+    int VERSION = 31;
     String FORK_ADDRESS_SPECIAL = "jPjuyLStHTCzwYt9J7R5M7pGUKshfcmEbtE3zVvCBE52";
     double SPECIAL_FORK_BALANCE = 12000000;
 
@@ -296,7 +296,10 @@ public interface Seting {
     int V30_INDEX_ALGO = 142081;
     int V30_INDEX_DIFF = 142425;
     int V30_1_FIXED_DIFF = 143182;
+    int V31_DIFF_END_MINING = 150974;
     String MAX_TARGET_v30 = "00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+
+//    int STABILITY_ALGO_31 =
 
     //фиксированная награда за блок 5 монет
     double V28_REWARD = 5;

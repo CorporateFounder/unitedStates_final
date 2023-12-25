@@ -13,7 +13,7 @@ public class BitcoinAlgo {
     public static BigInteger calculateTarget(long difficulty) {
 
 //        BigInteger maxTarget = new BigInteger(Seting.MAX_TARGET_v29, 16);
-        BigInteger maxTarget = new BigInteger("0000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
+        BigInteger maxTarget = new BigInteger("0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
 
         return maxTarget.divide(BigInteger.valueOf(difficulty));
 
@@ -32,7 +32,7 @@ public class BitcoinAlgo {
 
         Block block = new Block();
 
-        int diff = 1;
+        long diff = 1;
 
         System.out.println("**********************************************");
 
@@ -48,7 +48,7 @@ public class BitcoinAlgo {
 
 
                 Timestamp actualTime = new Timestamp(UtilsTime.getUniversalTimestamp());
-                Long result = actualTime.toInstant().until(lastTime.toInstant(), ChronoUnit.SECONDS);
+                Long result = actualTime.toInstant().until(lastTime.toInstant(), ChronoUnit.MILLIS);
                 if(isValidHash(hash, target)){
                     System.out.println("*********************************");
                     System.out.println("hash: " + hash );
@@ -58,17 +58,20 @@ public class BitcoinAlgo {
                     System.out.println("*********************************");
                     break;
                 }
-                if(result < -350){
+                if(result < -350000){
                     break;
                 }
                 nonce++;
             }
 
             Timestamp actualTime = new Timestamp(UtilsTime.getUniversalTimestamp());
-            Long result = actualTime.toInstant().until(lastTime.toInstant(), ChronoUnit.SECONDS);
+            Long result = actualTime.toInstant().until(lastTime.toInstant(), ChronoUnit.MILLIS);
 
-            if(result > -150){
-                diff++;
+            if(result > -150000){
+                System.out.println("result: " + result);
+                result = result == 0?1: result;
+                int change = (int) (diff * (150000/ result));
+                diff = change > 8? 8: change;
             }else {
                 System.out.println("finish: ");
                 System.out.println("*********************************");

@@ -71,6 +71,9 @@ public class Testing {
         System.out.println("Reward: " + reward);
     }
 
+
+
+
     private static volatile boolean blockFound = false;
     private static volatile String foundHash = "-";
 
@@ -271,7 +274,7 @@ public class Testing {
 
     @Test
     public void testChangeDiff() {
-        int index = 143183;
+        int index = 144737;
         while (true) {
             if (index % 288 == 0) {
                 break;

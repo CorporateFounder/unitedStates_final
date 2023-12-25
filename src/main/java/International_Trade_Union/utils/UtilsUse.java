@@ -205,8 +205,11 @@ public class UtilsUse {
             result = BlockchainDifficulty.isValidHash(literral, target);
         } else if (index > Seting.V29_CHANGE_ALGO_DIFF_INDEX && index <= Seting.V30_INDEX_ALGO) {
             result = BlockchainDifficulty.isValidHashV29(literral, (int) (Seting.STANDART_FOR_TARGET - hashComplexity));
-        }else if(index > Seting.V30_INDEX_ALGO){
+        }else if(index > Seting.V30_INDEX_ALGO && index <= Seting.V31_DIFF_END_MINING){
             result = BlockchainDifficulty.isValidHashV30(literral, bigTarget);
+        }
+        else if (index > Seting.V31_DIFF_END_MINING) {
+            result = BlockchainDifficulty.isValidHashV29(literral, (int) (Seting.STANDART_FOR_TARGET - hashComplexity));
         }
 
         return result;
