@@ -217,7 +217,6 @@ public final class Block implements Cloneable {
         if (!verifyesTransSign()) {
             throw new NotValidTransactionException();
         }
-
         String target = BlockchainDifficulty.calculateTarget(hashCoplexity);
         BigInteger bigTarget = BlockchainDifficulty.calculateTargetV30(hashCoplexity);
         int differrentNumber = 0;
@@ -235,6 +234,8 @@ public final class Block implements Cloneable {
                     BlockForHash block = new BlockForHash(this.dtoTransactions,
                             this.previousHash, this.minerAddress, this.founderAddress,
                             nonce, this.minerRewards, this.hashCompexity, this.timestamp, this.index);
+                    //почему если я отключаю данную строчку кода, возникает ошибка с выходом за массив,
+
                     System.out.printf("\tTrying %d to find a block: ThreadName %s:\n ", nonce , nameThread);
                     Instant instant1 = Instant.ofEpochMilli(UtilsTime.getUniversalTimestamp());
                     Instant instant2 = previus.toInstant();
@@ -252,7 +253,6 @@ public final class Block implements Cloneable {
                         previus.setTime(milliseconds);
 
                         //проверяет устаревание майнинга, если устарел - прекращает майнинг
-
                         int tempSize = UtilsStorage.getSize();
                         if (size < tempSize) {
                             Mining.miningIsObsolete = true;
@@ -283,7 +283,6 @@ public final class Block implements Cloneable {
 
                     }
 
-
                     //если true, то прекращаем майнинг. Правильный блок найден
                     if (UtilsUse.chooseComplexity(tempHash, hashCoplexity, index, target, bigTarget)) {
                         System.out.println("block found: hash: " + tempHash);
@@ -295,13 +294,10 @@ public final class Block implements Cloneable {
                                 foundHash = tempHash;
                             }
                         }
-
-
                         break;
                     }
                     nonce++;
                 }
-
             });
 
             threads.add(thread);
