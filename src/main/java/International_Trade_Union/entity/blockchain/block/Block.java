@@ -235,7 +235,7 @@ public final class Block implements Cloneable {
                     BlockForHash block = new BlockForHash(this.dtoTransactions,
                             this.previousHash, this.minerAddress, this.founderAddress,
                             nonce, this.minerRewards, this.hashCompexity, this.timestamp, this.index);
-//                    System.out.printf("\tTrying %d to find a block: ThreadName %s:\n ", nonce , nameThread);
+                    System.out.printf("\tTrying %d to find a block: ThreadName %s:\n ", nonce , nameThread);
                     Instant instant1 = Instant.ofEpochMilli(UtilsTime.getUniversalTimestamp());
                     Instant instant2 = previus.toInstant();
 
@@ -267,9 +267,6 @@ public final class Block implements Cloneable {
                             break;
 
                         }
-
-
-
                     }
 
                     //если true, то прекращаем майнинг
