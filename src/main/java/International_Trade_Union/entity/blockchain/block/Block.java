@@ -427,6 +427,7 @@ public final class Block implements Cloneable {
                     break;
                 }
 
+
                 if (i==0 && k % 100000 == 0 ){
                      if ( isAdvanced() == 1) {
                             solutionFound.set(true);
