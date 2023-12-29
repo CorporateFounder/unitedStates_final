@@ -5,11 +5,14 @@ import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.exception.NotValidTransactionException;
 import International_Trade_Union.model.Mining;
 
+import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
 import ch.qos.logback.core.pattern.FormatInfo;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 import lombok.Data;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -28,11 +31,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.IntStream;
 
 @JsonAutoDetect
 @Data
 public final class Block implements Cloneable {
+    //мой класс
     private static volatile boolean blockFound = false;
     private static long randomNumberProofStatic = 0;
     private static int INCREMENT_VALUE = 50000;
@@ -321,11 +327,199 @@ public final class Block implements Cloneable {
         if(MULTI_THREAD){
             return multipleFindHash(hashCompexity);
         }else {
-            return findHash(hashCompexity);
+        String result="";
+         try {
+            result= findHash(hashCompexity);
+         } catch (Exception e) {
+                // Handle or log the exception
+                e.printStackTrace();
+            }
+            return result;
         }
     }
+
+
+
+
+     public String findHash(long hashCoplexity) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException, Exception  {
+        if (!verifyesTransSign()){
+            throw new NotValidTransactionException();
+        }
+         String hash = "";
+
+           if (this.index > Seting.V31_FIX_DIFF ) //jump to v31 algo
+        {
+            hash = findHash_MT2(hashCoplexity);
+
+        }
+        else
+        {
+
+            hash = findHash_org(hashCoplexity);
+        }
+
+  //hash = findHash_org(hashCoplexity);
+
+       return hash;
+    }
+
+
+               public static String[] splitJson(String jsonString) throws IOException{
+        String identifier = "\"randomNumberProof\":";
+        int index = jsonString.indexOf(identifier) + identifier.length();
+        return new String[] {
+            jsonString.substring(0, index),
+            jsonString.substring(index+1)
+        };
+    }
+
+         public static String generateJsonWithProof(String[] jsonParts, long randomNumberProof) {
+        return jsonParts[0] + randomNumberProof +jsonParts[1];
+    }
+
+
+    public String findHash_MT2(long hashCoplexity) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+     if (!verifyesTransSign()) {
+        throw new NotValidTransactionException();
+    }
+ if (!verifyesTransSign()) {
+            throw new NotValidTransactionException();
+        }
+
+      final int numThreads = Runtime.getRuntime().availableProcessors() - 1;
+
+    final AtomicBoolean solutionFound = new AtomicBoolean(false);
+    final CompletableFuture<String> solution = new CompletableFuture<>();
+    final ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+    BlockForHash block = new BlockForHash(
+                        this.dtoTransactions, this.previousHash, this.minerAddress,
+                        this.founderAddress, 0, this.minerRewards,
+                        this.hashCompexity, this.timestamp, this.index);
+    String hashStr=block.jsonString();
+//     System.out.println("-------------------");
+//      System.out.println(">>HASHSTR  :"+hashStr);
+    this.randomNumberProof=0;
+    final String[] jsonParts = splitJson(hashStr);
+
+
+
+    final long range = Long.MAX_VALUE / 10240;
+
+
+    System.out.println(">>numThreads: " + numThreads + " hashCoplexity:" + hashCoplexity+" Length: "+jsonString().length());
+
+//       System.out.println(">>[0]:"+jsonParts[0]);
+//       System.out.println(">>[1]:"+jsonParts[1]);
+    IntStream.range(0, numThreads).forEach(i -> {
+        executor.submit(() -> {
+            long endTime, duration;
+
+            double durationInMilliseconds;
+            long min = range * i;
+            long max = i == numThreads - 1 ? Long.MAX_VALUE : min + range;
+            String hash = "";
+            long startTime = System.nanoTime();
+            endTime=startTime;
+            int cnt=0;
+
+            for (long k = min; k < max; k++) {
+                if (solutionFound.get()) {
+                    break;
+                }
+
+                if (i==0 && k % 100000 == 0 ){
+                     if ( isAdvanced() == 1) {
+                            solutionFound.set(true);
+                            solution.complete("");
+            //               this.randomNumberProof = k;
+                            Mining.miningIsObsolete = true;
+                     }//isAdvanced() == 1
+
+                     // Display status
+                    if (k % 100000 == 0){
+
+                    endTime= System.nanoTime();
+
+
+                    duration = endTime - startTime;  // Time in nanoseconds
+                    durationInMilliseconds = duration / 1_000_000.0;  // Convert to milliseconds
+
+                    double hashRate = (k-min)/1000 / durationInMilliseconds * numThreads;
+                    String formattedHashRate = String.format("%.2f", hashRate);
+                    System.out.print("Hash rate: " + formattedHashRate + " KH/S\r");
+                    System.out.flush();  // Ensures the printed content is immediately displayed
+
+                    }//if (k % 400000 == 0)
+
+                } //i==0
+
+
+
+                    hash = DigestUtils.sha256Hex(generateJsonWithProof(jsonParts, k));
+
+
+                //if (UtilsUse.chooseComplexity(hash, hashCoplexity, index)) {
+               if (BlockchainDifficulty.isValidHashV29(hash, 100-(int)hashCoplexity)) {
+                   // if (  cal_v4MeetsDifficulty(hash, hashCoplexity ))  {
+
+                    if (!solutionFound.getAndSet(true)) {
+                        solution.complete(hash);
+                        System.out.println("Block found: hash: " + hash + " k: " + k + " at Thread " + i);
+
+//                          System.out.println("!!>>"+generateJsonWithProof(jsonParts, k));
+                        this.randomNumberProof = k;
+                    }
+                }
+            }
+        });
+    });
+
+    try {
+        return solution.get();
+    } catch (InterruptedException | ExecutionException e) {
+        throw new RuntimeException(e);
+    } finally {
+        executor.shutdownNow();
+    }
+}
+
+
+
+    /*if the index advanced, then we quit the current hasfind() */
+     private int isAdvanced() {
+     try {
+        String  s;
+//       s="http://125.229.48.110:16888";
+       s="http://194.87.236.238:82";
+         for (String address : Seting.ORIGINAL_ADDRESSES) {
+             s = address;
+         }
+
+
+        String sizeStr = UtilUrl.readJsonFromUrl_silent(s + "/size");
+       Long cur_index=Long.parseLong(sizeStr);
+
+
+//        System.out.print("#");
+      // System.out.println("#### cur_index "+cur_index+" index:"+this.index);
+        if (cur_index>this.index)
+        {
+            System.out.println("######### STOP: cur_index "+cur_index+" index:"+this.index+"######");
+            return 1;
+        }
+       } catch (JSONException | IOException e) {
+
+
+                System.out.println("isAdvanced:  error");
+                return 0;
+            }
+
+
+         return 0;
+
+        }
     //TODO
-    public String findHash(long hashCoplexity) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+    public String findHash_org(long hashCoplexity) throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
         System.out.println("find hash method");
         if (!verifyesTransSign()) {
             throw new NotValidTransactionException();

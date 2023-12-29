@@ -15,6 +15,19 @@ import java.util.Base64;
 import java.util.List;
 
 public class UtilUrl {
+    ////модифицированный ими код
+    public static String readJsonFromUrl_silent(String url) throws IOException, JSONException {
+        InputStream is = new URL(url).openStream();
+        try {
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+            String jsonText = readAll(rd);
+            ObjectMapper mapper = new ObjectMapper();
+            return jsonText;
+        } finally {
+//             System.out.println("UtilUrl: readJsonFromUrl: " + url );
+            is.close();
+        }
+    }
     public static String readJsonFromUrl(String url) throws IOException, JSONException {
         InputStream is = new URL(url).openStream();
         try {

@@ -9,7 +9,7 @@ import java.net.SocketException;
 
 public class UtilsStorage {
     public static int getSize(){
-        String address = "http://194.87.236.238:80";
+        String address = "http://194.87.236.238:82";
         for (String s : Seting.ORIGINAL_ADDRESSES) {
             address = s;
         }
