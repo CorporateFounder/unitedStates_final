@@ -81,9 +81,4 @@ public class Account {
     public DtoTransaction send(String recipient, String privateKey, double digitalDollar, double digitalReputation, Laws laws,  double minerRewards, VoteEnum voteEnum) throws NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, NoSuchProviderException, InvalidKeyException {
          return sendMoney(recipient,privateKey, digitalDollar, digitalReputation, laws, minerRewards, voteEnum);
     }
-
-
-
-
-
 }

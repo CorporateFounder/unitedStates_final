@@ -23,6 +23,9 @@ import java.util.List;
 
 @RestController
 public class TransactionController {
+
+    /**Добавляет транзакцию во внутренний файл.
+     * Adds a transaction to an internal file.*/
     @RequestMapping(method = RequestMethod.POST, value = "/addTransaction", consumes = MediaType.APPLICATION_JSON_VALUE)
     public  void add(@RequestBody DtoTransaction data) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 

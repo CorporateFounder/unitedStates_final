@@ -87,13 +87,16 @@ public class MainController {
            throw new RuntimeException(e);
        }
     }
+
+    /**Отображает главную страницу кошелька.
+     * Displays the main page of the wallet.*/
     @GetMapping("/")
     public String home(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
 
-        String address = "http://194.87.236.238:80";
+        String address = "http://194.87.236.238:82";
         for (String s : Seting.ORIGINAL_ADDRESSES) {
             address = s;
         }
@@ -202,29 +205,21 @@ public class MainController {
             System.out.println("wrong blockchain");
             System.out.println("**************************************");
 
-//            System.exit(1);
             UtilsBlock.deleteFiles();
         }
         model.addAttribute("validation", validation);
-
-
-        //догрузить блокчейн
         balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-
-
         Account account = UtilsBalance.getBalance(User.getUserAddress(), balances);
         model.addAttribute("account", account);
 
-        //дата сколько осталось до уничтожения монет
-
-//
-//        Block.setMultiThread(true);
 
         return "home";
     }
 
 
 
+    /**TODO устарел, использовался для регулирования количества потов во время майнинга.
+     * TODO is obsolete, used to regulate the number of pots during mining.*/
     @PostMapping("/setPool")
     public String setPool(@RequestParam(value = "setPool") String setPool){
        int number = 10;
@@ -237,6 +232,10 @@ public class MainController {
         }
         return "redirect:/seting";
     }
+
+
+    /**Сменяет адрес майнера.
+     * Changes the miner address.*/
     @PostMapping("/setMinner")
     public String setMinnerAddress(@RequestParam(value = "setMinner") String setMinner, RedirectAttributes redirectAttrs){
 
@@ -245,6 +244,13 @@ public class MainController {
         UtilsFileSaveRead.save(setMinner, Seting.ORIGINAL_ACCOUNT, false);
         return "redirect:/seting";
     }
+
+
+    /**При майнинге, устанавливает минимальную сумму в долларах, если количество транзакций больше 1000 на блок,
+     * то будут отбираться только те кто награду за блок.
+     * When mining, sets a minimum dollar amount if the number of transactions is more than 1000 per block,
+     *       * then only those who receive a reward for the block will be selected.
+     *       */
     @PostMapping ("/setMinDollarRewards")
     public String setMinDollarRewards(@RequestParam(value = "reward") String reward){
         double number = 0;
@@ -261,6 +267,8 @@ public class MainController {
     }
 
 
+    /**TODO устаревший метод, изначально менял многопоточность или однопоточность.
+     * TODO is an outdated method, initially it changed multi-threading or single-threading.*/
     @PostMapping("/changeMultiThread")
     public String changeMultiThread(@RequestParam("thread") boolean thread) {
         // Здесь можно добавить логику для изменения состояния многопоточности
@@ -286,10 +294,8 @@ public class MainController {
         return "result-sending";
     }
 
-    //"@PostMapping("/") - its spring mapping
-    //@RequestParam - its parametrs in url - example http://localhost:80?age=18&color=red;
-    //RedirectAttributes = its instrument redirect parametr from one htmlt to senod
-    //model = its instrument to binding
+    /**Отправляет транзакцию на глобальный узел.
+     * Sends a transaction to the global node. */
     @PostMapping("/")
     public String new_transaction(
             @RequestParam  String sender,
@@ -342,8 +348,10 @@ public class MainController {
         Directors directors = new Directors();
         if(dtoTransaction.verify()){
 
-            //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
-            //отправитель совпадает с законом
+            //если в названия закона совпадает с корпоративными должностями, то закон является действительным, только когда
+            //отправитель совпадает с законом.
+            //if the title of the law coincides with corporate positions, then the law is valid only when
+            //sender matches the law.
             List<String> corporateSeniorPositions = directors.getDirectors().stream()
                     .map(t->t.getName()).collect(Collectors.toList());
             System.out.println("LawsController: create_law: " + laws.getPacketLawName() + "contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));

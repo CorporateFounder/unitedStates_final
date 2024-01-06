@@ -36,17 +36,20 @@ public class LawsController {
     @Autowired
     BlockService blockService;
 
+
+    /**Отображает детали пакета законов в браузере.
+     * Displays the details of the law package in the browser.*/
     @GetMapping("detail-laws")
     public String details(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
         return "detail-laws";
     }
 
-    //TODO реализовать голосвание
 
 
     /**
-     * Отображается в браузере, позволяет увидеть содержимое пакета законов, список действующих законов
+     * Отображается в браузере, позволяет увидеть содержимое пакета законов, список действующих законов.
+     * Displayed in the browser, allows you to see the contents of the package of laws, a list of current laws.
      */
     @GetMapping("/detail-laws-current/{addressLaw}")
     public String lawsDetail(@PathVariable(value = "addressLaw") String addressLaw, RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -76,7 +79,8 @@ public class LawsController {
     }
 
     /**
-     * Отображается в браузере, показывает содержимое пакета законов, из  списка всех законов
+     * Отображается в браузере, показывает содержимое пакета законов, из списка всех законов.
+     * Displayed in the browser, shows the contents of the package of laws, from a list of all laws.
      */
     @GetMapping("/detail-laws-all/{addressLaw}")
     public String lawsDetailAll(@PathVariable(value = "addressLaw") String addressLaw, RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -189,7 +193,8 @@ public class LawsController {
     }
 
     /**
-     * Голосование учитывает голоса как акций, так и голоса избраных представителей
+     * Голосование учитывает голоса как акций, так и голоса избранных представителей.
+     * Voting takes into account both share votes and votes of elected representatives.
      */
     @GetMapping("/voting")
     public String lawVoting() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -279,7 +284,8 @@ public class LawsController {
     }
 
     /**
-     * Отображается в браузере, список все действующих законов
+     * Отображается в браузере, список все действующих законов.
+     * Displayed in the browser, a list of all current laws.
      */
     @GetMapping("/current-laws")
     public String currentLaw(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
@@ -287,12 +293,7 @@ public class LawsController {
             return "redirect:/processUpdating";
         }
 
-
         Directors directors = new Directors();
-//        Blockchain blockchain = Mining.getBlockchain(
-//                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-//                BlockchainFactoryEnum.ORIGINAL);
-
         List<Block> blocksList = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                 BlockService.findBySpecialIndexBetween(
                         BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE,
@@ -563,13 +564,10 @@ public class LawsController {
         return "current-laws";
     }
 
-    /**
-     * Отображается в браузере список всех принятых бюджетов и эмиссий
-     */
-
 
     /**
-     * Отображается в браузере, список всех пакета законов
+     * Отображается в браузере, список всех пакета законов.
+     * Displayed in the browser, a list of all packages of laws.
      */
     @GetMapping("/all-laws")
     public String allLaws(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -660,7 +658,10 @@ public class LawsController {
 
 
     /**
-     * Создать новую должность
+     * Создать новую должность, новые должности имеют только одно место. То есть на данную должность может избираться
+     * только один из множества кандидатов.
+     * Create a new position, new positions have only one location. That is, one can be elected to this position
+     *       * only one of many candidates.
      */
     @GetMapping("/add_position")
     public String addPostion(Model model) {
@@ -753,7 +754,8 @@ public class LawsController {
     }
 
     /**
-     * Отображается в браузере, позволяет создать новый пакет законов
+     * Отображается в браузере, позволяет создать новый пакет законов.
+     * Displayed in the browser, allows you to create a new package of laws.
      */
     @GetMapping("/create-law")
     public String createLawsShow(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {

@@ -66,44 +66,6 @@ public class UtilsLaws {
 //        UtilsFileSaveRead.save(json + "\n", nextFile);
         UtilsFileSaveRead.saves(jsons, nextFile, true);
     }
-    public static void saveLaw(Laws laws, String filename) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        int fileLimit = Seting.SIZE_FILE_LIMIT * 1024 * 1024;
-
-        //папка чтобы проверить есть ли
-        File folder = new File(filename);
-        List<String> files = new ArrayList<>();
-        for (File file : folder.listFiles()) {
-            if (!file.isDirectory()) {
-                files.add(file.getAbsolutePath());
-            }
-        }
-
-        int count = 0;
-        files = files.stream().sorted().collect(Collectors.toList());
-        String nextFile = "";
-
-        if (files.size() > 0) {
-            nextFile = files.get(files.size() - 1);
-
-            count = Integer.parseInt(nextFile.replaceAll("[^\\d]", ""));
-
-
-        }
-
-        File file = new File(nextFile);
-
-        if (file.length() >= fileLimit) {
-            count++;
-
-        }
-
-        nextFile = filename + count + ".txt";
-
-        String json = UtilsJson.objToStringJson(laws);
-        UtilsFileSaveRead.save(json + "\n", nextFile);
-
-    }
-
     public static void saveCurrentsLaws(List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals, String filename) throws IOException {
         int fileLimit = Seting.SIZE_FILE_LIMIT * 1024 * 1024;
 
@@ -146,43 +108,6 @@ public class UtilsLaws {
 //        String json = UtilsJson.objToStringJson(minerAccount);
 //        UtilsFileSaveRead.save(json + "\n", nextFile);
         UtilsFileSaveRead.saves(jsons, nextFile, true);
-    }
-    public static void saveCurrentLaw(LawEligibleForParliamentaryApproval lawEligibleForParliamentaryApproval, String filename) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        int fileLimit = Seting.SIZE_FILE_LIMIT * 1024 * 1024;
-
-        //папка чтобы проверить есть ли
-        File folder = new File(filename);
-        List<String> files = new ArrayList<>();
-        for (File file : folder.listFiles()) {
-            if (!file.isDirectory()) {
-                files.add(file.getAbsolutePath());
-            }
-        }
-
-        int count = 0;
-        files = files.stream().sorted().collect(Collectors.toList());
-        String nextFile = "";
-
-        if (files.size() > 0) {
-            nextFile = files.get(files.size() - 1);
-
-            count = Integer.parseInt(nextFile.replaceAll("[^\\d]", ""));
-
-
-        }
-
-        File file = new File(nextFile);
-
-        if (file.length() >= fileLimit) {
-            count++;
-
-        }
-
-        nextFile = filename + count + ".txt";
-
-        String json = UtilsJson.objToStringJson(lawEligibleForParliamentaryApproval);
-        UtilsFileSaveRead.save(json + "\n", nextFile);
-
     }
 
     public static List<Laws> readLineLaws(String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -260,24 +185,7 @@ public class UtilsLaws {
         return laws;
     }
 
-    //проверяет валидность закона
-    public static boolean isValidHashLaw(Laws laws) throws IOException {
-        String hash = laws.getHashLaw();
-        String hashLaw = Seting.NAME_LAW_ADDRESS_START + UtilsUse.sha256hash(UtilsJson.objToStringJson(laws));
-        System.out.println("UtilsLaw: isValidHashLaw: " + hash.equals(hashLaw));
-        System.out.println("hash: " + hash);
-        System.out.println("hashLaw: " + hashLaw);
-        return hash.equals(hashLaw);
-    }
 
-
-
-    public static List<Account> allPackageLaws(List<Account> accounts){
-        List<Account> currentLaws = accounts.stream()
-                .filter(t -> t.getAccount().startsWith(Seting.NAME_LAW_ADDRESS_START))
-                .collect(Collectors.toList());
-        return currentLaws;
-    }
 
 
     //возвращяет список всех законов, как действующих, так и не действующих, если закон новый то автоматически сохраняет его
@@ -402,5 +310,97 @@ public class UtilsLaws {
         return temporary;
     }
 
+    public static void saveLaw(Laws laws, String filename) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        int fileLimit = Seting.SIZE_FILE_LIMIT * 1024 * 1024;
+
+        //папка чтобы проверить есть ли
+        File folder = new File(filename);
+        List<String> files = new ArrayList<>();
+        for (File file : folder.listFiles()) {
+            if (!file.isDirectory()) {
+                files.add(file.getAbsolutePath());
+            }
+        }
+
+        int count = 0;
+        files = files.stream().sorted().collect(Collectors.toList());
+        String nextFile = "";
+
+        if (files.size() > 0) {
+            nextFile = files.get(files.size() - 1);
+
+            count = Integer.parseInt(nextFile.replaceAll("[^\\d]", ""));
+
+
+        }
+
+        File file = new File(nextFile);
+
+        if (file.length() >= fileLimit) {
+            count++;
+
+        }
+
+        nextFile = filename + count + ".txt";
+
+        String json = UtilsJson.objToStringJson(laws);
+        UtilsFileSaveRead.save(json + "\n", nextFile);
+
+    }
+    //проверяет валидность закона
+    public static boolean isValidHashLaw(Laws laws) throws IOException {
+        String hash = laws.getHashLaw();
+        String hashLaw = Seting.NAME_LAW_ADDRESS_START + UtilsUse.sha256hash(UtilsJson.objToStringJson(laws));
+        System.out.println("UtilsLaw: isValidHashLaw: " + hash.equals(hashLaw));
+        System.out.println("hash: " + hash);
+        System.out.println("hashLaw: " + hashLaw);
+        return hash.equals(hashLaw);
+    }
+
+    public static void saveCurrentLaw(LawEligibleForParliamentaryApproval lawEligibleForParliamentaryApproval, String filename) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        int fileLimit = Seting.SIZE_FILE_LIMIT * 1024 * 1024;
+
+        //папка чтобы проверить есть ли
+        File folder = new File(filename);
+        List<String> files = new ArrayList<>();
+        for (File file : folder.listFiles()) {
+            if (!file.isDirectory()) {
+                files.add(file.getAbsolutePath());
+            }
+        }
+
+        int count = 0;
+        files = files.stream().sorted().collect(Collectors.toList());
+        String nextFile = "";
+
+        if (files.size() > 0) {
+            nextFile = files.get(files.size() - 1);
+
+            count = Integer.parseInt(nextFile.replaceAll("[^\\d]", ""));
+
+
+        }
+
+        File file = new File(nextFile);
+
+        if (file.length() >= fileLimit) {
+            count++;
+
+        }
+
+        nextFile = filename + count + ".txt";
+
+        String json = UtilsJson.objToStringJson(lawEligibleForParliamentaryApproval);
+        UtilsFileSaveRead.save(json + "\n", nextFile);
+
+    }
+
+
+    public static List<Account> allPackageLaws(List<Account> accounts){
+        List<Account> currentLaws = accounts.stream()
+                .filter(t -> t.getAccount().startsWith(Seting.NAME_LAW_ADDRESS_START))
+                .collect(Collectors.toList());
+        return currentLaws;
+    }
 
 }

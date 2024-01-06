@@ -13,14 +13,16 @@ import java.io.IOException;
 import java.net.NoRouteToHostException;
 import java.net.SocketException;
 
+/**Подключается к основному узлу, для получения данных от туда.
+ * Connects to the main node to receive data from there.*/
 @RestController
 public class StorageController {
     /**
      * Returns the global size of the blockchain.
-     * http://194.87.236.238:80/size
+     * http://194.87.236.238:82/size
      *
      * Возвращает глобальный размер блокчейна.
-     * http://194.87.236.238:80/size*/
+     * http://194.87.236.238:82/size*/
     @GetMapping("/globalSize")
     @ResponseBody
     public int globalSize(){
@@ -54,11 +56,11 @@ public class StorageController {
      * Возвращает версию хранилища.
      * Если версия локального кошелька не совпадает с версией глобальной версией,
      * то хранилище не позволить добывать.
-     * http://194.87.236.238:80/version */
+     * http://194.87.236.238:82/version */
     @GetMapping("/globalVersion")
     @ResponseBody
     public int globalVersion(){
-        String address = "http://194.87.236.238:80";
+        String address = "http://194.87.236.238:82";
         for (String s : Seting.ORIGINAL_ADDRESSES) {
             address = s;
         }
@@ -84,7 +86,7 @@ public class StorageController {
      *
      * Возвращает текущую сложность блока которую принимает хранилище.
      * Также Возвращает сложность всего блокчейна.
-     * http://194.87.236.238:80/difficultyBlockchain */
+     * http://194.87.236.238:82/difficultyBlockchain */
     @GetMapping("/difficulty")
     @ResponseBody
     public InfoDificultyBlockchain infoDificultyBlockchain(){

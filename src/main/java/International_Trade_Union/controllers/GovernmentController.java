@@ -35,12 +35,10 @@ import java.util.stream.Collectors;
 @Controller
 public class GovernmentController {
 
-    //TODO если происходит майнинг почему то происходят ошибки, и если вызвать данный метод, то может
-    //TODO прерываться сам процесс майнинга
-    //TODO if mining occurs for some reason, errors are observed, and this method appears, then it can
-    //TODO interrupt the mining process itself
 
-    /**Отображает в браузере список действующих должностей*/
+
+    /**Отображает в браузере список действующих должностей.
+     * Displays a list of current positions in the browser*/
     @GetMapping("/governments")
     public String corporateSeniorpositions(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         if(BasisController.isUpdating() || BasisController.isMining()){
@@ -64,15 +62,19 @@ public class GovernmentController {
         //считывать баланс
         balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
 
+        //Считывает из файла идентификационный номер закона, а так же его баланс. Закон так же может
+        //выглядеть как баланс.
+        //Reads the law identification number from the file, as well as its balance. The law can also
+        //look like balance.
         List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
                 UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
-        //получить совет акционеров из файла
+        //получить совет акционеров из файла.
+        //obtain shareholder advice from file.
         List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blocksList, Seting.BOARDS_BLOCK);
 
-
-
-        //отфильтровать по типам голосов
+        //фильтрует должности по типам голосования и как их избирают.
+        //filters positions by voting type and how they are elected.
         Map<Director, FIndPositonHelperData> fIndPositonHelperDataMap = new HashMap<>();
         for (Director higherSpecialPositions : directors.getDirectors()) {
             if (higherSpecialPositions.isElectedByCEO()) {
@@ -92,7 +94,10 @@ public class GovernmentController {
 
         }
 
-        //подсчет происходит с базы данных, таким образом вычисления происходят быст
+        //Для каждого пакета включая должности, отбирает список всех адресов которые полосовали за или против,
+        //за определенный период LAW_YEAR_VOTE.
+        //For each package including positions, selects a list of all addresses that were striped for or against,
+        //for a certain period LAW_YEAR_VOTE.
         Map<String, CurrentLawVotes> votesMap = new HashMap<>();
         List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
         if (BasisController.getBlockchainSize() > Seting.LAW_YEAR_VOTE) {
@@ -109,7 +114,8 @@ public class GovernmentController {
             }
         }
 
-        //подсчитать голоса за все проголосованные заканы
+        //подсчитывает голоса для каждого закона или кандидата.
+        //counts votes for each law or candidate.
         List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
                 lawEligibleForParliamentaryApprovals,
                 balances,
@@ -118,9 +124,8 @@ public class GovernmentController {
 
 
 
-
-//        минимальное значение количество положительных голосов для того чтобы закон действовал,
-//        позиции избираемые акциями совета директоров
+        //здесь утверждается действующий совет директоров.
+        //the current board of directors is approved here.
         List<CurrentLawVotesEndBalance> electedByStockBoardOfDirectors = current.stream()
                 .filter(t -> directors.isElectedByStocks(t.getPackageName()))
                 .filter(t -> t.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString()))
@@ -131,8 +136,8 @@ public class GovernmentController {
 
 
 
-        //минимальное значение количество положительных голосов для того чтобы закон действовал,
-        //позиции избираемые акциями CORPORATE_COUNCIL_OF_REFEREES
+        //здесь утверждается совет корпоративных судей.
+        //the council of corporate judges is approved here.
         List<CurrentLawVotesEndBalance> electedByStockCorporateCouncilOfReferees = current.stream()
                 .filter(t -> directors.isElectedByStocks(t.getPackageName()))
                 .filter(t -> t.getPackageName().equals(NamePOSITION.CORPORATE_COUNCIL_OF_REFEREES.toString()))
@@ -143,21 +148,26 @@ public class GovernmentController {
 
 
 
-        //позиции созданные всеми участниками
+        //здесь утверждаются новые должности, которые назначаются советом директоров.
+        //new positions are approved here and appointed by the board of directors.
         List<CurrentLawVotesEndBalance> createdByBoardOfDirectors = current.stream()
                 .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
                 .filter(t->t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .collect(Collectors.toList());
-        //добавление позиций созданных советом директоров
+        //добавляются новые должности, которые были утверждены советом директоров.
+        //new positions are added that have been approved by the board of directors.
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : createdByBoardOfDirectors) {
             directors.addAllByBoardOfDirectors(currentLawVotesEndBalance.getLaws());
         }
 
-        //позиции избираемые только всеми участниками
+        //Эти должности назначаются советом директоров, если же основатель наложил вето, то должен так же утвердить
+        //совет корпоративных судей.
+        //These positions are appointed by the board of directors, but if the founder vetoes, he must also approve
+        //council of corporate judges.
         List<CurrentLawVotesEndBalance> electedByBoardOfShareholders = current.stream()
                 .filter(t -> directors.isElectedByFractions(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
-                .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS
+                .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0
                 || t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                 && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)
@@ -165,13 +175,14 @@ public class GovernmentController {
                 .collect(Collectors.toList());
 
 
-        //групируем по списку
+        //группируем по списку. //group by list.
         Map<String, List<CurrentLawVotesEndBalance>> group = electedByBoardOfShareholders.stream()
                 .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));
 
         Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();
 
-        //оставляем то количество которое описано в данной должности
+        //оставляем то количество которое описано в данной должности.
+        //we leave the quantity described in this post.
         for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {
             List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();
             temporary = temporary.stream()
@@ -183,38 +194,21 @@ public class GovernmentController {
 
 
 
-        //позиции избираемые советом корпоративных верховных судей
+        //позиции избираемые советом корпоративных верховных судей.
+        //positions elected by the council of corporate supreme judges.
         List<CurrentLawVotesEndBalance> electedByCorporateCouncilOfReferees = current.stream()
                 .filter(t -> directors.isElectedBYCorporateCouncilOfReferees(t.getPackageName()))
                 .filter(t -> t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesCorporateCouncilOfReferees)).collect(Collectors.toList());
 
 
-        //избираемые GENERAL_EXECUTIVE_DIRECTOR
-        List<CurrentLawVotesEndBalance> electedByGeneralExecutiveDirector = electedByBoardOfShareholders.stream()
-                .filter(t -> directors.isElectedCEO(t.getPackageName()))
-                .filter(t -> NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString().equals(t.getPackageName()))
-                .filter(t -> t.getVoteGeneralExecutiveDirector() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_GENERAL_EXECUTIVE_DIRECTOR)
-                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))
-                .collect(Collectors.toList());
-
-        //голос верховного судьи
-        List<CurrentLawVotesEndBalance> electedByHightJudge = electedByCorporateCouncilOfReferees.stream()
-                .filter(t -> directors.isElectedBYCorporateCouncilOfReferees(t.getPackageName()))
-                .filter(t -> t.getVoteHightJudge() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE)
-                .collect(Collectors.toList());
-
-
-
-        //добавляет законы, которые создают новые должности утверждается всеми
+        //добавляет законы, которые создают новые должности утверждается советом директоров.
+        //adds laws that create new positions approved by the board of directors.
         List<CurrentLawVotesEndBalance> addDirectors = current.stream()
                 .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
                 .filter(t->t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .collect(Collectors.toList());
-
-
-
 
 
         for (Map.Entry<Director, List<CurrentLawVotesEndBalance>> higherSpecialPositionsListMap : original_group.entrySet()) {
@@ -228,8 +222,6 @@ public class GovernmentController {
         current.addAll(electedByStockCorporateCouncilOfReferees);
         current.addAll(electedByBoardOfShareholders);
         current.addAll(electedByCorporateCouncilOfReferees);
-        current.addAll(electedByGeneralExecutiveDirector);
-        current.addAll(electedByHightJudge);
         current = current.stream()
                 .filter(UtilsUse.distinctByKey(CurrentLawVotesEndBalance::getAddressLaw))
                 .filter(t->directors.contains(t.getPackageName()))
@@ -243,6 +235,9 @@ public class GovernmentController {
         return "governments";
     }
 
+
+    /**Позволяет подать на должность в системе и получить идентификационный номер.
+     * Allows you to apply for a position in the system and receive an identification number.**/
     @GetMapping("/create-position")
     public String createPositionShow(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
@@ -279,7 +274,8 @@ public class GovernmentController {
             }
         }
 
-        //подсчитать голоса за все проголосованные заканы
+        //подсчитать голоса за все проголосованные законы.
+        //count the votes for all voted laws.
         List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
                 lawEligibleForParliamentaryApprovals,
                 balances,
@@ -288,15 +284,15 @@ public class GovernmentController {
 
 
         List<String> positions = directors.getDirectors().stream().map(t->t.getName()).collect(Collectors.toList());
-        //позиции утвержденные всеми
+        //positions are approved by the board of directors.
         List<CurrentLawVotesEndBalance> createdByBoardOfDirectors = current.stream()
                 .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
                 .filter(t->
-                         t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_SHAREHOLDERS
-                        && t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
+                        t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .collect(Collectors.toList());
         //добавление позиций созданных советом директоров
+        //adding positions created by the board of directors
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : createdByBoardOfDirectors) {
             directors.addAllByBoardOfDirectors(currentLawVotesEndBalance.getLaws());
         }
@@ -308,7 +304,8 @@ public class GovernmentController {
         return "create-position";
     }
 
-    /**Отображается в браузере, позволяет создавать новые должности*/
+    /**Позволяет подать на существующие должности и получить идентификационный номер.
+     * Allows you to apply for existing positions and receive an identification number.*/
     @RequestMapping(value = "/create-position", method = RequestMethod.POST, params = "action=/send")
     public String createLaw(Model model,
                             @RequestParam String sender,

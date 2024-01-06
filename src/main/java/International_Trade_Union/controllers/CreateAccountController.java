@@ -18,7 +18,8 @@ public class CreateAccountController {
 
 
 
-    /**Позвалояет создавать счет, отображается в браузере*/
+    /**Позволяет создавать счет, отображается в браузере.
+     * Allows you to create an invoice, displayed in the browser.*/
     @GetMapping("create-account")
     public String createAccount(Model model) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
 
@@ -31,7 +32,8 @@ public class CreateAccountController {
         return "create-account";
     }
 
-
+    /**Позволяет создавать счет, отображается в браузере.
+     * Allows you to create an invoice, displayed in the browser.*/
     @PostMapping("create-account")
     public String createNewAccount(RedirectAttributes redirectAttrs) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         redirectAttrs.addFlashAttribute("title", "create minerAccount");

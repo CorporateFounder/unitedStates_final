@@ -31,11 +31,18 @@ public class Blockchain implements Cloneable {
 
     private List<Block> blockchainList;
     //как часто должно создаваться блок в миллисекундах 1000 миллисекунд = 1 секунд
+    //каждый блок должен находиться каждые 150 секунд.
+    //how often should a block be created in milliseconds 1000 milliseconds = 1 seconds
+    //each block should be found every 150 seconds.
     private long BLOCK_GENERATION_INTERVAL;
-    //каждые сколько блоков должен происходить перерасчет сложности
+    //каждые сколько блоков должен происходить перерасчет сложности, каждые 288 блоков происходит регулировка сложности.
+    //every number of blocks the difficulty should be recalculated, every 288 blocks the difficulty should be adjusted.
     private int DIFFICULTY_ADJUSTMENT_INTERVAL;
     //блок действителен, если значение блока меньше данного занчения в миллисекунда
     private long INTERVAL_TARGET;
+
+    //адрес основателя.
+    //founder's address.
     private String ADDRESS_FOUNDER;
 
     public int sizeBlockhain() {
@@ -67,6 +74,8 @@ public class Blockchain implements Cloneable {
         blockchainList.add(newBlock);
     }
 
+    /**Этим методом был создан генезис блок.
+     * This method was used to create the genesis block.*/
     public Block genesisBlock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, SignatureException, InvalidKeyException {
         Base base = new Base58();
         //dto sign
@@ -86,6 +95,9 @@ public class Blockchain implements Cloneable {
         Block block = new Block(transactions, genesisHash, ADDRESS_FOUNDER, ADDRESS_FOUNDER, Seting.HASH_COMPLEXITY_GENESIS, blockchainList.size());
         return block;
     }
+
+    /**TODO не используется.
+     * TODO is not used.*/
 
     public static Map<String, Object> shortCheck2(Block prevBlock, Block block, DataShortBlockchainInformation data, List<Block> tempList) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Map<String, Object> map = new HashMap<>();
@@ -132,6 +144,9 @@ public class Blockchain implements Cloneable {
 
     }
 
+
+    /**Проверяет блок на целостность по отношению к предыдущим блокам.
+     * Checks the block for integrity in relation to previous blocks.*/
     public static DataShortBlockchainInformation shortCheck(Block prevBlock, List<Block> blocks, DataShortBlockchainInformation data, List<Block> tempList) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         int size = (int) data.getSize();
         if (size >= blocks.get(0).getIndex() + 1 || prevBlock == null) {

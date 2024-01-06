@@ -89,7 +89,14 @@ public class UtilsTransaction {
     }
 
 
-    /**минимальное вознаграждение за добавление в блок транзакции долларов*/
+    /**Минимальное вознаграждение за добавление в блок транзакции долларов.
+     * Если количество транзакций на блок превышает 1000, будут отбираться только
+     * те транзакции которые дают вознаграждение майнеру за оплату транзакции
+     * если он выше определенного порога.
+     * Minimum reward for adding dollars to a transaction block.
+     *      * If the number of transactions per block exceeds 1000, only
+     *      * those transactions that give a reward to the miner for paying for the transaction
+     *      * if it is above a certain threshold.*/
     public static List<DtoTransaction> reward(List<DtoTransaction> transactions, double minRewards){
 
         if(transactions.size() > Seting.TRANSACTIONS_COUNT_MINIMUM){

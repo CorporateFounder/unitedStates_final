@@ -57,15 +57,17 @@ public class BasisController {
     private static Block prevBlock = null;
     private static Account minerShow = null;
     private static long difficultExpected = 0;
+
     private static boolean mining = false;
     private static boolean updating = false;
     private static DataShortBlockchainInformation shortDataBlockchain = null;
-    private static Blockchain tempBlockchain;
-    private static Blockchain blockchain;
+
     private static int blockchainSize = 0;
     private static boolean blockchainValid = false;
     private static Set<String> excludedAddresses = new HashSet<>();
 
+    /**Возвращает последний блок который есть в локальном блокчейне.
+     * Returns the last block that exists in the local room.*/
     public static Block getPrevBlock() {
         return prevBlock;
     }
@@ -124,6 +126,9 @@ public class BasisController {
         return servletRequest;
     }
 
+    /**Используется в будущем, для подключения к разным серверам.
+     * Used in the future to connect to different servers.*/
+
     public static Set<String> getExcludedAddresses() {
 
         HttpServletRequest request = getCurrentRequest();
@@ -133,7 +138,7 @@ public class BasisController {
         String scheme = request.getScheme();
         String serverName = request.getServerName();
         int serverPort = request.getServerPort();
-        String contextPath = request.getContextPath();  // includes leading forward slash
+
 
         String localaddress = scheme + "://" + serverName + ":" + serverPort;
 
@@ -224,9 +229,6 @@ public class BasisController {
 
             }else {
                 shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-
-//            prevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(BlockService.findById((long) blockchainSize+1));
-
                  json = UtilsJson.objToStringJson(shortDataBlockchain);
                 UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
             }
@@ -256,11 +258,6 @@ public class BasisController {
     public BasisController() {
     }
 
-    //TODO если вы прервали mine, то перед следующим вызовом перезапустите сервер и вызовите /addBlock перед mine
-    //TODO if you interrupted mine, restart the server before next call and call /addBlock before mine
-    //TODO иначе будет расождение в файле балансов
-    //TODO otherwise there will be a discrepancy in the balance file
-
     /**
      * Returns an EntityChain which stores the size of the blockchain and the list of blocks
      * Возвращает EntityChain который, хранит в себе размер блокчейна и список блоков
@@ -283,10 +280,7 @@ public class BasisController {
     @ResponseBody
     public Integer sizeBlockchain() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         utilsMethod();
-
-
         System.out.println(":sizeBlockchain: " + shortDataBlockchain);
-
         return blockchainSize;
     }
 
@@ -298,7 +292,6 @@ public class BasisController {
     @ResponseBody
     public List<Block> subBlocks(@RequestBody SubBlockchainEntity entity) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         utilsMethod();
-
         return Blockchain.subFromFile(entity.getStart(), entity.getFinish(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
     }
 
@@ -311,7 +304,7 @@ public class BasisController {
     public Block getBlock(@RequestBody Integer index) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         utilsMethod();
 
-//        return blockchain.getBlock(index);
+        //        return blockchain.getBlock(index);
         return Blockchain.indexFromFile(index, Seting.ORIGINAL_BLOCKCHAIN_FILE);
     }
 
@@ -324,38 +317,31 @@ public class BasisController {
         System.out.println(":resolve_conflicts");
 
         int result = resovle2();
-//        int result = -1;
-//
-//        System.out.println("resovle2: " + result);
-//        if (result != 0) {
-//            result = resolve();
-//            System.out.println("resovle: " + result);
-//        }
-//        System.out.println("resolve" + result);
-
         return result;
     }
 
 
-    //данный метод более оптимизированный так как мы скачиваем только с доверенного хоста и не нужна дополнительная проверка
+    /**Подключается к серверу и оттуда порциями по 500 блоков скачивает на локальный.
+     * Так же производит расчеты, чтобы обновить внутренние файлы включая h2.
+     * It connects to the server and from there downloads 500 blocks in portions to the local one.
+     *       * Also performs calculations to update internal files including h2.*/
     public static int resovle2() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         updating = true;
         int bigSize = 0;
         try {
             System.out.println(" :start resolve");
             utilsMethod();
-            //size of the most recent long blockchain downloaded from hosts (storage)
-            //размер самого актуального длинного блокчейна, скачанного из хостов (хранилище)
+
 
             //local blockchain size
             //размер локального блокчейна
             int blocks_current_size = blockchainSize;
 
             EntityChain entityChain = null;
-            System.out.println(" :resolve_conflicts: blocks_current_size: " + blocks_current_size);
+            System.out.println(" resolve2:local size: " + blocks_current_size);
 
             Set<String> nodesAll = getNodes();
-            System.out.println(":BasisController: resolve_conflicts: size nodes: " + getNodes().size());
+            System.out.println(":resolve2: size nodes: " + getNodes().size());
             //goes through all hosts (repositories) in search of the most up-to-date blockchain
             //проходит по всем хостам(хранилищам) в поисках самого актуального блокчейна
             for (String s : nodesAll) {
@@ -392,7 +378,6 @@ public class BasisController {
                         if (size - blocks_current_size > Seting.PORTION_DOWNLOAD) {
                             boolean downloadPortion = true;
                             int finish = blocks_current_size + Seting.PORTION_DOWNLOAD;
-                            //скачивает с индекса выше блока который есть в блокчейне с сервера.
                             int start = blocks_current_size;
                             //while the difference in the size of the local blockchain is greater than from the host, it will continue to download in portions to download the entire blockchain
                             //пока разница размера локального блокчейна больше чем с хоста будет продожаться скачивать порциями, чтобы скачать весь блокчейн
@@ -416,13 +401,10 @@ public class BasisController {
                                 System.out.println("sub.get(1): " + subBlocks.get(1));
                                 System.out.println("sub.get(size-1): " + subBlocks.get(subBlocks.size()-1));
                                 System.out.println("****************************************************");
-                                //смешение в + 2 нужно потому что база данных h2 имеет особеность sub
-                                //если наш не включает послдений символ, к примеру если нашему дать запрос sub(0, 10)
-                                //то он вернет 0,1,2,3,4,5,6,7,8,9 то h2 repository вернет также и 10
-//                                start = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + 2; //вот здесь возможно сделать + 2
                                 balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
 
-                                //вычисляет сложность для будущего блока
+                                //вычисляет сложность блока, для следующего блока, на основе предыдущего.
+                                //calculates the block difficulty for the next block based on the previous one.
                                 if (blockchainSize > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
                                     lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                                             BlockService.findBySpecialIndexBetween(
@@ -436,6 +418,7 @@ public class BasisController {
 
                                 if (blockchainSize > 1) {
                                     //проверяет скаченные блоки на целостность
+                                    //checks downloaded blocks for integrity
                                     temp = Blockchain.shortCheck(prevBlock, subBlocks, shortDataBlockchain, lastDiff);
                                 }
 
@@ -451,25 +434,34 @@ public class BasisController {
                                 addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                                 if (!temp.isValidation()) {
                                     System.out.println("check all file");
-                                    //проверить целостность блокчейна всего на локальном сервере
+                                    //проверить целостность блокчейна всего на кошельке
+                                    //check the integrity of the blockchain of everything on the wallet
                                     temp = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
                                 }
 
-                                //сохраняет последний индекс, длину всего блокчейна и его валидность
+                                //сохраняет последний индекс, длину всего блокчейна и его валидность.
+                                //saves the last index, the length of the entire blockchain and its validity.
                                 shortDataBlockchain = temp;
-                                //размер блокчейн
+                                //размер блокчейна в кошельке.
+                                //the size of the blockchain in the wallet.
                                 blockchainSize = (int) shortDataBlockchain.getSize();
-                                //валидность блокчейна
+                                //валидность блокчейна в кошельке.
+                                //validity of the blockchain in the wallet.
                                 blockchainValid = shortDataBlockchain.isValidation();
-//                                prevBlock = Blockchain.indexFromFile(blockchainSize - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-//                                EntityBlock tempBlock = BlockService.findById(blockchainSize);
+//
+                                //получить последний блок из базы данных.
+                                //get the last block from the database.
                                 EntityBlock tempBlock = BlockService.findBySpecialIndex(blockchainSize-1);
                                 //последний блок в локальном сервере.
+                                //last block in the local server.
                                 prevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock);
-
                                 String json = UtilsJson.objToStringJson(shortDataBlockchain);
                                 UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
 
+                                //если количество новых блоков, относительно локального блокчейна меньше 500,
+                                //то скачать эти блоки и прекратить попытки скачивания.
+                                //if the number of new blocks relative to the local blockchain is less than 500,
+                                //then download these blocks and stop trying to download.
                                 if (size - prevBlock.getIndex() < Seting.PORTION_DOWNLOAD) {
                                     downloadPortion = false;
                                     finish = size;
@@ -609,17 +601,12 @@ public class BasisController {
 
     }
 
-    //TODO need to improve the code, at the moment even if you download one block,
-    //TODO have to recalculate the entire blockchain again to get the current balance
-    //TODO нужно улучшить код, на данный момент даже если вы скачиваете один блок,
-    //TODO приходиться пересчитывать весь блокчейн заново, чтобы получить актуальный баланс
 
-    /**
+
+    /**TODO Устарел и нигде не используется. TODO Deprecated and not used anywhere.
      * Updates the blockchain. Connects to the storage host and downloads if the host has a more up-to-date blockchain.
      * Обновляет блокчейн. Подключается к хосту хранилища и скачивает, если в на хосте более актуальный блокчейн.
      */
-
-
     public static int resolve() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
         updating = true;
         Blockchain blockchain1 = Mining.getBlockchain(
@@ -898,8 +885,10 @@ public class BasisController {
     }
 
     /**
-     * rewrites the blockchain to files
-     * производит перезапись блокчейна в файлы
+     * rewrites the blockchain into files and into the h2 database. From here they are called
+     *       * methods that calculate balance and other calculations.
+     * производит перезапись блокчейна в файлы и в базу h2. Отсюда вызываются
+     * методы которые, вычисляют баланс и другие вычисления.
      */
 
     public static void addBlock3(List<Block> originalBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
@@ -911,7 +900,7 @@ public class BasisController {
         List<LawEligibleForParliamentaryApproval> allLawsWithBalance = new ArrayList<>();
 
         for (Block block : originalBlocks) {
-            System.out.println(" :BasisController: addBlock3: blockchain is being updated: ");
+            System.out.println(" :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());
             UtilsBlock.saveBLock(block, filename);
             EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
             list.add(entityBlock);
@@ -952,6 +941,9 @@ public class BasisController {
         System.out.println(":BasisController: addBlock3: finish: " + originalBlocks.size());
 
     }
+
+
+    /**TODO Устарел и нигде не используется. TODO Deprecated and not used anywhere.*/
 
     public static void addBlock2(List<Block> originalBlocks, Map<String, Account> balances) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
 
@@ -999,6 +991,10 @@ public class BasisController {
     }
 
 
+    /**Если вы предполагаете что некоторые файлы повреждены, то после вызова данного метода, происходить
+     * перерасчет всех файлов для всего блокчейна.
+     * If you assume that some files are damaged, then after calling this method,
+     *       * recalculation of all files for the entire blockchain.*/
 
     public static void getBlock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         int size = 0;
@@ -1054,6 +1050,7 @@ public class BasisController {
     @GetMapping("/addBlock")
     @ResponseBody
     public ResponseEntity getBLock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+        System.out.println("start recalculating blockchain");
         BasisController.getBlock();
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -1222,8 +1219,8 @@ public class BasisController {
 
 
     /**
-     * Sends a list of blocks to central stores (example: http://194.87.236.238:80)
-     * Отправляет список блоков в центральные хранилища (пример: http://194.87.236.238:80)
+     * Sends a list of blocks to central stores (example: http://194.87.236.238:82)
+     * Отправляет список блоков в центральные хранилища (пример: http://194.87.236.238:82)
      */
     public static int sendAllBlocksToStorage(List<Block> blocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
@@ -1378,19 +1375,16 @@ public class BasisController {
     }
 
 
+    /**Добывает блок и отправляет на сервер.
+     * Mines a block and sends it to the server.*/
+
     public static synchronized String mining() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
         mining = true;
         try {
             findAddresses();
-
             resolve_conflicts();
 
-
             List<Block> tempBlockchain;
-//                    = Blockchain.subFromFile(
-//                    blockchainSize - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-//                    blockchainSize, Seting.ORIGINAL_BLOCKCHAIN_FILE
-//            );
 
             tempBlockchain  = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                     BlockService.findBySpecialIndexBetween(
@@ -1431,13 +1425,9 @@ public class BasisController {
                 System.out.println("clear storage transaction because is old");
                 AllTransactions.clearAllTransaction();
             }
-            //собирает класс список балансов из файла расположенного по пути Seting.ORIGINAL_BALANCE_FILE
+            //считывает все балансы из файла.
+            //reads all balances from a file.
             balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-            //собирает объект блокчейн из файла
-
-//            shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-//            blockchainSize = (int) shortDataBlockchain.getSize();
-//            blockchainValid = shortDataBlockchain.isValidation();
 
             String json = UtilsFileSaveRead.read(Seting.TEMPORARY_BLOCKCHAIN_FILE);
             if (json != null && !json.isEmpty()) {
@@ -1461,69 +1451,72 @@ public class BasisController {
             if (blockchainSize <= 1) {
                 System.out.println("save genesis block");
                 Blockchain blockchain1 = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
-                //сохранение генезис блока
+                //сохранение генезис блока. preservation of the genesis of the block.
                 if (blockchainSize == 1) {
                     UtilsBlock.saveBLock(blockchain1.genesisBlock(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
                 }
 
-                //получить список балансов из файла
+                //получить список балансов из файла. get a list of balances from a file.
                 List<String> signs = new ArrayList<>();
                 balances = Mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain1, balances, signs);
-                //удалить старые файлы баланса
+                //удалить старые файлы баланса. delete old balance files.
                 Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
 
-                //сохранить балансы
+                //сохранить балансы. maintain balances.
                 SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
 //
 
             }
-            //скачать список балансов из файла
+            //скачать список балансов из файла. download a list of balances from a file.
             System.out.println("BasisController: minining: read list balance");
             balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
 
-            //получить счет майнера
-
+            //получить счет майнера. get the miner's account.
             miner = balances.get(User.getUserAddress());
             minerShow = miner;
             System.out.println("BasisController: mining: account miner: " + miner);
             if (miner == null) {
-                //если в блокчейне не было баланса, то баланс равен нулю
+                //если в блокчейне не было баланса майнера, то баланс равен нулю.
+                //if there was no miner balance in the blockchain, then the balance is zero.
                 miner = new Account(User.getUserAddress(), 0, 0);
             }
 
-            //транзакции которые мы добавили в блок и теперь нужно удалить из файла, в папке resources/transactions
+            //транзакции которые мы добавили в блок и теперь нужно удалить из файла, в папке resources/transactions.
+            //transactions that we added to the block and now need to be deleted from the file in the resources/transactions folder.
             List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
-            //отказ от дублирующих транзакций
+
             List<Block> temp
-
-//                   = Blockchain.subFromFile(
-//                            blockchainSize - Seting.CHECK_DTO,
-//                            blockchainSize,
-//                            Seting.ORIGINAL_BLOCKCHAIN_FILE);
-
             =  UtilsBlockToEntityBlock.entityBlocksToBlocks(
                     BlockService.findBySpecialIndexBetween(
                             (blockchainSize) - Seting.CHECK_DTO,
                             blockchainSize-1
                     )
             );
+            //удаляет транзакции которые были ранее уже добавлены в блок.
+            //deletes transactions that were previously added to the block.
             temporaryDtoList = UtilsBlock.validDto(temp, temporaryDtoList);
-            //блокировка читеров
 
-            //отказ от транзакций которые меньше данного вознаграждения
+            //отказ от транзакций которые меньше данного вознаграждения, если количество транзакций на блок выше 1000.
+            //rejection of transactions that are less than this reward, if the number of transactions per block is above 1000.
             temporaryDtoList = UtilsTransaction.reward(temporaryDtoList, minDollarRewards);
 
-            //раз в три для очищяет файлы в папке resources/sendedTransaction данная папка
-            //хранит уже добавленые в блокчейн транзации, чтобы повторно не добавлять в
-            //в блок уже добавленные транзакции
-
+            //раз в три для очищает файлы в папке resources/sendedTransaction данная папка
+            //хранит уже добавленные в блокчейн транзакции, чтобы повторно не добавлять в
+            //блок уже добавленные транзакции.
+            //every three times to clear files in the resources/sendedTransaction folder, this folder
+            //stores transactions already added to the blockchain so as not to be added to it again
+            //block of already added transactions.
             AllTransactions.clearUsedTransaction(AllTransactions.getInsanceSended());
             System.out.println("BasisController: start mine:");
 
             //Сам процесс Майнинга
             //DIFFICULTY_ADJUSTMENT_INTERVAL как часто происходит коррекция
             //BLOCK_GENERATION_INTERVAL как часто должен находить блок
-            //temporaryDtoList добавляет транзакции в блок
+            //temporaryDtoList добавляет транзакции в блок.
+            //The mining process itself
+            //DIFFICULTY_ADJUSTMENT_INTERVAL how often the correction occurs
+            //BLOCK_GENERATION_INTERVAL how often the block should be found
+            //temporaryDtoList adds transactions to the block.
             Block block = Mining.miningDay(
                     miner,
                     tempBlockchain,
@@ -1536,21 +1529,25 @@ public class BasisController {
 
             //синхронизируется с глобальным сервером и если в глобальном сервере,
             //появился более актуальный блок, то прекращает добывать.
+            //synchronizes with the global server and if in the global server,
+            //a more relevant block appears, it stops mining.
             if (Mining.miningIsObsolete) {
                 Mining.miningIsObsolete = false;
                 System.out.println("This block has already been mined, we start a new cycle");
                 return "ok";
 
             }
+            //останавливает майнинг.
+            // stops mining.
             if (Mining.isIsMiningStop()) {
                 System.out.println("mining will be stopped");
                 return "ok";
             }
             System.out.println("BasisController: finish mine:" + block.getIndex());
 
-            //нужна для корректировки сложности
+            //каждые 288 блоков происходит регулировка сложности.
+            //every 288 blocks the difficulty is adjusted.
             int diff = Seting.DIFFICULTY_ADJUSTMENT_INTERVAL;
-            //Тестирование блока
             List<Block> testingValidationsBlock = null;
 
             if (tempBlockchain.size() > diff) {
@@ -1565,12 +1562,12 @@ public class BasisController {
                 );
             }
 
-//            String addresFounder = Blockchain.indexFromFile(0, Seting.ORIGINAL_BLOCKCHAIN_FILE).getFounderAddress();
             String addresFounder = BlockService.findBySpecialIndex(0).getFounderAddress();
             if (!block.getFounderAddress().equals(addresFounder)) {
                 System.out.println("wrong address founder: ");
             }
-            //проверяет последние 288 блоков на валидность.
+            //проверяет блок на валидность, соответствует ли блок требованиям.
+            //checks the block for validity, whether the block meets the requirements.
             if (testingValidationsBlock.size() > 1) {
                 boolean validationTesting = UtilsBlock.validationOneBlock(
                         addresFounder,
@@ -1594,13 +1591,15 @@ public class BasisController {
             List<Block> sends = new ArrayList<>();
             sends.add(block);
             System.out.println("hash: " + block.getHashBlock());
+            //отправляет блоки на узел или узлы.
+            //sends blocks to a node or nodes.
             sendAllBlocksToStorage(sends);
 
 
             //отправить адресса
 //        sendAddress();
             text = "success: блок успешно добыт";
-//        model.addAttribute("text", text);
+
         } finally {
             mining = false;
             Mining.miningIsObsolete = false;
@@ -1609,7 +1608,8 @@ public class BasisController {
     }
 
     /**
-     * Стартует добычу, начинает майнинг
+     * Стартует добычу, начинает майнинг.
+     * Mining starts, mining starts.
      */
     @GetMapping("/mine")
     public synchronized String mine(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
@@ -1620,6 +1620,8 @@ public class BasisController {
     }
 
 
+    /**Отображает информационное табло во время майнинга или обновления.
+     * Displays an information board during mining or updating.*/
     @GetMapping("/processUpdating")
     public String processUpdating(Model model) {
         model.addAttribute("isMining", isMining());
@@ -1652,8 +1654,12 @@ public class BasisController {
         return "processUpdating";
     }
 
+    /**Отображает информационное табло и прекращает майнинг.
+     * Displays an information board and stops mining.*/
     @GetMapping("/stopMining")
     public String stopMining(RedirectAttributes model) {
+        //Отключает майнинг.
+        //Disables mining.
         Mining.setIsMiningStop(true);
         model.addAttribute("isMining", isMining());
         model.addAttribute("isUpdating", isUpdating());
@@ -1684,8 +1690,8 @@ public class BasisController {
     }
 
 
-    /**
-     * Инициализирует блокчейн из файла и ShortDataBlockchain, а также предыдущий блок
+    /**Инициализирует мета данные о внутреннем блокчейне. Включая размер, блокчейна, целость и общую сложность.
+     * Initializes meta data about the internal blockchain. Including size, blockchain, integrity and overall complexity.
      */
     public static boolean utilsMethod() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         boolean result = false;

@@ -77,8 +77,14 @@ public final class Block implements Cloneable {
     private String previousHash;
     private String minerAddress;
     private String founderAddress;
+
+    //аналог это nonce в биткоин.
+    //analogue is a nonce in Bitcoin.
     private long randomNumberProof;
     private double minerRewards;
+
+    //сложность которому блок должен соответствовать.
+    //difficulty that the block must match.
     private long hashCompexity;
     private Timestamp timestamp;
     private long index;
@@ -217,6 +223,8 @@ public final class Block implements Cloneable {
         return UtilsJson.objToStringJson(this);
     }
 
+    /**TODO Устаревший метод и уже не используется.
+     * TODO This method is obsolete and is no longer used.*/
     public String multipleFindHash(long hashCoplexity) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         System.out.println("find hash method");
 
@@ -323,6 +331,9 @@ public final class Block implements Cloneable {
             return  foundHash;
     }
 
+
+    /**Метод отвечает за поиск блока, добывает блок.
+     * The method is responsible for searching for a block and mining the block.*/
     public String chooseMultiString(long hashCompexity, boolean MULTI_THREAD) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         if(MULTI_THREAD){
             return multipleFindHash(hashCompexity);
@@ -349,12 +360,14 @@ public final class Block implements Cloneable {
 
            if (this.index > Seting.V31_FIX_DIFF ) //jump to v31 algo
         {
+            //Многоточный майнинг.
+            //Multi-thead mining.
             hash = findHash_MT2(hashCoplexity);
 
         }
         else
         {
-
+            //Однопоточный майнинг.
             hash = findHash_org(hashCoplexity);
         }
 
@@ -458,7 +471,10 @@ public final class Block implements Cloneable {
 
                     hash = DigestUtils.sha256Hex(generateJsonWithProof(jsonParts, k));
 
-
+                //Использует последний алгоритм добычи, где сумма единиц в битах должна быть ниже
+                //или равно 100 - сложность.
+                //Uses the latest mining algorithm, where the sum of units in bits must be lower
+                //or equal to 100 - difficulty.
                 //if (UtilsUse.chooseComplexity(hash, hashCoplexity, index)) {
                if (BlockchainDifficulty.isValidHashV29(hash, 100-(int)hashCoplexity)) {
                    // if (  cal_v4MeetsDifficulty(hash, hashCoplexity ))  {
@@ -508,6 +524,13 @@ public final class Block implements Cloneable {
             System.out.println("######### STOP: cur_index "+cur_index+" index:"+this.index+"######");
             return 1;
         }
+
+         //если true, то прекращаем майнинг
+         if (Mining.isIsMiningStop()) {
+             System.out.println("mining will be stopped");
+             return 1;
+
+         }
        } catch (JSONException | IOException e) {
 
 

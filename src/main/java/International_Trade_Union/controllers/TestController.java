@@ -45,6 +45,9 @@ import java.util.stream.Collectors;
 import static International_Trade_Union.setings.Seting.BLOCK_GENERATION_INTERVAL;
 import static International_Trade_Union.setings.Seting.DIFFICULTY_ADJUSTMENT_INTERVAL;
 
+
+/**Тестовый контролер, используется для тестовых действий.
+ * Test controller, used for test actions.*/
 @RestController
 public class TestController {
 

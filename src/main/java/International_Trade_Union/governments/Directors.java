@@ -9,15 +9,23 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+/**класс создает уже должности.
+ * The class is already creating positions.*/
 @Data
-
 public class Directors {
     public Directors() {
 
         directors = new ArrayList<>();
+        //Судебная власть.
+        //Judicial branch.
         Director CORPORATE_COUNCIL_OF_REFEREES = new Director("CORPORATE_COUNCIL_OF_REFEREES", 50, false, false, false, true, false);
+
+        //Законодательная власть.
+        //Legislature.
         Director BOARD_OF_DIRECTORS = new Director("BOARD_OF_DIRECTORS", 201, false, false, false, true, false);
 
+        //Исполнительная власть.
+        //Executive power.
         Director GENERAL_EXECUTIVE_DIRECTOR = new Director("GENERAL_EXECUTIVE_DIRECTOR", 1, false, true, false, false, true);
 
 

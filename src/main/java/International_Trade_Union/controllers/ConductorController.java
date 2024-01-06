@@ -31,15 +31,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+
 @RestController
 public class ConductorController {
 
     @Autowired
     BlockService blockService;
     /**
-     * created account
-     * Params: nothing
-     * Body: nothing
+     * создает новую пару ключ и пароль.
+     * creates a new key and password pair.
+     * (from local host)
      */
     @GetMapping("/keys")
     public Map<String, String> keys() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
@@ -47,7 +48,9 @@ public class ConductorController {
     }
 
 
-    /***/
+    /**скачать актуальный блокчейн.
+     * download the current blockchain.
+     * (update local from global node)*/
     @GetMapping("/updating")
     @ResponseBody
     public Integer updating() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -55,7 +58,9 @@ public class ConductorController {
     }
 
     /**
-     * get find end get account
+     *получить полный баланс адреса, по публичному ключу адреса.
+     * get the full balance of the address using the public key of the address.
+     * (from local host)
      */
     @GetMapping("/account")
     @ResponseBody
@@ -68,6 +73,7 @@ public class ConductorController {
 
     /**
      * get dollar balance
+     * (from local host)
      */
     @GetMapping("/dollar")
     @ResponseBody
@@ -79,6 +85,7 @@ public class ConductorController {
 
     /**
      * get stock balance
+     * (from local host)
      */
     @GetMapping("/stock")
     @ResponseBody
@@ -89,7 +96,8 @@ public class ConductorController {
     }
 
     /**
-     * send dollar or stock (if return wrong-its not sending if return sign its success)
+     * send dollar or stock (if return wrong-its not sending, if return sign its success)
+     * (send to global node)
      */
     @GetMapping("/sendCoin")
     @ResponseBody
@@ -181,6 +189,7 @@ public class ConductorController {
 
     /**
      * whether the transaction was added to the blockchain, find with sign
+     * (check from local host)
      */
     @GetMapping("/isTransactionAdd")
     @ResponseBody
@@ -195,13 +204,9 @@ public class ConductorController {
         return result;
     }
 
-//    /**find block from index*/
-//    @GetMapping("/block")
-//    public Block block(@RequestParam int index) throws JsonProcessingException {
-//        return Blockchain.indexFromFile(index, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-//    }
 
-    /**find block from hash*/
+    /**find block from hash
+     * (from local host)*/
     @GetMapping("/blockHash")
     @ResponseBody
     public Block blockFromHash(@RequestParam String hash) throws IOException {
@@ -214,6 +219,9 @@ public class ConductorController {
 
 
 
+    /**найти блок по индексу.
+     * find a block by index.
+     * (from local host)*/
     @GetMapping("/conductorBlock")
     @ResponseBody
     public Block  block(@RequestParam Integer index) throws IOException {
@@ -227,6 +235,11 @@ public class ConductorController {
                 BlockService.findBySpecialIndex(index)
         );
     }
+    /***
+     * находит транзакцию по подписи.
+     * finds a transaction by signature.
+     * (from local host)
+     */
 
     @GetMapping("/conductorHashTran")
     @ResponseBody

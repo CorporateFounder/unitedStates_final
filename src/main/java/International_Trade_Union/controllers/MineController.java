@@ -46,12 +46,13 @@ public class MineController {
         }
     }
 
+    /**Отправляет в страницу майнинга.
+     * Sends to the mining page.*/
     @RequestMapping("/mining")
     public String miming(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
-
 
         model.addAttribute("title", "Corporation International Trade Union.");
         model.addAttribute("number", Block.getRandomNumberProofStatic());
@@ -61,6 +62,8 @@ public class MineController {
         return "mining";
     }
 
+    /**TODO устаревшый метод и не используется.
+     * TODO is an obsolete method and is not used.*/
     @PostMapping("/setNumber")
     public String setNumber(@RequestParam int number, Model model){
         if(BasisController.isUpdating() || BasisController.isMining()){

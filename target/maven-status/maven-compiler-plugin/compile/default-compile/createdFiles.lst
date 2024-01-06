@@ -1,4 +1,3 @@
-International_Trade_Union\governments\FractionPower.class
 International_Trade_Union\controllers\MineController.class
 International_Trade_Union\utils\UtilsJson.class
 International_Trade_Union\CorporateCharterDraft\ArticleThreeJudiciaryDraft.class
@@ -26,7 +25,6 @@ International_Trade_Union\CorporateCharterEngDraft\ArticleFiveCharterSupremacyEn
 International_Trade_Union\entity\InfoDemerageMoney.class
 International_Trade_Union\controllers\ConductorController.class
 International_Trade_Union\utils\UtilsBlock$1.class
-International_Trade_Union\controllers\DemerageControlller.class
 International_Trade_Union\entity\entities\EntityDtoTransaction.class
 International_Trade_Union\entity\repository\EntityAccountRepository.class
 International_Trade_Union\utils\UtilsBlock.class

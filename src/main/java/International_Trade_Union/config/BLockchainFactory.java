@@ -13,6 +13,8 @@ import java.security.spec.InvalidKeySpecException;
 
 public class BLockchainFactory {
 
+    /**Возвращает параметры блока включая интервал добычи, адрес основателя и как часто происходит изменения сложности.
+     * Returns block parameters including mining interval, founder's address, and how often difficulty changes occur.*/
     public static Blockchain getBlockchain(BlockchainFactoryEnum factoryEnum) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
         switch (factoryEnum){
             case TEST:

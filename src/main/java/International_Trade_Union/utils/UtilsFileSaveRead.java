@@ -107,6 +107,8 @@ public class UtilsFileSaveRead {
             e.printStackTrace();
         }
     }
+    /**Возвращает текст из файла или json.
+     * Returns text from a file or json.*/
 
     public static String read(String file) throws FileNotFoundException {
         String text = "";

@@ -25,6 +25,7 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
+/**Статистика. Statistic.*/
 
 @Controller
 public class StatisticsController {
