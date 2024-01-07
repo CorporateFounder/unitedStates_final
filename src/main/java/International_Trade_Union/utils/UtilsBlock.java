@@ -398,9 +398,9 @@ public class UtilsBlock {
         if(latestBlock.getIndex() > Seting.V31_FIX_DIFF){
             difficulty = difficulty < 11? 11: difficulty;
         }
-//        if(Seting.IS_TEST && latestBlock.getIndex() == Seting.V30_INDEX_ALGO -1){
-//            difficulty = 1;
-//        }
+        if(Seting.IS_TEST && latestBlock.getIndex() >= Seting.TEST_DIFF){
+            difficulty = 1;
+        }
 
 
         return difficulty == 0 ? 1 : difficulty;

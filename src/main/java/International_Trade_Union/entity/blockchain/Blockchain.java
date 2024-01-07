@@ -615,13 +615,42 @@ public class Blockchain implements Cloneable {
         }
 
         File folder = new File(filename);
-        File[] files = folder.listFiles(); // получаем массив файлов
-        Arrays.sort(files); // сортируем файлы по имени
+
+//        Arrays.sort(files); // сортируем файлы по имени
+        List<File> folders = new ArrayList<>(List.of(folder.listFiles()));
+
+        folders = folders.stream().sorted(new Comparator<File> () {
+            public int compare (File f1, File f2) {
+                String [] parts1 = f1.getName ().split ("\\D+");
+                String [] parts2 = f2.getName ().split ("\\D+");
+                int len = Math.min (parts1.length, parts2.length);
+                for (int i = 0; i < len; i++) {
+                    try {
+                        int n1 = Integer.parseInt (parts1[i]);
+                        int n2 = Integer.parseInt (parts2[i]);
+                        if (n1 != n2) {
+                            return n1 - n2;
+                        }
+                    } catch (NumberFormatException e) {
+                        // not a number, compare as strings
+                        int cmp = parts1[i].compareTo (parts2[i]);
+                        if (cmp != 0) {
+                            return cmp;
+                        }
+                    }
+                }
+                // all equal so far, compare by length
+                return parts1.length - parts2.length;
+            }
+        }).collect(Collectors.toList());
+
+
+
         int left = 0; // левая граница поиска
-        int right = files.length - 1; // правая граница поиска
+        int right = folders.size() - 1; // правая граница поиска
         while (left <= right) { // пока границы не сомкнутся
             int mid = (left + right) / 2; // находим середину
-            File file = files[mid]; // берем файл в середине
+            File file = folders.get(mid); // берем файл в середине
             if (file.isDirectory()) { // если это директория, пропускаем ее
                 left = mid + 1;
                 continue;

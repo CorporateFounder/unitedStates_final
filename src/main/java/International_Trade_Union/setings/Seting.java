@@ -10,6 +10,7 @@ import java.util.Set;
 public interface Seting {
     boolean IS_TEST = false;
     // значение используется для вычисления процентов
+    int TEST_DIFF = 167343;
     int HUNDRED_PERCENT = 100;
     // значение используется как константа года,
     // в данной системе отсутствует високосный год
