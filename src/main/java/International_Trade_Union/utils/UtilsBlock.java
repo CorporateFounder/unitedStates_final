@@ -386,7 +386,7 @@ public class UtilsBlock {
             System.out.println("algo V31_FIXED_DIFF");
             difficulty = 14;
         }
-        else if (latestBlock.getIndex() >= Seting.V31_FIX_DIFF && latestBlock.getIndex() < Seting.V32_FIX_DIFF) {
+        else if (latestBlock.getIndex() >= Seting.V31_FIX_DIFF && latestBlock.getIndex() <= Seting.V32_FIX_DIFF) {
             if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
                 difficulty = UtilsDIfficult.v30_1_changeAlgorith_diff(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
                 //более умеренная модель сложности
@@ -394,7 +394,7 @@ public class UtilsBlock {
                 difficulty = latestBlock.getHashCompexity();
             }
         }
-        if(latestBlock.getIndex() >= Seting.V32_FIX_DIFF && latestBlock.getIndex() < Seting.V32_FIX_DIFF + 10){
+        else if(latestBlock.getIndex() > Seting.V32_FIX_DIFF && latestBlock.getIndex() < Seting.V32_FIX_DIFF + 10){
             difficulty =16;
         }
 
