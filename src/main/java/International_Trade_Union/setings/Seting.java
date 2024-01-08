@@ -263,7 +263,7 @@ public interface Seting {
     int PORTION_BLOCK_TO_COMPLEXCITY = 600;
 
     //version
-    int VERSION = 32;
+    int VERSION = 33;
     String FORK_ADDRESS_SPECIAL = "jPjuyLStHTCzwYt9J7R5M7pGUKshfcmEbtE3zVvCBE52";
     double SPECIAL_FORK_BALANCE = 12000000;
 
@@ -299,6 +299,7 @@ public interface Seting {
     int V30_1_FIXED_DIFF = 143182;
     int V31_DIFF_END_MINING = 150974;
     int V31_FIX_DIFF = 151940;
+    int V32_FIX_DIFF = 167344;
     String MAX_TARGET_v30 = "00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
 
 //    int STABILITY_ALGO_31 =

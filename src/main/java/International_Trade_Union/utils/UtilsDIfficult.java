@@ -235,6 +235,47 @@ public  static void printBitSet(byte[] bytes) {
             return prevAdjustmentBlock.getHashCompexity();
         }
     }
+    //v0.31.12
+    public static long adjustDifficulty03112(Block latestBlock, List<Block> blocks, long targetTime, int difficultyAdjustmentInterval) {
+
+        int DIFFICULTY_ADJUSTMENT_INTERVAL = 30;
+        int difficulty_adjustment_interval = DIFFICULTY_ADJUSTMENT_INTERVAL / 2;
+        Block prevAdjustmentBlock = blocks.get(blocks.size() - difficulty_adjustment_interval);
+        // Медианное время от индекса 0 до 10 из blocks
+        List<Long> adjustmentBlockTimes = new ArrayList<>();
+        for (int i = 0; i < Math.min(difficulty_adjustment_interval, blocks.size()); i++) {
+            adjustmentBlockTimes.add(blocks.get(i).getTimestamp().getTime());
+        }
+        Collections.sort(adjustmentBlockTimes);
+        long prevTime = adjustmentBlockTimes.get(adjustmentBlockTimes.size() / 2);
+
+        // Включает время latestBlock и 10 последних индексов из blocks
+        List<Long> latestBlockTimes = new ArrayList<>();
+        latestBlockTimes.add(latestBlock.getTimestamp().getTime());
+        for (int i = Math.max(blocks.size() - 10, 0); i < blocks.size(); i++) {
+            latestBlockTimes.add(blocks.get(i).getTimestamp().getTime());
+        }
+        Collections.sort(latestBlockTimes);
+        long latestTime = latestBlockTimes.get(latestBlockTimes.size() / 2);
+
+
+        double percentGrow = 2.1;
+        double percentDown = 1.6;
+
+
+        long timeExpected = targetTime * difficulty_adjustment_interval;
+        long timeTaken = latestTime - prevTime;
+
+
+        if(timeTaken < timeExpected / percentGrow){
+            return prevAdjustmentBlock.getHashCompexity() + 1;
+        }else if(timeTaken > timeExpected * percentDown){
+            return prevAdjustmentBlock.getHashCompexity() - 1;
+        }else {
+            return prevAdjustmentBlock.getHashCompexity();
+        }
+    }
+
 
 
 
