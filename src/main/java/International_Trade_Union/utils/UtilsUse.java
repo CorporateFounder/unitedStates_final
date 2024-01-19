@@ -3,6 +3,7 @@ package International_Trade_Union.utils;
 
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.model.Account;
 import International_Trade_Union.setings.Seting;
 
 import java.io.IOException;
@@ -273,17 +274,6 @@ public class UtilsUse {
     //подсчитать количество нулей идущих подряд в hash
     public static long hashCount(String hash, long index) {
         long count = 0;
-//        if(index < Seting.v3MeetsDifficulty){
-//            for (int i = 0; i < hash.length(); i++) {
-//                if (hash.charAt(i) == '0') count++;
-//                else return count;
-//            }
-//        }else {
-//            hash = bytesToBinary(hash.getBytes());
-//            count = BlockchainDifficulty.countLeadingZeros(hash);
-//        }
-
-
         //оптимизирован код
         for (int i = 0; i < hash.length(); i++) {
             if (hash.charAt(i) == '0') count++;
@@ -319,6 +309,18 @@ public class UtilsUse {
         double result = list.get(med - 1);
         System.out.println("result: " + result);
         return result;
+    }
+
+    public static Map<String, Account> balancesClone(Map<String, Account> balances) throws CloneNotSupportedException {
+        Map<String, Account> temp = new HashMap<>();
+        for (Map.Entry<String, Account> accountEntry : balances.entrySet()) {
+            temp.put(accountEntry.getKey(), accountEntry.getValue().clone());
+        }
+        return temp;
+    }
+
+    public static long powerDiff(long diff){
+        return (long) Math.pow(diff, 2);
     }
 
 }

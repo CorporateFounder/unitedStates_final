@@ -2,32 +2,37 @@ package International_Trade_Union.controllers;
 
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
+import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.governments.Directors;
+import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Account;
+import International_Trade_Union.model.Mining;
 import International_Trade_Union.model.User;
+import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
-import International_Trade_Union.utils.SaveBalances;
-import International_Trade_Union.utils.UtilsBalance;
+import International_Trade_Union.utils.*;
+import International_Trade_Union.utils.base.Base;
+import International_Trade_Union.utils.base.Base58;
+import International_Trade_Union.vote.Laws;
+import International_Trade_Union.vote.VoteEnum;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SignatureException;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class MineController {
     private static int computers = 1;
     private static Blockchain blockchain;
+
     static {
         try {
             blockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
@@ -46,36 +51,214 @@ public class MineController {
         }
     }
 
-    /**Отправляет в страницу майнинга.
-     * Sends to the mining page.*/
+    /**
+     * Отправляет в страницу майнинга.
+     * Sends to the mining page.
+     */
     @RequestMapping("/mining")
     public String miming(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        if(BasisController.isUpdating() || BasisController.isMining()){
+        if (BasisController.isUpdating() || BasisController.isMining()) {
             return "redirect:/processUpdating";
         }
 
         model.addAttribute("title", "Corporation International Trade Union.");
-        model.addAttribute("number", Block.getRandomNumberProofStatic());
-        model.addAttribute("max", Long.MAX_VALUE);
-
-
+        model.addAttribute("customDiff", Mining.getCustomDiff());
         return "mining";
     }
 
-    /**TODO устаревшый метод и не используется.
-     * TODO is an obsolete method and is not used.*/
-    @PostMapping("/setNumber")
-    public String setNumber(@RequestParam int number, Model model){
-        if(BasisController.isUpdating() || BasisController.isMining()){
-            return "redirect:/processUpdating";
-        }
-
-        if(number > Long.MAX_VALUE - 2000000)
-            number = (int) (Long.MAX_VALUE - 2000000);
-        Block.setRandomNumberProofStatic(number);
+    @PostMapping("/customDiff")
+    public String changeDiff(@RequestParam String customDiff) {
+        Mining.setCustomDiff(Integer.valueOf(customDiff));
         return "redirect:/mining";
     }
 
+    @PostMapping("/staking")
+    public String staking(@RequestParam
+                         String miner,
+                         Double dollar,
+                         Double reward,
+                         String password,
+                         RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, SignatureException, IOException, InvalidKeyException {
+        System.out.println("start staking controller");
 
+        System.out.println("start post /miningTransaction");
+        Base base = new Base58();
+
+        if(dollar == null)
+            dollar = 0.0;
+
+
+
+        if(reward == null)
+            reward = 0.0;
+
+        Laws laws =  new Laws();
+        laws.setLaws(new ArrayList<>());
+        laws.setHashLaw("");
+        laws.setPacketLawName("");
+        DtoTransaction dtoTransaction = new DtoTransaction(
+                miner,
+                miner,
+                dollar,
+                0.0,
+                laws,
+                reward,
+                VoteEnum.STAKING);
+        PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));
+        byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
+
+
+        redirectAttrs.addFlashAttribute("title", "sending result!!!");
+        redirectAttrs.addFlashAttribute("sender", miner);
+        redirectAttrs.addFlashAttribute("recipient", miner);
+        redirectAttrs.addFlashAttribute("dollar", dollar);
+        redirectAttrs.addFlashAttribute("stock", 0.0);
+        redirectAttrs.addFlashAttribute("reward", reward);
+        redirectAttrs.addFlashAttribute("vote", VoteEnum.STAKING);
+
+        dtoTransaction.setSign(sign);
+        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
+        redirectAttrs.addFlashAttribute("sign", encoded);
+        Directors directors = new Directors();
+        if(dtoTransaction.verify()){
+
+            //если в названия закона совпадает с корпоративными должностями, то закон является действительным, только когда
+            //отправитель совпадает с законом.
+            //if the title of the law coincides with corporate positions, then the law is valid only when
+            //sender matches the law.
+            List<String> corporateSeniorPositions = directors.getDirectors().stream()
+                    .map(t->t.getName()).collect(Collectors.toList());
+            System.out.println("LawsController: create_law: " + laws.getPacketLawName() + "contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
+            if(corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(miner, laws)){
+                redirectAttrs.addFlashAttribute("sending", "wrong transaction: Position to be equals whith send");
+                return "redirect:/result-sending";
+            }
+            redirectAttrs.addFlashAttribute("sending", "success");
+            String str =  base.encode(dtoTransaction.getSign());
+            System.out.println("sign: " + str);
+            AllTransactions.addTransaction(dtoTransaction);
+            String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
+            for (String s : Seting.ORIGINAL_ADDRESSES) {
+
+                String original = s;
+                String url = s +"/addTransaction";
+                //если адресс совпадает с внутреним хостом, то не отправляет самому себе
+                if(!Seting.IS_TEST && BasisController.getExcludedAddresses().contains(url)){
+                    System.out.println("MainController: its your address or excluded address: " + url);
+                    continue;
+                }
+                try {
+                    //отправка в сеть
+                    UtilUrl.sendPost(jsonDto, url);
+
+                }catch (Exception e){
+                    System.out.println("exception discover: " + original);
+
+                }
+            }
+
+
+
+        }
+
+        else
+            redirectAttrs.addFlashAttribute("sending", "wrong transaction");
+        return "redirect:/result-sending";
+
+
+    }
+    @PostMapping("/unstaking")
+    public String unstaking(@RequestParam
+                         String miner,
+                         Double dollar,
+                         Double reward,
+                         String password,
+                         RedirectAttributes redirectAttrs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+
+        System.out.println("start staking controller");
+
+        System.out.println("start post /miningTransaction");
+        Base base = new Base58();
+
+        if(dollar == null)
+            dollar = 0.0;
+
+
+
+        if(reward == null)
+            reward = 0.0;
+
+        Laws laws =  new Laws();
+        laws.setLaws(new ArrayList<>());
+        laws.setHashLaw("");
+        laws.setPacketLawName("");
+        DtoTransaction dtoTransaction = new DtoTransaction(
+                miner,
+                miner,
+                dollar,
+                0.0,
+                laws,
+                reward,
+                VoteEnum.UNSTAKING);
+        PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));
+        byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
+
+
+        redirectAttrs.addFlashAttribute("title", "sending result!!!");
+        redirectAttrs.addFlashAttribute("sender", miner);
+        redirectAttrs.addFlashAttribute("recipient", miner);
+        redirectAttrs.addFlashAttribute("dollar", dollar);
+        redirectAttrs.addFlashAttribute("stock", 0.0);
+        redirectAttrs.addFlashAttribute("reward", reward);
+        redirectAttrs.addFlashAttribute("vote", VoteEnum.UNSTAKING);
+
+        dtoTransaction.setSign(sign);
+        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
+        redirectAttrs.addFlashAttribute("sign", encoded);
+        Directors directors = new Directors();
+        if(dtoTransaction.verify()){
+
+            //если в названия закона совпадает с корпоративными должностями, то закон является действительным, только когда
+            //отправитель совпадает с законом.
+            //if the title of the law coincides with corporate positions, then the law is valid only when
+            //sender matches the law.
+            List<String> corporateSeniorPositions = directors.getDirectors().stream()
+                    .map(t->t.getName()).collect(Collectors.toList());
+            System.out.println("LawsController: create_law: " + laws.getPacketLawName() + "contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
+            if(corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(miner, laws)){
+                redirectAttrs.addFlashAttribute("sending", "wrong transaction: Position to be equals whith send");
+                return "redirect:/result-sending";
+            }
+            redirectAttrs.addFlashAttribute("sending", "success");
+            String str =  base.encode(dtoTransaction.getSign());
+            System.out.println("sign: " + str);
+            AllTransactions.addTransaction(dtoTransaction);
+            String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
+            for (String s : Seting.ORIGINAL_ADDRESSES) {
+
+                String original = s;
+                String url = s +"/addTransaction";
+                //если адресс совпадает с внутреним хостом, то не отправляет самому себе
+                if(!Seting.IS_TEST && BasisController.getExcludedAddresses().contains(url)){
+                    System.out.println("MainController: its your address or excluded address: " + url);
+                    continue;
+                }
+                try {
+                    //отправка в сеть
+                    UtilUrl.sendPost(jsonDto, url);
+
+                }catch (Exception e){
+                    System.out.println("exception discover: " + original);
+
+                }
+            }
+
+        }
+
+        else
+            redirectAttrs.addFlashAttribute("sending", "wrong transaction");
+        return "redirect:/result-sending";
+
+    }
 
 }

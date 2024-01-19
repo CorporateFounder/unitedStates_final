@@ -2,6 +2,7 @@ package International_Trade_Union.utils;
 
 
 import International_Trade_Union.model.Account;
+import International_Trade_Union.model.Mining;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
@@ -40,28 +41,11 @@ public class UtilsBlock {
         }
 
         int count = 0;
-        files = files.stream().sorted(new Comparator<String> () {
-            public int compare (String f1, String f2) {
-                String [] parts1 = f1.split ("\\D+");
-                String [] parts2 = f2.split ("\\D+");
-                int len = Math.min (parts1.length, parts2.length);
-                for (int i = 0; i < len; i++) {
-                    try {
-                        int n1 = Integer.parseInt (parts1[i]);
-                        int n2 = Integer.parseInt (parts2[i]);
-                        if (n1 != n2) {
-                            return n1 - n2;
-                        }
-                    } catch (NumberFormatException e) {
-                        // not a number, compare as strings
-                        int cmp = parts1[i].compareTo (parts2[i]);
-                        if (cmp != 0) {
-                            return cmp;
-                        }
-                    }
-                }
-                // all equal so far, compare by length
-                return parts1.length - parts2.length;
+        files = files.stream().sorted(new Comparator<String>() {
+            public int compare(String f1, String f2) {
+                int n1 = Integer.parseInt(f1.replaceAll("\\D+", ""));
+                int n2 = Integer.parseInt(f2.replaceAll("\\D+", ""));
+                return Integer.compare(n1, n2);
             }
         }).collect(Collectors.toList());
         String nextFile = "";
@@ -110,28 +94,11 @@ public class UtilsBlock {
 
 
         int count = 0;
-        files = files.stream().sorted(new Comparator<String> () {
-            public int compare (String f1, String f2) {
-                String [] parts1 = f1.split ("\\D+");
-                String [] parts2 = f2.split ("\\D+");
-                int len = Math.min (parts1.length, parts2.length);
-                for (int i = 0; i < len; i++) {
-                    try {
-                        int n1 = Integer.parseInt (parts1[i]);
-                        int n2 = Integer.parseInt (parts2[i]);
-                        if (n1 != n2) {
-                            return n1 - n2;
-                        }
-                    } catch (NumberFormatException e) {
-                        // not a number, compare as strings
-                        int cmp = parts1[i].compareTo (parts2[i]);
-                        if (cmp != 0) {
-                            return cmp;
-                        }
-                    }
-                }
-                // all equal so far, compare by length
-                return parts1.length - parts2.length;
+        files = files.stream().sorted(new Comparator<String>() {
+            public int compare(String f1, String f2) {
+                int n1 = Integer.parseInt(f1.replaceAll("\\D+", ""));
+                int n2 = Integer.parseInt(f2.replaceAll("\\D+", ""));
+                return Integer.compare(n1, n2);
             }
         }).collect(Collectors.toList());
         String nextFile = "";
@@ -156,6 +123,7 @@ public class UtilsBlock {
 
         String json = UtilsJson.objToStringJson(block);
         UtilsFileSaveRead.save(json + "\n", nextFile);
+        System.out.println("UtilsBlock: saveBlock: " + block.getIndex() + " file name: " + nextFile);
 
     }
 
@@ -170,28 +138,11 @@ public class UtilsBlock {
 
         //******************************************************************
         List<File> folders = new ArrayList<>(List.of(folder.listFiles()));
-        folders = folders.stream().sorted(new Comparator<File> () {
-            public int compare (File f1, File f2) {
-                String [] parts1 = f1.getName ().split ("\\D+");
-                String [] parts2 = f2.getName ().split ("\\D+");
-                int len = Math.min (parts1.length, parts2.length);
-                for (int i = 0; i < len; i++) {
-                    try {
-                        int n1 = Integer.parseInt (parts1[i]);
-                        int n2 = Integer.parseInt (parts2[i]);
-                        if (n1 != n2) {
-                            return n1 - n2;
-                        }
-                    } catch (NumberFormatException e) {
-                        // not a number, compare as strings
-                        int cmp = parts1[i].compareTo (parts2[i]);
-                        if (cmp != 0) {
-                            return cmp;
-                        }
-                    }
-                }
-                // all equal so far, compare by length
-                return parts1.length - parts2.length;
+        folders = folders.stream().sorted(new Comparator<File>() {
+            public int compare(File f1, File f2) {
+                int n1 = Integer.parseInt(f1.getName().replaceAll("\\D+", ""));
+                int n2 = Integer.parseInt(f2.getName().replaceAll("\\D+", ""));
+                return Integer.compare(n1, n2);
             }
         }).collect(Collectors.toList());
         //******************************************************************
@@ -223,28 +174,11 @@ public class UtilsBlock {
         File folder = new File(nameFile);
         //******************************************************************
         List<File> folders = new ArrayList<>(List.of(folder.listFiles()));
-        folders = folders.stream().sorted(new Comparator<File> () {
-            public int compare (File f1, File f2) {
-                String [] parts1 = f1.getName ().split ("\\D+");
-                String [] parts2 = f2.getName ().split ("\\D+");
-                int len = Math.min (parts1.length, parts2.length);
-                for (int i = 0; i < len; i++) {
-                    try {
-                        int n1 = Integer.parseInt (parts1[i]);
-                        int n2 = Integer.parseInt (parts2[i]);
-                        if (n1 != n2) {
-                            return n1 - n2;
-                        }
-                    } catch (NumberFormatException e) {
-                        // not a number, compare as strings
-                        int cmp = parts1[i].compareTo (parts2[i]);
-                        if (cmp != 0) {
-                            return cmp;
-                        }
-                    }
-                }
-                // all equal so far, compare by length
-                return parts1.length - parts2.length;
+        folders = folders.stream().sorted(new Comparator<File>() {
+            public int compare(File f1, File f2) {
+                int n1 = Integer.parseInt(f1.getName().replaceAll("\\D+", ""));
+                int n2 = Integer.parseInt(f2.getName().replaceAll("\\D+", ""));
+                return Integer.compare(n1, n2);
             }
         }).collect(Collectors.toList());
         //******************************************************************
@@ -473,7 +407,7 @@ public class UtilsBlock {
                     minerReward += thisBlock.getIndex() % 2 == 0 ? 0 : 1;
                     minerPowerReward += thisBlock.getIndex() % 2 == 0 ? 0 : 1;
                 }
-                if(thisBlock.getIndex() > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX){
+                if(thisBlock.getIndex() > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX && thisBlock.getIndex() < Seting.V34_NEW_ALGO){
                     long money = (thisBlock.getIndex() - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
                             / (576 * Seting.YEAR);
                     money = (long) (Seting.MULTIPLIER - money);
@@ -482,6 +416,18 @@ public class UtilsBlock {
                     double G = UtilsUse.blocksReward(thisBlock.getDtoTransactions(), previusblock.getDtoTransactions());
                     minerReward = (Seting.V28_REWARD + G) * money;
                     minerPowerReward = (Seting.V28_REWARD + G) * money;
+
+                }
+                if( thisBlock.getIndex() >= Seting.V34_NEW_ALGO){
+                    long money = (thisBlock.getIndex() - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
+                            / (576 * Seting.YEAR);
+                    money = (long) (Seting.MULTIPLIER - money);
+                    money = money < 1 ? 1: money;
+
+
+                    double G = UtilsUse.blocksReward(thisBlock.getDtoTransactions(), previusblock.getDtoTransactions());
+                    minerReward = (Seting.V28_REWARD + G + (thisBlock.getHashCompexity() * Seting.V34_MINING_REWARD)) * money;
+                    minerPowerReward = (Seting.V28_REWARD + G + (thisBlock.getHashCompexity() * Seting.V34_MINING_REWARD))* money;
 
                 }
 
@@ -589,13 +535,18 @@ public class UtilsBlock {
             return false;
         }
 
-        if (thisBlock.getIndex() > Seting.v4MeetsDifficulty) {
+        if (thisBlock.getIndex() > Seting.v4MeetsDifficulty && thisBlock.getIndex() <= Seting.V34_NEW_ALGO) {
             long diff = UtilsBlock.difficulty(lastBlock, Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
             if (thisBlock.getHashCompexity() != diff ) {
                 System.out.println("utils Block: actual difficult: " + thisBlock.getHashCompexity() + ":expected: "
                         + diff);
                 System.out.println("wrong difficult");
                 return false;
+            }
+        } else if (thisBlock.getHashCompexity() > Seting.V34_NEW_ALGO) {
+            if(thisBlock.getHashCompexity() < Seting.V34_MIN_DIFF){
+                System.out.printf("your diff %d, less than it %d\n", thisBlock.getHashCompexity(),
+                        Seting.V34_MIN_DIFF);
             }
         }
 
@@ -605,32 +556,6 @@ public class UtilsBlock {
             System.out.println("actual: " + thisBlock.getHashBlock());
             System.out.println("expected: " + thisBlock.hashForTransaction());
             System.out.println("miner address: " + thisBlock.getMinerAddress());
-
-
-//            //for find cheater
-//            stop:
-//            for (DtoTransaction dtoTransaction : thisBlock.getDtoTransactions()) {
-//                if(dtoTransaction.getSender().equals(Seting.BASIS_ADDRESS) &&
-//                dtoTransaction.getCustomer().equals(thisBlock.getMinerAddress())){
-//                    String address = thisBlock.getMinerAddress();
-//                    double dollar = dtoTransaction.getDigitalDollar();
-//                    double stock = dtoTransaction.getDigitalStockBalance();
-//                    System.out.printf("cheater address %s: stole dollar %f end stock %f: from block index %d ",
-//                            address, dollar, stock, thisBlock.getIndex());
-//
-//
-//                    if(cheater.containsKey(address)){
-//                        double sumDollar = cheater.get(address).getDigitalDollarBalance() + dollar;
-//                        double sumStock = cheater.get(address).getDigitalStockBalance() + stock;
-//                        Account account = new Account(address, sumDollar, sumStock);
-//                        cheater.put(address, account);
-//                    }else {
-//                        Account account = new Account(address, dollar, stock);
-//                        cheater.put(address, account);
-//                    }
-//                    break stop;
-//                }
-//            }
 
             return false;
         }
@@ -646,10 +571,6 @@ public class UtilsBlock {
 
 
         if (thisBlock.getIndex() > Seting.CHECK_UPDATING_VERSION) {
-//            if (previusblock.getMinerAddress().equals(thisBlock.getMinerAddress())) {
-//                System.out.println("two times in a row the same address cannot mine a block, you need to alternate");
-//                return false;
-//            }
 
             if (previusblock.getIndex() + 1 != thisBlock.getIndex()) {
                 System.out.println("wrong index sequence");

@@ -16,21 +16,25 @@ import java.util.Objects;
 
 
 @Data
-public class Account {
+public class Account implements Cloneable {
     private String account;
     private double digitalDollarBalance;
     private double digitalStockBalance;
+    private double digitalStakingBalance;
+    private long epoch;
 
 
     public Account(String account, double digitalDollarBalance) {
-        this(account, digitalDollarBalance, 0.0);
+        this(account, digitalDollarBalance, 0.0, 0, 0);
 
     }
 
-    public Account(String account, double digitalDollarBalance, double digitalStockBalance) {
+    public Account(String account, double digitalDollarBalance, double digitalStockBalance, double digitalStakingBalance, long epoch) {
         this.account = account;
         this.digitalDollarBalance = digitalDollarBalance;
         this.digitalStockBalance = digitalStockBalance;
+        this.digitalStakingBalance = digitalStakingBalance;
+        this.epoch = epoch;
     }
 
     public Account() {
@@ -80,5 +84,10 @@ public class Account {
 //      gold сумма отправки, last Block - это послдний блок.
     public DtoTransaction send(String recipient, String privateKey, double digitalDollar, double digitalReputation, Laws laws,  double minerRewards, VoteEnum voteEnum) throws NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, NoSuchProviderException, InvalidKeyException {
          return sendMoney(recipient,privateKey, digitalDollar, digitalReputation, laws, minerRewards, voteEnum);
+    }
+
+    @Override
+    public Account clone() throws CloneNotSupportedException {
+        return new Account(account, digitalDollarBalance, digitalStockBalance, digitalStakingBalance, epoch);
     }
 }

@@ -415,11 +415,12 @@ public class BasisController {
                                 }
 
                                 DataShortBlockchainInformation temp = new DataShortBlockchainInformation();
-
+                                Map<String, Account> tempBalances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+                                List<String> sign = new ArrayList<>();
                                 if (blockchainSize > 1) {
                                     //проверяет скаченные блоки на целостность
                                     //checks downloaded blocks for integrity
-                                    temp = Blockchain.shortCheck(prevBlock, subBlocks, shortDataBlockchain, lastDiff);
+                                    temp = Blockchain.shortCheck(prevBlock, subBlocks, shortDataBlockchain, lastDiff, tempBalances, sign);
                                 }
 
 
@@ -483,7 +484,7 @@ public class BasisController {
                                     }
 
                                     if (blockchainSize > 1) {
-                                        temp = Blockchain.shortCheck(prevBlock, subBlocks, shortDataBlockchain, lastDiff);
+                                        temp = Blockchain.shortCheck(prevBlock, subBlocks, shortDataBlockchain, lastDiff, tempBalances, sign);
                                     }
 
 
@@ -529,6 +530,8 @@ public class BasisController {
                             System.out.println("prev block:" + prevBlock);
                             System.out.println("3: block " + subBlocks.get(0));
                             balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+                            List<String> sign = new ArrayList<>();
+                            Map<String, Account> tempBalances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
                             if (blockchainSize > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
                                 lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                                         BlockService.findBySpecialIndexBetween(
@@ -540,7 +543,7 @@ public class BasisController {
 
                             DataShortBlockchainInformation temp = new DataShortBlockchainInformation();
                             if (blockchainSize > 1) {
-                                temp = Blockchain.shortCheck(prevBlock, subBlocks, shortDataBlockchain, lastDiff);
+                                temp = Blockchain.shortCheck(prevBlock, subBlocks, shortDataBlockchain, lastDiff, tempBalances,sign);
                             }
 
                             System.out.println("temp: " + temp);
@@ -905,7 +908,7 @@ public class BasisController {
             EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
             list.add(entityBlock);
             calculateBalance(balances, block, signs);
-            balances = UtilsBalance.calculateBalanceFromLaw(balances, block, allLaws, allLawsWithBalance);
+
 
             //получение и отображение законов, а также сохранение новых законов
             //и изменение действующих законов
@@ -963,7 +966,7 @@ public class BasisController {
             EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
             entityBlocks.add(entityBlock);
             calculateBalance(balances, block, signs);
-            balances = UtilsBalance.calculateBalanceFromLaw(balances, block, allLaws, allLawsWithBalance);
+
 
         }
         BlockService.saveAllBlock(entityBlocks);
@@ -999,7 +1002,7 @@ public class BasisController {
     public static void getBlock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         int size = 0;
 
-
+        System.out.println("start get a block");
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
@@ -1042,6 +1045,7 @@ public class BasisController {
         shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
         blockchainSize = (int) shortDataBlockchain.getSize();
         blockchainValid = shortDataBlockchain.isValidation();
+        System.out.println("finish get a block");
     }
     /**
      * overwrites the current blockchain in the resources folder.
@@ -1478,7 +1482,7 @@ public class BasisController {
             if (miner == null) {
                 //если в блокчейне не было баланса майнера, то баланс равен нулю.
                 //if there was no miner balance in the blockchain, then the balance is zero.
-                miner = new Account(User.getUserAddress(), 0, 0);
+                miner = new Account(User.getUserAddress(), 0, 0, 0, 0);
             }
 
             //транзакции которые мы добавили в блок и теперь нужно удалить из файла, в папке resources/transactions.

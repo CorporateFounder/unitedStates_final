@@ -13,7 +13,9 @@ public class UtilsAccountToEntityAccount {
         EntityAccount entityAccount = new EntityAccount(
                 account.getAccount(),
                 account.getDigitalDollarBalance(),
-                account.getDigitalStockBalance());
+                account.getDigitalStockBalance(),
+                account.getDigitalStakingBalance(),
+                account.getEpoch());
         return entityAccount;
     }
 
@@ -21,7 +23,9 @@ public class UtilsAccountToEntityAccount {
         Account account = new Account(
                 entityAccount.getAccount(),
                 entityAccount.getDigitalDollarBalance(),
-                entityAccount.getDigitalStockBalance());
+                entityAccount.getDigitalStockBalance(),
+                entityAccount.getDigitalStakingBalance(),
+                entityAccount.getEpoch());
         return account;
     }
 

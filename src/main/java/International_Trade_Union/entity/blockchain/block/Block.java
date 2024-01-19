@@ -494,6 +494,9 @@ public final class Block implements Cloneable {
     try {
         return solution.get();
     } catch (InterruptedException | ExecutionException e) {
+        System.out.println("************************************");
+        e.printStackTrace();
+        System.out.println("************************************");
         throw new RuntimeException(e);
     } finally {
         executor.shutdownNow();

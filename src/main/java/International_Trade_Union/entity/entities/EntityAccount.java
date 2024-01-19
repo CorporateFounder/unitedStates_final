@@ -31,14 +31,23 @@ public class EntityAccount {
     private String account;
     private double digitalDollarBalance;
     private double digitalStockBalance;
+    private double digitalStakingBalance;
+    private long epoch;
 
     public EntityAccount() {
     }
 
-    public EntityAccount(String account, double digitalDollarBalance, double digitalStockBalance) {
+    public EntityAccount(String account,
+                         double digitalDollarBalance,
+                         double digitalStockBalance,
+                         double digitalStakingBalance,
+                         long epoch) {
         this.account = account;
         this.digitalDollarBalance = digitalDollarBalance;
         this.digitalStockBalance = digitalStockBalance;
+        this.digitalStakingBalance = digitalStakingBalance;
+        this.epoch = epoch;
+
     }
 
     @Override

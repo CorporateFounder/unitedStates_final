@@ -8,9 +8,8 @@ import International_Trade_Union.utils.UtilsUse;
 import java.util.Set;
 
 public interface Seting {
-    boolean IS_TEST = false;
-    // значение используется для вычисления процентов
-    int TEST_DIFF = 167343;
+    boolean IS_TEST = true;
+
     int HUNDRED_PERCENT = 100;
     // значение используется как константа года,
     // в данной системе отсутствует високосный год
@@ -300,6 +299,9 @@ public interface Seting {
     int V31_DIFF_END_MINING = 150974;
     int V31_FIX_DIFF = 151940;
     int V32_FIX_DIFF = 167343;
+    int V34_NEW_ALGO = 167650;
+    double V34_MINING_REWARD = 0.2;
+    int V34_MIN_DIFF = 17;
     String MAX_TARGET_v30 = "00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
 
 //    int STABILITY_ALGO_31 =

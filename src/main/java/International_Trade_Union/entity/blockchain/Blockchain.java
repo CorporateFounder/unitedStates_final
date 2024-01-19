@@ -16,9 +16,6 @@ import lombok.Data;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.file.StandardOpenOption;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
@@ -99,17 +96,21 @@ public class Blockchain implements Cloneable {
     /**TODO не используется.
      * TODO is not used.*/
 
-    public static Map<String, Object> shortCheck2(Block prevBlock, Block block, DataShortBlockchainInformation data, List<Block> tempList) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public static Map<String, Object> shortCheck2(Block prevBlock, Block block, DataShortBlockchainInformation data, List<Block> tempList, Map<String, Account> balances) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Map<String, Object> map = new HashMap<>();
         int size = (int) data.getSize();
         if (size >= block.getIndex() + 1 || prevBlock == null) {
 
 
             map.put("block", block);
-            map.put("data", new DataShortBlockchainInformation(size, false, 0));
+            map.put("data", new DataShortBlockchainInformation(size, false, 0, 0, 0, 0));
             return map;
         }
         long hashcount = data.getHashCount();
+        double staking = data.getStaking();
+        long epoch = data.getEpoch();
+        long tranasactions = data.getTransactions();
+
         boolean validation = false;
         Block prev = prevBlock.clone();
 
@@ -128,18 +129,24 @@ public class Blockchain implements Cloneable {
         size++;
 
 
-        hashcount += UtilsUse.hashCount(block.getHashBlock(), block.getIndex());
+        hashcount += UtilsUse.powerDiff(block.getHashCompexity());
+        staking += balances.get(block.getMinerAddress()).getDigitalStakingBalance();
+        epoch += block.getIndex() - balances.get(block.getMinerAddress()).getEpoch();
+        tranasactions += block.getDtoTransactions().size();
+
+
+
         if (validation == false) {
             System.out.println("false shorkCheck");
             map.put("block", block);
-            map.put("data", new DataShortBlockchainInformation(size, validation, hashcount));
+            map.put("data", new DataShortBlockchainInformation(size, validation, hashcount, staking, epoch, tranasactions));
             return map;
 
         }
 
 
         map.put("block", block);
-        map.put("data", new DataShortBlockchainInformation(size, validation, hashcount));
+        map.put("data", new DataShortBlockchainInformation(size, validation, hashcount, staking, epoch, tranasactions));
         return map;
 
     }
@@ -147,14 +154,22 @@ public class Blockchain implements Cloneable {
 
     /**Проверяет блок на целостность по отношению к предыдущим блокам.
      * Checks the block for integrity in relation to previous blocks.*/
-    public static DataShortBlockchainInformation shortCheck(Block prevBlock, List<Block> blocks, DataShortBlockchainInformation data, List<Block> tempList) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public static DataShortBlockchainInformation shortCheck(
+            Block prevBlock, List<Block> blocks,
+            DataShortBlockchainInformation data,
+            List<Block> tempList,
+            Map<String, Account> balances,
+            List<String> sign) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         int size = (int) data.getSize();
         if (size >= blocks.get(0).getIndex() + 1 || prevBlock == null) {
             System.out.println("size: " + size + blocks.get(0).getIndex());
             System.out.println(" shortCheck: null");
-            return new DataShortBlockchainInformation(size, false, 0);
+            return new DataShortBlockchainInformation(size, false, 0, 0, 0, 0);
         }
         long hashcount = data.getHashCount();
+        double staking = data.getStaking();
+        long epoch = data.getEpoch();
+        long tranasactions = data.getTransactions();
         boolean validation = false;
         Block prev = prevBlock.clone();
         List<Block> blockList = new ArrayList<>();
@@ -183,15 +198,20 @@ public class Blockchain implements Cloneable {
 
 
             System.out.println("size: " + blockList.size());
-            hashcount += UtilsUse.hashCount(blocks.get(i).getHashBlock(), blocks.get(i).getIndex());
+            hashcount += UtilsUse.powerDiff(blocks.get(i).getHashCompexity());
+            staking += balances.get(blocks.get(i).getMinerAddress()).getDigitalStakingBalance();
+            epoch += blocks.get(i).getIndex()-balances.get(blocks.get(i).getMinerAddress()).getEpoch();
+            tranasactions += blocks.get(i).getDtoTransactions().size();
+            balances = UtilsBalance.calculateBalance(balances, blocks.get(i), sign);
+
             if (validation == false) {
                 System.out.println("false shortCheck");
-                return new DataShortBlockchainInformation(size, validation, hashcount);
+                return new DataShortBlockchainInformation(size, validation, hashcount, staking, epoch, tranasactions);
             }
 
         }
 
-        return new DataShortBlockchainInformation(size, validation, hashcount);
+        return new DataShortBlockchainInformation(size, validation, hashcount, staking, epoch, tranasactions);
 
     }
 
@@ -201,30 +221,19 @@ public class Blockchain implements Cloneable {
         Block prevBlock = null;
         int size = 0;
         long hashCount = 0;
-        List<File> folders = new ArrayList<>(List.of(folder.listFiles()));
+        double staking = 0;
+        long epoch = 0;
+        long transactions = 0;
 
-        folders = folders.stream().sorted(new Comparator<File> () {
-            public int compare (File f1, File f2) {
-                String [] parts1 = f1.getName ().split ("\\D+");
-                String [] parts2 = f2.getName ().split ("\\D+");
-                int len = Math.min (parts1.length, parts2.length);
-                for (int i = 0; i < len; i++) {
-                    try {
-                        int n1 = Integer.parseInt (parts1[i]);
-                        int n2 = Integer.parseInt (parts2[i]);
-                        if (n1 != n2) {
-                            return n1 - n2;
-                        }
-                    } catch (NumberFormatException e) {
-                        // not a number, compare as strings
-                        int cmp = parts1[i].compareTo (parts2[i]);
-                        if (cmp != 0) {
-                            return cmp;
-                        }
-                    }
-                }
-                // all equal so far, compare by length
-                return parts1.length - parts2.length;
+        List<File> folders = new ArrayList<>(List.of(folder.listFiles()));
+        Map<String, Account> balances = new HashMap<>();
+        List<String> sign = new ArrayList<>();
+
+        folders = folders.stream().sorted(new Comparator<File>() {
+            public int compare(File f1, File f2) {
+                int n1 = Integer.parseInt(f1.getName().replaceAll("\\D+", ""));
+                int n2 = Integer.parseInt(f2.getName().replaceAll("\\D+", ""));
+                return Integer.compare(n1, n2);
             }
         }).collect(Collectors.toList());
         for (final File fileEntry : folders) {
@@ -242,7 +251,7 @@ public class Blockchain implements Cloneable {
                                     && transaction.getCustomer().equals(Seting.ADDRESS_FOUNDER)) {
                                 if (transaction.getDigitalDollar() != Seting.FOUNDERS_REMUNERATION_DIGITAL_DOLLAR) {
                                     valid = false;
-                                    return new DataShortBlockchainInformation(size, valid, hashCount);
+                                    return new DataShortBlockchainInformation(size, valid, hashCount, staking, epoch, transactions);
                                 }
                             }
                         }
@@ -252,7 +261,12 @@ public class Blockchain implements Cloneable {
                         prevBlock = block;
                         continue;
                     }
-                    hashCount += UtilsUse.hashCount(block.getHashBlock(), block.getIndex());
+                    hashCount += UtilsUse.powerDiff(block.getHashCompexity());
+                    balances = UtilsBalance.calculateBalance(balances, block, sign);
+                    staking += balances.get(block.getMinerAddress()).getDigitalStakingBalance();
+                    epoch += block.getIndex()-balances.get(block.getMinerAddress()).getEpoch();
+                    transactions += block.getDtoTransactions().size();
+
                     valid = UtilsBlock.validationOneBlock(Seting.ADDRESS_FOUNDER,
                             prevBlock,
                             block,
@@ -266,7 +280,7 @@ public class Blockchain implements Cloneable {
                         System.out.println("ERROR: UtilsBlock: validation: block.Hash():" + block.getHashBlock());
                         System.out.println("ERROR: UtilsBlock: validation: BLOCK_GENERATION_INTERVAL:" + Seting.BLOCK_GENERATION_INTERVAL);
                         System.out.println("ERROR: UtilsBlock: validation: DIFFICULTY_ADJUSTMENT_INTERVAL:" + Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
-                        return new DataShortBlockchainInformation(size, valid, hashCount);
+                        return new DataShortBlockchainInformation(size, valid, hashCount, staking, epoch, transactions);
                     }
 
                     prevBlock = block;
@@ -286,7 +300,12 @@ public class Blockchain implements Cloneable {
                     prevBlock = block;
                     continue;
                 }
-                hashCount += UtilsUse.hashCount(block.getHashBlock(), block.getIndex());
+                hashCount += UtilsUse.powerDiff(block.getHashCompexity());
+                balances = UtilsBalance.calculateBalance(balances, block, sign);
+                staking += balances.get(block.getMinerAddress()).getDigitalStakingBalance();
+                epoch += block.getIndex()- balances.get(block.getMinerAddress()).getEpoch();
+                transactions += block.getDtoTransactions().size();
+
                 valid = UtilsBlock.validationOneBlock(Seting.ADDRESS_FOUNDER,
                         prevBlock,
                         block,
@@ -300,7 +319,7 @@ public class Blockchain implements Cloneable {
                     System.out.println("ERROR: UtilsBlock: validation: block.Hash():" + block.getHashBlock());
                     System.out.println("ERROR: UtilsBlock: validation: BLOCK_GENERATION_INTERVAL:" + Seting.BLOCK_GENERATION_INTERVAL);
                     System.out.println("ERROR: UtilsBlock: validation: DIFFICULTY_ADJUSTMENT_INTERVAL:" + Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
-                    return new DataShortBlockchainInformation(size, valid, hashCount);
+                    return new DataShortBlockchainInformation(size, valid, hashCount, staking, epoch, transactions);
                 }
 
                 prevBlock = block;
@@ -309,41 +328,8 @@ public class Blockchain implements Cloneable {
         }
 
 
-        return new DataShortBlockchainInformation(size, valid, hashCount);
+        return new DataShortBlockchainInformation(size, valid, hashCount, staking, epoch, transactions);
     }
-
-
-    public static boolean saveBalanceFromfile(String filename) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        boolean valid = true;
-        File folder = new File(filename);
-
-        Map<String, Account> balances = new HashMap<>();
-        List<String> signs = new ArrayList<>();
-        Map<String, Laws> allLaws = new HashMap<>();
-        List<LawEligibleForParliamentaryApproval> allLawsWithBalance = new ArrayList<>();
-
-        for (final File fileEntry : folder.listFiles()) {
-            if (fileEntry.isDirectory()) {
-                System.out.println("is directory " + fileEntry.getAbsolutePath());
-                System.out.println("is directory " + fileEntry.getName());
-            } else {
-
-                List<String> list = UtilsFileSaveRead.reads(fileEntry.getAbsolutePath());
-                for (String s : list) {
-
-                    Block block = UtilsJson.jsonToBLock(s);
-
-                    UtilsBalance.calculateBalance(balances, block, signs);
-                    balances = UtilsBalance.calculateBalanceFromLaw(balances, block, allLaws, allLawsWithBalance);
-//
-
-                }
-            }
-        }
-
-        return valid;
-    }
-
 
     public static DataShortBlockchainInformation checkFromFile(
 
@@ -354,32 +340,20 @@ public class Blockchain implements Cloneable {
         int size = 0;
         int index = 0;
         long hashCount = 0;
+        double staking = 0;
+        long epoch = 0;
+        long transactions = 0;
 
+        Map<String, Account> balances = new HashMap<>();
+        List<String> sign = new ArrayList<>();
         List<Block> tempList = new ArrayList<>();
         List<File> folders = new ArrayList<>(List.of(folder.listFiles()));
 
-        folders = folders.stream().sorted(new Comparator<File> () {
-            public int compare (File f1, File f2) {
-                String [] parts1 = f1.getName ().split ("\\D+");
-                String [] parts2 = f2.getName ().split ("\\D+");
-                int len = Math.min (parts1.length, parts2.length);
-                for (int i = 0; i < len; i++) {
-                    try {
-                        int n1 = Integer.parseInt (parts1[i]);
-                        int n2 = Integer.parseInt (parts2[i]);
-                        if (n1 != n2) {
-                            return n1 - n2;
-                        }
-                    } catch (NumberFormatException e) {
-                        // not a number, compare as strings
-                        int cmp = parts1[i].compareTo (parts2[i]);
-                        if (cmp != 0) {
-                            return cmp;
-                        }
-                    }
-                }
-                // all equal so far, compare by length
-                return parts1.length - parts2.length;
+        folders = folders.stream().sorted(new Comparator<File>() {
+            public int compare(File f1, File f2) {
+                int n1 = Integer.parseInt(f1.getName().replaceAll("\\D+", ""));
+                int n2 = Integer.parseInt(f2.getName().replaceAll("\\D+", ""));
+                return Integer.compare(n1, n2);
             }
         }).collect(Collectors.toList());
 
@@ -406,7 +380,7 @@ public class Blockchain implements Cloneable {
                         valid = false;
                         System.out.println("index: " + index + " block.index: " + block.getIndex());
 
-                        return new DataShortBlockchainInformation(size, valid, hashCount);
+                        return new DataShortBlockchainInformation(size, valid, hashCount, staking, epoch, transactions);
                     }
 
                     if (prevBlock == null) {
@@ -414,7 +388,12 @@ public class Blockchain implements Cloneable {
                         continue;
                     }
 
-                    hashCount += UtilsUse.hashCount(block.getHashBlock(), block.getIndex());
+                    hashCount += UtilsUse.powerDiff(block.getHashCompexity());
+                    balances = UtilsBalance.calculateBalance(balances, block, sign);
+                    staking += balances.get(block.getMinerAddress()).getDigitalStakingBalance();
+                    epoch +=  block.getIndex()-balances.get(block.getMinerAddress()).getEpoch();
+                    transactions += block.getDtoTransactions().size();
+
 
                     tempList.add(prevBlock);
                     if (tempList.size() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
@@ -427,6 +406,7 @@ public class Blockchain implements Cloneable {
                             Seting.DIFFICULTY_ADJUSTMENT_INTERVAL,
                             tempList);
 
+                    System.out.println("checkfromfile: index:  " + block.getIndex());
                     if (valid == false) {
                         System.out.println("ERROR: UtilsBlock: validation: prevBLock.Hash():" + prevBlock.getHashBlock());
                         System.out.println("ERROR: UtilsBlock: validation: index:" + block.getIndex());
@@ -434,7 +414,7 @@ public class Blockchain implements Cloneable {
                         System.out.println("ERROR: UtilsBlock: validation: BLOCK_GENERATION_INTERVAL:" + Seting.BLOCK_GENERATION_INTERVAL);
                         System.out.println("ERROR: UtilsBlock: validation: DIFFICULTY_ADJUSTMENT_INTERVAL:" + Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
                         size++;
-                        return new DataShortBlockchainInformation(size, valid, hashCount);
+                        return new DataShortBlockchainInformation(size, valid, hashCount, staking, epoch, transactions);
                     }
 
                     prevBlock = block;
@@ -444,8 +424,38 @@ public class Blockchain implements Cloneable {
             }
         }
 
-        return new DataShortBlockchainInformation(size, valid, hashCount);
+        return new DataShortBlockchainInformation(size, valid, hashCount, staking, epoch, transactions);
     }
+
+    public static boolean saveBalanceFromfile(String filename) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        boolean valid = true;
+        File folder = new File(filename);
+
+        Map<String, Account> balances = new HashMap<>();
+        List<String> signs = new ArrayList<>();
+        Map<String, Laws> allLaws = new HashMap<>();
+        List<LawEligibleForParliamentaryApproval> allLawsWithBalance = new ArrayList<>();
+
+        for (final File fileEntry : folder.listFiles()) {
+            if (fileEntry.isDirectory()) {
+                System.out.println("is directory " + fileEntry.getAbsolutePath());
+                System.out.println("is directory " + fileEntry.getName());
+            } else {
+
+                List<String> list = UtilsFileSaveRead.reads(fileEntry.getAbsolutePath());
+                for (String s : list) {
+
+                    Block block = UtilsJson.jsonToBLock(s);
+
+                    UtilsBalance.calculateBalance(balances, block, signs);
+                }
+            }
+        }
+
+        return valid;
+    }
+
+
 
     public static boolean deletedLastStrFromFile(String temp, int index) throws IOException {
         boolean valid = false;
@@ -453,28 +463,11 @@ public class Blockchain implements Cloneable {
 
         List<File> folders = new ArrayList<>(List.of(folder.listFiles()));
 
-        folders = folders.stream().sorted(new Comparator<File> () {
-            public int compare (File f1, File f2) {
-                String [] parts1 = f1.getName ().split ("\\D+");
-                String [] parts2 = f2.getName ().split ("\\D+");
-                int len = Math.min (parts1.length, parts2.length);
-                for (int i = 0; i < len; i++) {
-                    try {
-                        int n1 = Integer.parseInt (parts1[i]);
-                        int n2 = Integer.parseInt (parts2[i]);
-                        if (n1 != n2) {
-                            return n1 - n2;
-                        }
-                    } catch (NumberFormatException e) {
-                        // not a number, compare as strings
-                        int cmp = parts1[i].compareTo (parts2[i]);
-                        if (cmp != 0) {
-                            return cmp;
-                        }
-                    }
-                }
-                // all equal so far, compare by length
-                return parts1.length - parts2.length;
+        folders = folders.stream().sorted(new Comparator<File>() {
+            public int compare(File f1, File f2) {
+                int n1 = Integer.parseInt(f1.getName().replaceAll("\\D+", ""));
+                int n2 = Integer.parseInt(f2.getName().replaceAll("\\D+", ""));
+                return Integer.compare(n1, n2);
             }
         }).collect(Collectors.toList());
 
@@ -503,31 +496,13 @@ public class Blockchain implements Cloneable {
 
         List<File> folders = new ArrayList<>(List.of(folder.listFiles()));
 
-        folders = folders.stream().sorted(new Comparator<File> () {
-            public int compare (File f1, File f2) {
-                String [] parts1 = f1.getName ().split ("\\D+");
-                String [] parts2 = f2.getName ().split ("\\D+");
-                int len = Math.min (parts1.length, parts2.length);
-                for (int i = 0; i < len; i++) {
-                    try {
-                        int n1 = Integer.parseInt (parts1[i]);
-                        int n2 = Integer.parseInt (parts2[i]);
-                        if (n1 != n2) {
-                            return n1 - n2;
-                        }
-                    } catch (NumberFormatException e) {
-                        // not a number, compare as strings
-                        int cmp = parts1[i].compareTo (parts2[i]);
-                        if (cmp != 0) {
-                            return cmp;
-                        }
-                    }
-                }
-                // all equal so far, compare by length
-                return parts1.length - parts2.length;
+        folders =folders.stream().sorted(new Comparator<File>() {
+            public int compare(File f1, File f2) {
+                int n1 = Integer.parseInt(f1.getName().replaceAll("\\D+", ""));
+                int n2 = Integer.parseInt(f2.getName().replaceAll("\\D+", ""));
+                return Integer.compare(n1, n2);
             }
         }).collect(Collectors.toList());
-
         for (final File fileEntry : folders) {
 
             if (fileEntry.isDirectory()) {
@@ -553,28 +528,11 @@ public class Blockchain implements Cloneable {
         int size = 0;
         List<File> folders = new ArrayList<>(List.of(folder.listFiles()));
 
-        folders = folders.stream().sorted(new Comparator<File> () {
-            public int compare (File f1, File f2) {
-                String [] parts1 = f1.getName ().split ("\\D+");
-                String [] parts2 = f2.getName ().split ("\\D+");
-                int len = Math.min (parts1.length, parts2.length);
-                for (int i = 0; i < len; i++) {
-                    try {
-                        int n1 = Integer.parseInt (parts1[i]);
-                        int n2 = Integer.parseInt (parts2[i]);
-                        if (n1 != n2) {
-                            return n1 - n2;
-                        }
-                    } catch (NumberFormatException e) {
-                        // not a number, compare as strings
-                        int cmp = parts1[i].compareTo (parts2[i]);
-                        if (cmp != 0) {
-                            return cmp;
-                        }
-                    }
-                }
-                // all equal so far, compare by length
-                return parts1.length - parts2.length;
+        folders = folders.stream().sorted(new Comparator<File>() {
+            public int compare(File f1, File f2) {
+                int n1 = Integer.parseInt(f1.getName().replaceAll("\\D+", ""));
+                int n2 = Integer.parseInt(f2.getName().replaceAll("\\D+", ""));
+                return Integer.compare(n1, n2);
             }
         }).collect(Collectors.toList());
 
@@ -619,28 +577,11 @@ public class Blockchain implements Cloneable {
 //        Arrays.sort(files); // сортируем файлы по имени
         List<File> folders = new ArrayList<>(List.of(folder.listFiles()));
 
-        folders = folders.stream().sorted(new Comparator<File> () {
-            public int compare (File f1, File f2) {
-                String [] parts1 = f1.getName ().split ("\\D+");
-                String [] parts2 = f2.getName ().split ("\\D+");
-                int len = Math.min (parts1.length, parts2.length);
-                for (int i = 0; i < len; i++) {
-                    try {
-                        int n1 = Integer.parseInt (parts1[i]);
-                        int n2 = Integer.parseInt (parts2[i]);
-                        if (n1 != n2) {
-                            return n1 - n2;
-                        }
-                    } catch (NumberFormatException e) {
-                        // not a number, compare as strings
-                        int cmp = parts1[i].compareTo (parts2[i]);
-                        if (cmp != 0) {
-                            return cmp;
-                        }
-                    }
-                }
-                // all equal so far, compare by length
-                return parts1.length - parts2.length;
+        folders = folders.stream().sorted(new Comparator<File>() {
+            public int compare(File f1, File f2) {
+                int n1 = Integer.parseInt(f1.getName().replaceAll("\\D+", ""));
+                int n2 = Integer.parseInt(f2.getName().replaceAll("\\D+", ""));
+                return Integer.compare(n1, n2);
             }
         }).collect(Collectors.toList());
 
@@ -715,28 +656,11 @@ public class Blockchain implements Cloneable {
         List<Block> blocks = new ArrayList<>();
         List<File> folders = new ArrayList<>(List.of(folder.listFiles()));
 
-        folders = folders.stream().sorted(new Comparator<File> () {
-            public int compare (File f1, File f2) {
-                String [] parts1 = f1.getName ().split ("\\D+");
-                String [] parts2 = f2.getName ().split ("\\D+");
-                int len = Math.min (parts1.length, parts2.length);
-                for (int i = 0; i < len; i++) {
-                    try {
-                        int n1 = Integer.parseInt (parts1[i]);
-                        int n2 = Integer.parseInt (parts2[i]);
-                        if (n1 != n2) {
-                            return n1 - n2;
-                        }
-                    } catch (NumberFormatException e) {
-                        // not a number, compare as strings
-                        int cmp = parts1[i].compareTo (parts2[i]);
-                        if (cmp != 0) {
-                            return cmp;
-                        }
-                    }
-                }
-                // all equal so far, compare by length
-                return parts1.length - parts2.length;
+        folders = folders.stream().sorted(new Comparator<File>() {
+            public int compare(File f1, File f2) {
+                int n1 = Integer.parseInt(f1.getName().replaceAll("\\D+", ""));
+                int n2 = Integer.parseInt(f2.getName().replaceAll("\\D+", ""));
+                return Integer.compare(n1, n2);
             }
         }).collect(Collectors.toList());
         for (final File fileEntry : folders) {

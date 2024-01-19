@@ -766,7 +766,7 @@ public class LawsController {
         balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
         Account Budget = balances.get(Seting.BUDGET);
         if (Budget == null)
-            Budget = new Account(Seting.BUDGET, 0, 0);
+            Budget = new Account(Seting.BUDGET, 0, 0, 0, 0);
         model.addAttribute("dollar", Budget.getDigitalDollarBalance());
         model.addAttribute("stock", Budget.getDigitalStockBalance());
         model.addAttribute("emission", Seting.EMISSION_BUDGET);

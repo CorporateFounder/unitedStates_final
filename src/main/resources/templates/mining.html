@@ -13,29 +13,33 @@
 <div class="container mt-5">
     <h3 th:text="${title}"/>
 
-
-<!--    <form action="/mine" method="get">-->
-<!--        <button type="submit" class="btn btn-success">Start mining</button><br>-->
-<!--    </form>-->
-
     <form action="/constantMining" class="container mt-1">
         <button type="submit" class="btn btn-success">start</button>
     </form>
+
+    <h3 th:text="'acutal custom diff: '+${customDiff}"/>
+    <form action="/customDiff" class="container mt-1" method="post">
+        <input type="text" name="customDiff" placeholder="enter the new difficult:" class="form-control"><br>
+        <button type="submit" class="btn btn-success">change custom diff</button>
+    </form>
+
+    <form action="/staking" class="container mt-1" method="post">
+        <input type="text" name="miner" placeholder="enter the your address:" class="form-control"><br>
+        <input type="text" name="dollar" placeholder="enter the dollar:" class="form-control"><br>
+        <input type="text" name="reward" placeholder="enter the reward:" class="form-control"><br>
+        <textarea name="password" placeholder="enter private key" th:rows="8" th:cols="120"></textarea><br>
+        <button type="submit" class="btn btn-success">send transaction staking</button>
+    </form>
+
+    <form action="/unstaking" class="container mt-1" method="post">
+        <input type="text" name="miner" placeholder="enter the your address:" class="form-control"><br>
+        <input type="text" name="dollar" placeholder="enter the dollar:" class="form-control"><br>
+        <input type="text" name="reward" placeholder="enter the reward:" class="form-control"><br>
+        <textarea name="password" placeholder="enter private key" th:rows="8" th:cols="120"></textarea><br>
+        <button type="submit" class="btn btn-success">send transaction unstaking</button>
+    </form>
 </div>
 
-<!--<div  class="alert alert-info mt-2">-->
-<!--    <h4 th:text="'from what number you need to look for block search: '+${number}"/>-->
-<!--    <h4 th:text="'max number: '+${max}"/>-->
-<!--</div>-->
-
-
-<!--<div class="container mt-5 mb-5">-->
-<!--    <form action="/setNumber" method="post">-->
-<!--        <input type="text" name="number" placeholder="input number start searching hash" class="form-control"><br>-->
-<!--        <button type="submit" class="btn btn-success">change number start hash</button><br>-->
-<!--    </form>-->
-
-<!--</div>-->
 
 <footer th:insert="blocks/footer :: footer"></footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
