@@ -23,10 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
@@ -42,6 +39,7 @@ public class Mining {
         blockchain = BLockchainFactory.getBlockchain(factoryEnum);
 
         if (blocks.size() != 0) {
+            blocks = blocks.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
            blockchain.setBlockchainList(blocks);
         }
         return blockchain;

@@ -131,7 +131,7 @@ MAX_TARGET / DIFFICULT = TARGET с версии 30, сложность може�
     - [Полномочия Корпоративного Совета Верховных Судей](../charter/POWERS_OF_THE_CORPORATE_COUNCIL_OF_JUDGES.md)
     - [Собственность Корпорации](../charter/PROPERTY_OF_THE_CORPORATION.md)
     - [Генеральный Исполнительный Директор-GENERAL_EXECUTIVE_DIRECTOR](../charter/GENERAL_EXECUTIVE_DIRECTOR.md)
-    - [Почему здесь используется демерредж денег](../charter/EXPLANATION_WHY_MONEY_DEMURAGE_IS_USED_HERE.md)
+    
     - [Право Свободы слова](../charter/FREEDOM_OF_SPEECH.md)
     - [Естественные права](../charter/RIGHTS.md)
     - [Законодательная Власть](../charter/POWER.md)

@@ -87,11 +87,21 @@ public class BlockService {
 
     }
 
+    public static long sizeBlock(){
+        return  blockService.count();
+    }
+    public static EntityBlock lastBlock(){
+        return blockService.findBySpecialIndex(blockService.count()-1);
+    }
+
     public static void saveAllBlock(List<EntityBlock> entityBlocks) {
         blockService.saveAll(entityBlocks);
         blockService.flush();
     }
-
+    public static void removeAllBlock(List<EntityBlock> entityBlocks){
+        blockService.deleteAll(entityBlocks);
+        blockService.flush();
+    }
     public static void saveAccount(EntityAccount entityAccount){
 
         accountService.save(entityAccount);

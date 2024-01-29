@@ -78,6 +78,7 @@ public class UtilsBlock {
         UtilsFileSaveRead.saves(jsons, nextFile, true);
     }
 
+    /**Записывает блок в файл, если файл больше 10 мегабайт, создает новый файл с новым идентификационным номером.*/
     public static void saveBLock(Block block, String filename) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         int fileLimit = Seting.SIZE_FILE_LIMIT * 1024 * 1024;
 
@@ -407,7 +408,7 @@ public class UtilsBlock {
                     minerReward += thisBlock.getIndex() % 2 == 0 ? 0 : 1;
                     minerPowerReward += thisBlock.getIndex() % 2 == 0 ? 0 : 1;
                 }
-                if(thisBlock.getIndex() > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX && thisBlock.getIndex() < Seting.V34_NEW_ALGO){
+                if(thisBlock.getIndex() > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX && thisBlock.getIndex() <= Seting.V34_NEW_ALGO){
                     long money = (thisBlock.getIndex() - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
                             / (576 * Seting.YEAR);
                     money = (long) (Seting.MULTIPLIER - money);
@@ -418,7 +419,7 @@ public class UtilsBlock {
                     minerPowerReward = (Seting.V28_REWARD + G) * money;
 
                 }
-                if( thisBlock.getIndex() >= Seting.V34_NEW_ALGO){
+                if( thisBlock.getIndex() > Seting.V34_NEW_ALGO){
                     long money = (thisBlock.getIndex() - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
                             / (576 * Seting.YEAR);
                     money = (long) (Seting.MULTIPLIER - money);
@@ -535,7 +536,7 @@ public class UtilsBlock {
             return false;
         }
 
-        if (thisBlock.getIndex() > Seting.v4MeetsDifficulty && thisBlock.getIndex() <= Seting.V34_NEW_ALGO) {
+        if (thisBlock.getIndex() > Seting.v4MeetsDifficulty && thisBlock.getIndex() < Seting.V34_NEW_ALGO) {
             long diff = UtilsBlock.difficulty(lastBlock, Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
             if (thisBlock.getHashCompexity() != diff ) {
                 System.out.println("utils Block: actual difficult: " + thisBlock.getHashCompexity() + ":expected: "
@@ -543,7 +544,7 @@ public class UtilsBlock {
                 System.out.println("wrong difficult");
                 return false;
             }
-        } else if (thisBlock.getHashCompexity() > Seting.V34_NEW_ALGO) {
+        } else if (thisBlock.getHashCompexity() >= Seting.V34_NEW_ALGO) {
             if(thisBlock.getHashCompexity() < Seting.V34_MIN_DIFF){
                 System.out.printf("your diff %d, less than it %d\n", thisBlock.getHashCompexity(),
                         Seting.V34_MIN_DIFF);
@@ -562,10 +563,14 @@ public class UtilsBlock {
 
 
         if (!actualPrevHash.equals(recordedPrevHash)) {
+            System.out.println("-------------------------------------------------------");
 
             System.out.println("Blockchain is invalid, expected: " + recordedPrevHash + " actual: " + actualPrevHash);
-            System.out.println("index block: " + thisBlock.getIndex());
+            System.out.println("actual index block: " + thisBlock.getIndex());
+
+            System.out.println("previusblock: " + previusblock.getIndex());
             System.out.println("wrong chain hash");
+            System.out.println("-------------------------------------------------------");
             return false;
         }
 

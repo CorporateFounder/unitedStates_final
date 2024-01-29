@@ -1,40 +1,45 @@
 package International_Trade_Union.model;
 
 
-import lombok.Data;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.utils.UtilsSecurity;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
+import lombok.Data;
 
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Objects;
 
-
+/**Класс Аккаунт, хранит данные такие данные.
+ * account - public key ECDSA
+ * digitalDollarBalance - цифровой доллар (деньги).
+ * digitalStockBalance - акции, используется для голосования.
+ * digitalStakingBalance - сумма долларов которые зарезервированы для staking (pos).
+ **/
 @Data
 public class Account implements Cloneable {
     private String account;
     private double digitalDollarBalance;
     private double digitalStockBalance;
     private double digitalStakingBalance;
-    private long epoch;
+
 
 
     public Account(String account, double digitalDollarBalance) {
-        this(account, digitalDollarBalance, 0.0, 0, 0);
+        this(account, digitalDollarBalance, 0.0, 0);
 
     }
 
-    public Account(String account, double digitalDollarBalance, double digitalStockBalance, double digitalStakingBalance, long epoch) {
+    public Account(String account, double digitalDollarBalance, double digitalStockBalance, double digitalStakingBalance) {
         this.account = account;
         this.digitalDollarBalance = digitalDollarBalance;
         this.digitalStockBalance = digitalStockBalance;
         this.digitalStakingBalance = digitalStakingBalance;
-        this.epoch = epoch;
+
     }
 
     public Account() {
@@ -62,11 +67,15 @@ public class Account implements Cloneable {
         }
 
             if(digitalDollarBalance < digitalDollar + minerRewards  ){
-                System.out.println("sender don't have digitalDollar");
+                System.out.println("sender don't have dollar");
                 return transaction;
             }
             if(digitalStockBalance < digitalStock){
-                System.out.println("sender don't have digitalReputation");
+                System.out.println("sender don't have stock");
+                return transaction;
+            }
+            if(digitalStakingBalance < digitalDollar){
+                System.out.println("sender don't have staking");
                 return transaction;
             }
             else{
@@ -88,6 +97,6 @@ public class Account implements Cloneable {
 
     @Override
     public Account clone() throws CloneNotSupportedException {
-        return new Account(account, digitalDollarBalance, digitalStockBalance, digitalStakingBalance, epoch);
+        return new Account(account, digitalDollarBalance, digitalStockBalance, digitalStakingBalance);
     }
 }

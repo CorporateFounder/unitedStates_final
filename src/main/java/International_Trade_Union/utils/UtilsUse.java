@@ -13,6 +13,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -45,32 +46,33 @@ public class UtilsUse {
     //G=(Ap/At)*(Nt/Np)*(Ut/Up)-1
     //Эта формула учитывает, что если средняя сумма транзакций уменьшается, то экономика растет, а если количество транзакций и уникальных адресов увеличивается, то экономика также растет. Если G>0, то экономика блокчейна растет, а если G<0, то экономика блокчейна снижается.
     //формула
-    public static double growth (double Ap, double At, double Np, double Nt, double Up, double Ut) {
+    public static double growth(double Ap, double At, double Np, double Nt, double Up, double Ut) {
         // Веса для каждого показателя
         double wA = 1.1; // Вес для средней суммы транзакций
         double wN = 0.99; // Вес для количества транзакций
         double wU = 1.21; // Вес для количества уникальных адресов
         // Формула, которая учитывает ваши критерии и логику
-        double G = (wA*(Ap / At)) * (wN*(Nt / Np)) * (wU*(Ut / Up)) - 1;
+        double G = (wA * (Ap / At)) * (wN * (Nt / Np)) * (wU * (Ut / Up)) - 1;
         // Возвращаем результат
 
 
         //Награда дополнительная не может быть ниже нуля и выше 10
-        G = G > 10? 10: G;
-        G = G < 0? 0: G;
+        G = G > 10 ? 10 : G;
+        G = G < 0 ? 0 : G;
         G = Math.round(G);
         return G;
     }
 
-    public static double sumDollarFromTransactions(Block block){
+    public static double sumDollarFromTransactions(Block block) {
         double sum = 0;
         for (DtoTransaction transaction : block.getDtoTransactions()) {
             sum += transaction.getDigitalDollar();
         }
         return sum;
     }
+
     //получение уникальных адрессов
-    public static int uniqAddress(Block block){
+    public static int uniqAddress(Block block) {
         List<String> address = new ArrayList<>();
         for (DtoTransaction transaction : block.getDtoTransactions()) {
             address.add(transaction.getSender());
@@ -79,32 +81,33 @@ public class UtilsUse {
     }
 
     //ПОДСЧЕТ НАГРАДЫ
-    public static double blocksReward(List<DtoTransaction> acutal, List<DtoTransaction> prev){
-      long actualUniqAddress = acutal.stream()
-              .filter(t->!t.getSender().equals(Seting.BASIS_ADDRESS))
-              .map(t->t.getSender())
-              .distinct()
-              .count();
+    public static double blocksReward(List<DtoTransaction> acutal, List<DtoTransaction> prev) {
+        long actualUniqAddress = acutal.stream()
+                .filter(t -> !t.getSender().equals(Seting.BASIS_ADDRESS))
+                .map(t -> t.getSender())
+                .distinct()
+                .count();
 
-      long prevUniqAddress = prev.stream()
-              .filter(t->!t.getSender().equals(Seting.BASIS_ADDRESS))
-              .map(t->t.getSender())
-              .distinct()
-              .count();
+        long prevUniqAddress = prev.stream()
+                .filter(t -> !t.getSender().equals(Seting.BASIS_ADDRESS))
+                .map(t -> t.getSender())
+                .distinct()
+                .count();
 
-      double actualSumDollar = acutal.stream()
-              .filter(t->!t.getSender().equals(Seting.BASIS_ADDRESS))
-              .mapToDouble(t->t.getDigitalDollar())
-              .sum();
+        double actualSumDollar = acutal.stream()
+                .filter(t -> !t.getSender().equals(Seting.BASIS_ADDRESS))
+                .mapToDouble(t -> t.getDigitalDollar())
+                .sum();
 
-      double prevSumDollar = prev.stream()
-              .filter(t->!t.getSender().equals(Seting.BASIS_ADDRESS))
-              .mapToDouble(t->t.getDigitalDollar())
-              .sum();
+        double prevSumDollar = prev.stream()
+                .filter(t -> !t.getSender().equals(Seting.BASIS_ADDRESS))
+                .mapToDouble(t -> t.getDigitalDollar())
+                .sum();
 
-      return  actualUniqAddress > prevUniqAddress && actualSumDollar > prevSumDollar?Seting.COEFFICIENT:0;
+        return actualUniqAddress > prevUniqAddress && actualSumDollar > prevSumDollar ? Seting.COEFFICIENT : 0;
 
     }
+
     //    одно число от другого в процентах
     public static Double percentDifferent(Double first, Double second) {
         return (first / second - 1) * Seting.HUNDRED_PERCENT;
@@ -196,20 +199,19 @@ public class UtilsUse {
             result = BlockchainDifficulty.meetsDifficulty(literral.getBytes(), hashComplexity);
         }
         if (index > Seting.v3MeetsDifficulty && index <= Seting.v4MeetsDifficulty) {
-          result = BlockchainDifficulty.v3MeetsDifficulty(literral.getBytes(), hashComplexity);
-        }else if (index > Seting.v4MeetsDifficulty){
+            result = BlockchainDifficulty.v3MeetsDifficulty(literral.getBytes(), hashComplexity);
+        } else if (index > Seting.v4MeetsDifficulty) {
             result = BlockchainDifficulty.v4MeetsDifficulty(literral, hashComplexity);
         }
-        if(index > Seting.v4MeetsDifficulty && index <= Seting.V28_CHANGE_ALGORITH_DIFF_INDEX){
+        if (index > Seting.v4MeetsDifficulty && index <= Seting.V28_CHANGE_ALGORITH_DIFF_INDEX) {
             result = BlockchainDifficulty.v4MeetsDifficulty(literral, hashComplexity);
-        }else if(index > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX && index <= Seting.V29_CHANGE_ALGO_DIFF_INDEX){
+        } else if (index > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX && index <= Seting.V29_CHANGE_ALGO_DIFF_INDEX) {
             result = BlockchainDifficulty.isValidHash(literral, target);
         } else if (index > Seting.V29_CHANGE_ALGO_DIFF_INDEX && index <= Seting.V30_INDEX_ALGO) {
             result = BlockchainDifficulty.isValidHashV29(literral, (int) (Seting.STANDART_FOR_TARGET - hashComplexity));
-        }else if(index > Seting.V30_INDEX_ALGO && index <= Seting.V31_DIFF_END_MINING){
+        } else if (index > Seting.V30_INDEX_ALGO && index <= Seting.V31_DIFF_END_MINING) {
             result = BlockchainDifficulty.isValidHashV30(literral, bigTarget);
-        }
-        else if (index > Seting.V31_DIFF_END_MINING) {
+        } else if (index > Seting.V31_DIFF_END_MINING) {
             result = BlockchainDifficulty.isValidHashV29(literral, (int) (Seting.STANDART_FOR_TARGET - hashComplexity));
         }
 
@@ -319,8 +321,26 @@ public class UtilsUse {
         return temp;
     }
 
-    public static long powerDiff(long diff){
+    public static long powerDiff(long diff) {
         return (long) Math.pow(diff, 2);
+//        return diff;
+    }
+
+
+    /**Вычисляет случайное число на основе предыдущего хэша и текущего и чем выше число, тем выше
+     * значимость.*/
+    public static int bigRandomWinner( Block actual) {
+
+//         Суммирование хешей
+        String combinedHash = actual.getPreviousHash() + actual.getHashBlock(); // предполагается, что у блока есть метод getHash
+        BigInteger seed = new BigInteger(combinedHash.getBytes());
+
+        // Генерация числа в диапазоне от 1 до limit
+        BigInteger candidateValue = new BigInteger(Seting.STAKING_WINNER, new SecureRandom(seed.toByteArray()));
+        // Получение числа в диапазоне от 0 до 130
+        int result = candidateValue.mod(new BigInteger("131")).intValue();
+        return result;
+
     }
 
 }

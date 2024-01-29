@@ -68,6 +68,14 @@ public class Testing {
     }
 
     @Test
+    public void getBlock() throws IOException {
+        String s = "http://localhost:8083";
+        int index = 0;
+        Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(index), s + "/block"));
+        System.out.println("block: " + block);
+    }
+
+    @Test
     public void sub() throws IOException {
         String str = "{\"start\":167337,\"finish\":167338}";
         String s = " http://194.87.236.238:82";
@@ -590,10 +598,10 @@ public class Testing {
                         if (cheater.containsKey(address)) {
                             double sumDollar = cheater.get(address).getDigitalDollarBalance() + dollar;
                             double sumStock = cheater.get(address).getDigitalStockBalance() + stock;
-                            Account account = new Account(address, sumDollar, sumStock, 0, 0);
+                            Account account = new Account(address, sumDollar, sumStock, 0);
                             cheater.put(address, account);
                         } else {
-                            Account account = new Account(address, dollar, stock, 0, 0);
+                            Account account = new Account(address, dollar, stock, 0);
                             cheater.put(address, account);
                         }
                         break stop;
@@ -895,7 +903,7 @@ public class Testing {
                     double dollar = Double.valueOf(arr[1]) + cheaterAccount.get(arr[0]).getDigitalDollarBalance();
                     double stock = Double.valueOf(arr[2]) + cheaterAccount.get(arr[0]).getDigitalStockBalance();
                     ;
-                    Account account = new Account(arr[0], dollar, stock, 0, 0);
+                    Account account = new Account(arr[0], dollar, stock, 0);
                     cheaterAccount.put(arr[0], account);
                 } else {
                     String address = arr[0];
@@ -904,7 +912,7 @@ public class Testing {
                         double dollar = Double.valueOf(arr[1]);
                         double stock = Double.valueOf(arr[2]);
 //                        System.out.println("dollar: " + dollar + " stock: " + stock + " index: " + arr[3]);
-                        Account account = new Account(address, dollar, stock, 0, 0);
+                        Account account = new Account(address, dollar, stock, 0);
                         cheaterAccount.put(address, account);
                     } catch (ArrayIndexOutOfBoundsException e) {
                         continue;
@@ -963,12 +971,12 @@ public class Testing {
                     System.out.println("stock original: " + originalStock + " fork: " + forkStock);
                 }
 
-                Account account = new Account(address, resultDollar, resultStock, 0, 0);
+                Account account = new Account(address, resultDollar, resultStock, 0);
                 differents.put(address, account);
             } else {
                 double originalDollar = original.getValue().getDigitalDollarBalance();
                 double originalStock = original.getValue().getDigitalStockBalance();
-                Account account = new Account(address, originalDollar, originalStock, 0, 0);
+                Account account = new Account(address, originalDollar, originalStock, 0);
                 differents.put(address, account);
             }
         }
@@ -984,12 +992,12 @@ public class Testing {
 
                 double resultDollar = forkDollar + originalDollar;
                 double resultStock = forkStock + originalStock;
-                Account account = new Account(address, resultDollar, resultStock, 0, 0);
+                Account account = new Account(address, resultDollar, resultStock, 0);
                 afterFork.put(address, account);
             } else {
                 double originalDollar = different.getValue().getDigitalDollarBalance();
                 double originalStock = different.getValue().getDigitalStockBalance();
-                Account account = new Account(address, originalDollar, originalStock,0 , 0);
+                Account account = new Account(address, originalDollar, originalStock,0 );
                 afterFork.put(address, account);
             }
         }

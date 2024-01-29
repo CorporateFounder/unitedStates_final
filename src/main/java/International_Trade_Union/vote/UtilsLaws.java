@@ -166,6 +166,8 @@ public class UtilsLaws {
         return laws;
     }
 
+
+
     //возвращает пакет законов и их счета
     public static Map<String, Laws> getPackageLaws(Block block, Map<String, Laws> laws) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 //        Map<String, Laws> laws = new HashMap<>();
@@ -186,9 +188,48 @@ public class UtilsLaws {
     }
 
 
+    /**Удаляет законы, которые были из не актуальной ветки.*/
+    public static Map<String, Laws> rollBackLaws(
+            Block block,
+            String fileLaws,
+            Map<String, Laws> lawsMap
+    ) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        List<Laws> lawsForSave = new ArrayList<>();
+        List<Laws> lawsFromFile = readLineLaws(fileLaws);
+//        Map<String, Laws> lawsMap = new HashMap<>();
+        File file = new File(fileLaws);
+        List<Laws> lawsList = new ArrayList<>();
+        if (file.exists()) {
+            lawsList = readLineLaws(fileLaws);
+        }
+
+        Map<String, Laws> laws = new HashMap<>();
+//        lawsMap = getPackageLaws(block, laws);
+        lawsMap.putAll(getPackageLaws(block, laws));
+
+        for (Map.Entry<String, Laws> map : lawsMap.entrySet()) {
+            if (!lawsList.contains(map.getValue())) {
+                if( map.getValue() != null &&
+                        map.getValue().packetLawName != null&&
+                        map.getValue().getLaws() != null
+                        && !map.getValue().getHashLaw().isEmpty()
+                        && (map.getValue().getLaws().size() > 0)){
+
+                    lawsForSave.add(map.getValue());
+                }
+
+            }
+
+        }
+
+        lawsFromFile.removeAll(lawsForSave);
+        saveLaws(lawsFromFile, fileLaws);
+
+        return lawsMap;
+    }
 
 
-    //возвращяет список всех законов, как действующих, так и не действующих, если закон новый то автоматически сохраняет его
+    /**возвращает список всех законов, как действующих, так и не действующих, если закон новый то автоматически сохраняет его*/
     public static Map<String, Laws> getLaws(Block block, String fileLaws, Map<String, Laws> lawsMap) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         List<Laws> lawsForSave = new ArrayList<>();
 //        Map<String, Laws> lawsMap = new HashMap<>();

@@ -28,7 +28,7 @@ public class AccountTest {
         double sendGold = 100.0;
         double sendStock = 200.0;
         List<AccountSimulation> accountSimulations = GenerateAccountsSimulation.accountSimulations(2);
-        Account account = new Account(accountSimulations.get(0).getPublicKey(), 1000.0, 500, 0, 0);
+        Account account = new Account(accountSimulations.get(0).getPublicKey(), 1000.0, 500, 0);
         double expectedGold = account.getDigitalDollarBalance()-sendGold;
         double expectedPower = account.getDigitalStockBalance() - sendStock;
         double minerRewards = 0.0;

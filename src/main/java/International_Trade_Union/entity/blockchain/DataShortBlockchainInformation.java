@@ -8,25 +8,25 @@ public class DataShortBlockchainInformation {
     private boolean isValidation;
     private long hashCount;
     private double staking;
-    private long epoch;
     private long transactions;
+    private int bigRandomNumber;
 
     public DataShortBlockchainInformation() {
     }
 
-    public DataShortBlockchainInformation(long size, boolean isValidation, long hashCount, double staking, long epoch, long transactions) {
+    public DataShortBlockchainInformation(long size, boolean isValidation, long hashCount, double staking,  long transactions, int bigRandomNumber) {
         this.size = size;
         this.isValidation = isValidation;
         this.hashCount = hashCount;
         this.staking = staking;
-        this.epoch = epoch;
         this.transactions = transactions;
+        this.bigRandomNumber = bigRandomNumber;
 
     }
 
     @Override
     public DataShortBlockchainInformation clone() throws CloneNotSupportedException {
-        return new DataShortBlockchainInformation(size, isValidation, hashCount, staking, epoch, transactions);
+        return new DataShortBlockchainInformation(size, isValidation, hashCount, staking,  transactions, bigRandomNumber);
     }
 }
 

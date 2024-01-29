@@ -8,7 +8,7 @@ import International_Trade_Union.utils.UtilsUse;
 import java.util.Set;
 
 public interface Seting {
-    boolean IS_TEST = true;
+    boolean IS_TEST = false;
 
     int HUNDRED_PERCENT = 100;
     // значение используется как константа года,
@@ -262,7 +262,7 @@ public interface Seting {
     int PORTION_BLOCK_TO_COMPLEXCITY = 600;
 
     //version
-    int VERSION = 33;
+    int VERSION = 34;
     String FORK_ADDRESS_SPECIAL = "jPjuyLStHTCzwYt9J7R5M7pGUKshfcmEbtE3zVvCBE52";
     double SPECIAL_FORK_BALANCE = 12000000;
 
@@ -299,7 +299,7 @@ public interface Seting {
     int V31_DIFF_END_MINING = 150974;
     int V31_FIX_DIFF = 151940;
     int V32_FIX_DIFF = 167343;
-    int V34_NEW_ALGO = 167650;
+    int V34_NEW_ALGO = 187200;
     double V34_MINING_REWARD = 0.2;
     int V34_MIN_DIFF = 17;
     String MAX_TARGET_v30 = "00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
@@ -310,5 +310,7 @@ public interface Seting {
     double V28_REWARD = 5;
     double COEFFICIENT = 3;
     //test
+
+    int STAKING_WINNER = 130;
 
 }
