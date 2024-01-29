@@ -330,15 +330,18 @@ public class UtilsUse {
     /**Вычисляет случайное число на основе предыдущего хэша и текущего и чем выше число, тем выше
      * значимость.*/
     public static int bigRandomWinner( Block actual) {
+        // Конкатенация двух хешей
+        String combinedHash = actual.getHashBlock() + actual.getPreviousHash();
 
-//         Суммирование хешей
-        String combinedHash = actual.getPreviousHash() + actual.getHashBlock(); // предполагается, что у блока есть метод getHash
-        BigInteger seed = new BigInteger(combinedHash.getBytes());
+        // Преобразование объединенных хешей в BigInteger
+        BigInteger hashAsNumber = new BigInteger(combinedHash, 16);
 
-        // Генерация числа в диапазоне от 1 до limit
-        BigInteger candidateValue = new BigInteger(Seting.STAKING_WINNER, new SecureRandom(seed.toByteArray()));
-        // Получение числа в диапазоне от 0 до 130
-        int result = candidateValue.mod(new BigInteger("131")).intValue();
+        // Использование BigInteger как seed для детерминированного генератора случайных чисел
+        Random deterministicRandom = new Random(hashAsNumber.longValue());
+
+        // Генерация случайного числа в диапазоне от 0 до 130
+        int limit = 131; // Предполагается, что limit это максимальное значение + 1
+        int result = deterministicRandom.nextInt(limit);
         return result;
 
     }

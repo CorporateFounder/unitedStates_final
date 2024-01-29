@@ -16,6 +16,7 @@ import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Account;
+import International_Trade_Union.model.LiteVersionWiner;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
@@ -63,8 +64,9 @@ public class Testing {
         String json = "{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":14.5,\"digitalStockBalance\":14.5,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICJUELZJqVWgIOxaPc8gOJPf6Iq9WDX0QCdTDiHXTP92AiEAkUfXC5Eouj64J7WPXkjhxoWXTw+AY/yU/SQ05+R7VRk=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"25giJad2YEEJqecPsbLkiHBp3KgVpCipENzK1rNZuPbYg\",\"digitalDollar\":145.0,\"digitalStockBalance\":145.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCJSq59MSO/2B9w84dCVxmWRggxLFB1u2e1+m001mvTSAIhAMKnH3VGhgBO0mDdvr5eim6xX4J9E/jO3fvQWgSvzTwK\"}],\"previousHash\":\"a56a0e519e1630a1c0580481430aa00621001001020810200805830387440837\",\"minerAddress\":\"25giJad2YEEJqecPsbLkiHBp3KgVpCipENzK1rNZuPbYg\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":24319438452809543,\"minerRewards\":0.0,\"hashCompexity\":26,\"timestamp\":1704555268000,\"index\":167337,\"hashBlock\":\"48135472000c814010085824170a4a0f80520c62788310154480885018c1c803\"}";
         List<Block> blocks = new ArrayList<Block>();
         blocks.add(UtilsJson.jsonToBLock(json));
-        int num = UtilsUse.bigRandomWinner(blocks.get(0));
-        System.out.println("num: " + num);
+        blocks.get(0).setHashBlock("2d9352e515c20881c6090d021486e8502088003920d468c035518601a2d04840");
+        blocks.get(0).setPreviousHash("2010851053840226a8500bab29122606914d9d062ab0240820c202518623861c");
+
     }
 
 
