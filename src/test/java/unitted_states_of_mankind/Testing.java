@@ -58,6 +58,15 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class Testing {
 
+    @Test
+    public void random() throws JsonProcessingException {
+        String json = "{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":14.5,\"digitalStockBalance\":14.5,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICJUELZJqVWgIOxaPc8gOJPf6Iq9WDX0QCdTDiHXTP92AiEAkUfXC5Eouj64J7WPXkjhxoWXTw+AY/yU/SQ05+R7VRk=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"25giJad2YEEJqecPsbLkiHBp3KgVpCipENzK1rNZuPbYg\",\"digitalDollar\":145.0,\"digitalStockBalance\":145.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCJSq59MSO/2B9w84dCVxmWRggxLFB1u2e1+m001mvTSAIhAMKnH3VGhgBO0mDdvr5eim6xX4J9E/jO3fvQWgSvzTwK\"}],\"previousHash\":\"a56a0e519e1630a1c0580481430aa00621001001020810200805830387440837\",\"minerAddress\":\"25giJad2YEEJqecPsbLkiHBp3KgVpCipENzK1rNZuPbYg\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":24319438452809543,\"minerRewards\":0.0,\"hashCompexity\":26,\"timestamp\":1704555268000,\"index\":167337,\"hashBlock\":\"48135472000c814010085824170a4a0f80520c62788310154480885018c1c803\"}";
+        List<Block> blocks = new ArrayList<Block>();
+        blocks.add(UtilsJson.jsonToBLock(json));
+        int num = UtilsUse.bigRandomWinner(blocks.get(0));
+        System.out.println("num: " + num);
+    }
+
 
     @Test
     public void sendBlock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
