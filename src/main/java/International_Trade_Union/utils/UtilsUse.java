@@ -331,7 +331,7 @@ public class UtilsUse {
      * значимость.*/
     public static int bigRandomWinner( Block actual) {
         // Конкатенация двух хешей
-        String combinedHash = actual.getHashBlock() + actual.getPreviousHash();
+        String combinedHash = actual.getHashBlock();
 
         // Преобразование объединенных хешей в BigInteger
         BigInteger hashAsNumber = new BigInteger(combinedHash, 16);
