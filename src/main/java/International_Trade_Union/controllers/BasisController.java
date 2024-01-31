@@ -423,10 +423,10 @@ public class BasisController {
             DataShortBlockchainInformation actual,
             DataShortBlockchainInformation global) {
          return global.getSize() > actual.getSize()
-                && global.getHashCount() > actual.getHashCount()
-                && global.getTransactions() > actual.getTransactions()
-                && global.getStaking() > actual.getStaking()
-                && global.getBigRandomNumber() > actual.getBigRandomNumber();
+                && global.getHashCount() >= actual.getHashCount()
+                && global.getTransactions() >= actual.getTransactions()
+                && global.getStaking() >= actual.getStaking()
+                && global.getBigRandomNumber() >= actual.getBigRandomNumber();
 
         //test
 //        return global.getSize() > actual.getSize();

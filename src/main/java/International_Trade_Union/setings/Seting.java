@@ -311,6 +311,5 @@ public interface Seting {
     double COEFFICIENT = 3;
     //test
 
-    int STAKING_WINNER = 130;
 
 }

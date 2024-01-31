@@ -329,12 +329,19 @@ public class UtilsUse {
 
     /**Вычисляет случайное число на основе предыдущего хэша и текущего и чем выше число, тем выше
      * значимость.*/
+    /**Вычисляет случайное число на основе предыдущего хэша и текущего и чем выше число, тем выше
+     * значимость.*/
     public static int bigRandomWinner( Block actual) {
         // Конкатенация двух хешей
         String combinedHash = actual.getHashBlock();
 
+        if (actual == null || actual.getHashBlock() == null || actual.getHashBlock().isBlank() || actual.getHashBlock().isEmpty())
+            return 0;
         // Преобразование объединенных хешей в BigInteger
         BigInteger hashAsNumber = new BigInteger(combinedHash, 16);
+        if(hashAsNumber == null){
+            return 0;
+        }
 
         // Использование BigInteger как seed для детерминированного генератора случайных чисел
         Random deterministicRandom = new Random(hashAsNumber.longValue());
@@ -345,5 +352,4 @@ public class UtilsUse {
         return result;
 
     }
-
 }
