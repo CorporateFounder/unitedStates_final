@@ -349,6 +349,7 @@ public class UtilsUse {
         // Генерация случайного числа в диапазоне от 0 до 130
         int limit = 131; // Предполагается, что limit это максимальное значение + 1
         int result = deterministicRandom.nextInt(limit);
+        result = (int) (result + (actual.getHashCompexity() * 3));
         return result;
 
     }

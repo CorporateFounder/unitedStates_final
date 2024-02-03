@@ -87,6 +87,13 @@ public class BlockService {
 
     }
 
+
+
+
+//    public static void deleteEntityBlocksAndRelatedData(Long threshold) {
+//        blockService.deleteBySpecialIndexGreaterThanOrEqualTo(threshold);
+//    }
+
     public static long sizeBlock(){
         return  blockService.count();
     }

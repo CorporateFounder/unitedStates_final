@@ -69,6 +69,7 @@ public class MainController {
        } catch (Exception e) {
            try {
                BasisController.resolve_conflicts();
+
            } catch (NoSuchAlgorithmException ex) {
                throw new RuntimeException(ex);
            } catch (InvalidKeySpecException ex) {

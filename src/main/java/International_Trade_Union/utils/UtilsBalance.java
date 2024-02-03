@@ -128,6 +128,9 @@ public class UtilsBalance {
                 if (sendTrue) {
                     balances.put(sender.getAccount(), sender);
                     balances.put(customer.getAccount(), customer);
+                    miner.setDigitalDollarBalance(miner.getDigitalDollarBalance() - transaction.getBonusForMiner());
+                    balances.put(miner.getAccount(), miner);
+
                 }
 
             }
@@ -225,6 +228,7 @@ public class UtilsBalance {
                         transaction.getDigitalStockBalance(),
                         transaction.getBonusForMiner(),
                         transaction.getVoteEnum());
+
                 Account miner = balances.get(block.getMinerAddress());
                 miner = miner == null?
                         new Account(block.getMinerAddress(),
@@ -238,6 +242,8 @@ public class UtilsBalance {
                 if (sendTrue) {
                     balances.put(sender.getAccount(), sender);
                     balances.put(customer.getAccount(), customer);
+                    miner.setDigitalDollarBalance(miner.getDigitalDollarBalance() + transaction.getBonusForMiner());
+                    balances.put(miner.getAccount(), miner);
                 }
 
             }
@@ -337,6 +343,7 @@ public class UtilsBalance {
                 senderAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance() - digitalDollar);
                 senderAddress.setDigitalStakingBalance(senderAddress.getDigitalStakingBalance() + digitalDollar);
             }
+
 
 
         } else if (senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {

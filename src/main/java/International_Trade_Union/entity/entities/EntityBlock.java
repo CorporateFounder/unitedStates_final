@@ -42,7 +42,7 @@ public class EntityBlock {
         this.hashBlock = hashBlock;
         this.specialIndex = specialIndex;
     }
-    @OneToMany(mappedBy = "entityBlock", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "entityBlock", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EntityDtoTransaction> dtoTransactions;
     private String previousHash;
     private String minerAddress;
