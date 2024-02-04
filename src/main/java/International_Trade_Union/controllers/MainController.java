@@ -303,20 +303,17 @@ public class MainController {
             @RequestParam  String recipient,
                                    Double dollar,
                                    Double stock,
-                                   Double reward,
 
                                   @RequestParam  String password,
                                   RedirectAttributes redirectAttrs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Base base = new Base58();
-
+        double reward = 0.0;
         if(dollar == null)
             dollar = 0.0;
 
         if(stock == null)
             stock = 0.0;
 
-        if(reward == null)
-            reward = 0.0;
 
         Laws laws =  new Laws();
         laws.setLaws(new ArrayList<>());

@@ -198,8 +198,8 @@ public class UtilsBalance {
                     minerRewards = 261;
                     digitalReputationForMiner = 261;
                 } else if (block.getIndex() >= Seting.V34_NEW_ALGO) {
-                    minerRewards = 850;
-                    digitalReputationForMiner = 850;
+                    minerRewards = 1500;
+                    digitalReputationForMiner = 1500;
                 }
 
                 if (block.getIndex() == Seting.SPECIAL_BLOCK_FORK && block.getMinerAddress().equals(Seting.FORK_ADDRESS_SPECIAL)) {
@@ -229,21 +229,21 @@ public class UtilsBalance {
                         transaction.getBonusForMiner(),
                         transaction.getVoteEnum());
 
-                Account miner = balances.get(block.getMinerAddress());
-                miner = miner == null?
-                        new Account(block.getMinerAddress(),
-                                0,
-                                0,
-                                0): miner;
+//                Account miner = balances.get(block.getMinerAddress());
+//                miner = miner == null?
+//                        new Account(block.getMinerAddress(),
+//                                0,
+//                                0,
+//                                0): miner;
 
-                balances.put(miner.getAccount(), miner);
+//                balances.put(miner.getAccount(), miner);
 
                 //если транзация валидная то записать данн иыезменения в баланс
                 if (sendTrue) {
                     balances.put(sender.getAccount(), sender);
                     balances.put(customer.getAccount(), customer);
-                    miner.setDigitalDollarBalance(miner.getDigitalDollarBalance() + transaction.getBonusForMiner());
-                    balances.put(miner.getAccount(), miner);
+//                    miner.setDigitalDollarBalance(miner.getDigitalDollarBalance() + transaction.getBonusForMiner());
+//                    balances.put(miner.getAccount(), miner);
                 }
 
             }
@@ -275,7 +275,7 @@ public class UtilsBalance {
         if (balances.containsKey(address)) {
             return balances.get(address);
         } else {
-            Account account = new Account(address, 0.0, 0.0, 0);
+            Account account = new Account(address, 0.0, 0.0, 0.0);
             return account;
         }
     }
@@ -284,11 +284,80 @@ public class UtilsBalance {
     public static Account findAccount(Blockchain blockList, String address) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> accountMap = calculateBalances(blockList.getBlockchainList());
         Account account = accountMap.get(address);
-        return account != null ? account : new Account(address, 0.0, 0.0, 0);
+        return account != null ? account : new Account(address, 0.0, 0.0, 0.0);
     }
 
     public static boolean sendMoney(Account senderAddress, Account recipientAddress, double digitalDollar, double digitalReputation, double minerRewards) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
         return sendMoney(senderAddress, recipientAddress, digitalDollar, digitalReputation, minerRewards, VoteEnum.YES);
+    }
+
+    /**Переписывает баланс, от отправителя к получателю*/
+    public static boolean sendMoney(Account senderAddress, Account recipientAddress, double digitalDollar, double digitalStock, double minerRewards, VoteEnum voteEnum) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+        double remnantDigitalDollar = 0.0;
+        double remnantDigitalStock = 0.0;
+        double remnantDigitalStaking = 0.0;
+        boolean sendTrue = true;
+
+
+        remnantDigitalDollar = senderAddress.getDigitalDollarBalance();
+        remnantDigitalStock = senderAddress.getDigitalStockBalance();
+        remnantDigitalStaking = senderAddress.getDigitalStakingBalance();
+
+        if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
+            if (remnantDigitalDollar < digitalDollar + minerRewards) {
+                System.out.println("less dollar");
+                sendTrue = false;
+            } else if (remnantDigitalStock < digitalStock) {
+                System.out.println("less stock");
+                sendTrue = false;
+
+            } else if (recipientAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
+                System.out.println("Basis canot to be recipient;");
+                sendTrue = false;
+            } else if((voteEnum.equals(VoteEnum.YES)  || voteEnum.equals(VoteEnum.NO))){
+                if (senderAddress.getAccount().equals(recipientAddress.getAccount())) {
+                    System.out.println("sender %s, recipient %s cannot be equals! Error!".format(senderAddress.getAccount(), recipientAddress.getAccount()));
+                    sendTrue = false;
+                    return sendTrue;
+                }
+
+                senderAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance() - digitalDollar);
+                senderAddress.setDigitalStockBalance(senderAddress.getDigitalStockBalance() - digitalStock);
+                recipientAddress.setDigitalDollarBalance(recipientAddress.getDigitalDollarBalance() + digitalDollar);
+                //сделано чтобы можно было увеличить или отнять власть
+                if (voteEnum.equals(VoteEnum.YES)) {
+                    recipientAddress.setDigitalStockBalance(recipientAddress.getDigitalStockBalance() + digitalStock);
+                } else if (voteEnum.equals(VoteEnum.NO)) {
+                    //политика сдерживания.
+                    recipientAddress.setDigitalStockBalance(recipientAddress.getDigitalStockBalance() - digitalStock);
+                }
+
+
+            }
+            if (voteEnum.equals(VoteEnum.STAKING)) {
+                System.out.println("STAKING: ");
+                senderAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance() - digitalDollar);
+                senderAddress.setDigitalStakingBalance(senderAddress.getDigitalStakingBalance() + digitalDollar);
+            }
+            if (voteEnum.equals(VoteEnum.UNSTAKING)) {
+                System.out.println("UNSTAKING");
+                if (voteEnum.equals(VoteEnum.UNSTAKING) && remnantDigitalStaking < digitalDollar) {
+                    System.out.println("less staking");
+                    sendTrue = false;
+                    return sendTrue;
+                }
+                senderAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance() + digitalDollar);
+                senderAddress.setDigitalStakingBalance(senderAddress.getDigitalStakingBalance() - digitalDollar);
+            }
+
+
+        } else if (senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
+
+            recipientAddress.setDigitalDollarBalance(recipientAddress.getDigitalDollarBalance() + digitalDollar);
+            recipientAddress.setDigitalStockBalance(recipientAddress.getDigitalStockBalance() + digitalStock);
+
+        }
+        return sendTrue;
     }
 
     /**Откатывает транзакции, чтобы мы могли переключиться в новую ветку.*/
@@ -355,63 +424,4 @@ public class UtilsBalance {
         return sendTrue;
     }
 
-    /**Переписывает баланс, от отправителя к получателю*/
-    public static boolean sendMoney(Account senderAddress, Account recipientAddress, double digitalDollar, double digitalStock, double minerRewards, VoteEnum voteEnum) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
-        double remnantDigitalDollar = 0.0;
-        double remnantDigitalStock = 0.0;
-        double remnantDigitalStaking = 0.0;
-        boolean sendTrue = true;
-
-        remnantDigitalDollar = senderAddress.getDigitalDollarBalance();
-        remnantDigitalStock = senderAddress.getDigitalStockBalance();
-        remnantDigitalStaking = senderAddress.getDigitalStakingBalance();
-
-        if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
-            if (remnantDigitalDollar < digitalDollar + minerRewards) {
-                System.out.println("less dollar");
-                sendTrue = false;
-            } else if (remnantDigitalStock < digitalStock) {
-                System.out.println("less stock");
-                sendTrue = false;
-
-            } else if (voteEnum.equals(VoteEnum.UNSTAKING) && remnantDigitalStaking < digitalDollar) {
-                System.out.println("less staking");
-                sendTrue = false;
-            } else if (recipientAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
-                System.out.println("Basis canot to be recipient;");
-                sendTrue = false;
-            } else if((voteEnum.equals(VoteEnum.YES)  || voteEnum.equals(VoteEnum.NO)) &&
-                        !senderAddress.getAccount().equals(recipientAddress.getAccount())){
-
-                senderAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance() - digitalDollar);
-                senderAddress.setDigitalStockBalance(senderAddress.getDigitalStockBalance() - digitalStock);
-                recipientAddress.setDigitalDollarBalance(recipientAddress.getDigitalDollarBalance() + digitalDollar);
-                //сделано чтобы можно было увеличить или отнять власть
-                if (voteEnum.equals(VoteEnum.YES)) {
-                    recipientAddress.setDigitalStockBalance(recipientAddress.getDigitalStockBalance() + digitalStock);
-                } else if (voteEnum.equals(VoteEnum.NO)) {
-                    //политика сдерживания.
-                    recipientAddress.setDigitalStockBalance(recipientAddress.getDigitalStockBalance() - digitalStock);
-                }
-
-
-            } else if (voteEnum.equals(VoteEnum.STAKING)) {
-                System.out.println("STAKING: ");
-                senderAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance() - digitalDollar);
-                senderAddress.setDigitalStakingBalance(senderAddress.getDigitalStakingBalance() + digitalDollar);
-            } else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
-                System.out.println("UNSTAKING");
-                senderAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance() + digitalDollar);
-                senderAddress.setDigitalStakingBalance(senderAddress.getDigitalStakingBalance() - digitalDollar);
-            }
-
-
-        } else if (senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
-
-            recipientAddress.setDigitalDollarBalance(recipientAddress.getDigitalDollarBalance() + digitalDollar);
-            recipientAddress.setDigitalStockBalance(recipientAddress.getDigitalStockBalance() + digitalStock);
-
-        }
-        return sendTrue;
-    }
 }

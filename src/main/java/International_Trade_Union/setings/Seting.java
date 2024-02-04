@@ -262,7 +262,7 @@ public interface Seting {
     int PORTION_BLOCK_TO_COMPLEXCITY = 600;
 
     //version
-    int VERSION = 35;
+    int VERSION = 36;
     String FORK_ADDRESS_SPECIAL = "jPjuyLStHTCzwYt9J7R5M7pGUKshfcmEbtE3zVvCBE52";
     double SPECIAL_FORK_BALANCE = 12000000;
 

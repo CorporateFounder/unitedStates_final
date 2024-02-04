@@ -76,21 +76,16 @@ public class MineController {
     public String staking(@RequestParam
                          String miner,
                          Double dollar,
-                         Double reward,
                          String password,
                          RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, SignatureException, IOException, InvalidKeyException {
         System.out.println("start staking controller");
 
         System.out.println("start post /miningTransaction");
         Base base = new Base58();
-
+        double reward = 0.0;
         if(dollar == null)
             dollar = 0.0;
 
-
-
-        if(reward == null)
-            reward = 0.0;
 
         Laws laws =  new Laws();
         laws.setLaws(new ArrayList<>());
@@ -171,7 +166,6 @@ public class MineController {
     public String unstaking(@RequestParam
                          String miner,
                          Double dollar,
-                         Double reward,
                          String password,
                          RedirectAttributes redirectAttrs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
@@ -179,14 +173,10 @@ public class MineController {
 
         System.out.println("start post /miningTransaction");
         Base base = new Base58();
-
+        double reward = 0.0;
         if(dollar == null)
             dollar = 0.0;
 
-
-
-        if(reward == null)
-            reward = 0.0;
 
         Laws laws =  new Laws();
         laws.setLaws(new ArrayList<>());
