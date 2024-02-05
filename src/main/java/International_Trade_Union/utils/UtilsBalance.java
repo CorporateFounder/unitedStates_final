@@ -334,12 +334,12 @@ public class UtilsBalance {
 
 
             }
-            if (voteEnum.equals(VoteEnum.STAKING)) {
+            else if (voteEnum.equals(VoteEnum.STAKING)) {
                 System.out.println("STAKING: ");
                 senderAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance() - digitalDollar);
                 senderAddress.setDigitalStakingBalance(senderAddress.getDigitalStakingBalance() + digitalDollar);
             }
-            if (voteEnum.equals(VoteEnum.UNSTAKING)) {
+            else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
                 System.out.println("UNSTAKING");
                 if (voteEnum.equals(VoteEnum.UNSTAKING) && remnantDigitalStaking < digitalDollar) {
                     System.out.println("less staking");

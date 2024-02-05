@@ -1651,7 +1651,7 @@ public class BasisController {
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
                 BlockchainFactoryEnum.ORIGINAL);
 
-
+        System.out.println("start delete file get block:");
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_BLOCKCHAIN_FILE);
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_BALANCE_FILE);
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
@@ -1659,16 +1659,20 @@ public class BasisController {
         UtilsFileSaveRead.deleteAllFiles(Seting.BALANCE_REPORT_ON_DESTROYED_COINS);
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
         UtilsFileSaveRead.deleteAllFiles(Seting.CURRENT_BUDGET_END_EMISSION);
+
 //        UtilsFileSaveRead.deleteAllFiles(Seting.H2_DB);
 //        UtilsCreatedDirectory.createPackage(Seting.H2_DB);
 //        UtilsCreatedDirectory.createPackage(Seting.H2_DB+"db.mv.db");
 
         UtilsFileSaveRead.deleteFile(Seting.TEMPORARY_BLOCKCHAIN_FILE);
+        System.out.println("finish delete file get block:");
         BlockService.deletedAll();
+        System.out.println("finish delete db get block:");
         List<Block> list = new ArrayList<>();
 
         Map<String, Account> balances = new HashMap<>();
 
+        System.out.println("START ADD BLOCK");
         while (true) {
             if (size > Seting.PORTION_DOWNLOAD) {
                 list = blockchain.subBlock(size, Seting.PORTION_DOWNLOAD);
