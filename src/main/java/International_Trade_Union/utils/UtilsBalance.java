@@ -85,8 +85,8 @@ public class UtilsBalance {
                     minerRewards = 261;
                     digitalReputationForMiner = 261;
                 } else if (block.getIndex() >= Seting.V34_NEW_ALGO) {
-                    minerRewards = 850;
-                    digitalReputationForMiner = 850;
+                    minerRewards = 1500;
+                    digitalReputationForMiner = 1500;
                 }
 
                 if (block.getIndex() == Seting.SPECIAL_BLOCK_FORK && block.getMinerAddress().equals(Seting.FORK_ADDRESS_SPECIAL)) {
@@ -115,21 +115,21 @@ public class UtilsBalance {
                         transaction.getDigitalStockBalance(),
                         transaction.getBonusForMiner(),
                         transaction.getVoteEnum());
-                Account miner = balances.get(block.getMinerAddress());
-                miner = miner == null?
-                        new Account(block.getMinerAddress(),
-                                0,
-                                0,
-                                0): miner;
+//                Account miner = balances.get(block.getMinerAddress());
+//                miner = miner == null?
+//                        new Account(block.getMinerAddress(),
+//                                0,
+//                                0,
+//                                0): miner;
 
-                balances.put(miner.getAccount(), miner);
+//                balances.put(miner.getAccount(), miner);
 
                 //если транзация валидная то записать данн иыезменения в баланс
                 if (sendTrue) {
                     balances.put(sender.getAccount(), sender);
                     balances.put(customer.getAccount(), customer);
-                    miner.setDigitalDollarBalance(miner.getDigitalDollarBalance() - transaction.getBonusForMiner());
-                    balances.put(miner.getAccount(), miner);
+//                    miner.setDigitalDollarBalance(miner.getDigitalDollarBalance() - transaction.getBonusForMiner());
+//                    balances.put(miner.getAccount(), miner);
 
                 }
 
