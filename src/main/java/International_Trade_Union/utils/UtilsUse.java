@@ -13,7 +13,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -322,8 +321,8 @@ public class UtilsUse {
     }
 
     public static long powerDiff(long diff) {
-        return (long) Math.pow(diff, 2);
-//        return diff;
+//        return (long) Math.pow(diff, 2);
+        return diff;
     }
 
 
@@ -331,7 +330,7 @@ public class UtilsUse {
      * значимость.*/
     /**Вычисляет случайное число на основе предыдущего хэша и текущего и чем выше число, тем выше
      * значимость.*/
-    public static int bigRandomWinner( Block actual) {
+    public static int bigRandomWinner( Block actual, Account miner) {
         // Конкатенация двух хешей
         String combinedHash = actual.getHashBlock();
 
@@ -349,8 +348,12 @@ public class UtilsUse {
         // Генерация случайного числа в диапазоне от 0 до 130
         int limit = 131; // Предполагается, что limit это максимальное значение + 1
         int result = deterministicRandom.nextInt(limit);
-        result = (int) (result + (actual.getHashCompexity() * 3));
+        result = (int) ((int) (result + (actual.getHashCompexity() * 4)) + calculateScore(miner.getDigitalStakingBalance(), 1));
         return result;
 
+    }
+    public static long calculateScore(double x, double x0) {
+        double score = Math.ceil(Math.log(x / x0) / Math.log(2));
+        return Math.min(400, (long) score);
     }
 }

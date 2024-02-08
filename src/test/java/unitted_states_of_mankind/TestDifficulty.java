@@ -23,27 +23,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static International_Trade_Union.controllers.BasisController.sendAllBlocksToStorage;
+
 import static International_Trade_Union.setings.Seting.BLOCK_GENERATION_INTERVAL;
 import static International_Trade_Union.setings.Seting.DIFFICULTY_ADJUSTMENT_INTERVAL;
 
 @SpringBootTest
 public class TestDifficulty {
 
-    @Test
-    public void sendBlock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        Block latestBlock = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":8.0,\"digitalStockBalance\":8.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIDqiS0qpZAkuH/jHel8ATMKS4vdGsMQGLc291b8S8skZAiBr+EX+H+alBlcYh+0LmFi7cHjz4i7fzzrrOMpGev7vBQ==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"mrvciisgWFrD4iu8n6BJA7Fber7mB5bxkJ5PjNrAuDWZ\",\"digitalDollar\":120.0,\"digitalStockBalance\":120.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIEhkOUrUnnrTrOgJZp33WGXk7sSP9bdH49yMAsMXIsrVAiEAjoiUoARIe20Y+C+wa316cfyLfshPqyxPnXlHpsZ7eGE=\"}],\"previousHash\":\"00e6f91ede5e5002ac61964725a236584c4493335933b940775d6c683cec43f7\",\"minerAddress\":\"mrvciisgWFrD4iu8n6BJA7Fber7mB5bxkJ5PjNrAuDWZ\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":25,\"minerRewards\":0.0,\"hashCompexity\":4,\"timestamp\":1694386776,\"index\":24859,\"hashBlock\":\"04ce9419132041dc05d5b059f4aa01d5c6b1fcd313fd2bfb0dbea082f4691d9b\"}");
-
-        Block test = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"25TjMCZzaQsRoGkJ61Nb8JFTVPiWN4GhSPrKFA3Y4g3WN\",\"digitalDollar\":400.0,\"digitalStockBalance\":400.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIH6jPXinUv60qjhnWccbxj1J3WO0w4qYau3JPBvrpKL8AiAu2jT2X09i3hkLVGe853Orbm+d8EGSjJcVug46wwMYIg==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":8.0,\"digitalStockBalance\":8.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCID3uKQVnp3CqHUJiLNeNLJUgmrA3DEdzxElKx7EPDZCZAiAkFNy0GPyTFAujInlReEdWd9aYMaxmnt1p5H1C6Ma/0A==\"}],\"previousHash\":\"000007dbfc74eabf4d7d06327f9cdac5f0fc47a9f0402a4d613fb04a948cfa80\",\"minerAddress\":\"25TjMCZzaQsRoGkJ61Nb8JFTVPiWN4GhSPrKFA3Y4g3WN\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":96756,\"minerRewards\":0.0,\"hashCompexity\":5,\"timestamp\":1689918281224,\"index\":20829,\"hashBlock\":\"00000d4b174a6ccf161ad92ec91dcf1fcbac4287a81c4053fe33083c5a5b143c\"}");
-        Blockchain blockchain = Mining.getBlockchain(
-                "C://testingBlock/",
-                BlockchainFactoryEnum.ORIGINAL);
-
-
-        List<Block> sends = new ArrayList<>();
-        sends.add(latestBlock);
-        sendAllBlocksToStorage(sends);
-    }
     @Test
     public void testDifficulty() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Block latestBlock = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":8.0,\"digitalStockBalance\":8.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIDqiS0qpZAkuH/jHel8ATMKS4vdGsMQGLc291b8S8skZAiBr+EX+H+alBlcYh+0LmFi7cHjz4i7fzzrrOMpGev7vBQ==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"mrvciisgWFrD4iu8n6BJA7Fber7mB5bxkJ5PjNrAuDWZ\",\"digitalDollar\":120.0,\"digitalStockBalance\":120.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIEhkOUrUnnrTrOgJZp33WGXk7sSP9bdH49yMAsMXIsrVAiEAjoiUoARIe20Y+C+wa316cfyLfshPqyxPnXlHpsZ7eGE=\"}],\"previousHash\":\"00e6f91ede5e5002ac61964725a236584c4493335933b940775d6c683cec43f7\",\"minerAddress\":\"mrvciisgWFrD4iu8n6BJA7Fber7mB5bxkJ5PjNrAuDWZ\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":25,\"minerRewards\":0.0,\"hashCompexity\":4,\"timestamp\":1694386776,\"index\":24858,\"hashBlock\":\"04ce9419132041dc05d5b059f4aa01d5c6b1fcd313fd2bfb0dbea082f4691d9b\"}");

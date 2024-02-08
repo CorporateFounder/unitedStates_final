@@ -6,6 +6,7 @@ import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.UtilsMining;
 import org.json.JSONException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -66,51 +67,8 @@ public class WebBasisController {
         return BasisController.getMinerShow();
     }
 
-    /**
-     * Returns true if 576 attempts to mine a block have been completed.
-     * localhost:8082/mining576
-     *
-     * Возвращает true, если завершены 576 попыток добыть блок.
-     * localhost:8082/mining576 */
-    @GetMapping("/mining576")
-    @ResponseBody
-    public boolean mining576(){
-        boolean result = true;
-        for (int i = 0; i < 576; i++) {
-            try {
-               BasisController.mining();
 
-            } catch (IllegalArgumentException e) {
-                System.out.println("BasisisController: constantMining find error:");
-                continue;
-            } catch (IOException e) {
-                System.out.println("BasisisController: constantMining find error: ");
-                continue;
-            } catch (JSONException e) {
-//                throw new RuntimeException(e);
-                continue;
-            } catch (NoSuchAlgorithmException e) {
-//                throw new RuntimeException(e);
-                continue;
-            } catch (InvalidKeySpecException e) {
-//                throw new RuntimeException(e);
-                continue;
-            } catch (SignatureException e) {
-//                throw new RuntimeException(e);
-                continue;
-            } catch (NoSuchProviderException e) {
-//                throw new RuntimeException(e);
-                continue;
-            } catch (InvalidKeyException e) {
-//                throw new RuntimeException(e);
-                continue;
-            } catch (CloneNotSupportedException e) {
-//                throw new RuntimeException(e);
-                continue;
-            }
-        }
-        return result;
-    }
+
 
     /**
      * The size of the local blockchain.

@@ -262,7 +262,7 @@ public interface Seting {
     int PORTION_BLOCK_TO_COMPLEXCITY = 600;
 
     //version
-    int VERSION = 37;
+    int VERSION = 39;
     String FORK_ADDRESS_SPECIAL = "jPjuyLStHTCzwYt9J7R5M7pGUKshfcmEbtE3zVvCBE52";
     double SPECIAL_FORK_BALANCE = 12000000;
 
@@ -309,6 +309,9 @@ public interface Seting {
     //фиксированная награда за блок 5 монет
     double V28_REWARD = 5;
     double COEFFICIENT = 3;
+    double ONE_HUNDRED_THOUSAND = 100000;
+
+
     //test
 
 
