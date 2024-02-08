@@ -515,7 +515,7 @@ public class UtilsResolving {
 
         //Удаляет блоки из неправильной ветки.
 //        BlockService.removeAllBlock(list);
-        blockService.deleteEntityBlocksAndRelatedData(list.get(0).getIndex());
+//        blockService.deleteEntityBlocksAndRelatedData(list.get(0).getIndex());
 
         List<EntityAccount> entityBalances = UtilsAccountToEntityAccount
                 .accountsToEntityAccounts(balances);

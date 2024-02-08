@@ -6,7 +6,7 @@ import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
-import International_Trade_Union.utils.UtilsMining;
+
 import org.json.JSONException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;

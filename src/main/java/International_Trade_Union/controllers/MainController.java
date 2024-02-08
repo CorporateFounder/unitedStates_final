@@ -68,8 +68,7 @@ public class MainController {
            }
        } catch (Exception e) {
            try {
-               BasisController basisController1 = new BasisController();
-               basisController1.resolve_conflicts();
+               BasisController.resolve_conflicts();
 
            } catch (NoSuchAlgorithmException ex) {
                throw new RuntimeException(ex);

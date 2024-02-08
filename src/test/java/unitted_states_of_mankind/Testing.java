@@ -69,10 +69,10 @@ public class Testing {
         Account miner = new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", 0, 0, 1000);
         int number = UtilsUse.bigRandomWinner(blocks.get(0),  miner);
         long score = UtilsUse.calculateScore(600000, 1);
-        System.out.println("score: " + score);
+//        System.out.println("score: " + score);
         System.out.println("number: " + number);
 
-        System.out.println("pow: " + Math.pow(19, 1.5));
+//        System.out.println("pow: " + Math.pow(19, 1.5));
 
     }
 

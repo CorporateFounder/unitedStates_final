@@ -54,9 +54,6 @@ import static International_Trade_Union.utils.UtilsBalance.rollbackCalculateBala
 public class BasisController {
     @Autowired
     BlockService blockService;
-    @Autowired
-    UtilsResolving utilsResolving;
-
 
 
 
