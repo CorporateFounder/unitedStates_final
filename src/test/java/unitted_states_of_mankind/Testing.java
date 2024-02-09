@@ -72,7 +72,7 @@ public class Testing {
             blocks.get(0).setPreviousHash("41c408c41718500200306b0200a10a040280e08f4d2844f30258a23eb9715490");
             Account miner = new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", 0, 0, 1000);
              number = UtilsUse.bigRandomWinner(blocks.get(0),  miner);
-             score = UtilsUse.calculateScore(600000, 1);
+             score = UtilsUse.calculateScore(0, 1);
         }
 
         System.out.println("score: " + score);

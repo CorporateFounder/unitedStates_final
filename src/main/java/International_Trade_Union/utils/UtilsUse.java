@@ -349,10 +349,14 @@ public class UtilsUse {
         int limit = 131; // Предполагается, что limit это максимальное значение + 1
         int result = deterministicRandom.nextInt(limit);
         result = (int) ((int) (result + (actual.getHashCompexity() * 4)) + calculateScore(miner.getDigitalStakingBalance(), 1));
+        //+ calculateScore(miner.getDigitalStakingBalance(), 1)
         return result;
 
     }
     public static long calculateScore(double x, double x0) {
+        if(x <= 0){
+            return 0;
+        }
         double score = Math.ceil(Math.log(x / x0) / Math.log(2));
         return Math.min(400, (long) score);
     }

@@ -101,6 +101,12 @@ public class Blockchain implements Cloneable {
      * TODO is not used.
      */
 
+    public static double stakingForDataShort(double staking){
+        if(staking <= 0){
+            return 0;
+        }
+        return staking / Seting.ONE_HUNDRED_THOUSAND;
+    }
     public static Map<String, Object> shortCheck2(Block prevBlock, Block block, DataShortBlockchainInformation data, List<Block> tempList, Map<String, Account> balances) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Map<String, Object> map = new HashMap<>();
         int size = (int) data.getSize();
@@ -139,7 +145,7 @@ public class Blockchain implements Cloneable {
         Account miner = balances.get(block.getMinerAddress());
         miner = miner != null? miner: new Account(block.getMinerAddress(), 0, 0, 0);
 
-        staking += miner.getDigitalStakingBalance() / Seting.ONE_HUNDRED_THOUSAND;
+        staking += stakingForDataShort(miner.getDigitalStakingBalance());
         tranasactions += block.getDtoTransactions().size();
         bigRandomNumber += UtilsUse.bigRandomWinner(block, miner);
 
@@ -222,7 +228,7 @@ public class Blockchain implements Cloneable {
                 miner = miner != null? miner: new Account(blocks.get(i).getMinerAddress(), 0, 0, 0);
                 System.out.println("shortCheck miner: " + miner);
 //                staking += miner.getDigitalStakingBalance();
-                staking += miner.getDigitalStakingBalance() / Seting.ONE_HUNDRED_THOUSAND;
+                staking += stakingForDataShort(miner.getDigitalStakingBalance());
                 bigRandomNumber += UtilsUse.bigRandomWinner(blocks.get(i), miner);
                 System.out.println("shortCheck: size: " + blocks.get(i).getIndex() + " validation: " + validation + " size: " + size);
 
@@ -298,7 +304,7 @@ public class Blockchain implements Cloneable {
                     balances = UtilsBalance.calculateBalance(balances, block, sign);
                     Account miner = balances.get(block.getMinerAddress());
                     miner = miner != null? miner: new Account(block.getMinerAddress(), 0, 0, 0);
-                    staking += miner.getDigitalStakingBalance() / Seting.ONE_HUNDRED_THOUSAND;
+                    staking += stakingForDataShort(miner.getDigitalStakingBalance());
                     transactions += block.getDtoTransactions().size();
                     bigRandomNumber += UtilsUse.bigRandomWinner(block, miner);
 
@@ -338,7 +344,7 @@ public class Blockchain implements Cloneable {
                 hashCount += UtilsUse.powerDiff(block.getHashCompexity());
                 balances = UtilsBalance.calculateBalance(balances, block, sign);
                 Account miner = balances.get(block.getMinerAddress());
-                staking += miner.getDigitalStakingBalance() / Seting.ONE_HUNDRED_THOUSAND;
+                staking += stakingForDataShort(miner.getDigitalStakingBalance());
 
                 transactions += block.getDtoTransactions().size();
                 bigRandomNumber += UtilsUse.bigRandomWinner(block, miner);
@@ -431,7 +437,7 @@ public class Blockchain implements Cloneable {
                     Account miner = balances.get(block.getMinerAddress());
                     miner = miner != null? miner: new Account(block.getMinerAddress(), 0, 0, 0);
 
-                    staking += miner.getDigitalStakingBalance() / Seting.ONE_HUNDRED_THOUSAND;
+                    staking += stakingForDataShort(miner.getDigitalStakingBalance());
                     transactions += block.getDtoTransactions().size();
                     bigRandomNumber += UtilsUse.bigRandomWinner(block, miner);
 
@@ -915,7 +921,7 @@ public class Blockchain implements Cloneable {
 
 
             hashcount -= UtilsUse.powerDiff(blocks.get(i).getHashCompexity());
-            staking -= balances.get(blocks.get(i).getMinerAddress()).getDigitalStakingBalance() / Seting.ONE_HUNDRED_THOUSAND;
+            staking -= stakingForDataShort(balances.get(blocks.get(i).getMinerAddress()).getDigitalStakingBalance() );
 
             tranasactions -= blocks.get(i).getDtoTransactions().size();
             bigRandomNumber -= UtilsUse.bigRandomWinner(blocks.get(i), balances.get(blocks.get(i).getMinerAddress()));
