@@ -55,6 +55,9 @@ public class BasisController {
     @Autowired
     BlockService blockService;
 
+    @Autowired
+    UtilsResolving utilsResolving;
+
 
 
     private static double minDollarRewards = 0;
@@ -2370,6 +2373,13 @@ public class BasisController {
     }
 
 
+
+    @GetMapping("/testResolving")
+    @ResponseBody
+    public String testResolving() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        utilsResolving.resolve3();
+        return "resolving test";
+    }
 }
 
 

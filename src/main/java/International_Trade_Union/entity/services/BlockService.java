@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -90,9 +91,10 @@ public class BlockService {
 
 
 
-//    public static void deleteEntityBlocksAndRelatedData(Long threshold) {
-//        blockService.deleteBySpecialIndexGreaterThanOrEqualTo(threshold);
-//    }
+    @Transactional
+    public  void deleteEntityBlocksAndRelatedData(Long threshold) {
+        blockService.deleteBySpecialIndexGreaterThanOrEqualTo(threshold);
+    }
 
     public static long sizeBlock(){
         return  blockService.count();
