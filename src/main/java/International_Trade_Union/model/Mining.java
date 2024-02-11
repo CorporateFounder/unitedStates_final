@@ -174,11 +174,16 @@ public class Mining {
                             continue cicle;
                         }
 
-                        if (account.getDigitalDollarBalance() < transaction.getDigitalDollar() + transaction.getBonusForMiner()) {
-                            System.out.println("sender don't have digital dollar: " + account.getAccount() + " balance: " + account.getDigitalDollarBalance());
-                            System.out.println("digital dollar for send: " + (transaction.getDigitalDollar() + transaction.getBonusForMiner()));
-                            continue cicle;
+                        if(transaction.getVoteEnum().equals(VoteEnum.STAKING)
+                                || transaction.getVoteEnum().equals(VoteEnum.YES)
+                                || transaction.getVoteEnum().equals(VoteEnum.NO) ){
+                            if (account.getDigitalDollarBalance() < transaction.getDigitalDollar() + transaction.getBonusForMiner()) {
+                                System.out.println("sender don't have digital dollar: " + account.getAccount() + " balance: " + account.getDigitalDollarBalance());
+                                System.out.println("digital dollar for send: " + (transaction.getDigitalDollar() + transaction.getBonusForMiner()));
+                                continue cicle;
+                            }
                         }
+
                         if (account.getDigitalStockBalance() < transaction.getDigitalStockBalance()) {
                             System.out.println("sender don't have digital reputation: " + account.getAccount() + " balance: " + account.getDigitalStockBalance());
                             System.out.println("digital reputation for send: " + (transaction.getDigitalDollar() + transaction.getBonusForMiner()));
