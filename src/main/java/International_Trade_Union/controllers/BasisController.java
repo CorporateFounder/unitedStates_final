@@ -1553,9 +1553,28 @@ public class BasisController {
 
         //записывает в базу h2,
         BlockService.saveAllBlock(list);
-        List<EntityAccount> entityBalances = UtilsAccountToEntityAccount
-                .accountsToEntityAccounts(balances);
-        BlockService.saveAccountAll(entityBalances);
+//        List<EntityAccount> entityBalances = UtilsAccountToEntityAccount
+//                .accountsToEntityAccounts(balances);
+//        BlockService.saveAccountAll(entityBalances);
+//
+        List<EntityAccount> entityAccounts = new ArrayList<>();
+        for (Map.Entry<String, Account> accountEntry : balances.entrySet()) {
+            if(accountEntry.getValue().getAccount() != null || !accountEntry.getValue().getAccount().isBlank()){
+                EntityAccount temp = BlockService.entityAccount(accountEntry.getValue().getAccount());
+                if(temp != null){
+                    temp.setDigitalDollarBalance(accountEntry.getValue().getDigitalDollarBalance());
+                    temp.setDigitalStockBalance(accountEntry.getValue().getDigitalStockBalance());
+                    temp.setDigitalStakingBalance(accountEntry.getValue().getDigitalStakingBalance());
+                    entityAccounts.add(temp);
+                }else {
+                    temp = UtilsAccountToEntityAccount.account(accountEntry.getValue());
+                    entityAccounts.add(temp);
+                }
+
+            }
+
+        }
+        BlockService.saveAccountAll(entityAccounts);
 
 
         //удаляет старый файл балансов
