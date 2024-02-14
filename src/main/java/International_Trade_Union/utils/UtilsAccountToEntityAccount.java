@@ -4,6 +4,7 @@ import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.model.Account;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,6 +26,14 @@ public class UtilsAccountToEntityAccount {
                 entityAccount.getDigitalStockBalance(),
                 entityAccount.getDigitalStakingBalance());
         return account;
+    }
+    public static Map<String, Account> entityAccountsToMapAccounts(List<EntityAccount> entityAccounts){
+        Map<String, Account> accountMap = new HashMap<>();
+        for (EntityAccount entityAccount : entityAccounts) {
+           Account account = entityAccountToAccount(entityAccount);
+           accountMap.put(account.getAccount(), account);
+        }
+        return accountMap;
     }
 
     public static List<EntityAccount> accountsToEntityAccounts(Map<String, Account> accountMap){

@@ -3,6 +3,7 @@ package International_Trade_Union.utils;
 
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.setings.Seting;
 
@@ -360,4 +361,67 @@ public class UtilsUse {
         double score = Math.ceil(Math.log(x / x0) / Math.log(2));
         return Math.min(400, (long) score);
     }
+
+    //позволяет получить список балансов, если баланс до калькуляции в addBlock отличается от
+    //баланса после изменения. Что позволяет добавлятьв h2 только те балансы которые изменились
+    public static Map<String, Account> differentAccount(Map<String, Account> first, Map<String, Account> second){
+        Map<String, Account> thirdMap = new HashMap<>();
+        for (Map.Entry<String, Account> entry : second.entrySet()) {
+            String key = entry.getKey();
+            Account accountInSecondMap = entry.getValue();
+            Account accountInFirstMap = first.get(key);
+
+            if (accountInFirstMap == null || areAccountsDifferent(accountInFirstMap, accountInSecondMap)) {
+                thirdMap.put(key, accountInSecondMap);
+            }
+        }
+        return thirdMap;
+    }
+
+    public static boolean areAccountsDifferent(Account account1, Account account2) {
+        // Здесь определите логику сравнения объектов Account по балансам или адресам
+        // Например:
+        return account1.getDigitalDollarBalance() != account2.getDigitalDollarBalance() ||
+                account1.getDigitalStockBalance() != account2.getDigitalStockBalance() ||
+                account1.getDigitalStakingBalance() != account2.getDigitalStakingBalance();
+    }
+
+
+    public static Map<String, Account> getEqualsKeyBalance(
+            Map<String, Account> tempBalance,
+            Map<String, Account> originalBalance){
+        Map<String, Account> filteredMap = new HashMap<>();
+
+        for (String key : tempBalance.keySet()) {
+            if (originalBalance.containsKey(key)) {
+                filteredMap.put(key, originalBalance.get(key));
+            }
+        }
+        return filteredMap;
+    }
+    public static List<EntityAccount> mergeAccounts(Map<String, Account> map, List<EntityAccount> db) {
+        for (Account account : map.values()) {
+            EntityAccount entityAccount = db.stream()
+                    .filter(e -> e.getAccount().equals(account.getAccount()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (entityAccount != null) {
+                entityAccount.setDigitalDollarBalance(account.getDigitalDollarBalance());
+                entityAccount.setDigitalStockBalance(account.getDigitalStockBalance());
+                entityAccount.setDigitalStakingBalance(account.getDigitalStakingBalance());
+            } else {
+                entityAccount = new EntityAccount(
+                        account.getAccount(),
+                        account.getDigitalDollarBalance(),
+                        account.getDigitalStockBalance(),
+                        account.getDigitalStakingBalance()
+                );
+                db.add(entityAccount);
+            }
+        }
+
+        return db;
+    }
+
 }

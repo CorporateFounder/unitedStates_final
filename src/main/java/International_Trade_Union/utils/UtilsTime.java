@@ -14,4 +14,8 @@ public class UtilsTime {
     String getUniversalTimestampString() {
         return ZonedDateTime.now(ZoneOffset.UTC).toString();
     }
+
+    public static long differentMillSecondTime(long first, long second){
+        return second - first;
+    }
 }

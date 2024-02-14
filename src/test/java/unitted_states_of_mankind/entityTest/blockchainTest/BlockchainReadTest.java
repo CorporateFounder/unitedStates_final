@@ -63,7 +63,7 @@ public class BlockchainReadTest {
 
     @Test
 //    @Ignore
-    public  void equalsBalanceFromFileEndReadTest() throws InvalidAlgorithmParameterException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public  void equalsBalanceFromFileEndReadTest() throws InvalidAlgorithmParameterException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         int blocks = (int) 144;
         Blockchain blockchainWithSave = BlockchainRead.getBlockchainSave(
                 blocks,

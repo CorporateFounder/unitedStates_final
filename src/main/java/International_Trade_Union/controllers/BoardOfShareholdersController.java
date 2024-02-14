@@ -7,6 +7,7 @@ import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.utils.SaveBalances;
+import International_Trade_Union.utils.UtilsAccountToEntityAccount;
 import International_Trade_Union.utils.UtilsBlockToEntityBlock;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

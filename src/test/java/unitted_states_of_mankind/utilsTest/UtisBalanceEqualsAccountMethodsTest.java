@@ -48,7 +48,7 @@ public class UtisBalanceEqualsAccountMethodsTest {
     }
 
     @Test
-    public void balanceTest() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public void balanceTest() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         System.out.println("size: " + blockchain.sizeBlockhain());
 
         String address = "";

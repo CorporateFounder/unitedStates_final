@@ -194,10 +194,14 @@ public class Blockchain implements Cloneable {
             Block prev = prevBlock.clone();
             List<Block> blockList = new ArrayList<>();
 
-            for (int i = 0; i < tempList.size(); i++) {
-                blockList.add(tempList.get(i).clone());
+            if(size < Seting.V34_NEW_ALGO){
+                for (int i = 0; i < tempList.size(); i++) {
+                    blockList.add(tempList.get(i).clone());
+                }
+                blockList = blockList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
             }
-            blockList = blockList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+
+
 
             System.out.println("shortCheck: blocks size: " + blocks.size() +
                     " 0: " + blocks.get(0).getIndex() + " bocks size: " + blocks.get(blocks.size() - 1).getIndex());
@@ -209,9 +213,12 @@ public class Blockchain implements Cloneable {
                     blockList.remove(0);
                 }
 
-                blockList = blockList.stream()
-                        .sorted(Comparator.comparing(Block::getIndex))
-                        .collect(Collectors.toList());
+                if(size < Seting.V34_NEW_ALGO){
+                    blockList = blockList.stream()
+                            .sorted(Comparator.comparing(Block::getIndex))
+                            .collect(Collectors.toList());
+                }
+
                 validation = UtilsBlock.validationOneBlock(
                         Seting.ADDRESS_FOUNDER,
                         prev,
@@ -441,10 +448,13 @@ public class Blockchain implements Cloneable {
                     transactions += block.getDtoTransactions().size();
                     bigRandomNumber += UtilsUse.bigRandomWinner(block, miner);
 
-                    tempList.add(prevBlock);
-                    if (tempList.size() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
-                        tempList.remove(0);
+                    if(size < Seting.V34_NEW_ALGO){
+                        tempList.add(prevBlock);
+                        if (tempList.size() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
+                            tempList.remove(0);
+                        }
                     }
+
                     valid = UtilsBlock.validationOneBlock(Seting.ADDRESS_FOUNDER,
                             prevBlock,
                             block,
