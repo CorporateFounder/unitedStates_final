@@ -676,12 +676,6 @@ public class UtilsResolving {
                                 start = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + 1; //вот здесь возможно сделать + 2
 
 
-//                                System.out.println("****************************************************");
-//                                System.out.println("sub.get(0): " + subBlocks.get(0));
-//                                System.out.println("sub.get(1): " + subBlocks.get(1));
-//                                System.out.println("size: " + subBlocks.size());
-//                                System.out.println("sub.get(size-1): " + subBlocks.get(subBlocks.size() - 1));
-//                                System.out.println("****************************************************");
 //                                balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
                                 balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts( BlockService.findAllAccounts());
 
