@@ -638,7 +638,10 @@ public class UtilsResolving {
                     //if the size from the storage is larger than on the local server, start checking
                     //если размер с хранилища больше чем на локальном сервере, начать проверку
                     System.out.println("resolve2 size: " + size + " blocks_current_size: " + blocks_current_size);
-                    if (size > blocks_current_size) {
+                    String jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
+                    System.out.println("jsonGlobalData: " + jsonGlobalData);
+                    DataShortBlockchainInformation global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
+                    if (isBig(BasisController.getShortDataBlockchain(), global)) {
                         System.out.println(":size from address: " + s + " upper than: " + size + ":blocks_current_size " + blocks_current_size);
                         //Test start algorithm
                         //600 последних блоков, для подсчета сложности, для последнего блока.
