@@ -304,7 +304,8 @@ public class LawsController {
 
         Map<String, Account> balances = new HashMap<>();
         //считывать баланс
-        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+//        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
 
         List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
                 UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
@@ -588,7 +589,9 @@ public class LawsController {
                 )
         );
         Map<String, Account> balances = new HashMap<>();
-        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+//        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+
 
 
         List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blocksList, Seting.BOARDS_BLOCK);
@@ -763,7 +766,9 @@ public class LawsController {
         model.addAttribute("title", "create law");
         Map<String, Account> balances = new HashMap<>();
         //считывать баланс
-        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+//        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+
         Account Budget = balances.get(Seting.BUDGET);
         if (Budget == null)
             Budget = new Account(Seting.BUDGET, 0, 0, 0);

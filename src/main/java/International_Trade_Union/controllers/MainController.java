@@ -5,6 +5,7 @@ import International_Trade_Union.entity.InfoDificultyBlockchain;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Mining;
@@ -67,25 +68,25 @@ public class MainController {
                UtilsFileSaveRead.save(stringJson, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
            }
        } catch (Exception e) {
-           try {
-               BasisController.resolve_conflicts();
-
-           } catch (NoSuchAlgorithmException ex) {
-               throw new RuntimeException(ex);
-           } catch (InvalidKeySpecException ex) {
-               throw new RuntimeException(ex);
-           } catch (IOException ex) {
-               throw new RuntimeException(ex);
-           } catch (SignatureException ex) {
-               throw new RuntimeException(ex);
-           } catch (NoSuchProviderException ex) {
-               throw new RuntimeException(ex);
-           } catch (InvalidKeyException ex) {
-               throw new RuntimeException(ex);
-           } catch (JSONException ex) {
-               throw new RuntimeException(ex);
-           }
-           throw new RuntimeException(e);
+//           try {
+//               BasisController.resolve_conflicts();
+//
+//           } catch (NoSuchAlgorithmException ex) {
+//               throw new RuntimeException(ex);
+//           } catch (InvalidKeySpecException ex) {
+//               throw new RuntimeException(ex);
+//           } catch (IOException ex) {
+//               throw new RuntimeException(ex);
+//           } catch (SignatureException ex) {
+//               throw new RuntimeException(ex);
+//           } catch (NoSuchProviderException ex) {
+//               throw new RuntimeException(ex);
+//           } catch (InvalidKeyException ex) {
+//               throw new RuntimeException(ex);
+//           } catch (JSONException ex) {
+//               throw new RuntimeException(ex);
+//           }
+//           throw new RuntimeException(e);
        }
     }
 
@@ -209,7 +210,9 @@ public class MainController {
             UtilsBlock.deleteFiles();
         }
         model.addAttribute("validation", validation);
-        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+//        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+
         Account account = UtilsBalance.getBalance(User.getUserAddress(), balances);
         model.addAttribute("account", account);
 

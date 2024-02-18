@@ -55,9 +55,9 @@ public class BasisController {
     @Autowired
     BlockService blockService;
 
+
     @Autowired
     UtilsResolving utilsResolving;
-
 
 
     private static double minDollarRewards = 0;
@@ -368,12 +368,18 @@ public class BasisController {
      * подключается к хранилищу и обновляет свой внутренний блокчейн
      */
     @GetMapping("/nodes/resolve")
-    public static synchronized int resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
+    public  synchronized int resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         System.out.println(":resolve_conflicts");
 
 
-        int result = resovle2();
-//
+//        int result = resovle2();
+        int result = utilsResolving.resovle2();
+        while (true){
+            result = utilsResolving.resovle2();
+            if (result >= 0){
+                break;
+            }
+        }
         return result;
     }
 
@@ -1124,7 +1130,7 @@ public class BasisController {
      * Updates the blockchain. Connects to the storage host and downloads if the host has a more up-to-date blockchain.
      * Обновляет блокчейн. Подключается к хосту хранилища и скачивает, если в на хосте более актуальный блокчейн.
      */
-    public static int resolve() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public  int resolve() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
         updating = true;
         Blockchain blockchain1 = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
@@ -1376,7 +1382,7 @@ public class BasisController {
                     System.out.println("temp size: " + temp.size());
 
                 } else {
-                    BasisController.getBlock();
+                   getBlock();
                 }
                 List<Block> temp = bigBlockchain.subBlock(blockchainSize, bigBlockchain.sizeBlockhain());
 
@@ -1503,16 +1509,16 @@ public class BasisController {
 //        addBlock3(tempBlock, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
         System.out.println("_____________________________________________");
         System.out.println("deleteBlock: ");
-        deleteBlocks.stream().forEach(t -> System.out.println(t.getIndex() + ":" + t.getHashBlock()));
+        deleteBlocks.stream().forEach(t-> System.out.println(t.getIndex() + ":" + t.getHashBlock()));
         System.out.println("_____________________________________________");
         System.out.println("tempBlock: ");
-        tempBlock.stream().filter(t -> t.getIndex() < deleteBlocks.get(deleteBlocks.size() - 1).getIndex())
-                .forEach(t -> System.out.println(t.getIndex() + ":" + t.getHashBlock()));
+        tempBlock.stream().filter(t->t.getIndex() < deleteBlocks.get(deleteBlocks.size()-1).getIndex())
+                .forEach(t-> System.out.println(t.getIndex() + ":" + t.getHashBlock()));
         System.out.println("_____________________________________________");
         System.out.println("blockFrom Db:");
-        for (int i = (int) deleteBlocks.get(0).getIndex(); i < deleteBlocks.get(deleteBlocks.size() - 1).getIndex() + 1; i++) {
-            EntityBlock entityBlock = BlockService.findBySpecialIndex(i);
-            System.out.println(entityBlock.getSpecialIndex() + ":" + entityBlock.getHashBlock());
+        for (int i = (int) deleteBlocks.get(0).getIndex(); i < deleteBlocks.get(deleteBlocks.size()-1).getIndex()+1; i++) {
+           EntityBlock entityBlock = BlockService.findBySpecialIndex(i);
+            System.out.println(entityBlock.getSpecialIndex() + ":" +entityBlock.getHashBlock());
         }
         System.out.println("------------------------------------------");
 
@@ -1663,7 +1669,7 @@ public class BasisController {
      * * recalculation of all files for the entire blockchain.
      */
 
-    public static void getBlock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+    public  void getBlock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         int size = 0;
 
         System.out.println("start get a block");
@@ -1698,12 +1704,12 @@ public class BasisController {
                 list = blockchain.subBlock(size, Seting.PORTION_DOWNLOAD);
                 list = list.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
 
-                addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
             } else {
                 list = blockchain.subBlock(size, blockchain.sizeBlockhain());
                 list = list.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
-                addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                 break;
             }
             Block block = list.get(list.size() - 1);
@@ -1729,7 +1735,7 @@ public class BasisController {
     @ResponseBody
     public ResponseEntity getBLock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         System.out.println("start recalculating blockchain");
-        BasisController.getBlock();
+        getBlock();
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -1758,6 +1764,7 @@ public class BasisController {
     /**
      * blockchain update. обновление блокчейна
      */
+
 
 
     /**
@@ -2053,7 +2060,7 @@ public class BasisController {
      * Mines a block and sends it to the server.
      */
 
-    public static synchronized String mining() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
+    public  synchronized String mining() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
         mining = true;
         try {
             findAddresses();
@@ -2070,8 +2077,10 @@ public class BasisController {
 
             Block prevBlock = tempBlockchain.get(tempBlockchain.size() - 1);
             long index = prevBlock.getIndex() + 1;
-            Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
 //            Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+            Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+
+
             Account miner = balances.get(User.getUserAddress());
             minerShow = miner;
 
@@ -2103,8 +2112,9 @@ public class BasisController {
             }
             //считывает все балансы из файла.
             //reads all balances from a file.
-            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
 //            balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+
 
             String json = UtilsFileSaveRead.read(Seting.TEMPORARY_BLOCKCHAIN_FILE);
             if (json != null && !json.isEmpty()) {
@@ -2135,13 +2145,12 @@ public class BasisController {
 
                 //получить список балансов из файла. get a list of balances from a file.
                 List<String> signs = new ArrayList<>();
-//                balances = Mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain1, balances, signs);
-                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+                balances = Mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain1, balances, signs);
                 //удалить старые файлы баланса. delete old balance files.
-                Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
-
-                //сохранить балансы. maintain balances.
-                SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
+//                Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
+//
+//                //сохранить балансы. maintain balances.
+//                SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
 //
 
             }
@@ -2377,7 +2386,7 @@ public class BasisController {
      * Инициализирует мета данные о внутреннем блокчейне. Включая размер, блокчейна, целость и общую сложность.
      * Initializes meta data about the internal blockchain. Including size, blockchain, integrity and overall complexity.
      */
-    public static boolean utilsMethod() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+    public static boolean utilsMethod() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         boolean result = false;
         if (shortDataBlockchain.getSize() == 0
                 || !shortDataBlockchain.isValidation()
@@ -2396,10 +2405,18 @@ public class BasisController {
     }
 
 
+
     @GetMapping("/testResolving")
     @ResponseBody
     public String testResolving() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        utilsResolving.resovle2();
+        int result = utilsResolving.resovle2();
+        while (true){
+            result = utilsResolving.resovle2();
+            if(result >= 0){
+                break;
+            }
+
+        }
         return "resolving test";
     }
 
@@ -2429,33 +2446,32 @@ public class BasisController {
                     }
                 }
 
-               count++;
+                count++;
             }
             System.out.println("***************************************");
             System.out.println("from file: " + fromFile.size());
             System.out.println("from db: " + fromDb.size());
             System.out.println("check: " + check);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    @GetMapping("/test")
+    @GetMapping("/testSub")
     @ResponseBody
-    public String testing() throws CloneNotSupportedException {
-        long start = UtilsTime.getUniversalTimestamp();
-        Map<String, Account> fromDb = UtilsAccountToEntityAccount
-                .entityAccountsToMapAccounts(BlockService.findAllAccounts());
-        long finish = UtilsTime.getUniversalTimestamp();
-        System.out.println("time from db: " + UtilsTime.differentMillSecondTime(start, finish));
+    public String testing() throws CloneNotSupportedException, IOException {
 
+        long start = UtilsTime.getUniversalTimestamp();
+        BlockService.findBySpecialIndex(50000);
+        long finish = UtilsTime.getUniversalTimestamp();
+
+        System.out.println("from db: " + UtilsTime.differentMillSecondTime(start, finish));
         start = UtilsTime.getUniversalTimestamp();
-        Map<String, Account> clone = UtilsUse.balancesClone(fromDb);
+        Blockchain.indexFromFileBing(50000, Seting.ORIGINAL_BLOCKCHAIN_FILE);
         finish = UtilsTime.getUniversalTimestamp();
-        System.out.println("time from clone: " + UtilsTime.differentMillSecondTime(start, finish));
-        System.out.println("size fromDb: " + fromDb.size());
-        System.out.println("size clone: " + clone.size());
+
+        System.out.println("from file: " + UtilsTime.differentMillSecondTime(start, finish));
         return "finish test";
     }
 }

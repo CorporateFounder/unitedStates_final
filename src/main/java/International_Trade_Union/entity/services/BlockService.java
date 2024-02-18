@@ -10,6 +10,7 @@ import International_Trade_Union.entity.repository.EntityDtoTransactionRepositor
 import International_Trade_Union.entity.repository.EntityLawsRepository;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.utils.UtilsBlockToEntityBlock;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import java.io.IOException;
 import java.util.*;
@@ -142,7 +145,11 @@ public class BlockService {
 
 
 
+    @PersistenceContext
+    EntityManager entityManager;
     public void saveAccountAllF(List<EntityAccount> entityAccounts){
+        Session session = entityManager.unwrap(Session.class);
+        session.setJdbcBatchSize(50);
         List<EntityAccount> entityResult = new ArrayList<>();
         for (EntityAccount entityAccount : entityAccounts) {
             if(entityAccountRepository.findByAccount(entityAccount.getAccount()) != null){
@@ -154,8 +161,10 @@ public class BlockService {
                 entityResult.add(entityAccount);
             }
         }
+
         entityAccountRepository.saveAll(entityResult);
         entityAccountRepository.flush();
+        session.clear();
     }
     public static void saveAccountAll(List<EntityAccount> entityAccounts){
 

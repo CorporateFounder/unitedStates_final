@@ -3,12 +3,14 @@ package International_Trade_Union.controllers;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.statistics.Periud;
 import International_Trade_Union.statistics.Statistic;
 import International_Trade_Union.statistics.UtilsStatistics;
+import International_Trade_Union.utils.UtilsAccountToEntityAccount;
 import International_Trade_Union.utils.UtilsBalance;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,7 +60,9 @@ public class StatisticsController {
         List<String> signs = new ArrayList<>();
         for (Block block : blockchain.getBlockchainList()) {
             System.out.println("index: " + block.getIndex());
-            balances = UtilsBalance.calculateBalance(balances, block, signs);
+//            balances = UtilsBalance.calculateBalance(balances, block, signs);
+            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+
             if (block.getIndex() > 576 && block.getIndex() % periud.getPeriud() == 0) {
                 System.out.println("per index: " + block.getIndex() + ":"
                 +(block.getIndex()-periud.getPeriud()) + ": " + block.getIndex()+1);

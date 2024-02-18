@@ -431,7 +431,7 @@ public class UtilsResolving {
             System.out.println("shortDataBlockchain: " + BasisController.getShortDataBlockchain());
             temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
             System.out.println("rollback temp: " + temp);
-            Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(BlockService.findBySpecialIndex(different.get(different.size() - 1).getIndex() - 1));
+            Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(different.get(different.size() - 1).getIndex() - 1));
 
             different = different.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
             emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
@@ -479,7 +479,6 @@ public class UtilsResolving {
         System.out.println("__________________________________________________________");
         return temp;
     }
-
     public  void rollBackAddBlock3(List<Block> deleteBlocks, List<Block> saveBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         java.sql.Timestamp lastIndex = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
 
@@ -530,7 +529,7 @@ public class UtilsResolving {
 
         List<EntityAccount> entityBalances = UtilsAccountToEntityAccount
                 .accountsToEntityAccounts(balances);
-        BlockService.saveAccountAll(entityBalances);
+        blockService.saveAccountAll(entityBalances);
 
         //удаляет старый файл балансов
         Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
@@ -587,7 +586,7 @@ public class UtilsResolving {
         System.out.println("_____________________________________________");
         System.out.println("blockFrom Db:");
         for (int i = (int) deleteBlocks.get(0).getIndex(); i < deleteBlocks.get(deleteBlocks.size()-1).getIndex()+1; i++) {
-            EntityBlock entityBlock = BlockService.findBySpecialIndex(i);
+            EntityBlock entityBlock = blockService.findBySpecialIndex(i);
             System.out.println(entityBlock.getSpecialIndex() + ":" +entityBlock.getHashBlock());
         }
         System.out.println("------------------------------------------");
@@ -596,6 +595,7 @@ public class UtilsResolving {
 
 
     public  int resovle2() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+
         BasisController.setUpdating(true);
         int bigSize = 0;
         try {
@@ -608,7 +608,7 @@ public class UtilsResolving {
             //размер локального блокчейна
             int blocks_current_size = BasisController.getBlockchainSize();
 
-
+            EntityChain entityChain = null;
             System.out.println(" resolve2:local size: " + blocks_current_size);
 
             //адреса узлов.
@@ -679,21 +679,19 @@ public class UtilsResolving {
 //                                System.out.println("size: " + subBlocks.size());
 //                                System.out.println("sub.get(size-1): " + subBlocks.get(subBlocks.size() - 1));
 //                                System.out.println("****************************************************");
-                                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+//                                balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+                                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts( BlockService.findAllAccounts());
 
                                 //вычисляет сложность блока, для текущего блока, на основе предыдущих блоков.
                                 //select a block class for the current block, based on previous blocks.
-                                if(BasisController.getBlockchainSize()< Seting.V34_NEW_ALGO){
-                                    if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
-                                        lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
-                                                BlockService.findBySpecialIndexBetween(
-                                                        (BasisController.getPrevBlock().getIndex() + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-                                                        BasisController.getPrevBlock().getIndex() + 1
-                                                )
-                                        );
-                                    }
+                                if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
+                                    lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                                            BlockService.findBySpecialIndexBetween(
+                                                    (BasisController.getPrevBlock().getIndex() + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
+                                                    BasisController.getPrevBlock().getIndex() + 1
+                                            )
+                                    );
                                 }
-
 
 
                                 //класс мета данных блокчейна.
@@ -706,11 +704,7 @@ public class UtilsResolving {
                                     //checks downloaded blocks for integrity
                                     temp = Blockchain.shortCheck(
                                             BasisController.getPrevBlock(),
-                                            subBlocks,
-                                            BasisController.getShortDataBlockchain(),
-                                            lastDiff,
-                                            tempBalances,
-                                            sign);
+                                            subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                                     System.out.println("prevBlock: " + BasisController.getPrevBlock().getIndex());
                                 }
 
@@ -747,6 +741,7 @@ public class UtilsResolving {
                                 BasisController.setShortDataBlockchain(temp);
                                 //размер блокчейна в кошельке.
                                 //the size of the blockchain in the wallet.
+
                                 BasisController.setBlockchainSize((int) BasisController.getShortDataBlockchain().getSize());
                                 //валидность блокчейна в кошельке.
                                 //validity of the blockchain in the wallet.
@@ -777,27 +772,19 @@ public class UtilsResolving {
                                     subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
                                     System.out.println("2:download sub block: " + subBlocks.size());
 
+//                                    balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
                                     balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
-                                    if(BasisController.getBlockchainSize() < Seting.V34_NEW_ALGO){
-                                        if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
-                                            lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
-                                                    BlockService.findBySpecialIndexBetween(
-                                                            (BasisController.getPrevBlock().getIndex() + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-                                                            BasisController.getPrevBlock().getIndex() + 1
-                                                    )
-                                            );
-                                        }
+                                    if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
+                                        lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                                                BlockService.findBySpecialIndexBetween(
+                                                        (BasisController.getPrevBlock().getIndex() + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
+                                                        BasisController.getPrevBlock().getIndex() + 1
+                                                )
+                                        );
                                     }
 
-
                                     if (BasisController.getBlockchainSize() > 1) {
-                                        temp = Blockchain.shortCheck(
-                                                BasisController.getPrevBlock(),
-                                                subBlocks,
-                                                BasisController.getShortDataBlockchain(),
-                                                lastDiff,
-                                                tempBalances,
-                                                sign);
+                                        temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                                     }
 
 
@@ -817,7 +804,6 @@ public class UtilsResolving {
                                     BasisController.setShortDataBlockchain(temp);
                                     BasisController.setBlockchainSize((int) BasisController.getShortDataBlockchain().getSize());
                                     BasisController.setBlockchainValid(BasisController.getShortDataBlockchain().isValidation());
-//                                    prevBlock = Blockchain.indexFromFile(blockchainSize - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 //
                                     tempBlock = BlockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
                                     BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
@@ -842,30 +828,22 @@ public class UtilsResolving {
                             System.out.println("3:download sub block: " + subBlocks.size());
                             System.out.println("prev block:" + BasisController.getPrevBlock());
                             System.out.println("3: block " + subBlocks.get(0));
-                            tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+//                            tempBalances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+                            tempBalances  = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
                             List<String> sign = new ArrayList<>();
 
-                            if(BasisController.getBlockchainSize() < Seting.V34_NEW_ALGO){
-                                if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
-                                    lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
-                                            BlockService.findBySpecialIndexBetween(
-                                                    (BasisController.getPrevBlock().getIndex() + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
-                                                    BasisController.getPrevBlock().getIndex() + 1
-                                            )
-                                    );
-                                }
+                            if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
+                                lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                                        BlockService.findBySpecialIndexBetween(
+                                                (BasisController.getPrevBlock().getIndex() + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
+                                                BasisController.getPrevBlock().getIndex() + 1
+                                        )
+                                );
                             }
-
 
                             DataShortBlockchainInformation temp = new DataShortBlockchainInformation();
                             if (BasisController.getBlockchainSize() > 1) {
-                                temp = Blockchain.shortCheck(
-                                        BasisController.getPrevBlock(),
-                                        subBlocks,
-                                        BasisController.getShortDataBlockchain(),
-                                        lastDiff,
-                                        tempBalances,
-                                        sign);
+                                temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                             }
 
                             System.out.println("3: temp: " + temp);
@@ -882,6 +860,7 @@ public class UtilsResolving {
                                 System.out.println("check all file");
                                 temp = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
                             }
+
                             BasisController.setShortDataBlockchain(temp);
                             BasisController.setBlockchainSize((int) BasisController.getShortDataBlockchain().getSize());
                             BasisController.setBlockchainValid(BasisController.getShortDataBlockchain().isValidation());

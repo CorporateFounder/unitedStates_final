@@ -60,7 +60,9 @@ public class GovernmentController {
 
         Map<String, Account> balances = new HashMap<>();
         //считывать баланс
-        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+//        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+
 
         //Считывает из файла идентификационный номер закона, а так же его баланс. Закон так же может
         //выглядеть как баланс.
@@ -247,7 +249,9 @@ public class GovernmentController {
                 BlockchainFactoryEnum.ORIGINAL);
         Map<String, Account> balances = new HashMap<>();
         //считывать баланс
-        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+//        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+         balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+
 
         Directors directors = new Directors();
 

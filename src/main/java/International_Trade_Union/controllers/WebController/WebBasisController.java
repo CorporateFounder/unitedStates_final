@@ -73,45 +73,45 @@ public class WebBasisController {
      *
      * Возвращает true, если завершены 576 попыток добыть блок.
      * localhost:8082/mining576 */
-    @GetMapping("/mining576")
-    @ResponseBody
-    public boolean mining576(){
-        boolean result = true;
-        for (int i = 0; i < 576; i++) {
-            try {
-               BasisController.mining();
-
-            } catch (IllegalArgumentException e) {
-                System.out.println("BasisisController: constantMining find error:");
-                continue;
-            } catch (IOException e) {
-                System.out.println("BasisisController: constantMining find error: ");
-                continue;
-            } catch (JSONException e) {
-//                throw new RuntimeException(e);
-                continue;
-            } catch (NoSuchAlgorithmException e) {
-//                throw new RuntimeException(e);
-                continue;
-            } catch (InvalidKeySpecException e) {
-//                throw new RuntimeException(e);
-                continue;
-            } catch (SignatureException e) {
-//                throw new RuntimeException(e);
-                continue;
-            } catch (NoSuchProviderException e) {
-//                throw new RuntimeException(e);
-                continue;
-            } catch (InvalidKeyException e) {
-//                throw new RuntimeException(e);
-                continue;
-            } catch (CloneNotSupportedException e) {
-//                throw new RuntimeException(e);
-                continue;
-            }
-        }
-        return result;
-    }
+//    @GetMapping("/mining576")
+//    @ResponseBody
+//    public boolean mining576(){
+//        boolean result = true;
+//        for (int i = 0; i < 576; i++) {
+//            try {
+//               BasisController.mining();
+//
+//            } catch (IllegalArgumentException e) {
+//                System.out.println("BasisisController: constantMining find error:");
+//                continue;
+//            } catch (IOException e) {
+//                System.out.println("BasisisController: constantMining find error: ");
+//                continue;
+//            } catch (JSONException e) {
+////                throw new RuntimeException(e);
+//                continue;
+//            } catch (NoSuchAlgorithmException e) {
+////                throw new RuntimeException(e);
+//                continue;
+//            } catch (InvalidKeySpecException e) {
+////                throw new RuntimeException(e);
+//                continue;
+//            } catch (SignatureException e) {
+////                throw new RuntimeException(e);
+//                continue;
+//            } catch (NoSuchProviderException e) {
+////                throw new RuntimeException(e);
+//                continue;
+//            } catch (InvalidKeyException e) {
+////                throw new RuntimeException(e);
+//                continue;
+//            } catch (CloneNotSupportedException e) {
+////                throw new RuntimeException(e);
+//                continue;
+//            }
+//        }
+//        return result;
+//    }
 
     /**
      * The size of the local blockchain.

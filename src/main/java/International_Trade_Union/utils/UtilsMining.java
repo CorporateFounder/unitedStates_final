@@ -14,6 +14,7 @@ import International_Trade_Union.model.User;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;

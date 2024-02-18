@@ -5,8 +5,7 @@ package International_Trade_Union.utils;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.model.Account;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -84,4 +83,47 @@ public class SaveBalances {
                 .collect(Collectors.toMap(Account::getAccount, t->t, (v1, v2) -> v1));
         return balances;
     }
+
+    //написал SuprTrupr
+    //writed SuprTrupr
+    // Method for incrementally updating balances in the file
+    public static void updateBalance(String account, double newBalance, String filename) throws IOException {
+        File file = new File(filename);
+        File tempFile = new File("temp.txt");
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+        String line;
+        boolean accountUpdated = false;
+
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split(":"); // Assuming the line format is "account:balance"
+            String currentAccount = parts[0].trim();
+            double balance = Double.parseDouble(parts[1].trim());
+
+            if (currentAccount.equals(account)) {
+                // Update the balance for the specific account
+                writer.write(account + ":" + newBalance);
+                writer.newLine();
+                accountUpdated = true;
+            } else {
+                // Keep the current balance for other accounts
+                writer.write(line);
+                writer.newLine();
+            }
+        }
+
+        // If the account wasn't found, add a new line for the account with the new balance
+        if (!accountUpdated) {
+            writer.write(account + ":" + newBalance);
+            writer.newLine();
+        }
+
+        writer.close();
+        reader.close();
+
+        // Rename the temporary file to the original file name
+        tempFile.renameTo(file);
+    }
+
 }

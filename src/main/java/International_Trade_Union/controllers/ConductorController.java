@@ -65,7 +65,9 @@ public class ConductorController {
     @GetMapping("/account")
     @ResponseBody
     public Account account(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+//        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+
         Account account = UtilsBalance.getBalance(address, balances);
 
         return account;
@@ -78,7 +80,9 @@ public class ConductorController {
     @GetMapping("/dollar")
     @ResponseBody
     public Double dollar(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+//        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+
         Account account = UtilsBalance.getBalance(address, balances);
         return account.getDigitalDollarBalance();
     }
@@ -90,7 +94,9 @@ public class ConductorController {
     @GetMapping("/stock")
     @ResponseBody
     public Double stock(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+//        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+
         Account account = UtilsBalance.getBalance(address, balances);
         return account.getDigitalStockBalance();
     }

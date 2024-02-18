@@ -49,7 +49,9 @@ public class BoardOfShareholdersController {
         //Получение баланса.
         //Get the balance.
         Map<String, Account> balances = new HashMap<>();
-        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+//        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+
         List<Account> boardOfShareholders = new ArrayList<>();
         boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blocksList, Seting.BOARDS_BLOCK);
 

@@ -4,6 +4,7 @@ package International_Trade_Union.utils;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.base.Base;
@@ -12,7 +13,7 @@ import International_Trade_Union.vote.LawEligibleForParliamentaryApproval;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
 
-import java.io.IOException;
+import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -418,5 +419,9 @@ public class UtilsBalance {
         }
         return sendTrue;
     }
+
+
+
+
 
 }
