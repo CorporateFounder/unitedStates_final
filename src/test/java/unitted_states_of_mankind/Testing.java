@@ -16,8 +16,10 @@ import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Account;
+import International_Trade_Union.model.HostEndDataShortB;
 import International_Trade_Union.model.LiteVersionWiner;
 import International_Trade_Union.model.Mining;
+import International_Trade_Union.model.comparator.HostEndDataShortBComparator;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
@@ -59,6 +61,30 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class Testing {
 
+    @Test
+    public void TestHostComparator(){
+        List<HostEndDataShortB> hostEndDataShortBS = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < 10; i++) {
+            int size = random.nextInt(10);
+            int hashCount = random.nextInt(10);
+            double staking = random.nextDouble(10);
+            int trancaction = random.nextInt(10);
+            int big = i;
+            if(i >=7){
+                big = 7;
+            }
+            DataShortBlockchainInformation temp = new DataShortBlockchainInformation(size, true, hashCount, staking, trancaction, big);
+            HostEndDataShortB tempHost = new HostEndDataShortB("host: " + i, temp);
+            hostEndDataShortBS.add(tempHost);
+        }
+        System.out.println("before list: " );
+        hostEndDataShortBS.forEach(System.out::println);
+        System.out.println("____________________________________");
+        Collections.sort(hostEndDataShortBS, new HostEndDataShortBComparator());
+        System.out.println("after list: ");
+        hostEndDataShortBS.forEach(System.out::println);
+    }
     @Test
     public void random() throws JsonProcessingException {
         long score = 0;

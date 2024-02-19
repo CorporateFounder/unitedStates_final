@@ -8,7 +8,7 @@ import International_Trade_Union.utils.UtilsUse;
 import java.util.Set;
 
 public interface Seting {
-    boolean IS_TEST = true;
+    boolean IS_TEST = false;
 
     int HUNDRED_PERCENT = 100;
     // значение используется как константа года,
@@ -193,6 +193,10 @@ public interface Seting {
     String CURRENT_BUDGET_END_EMISSION = "/resources/budgetEndEmission/";
     String H2_DB = "/resources/h2DB/";
     String ORIGINAL_TEMPORARY_BLOCKS = "/resources/temporaryBlocks/";
+
+    String ORIGINAL_TEMP_SHORT = "/resources/temporaryBlocks/short/shortBlockchain.txt";
+    String ORIGINAL_TEMP_BALANCE = "/resources/temporaryBlocks/balance/";
+    String ORIGINAL_TEMP_BLOCKCHAIN = "/resources/temporaryBlocks/blockchain/";
     String ORIGINAL_TEMPORARY_SHORT = "/resources/short/shortBlockchain.txt";
 
 

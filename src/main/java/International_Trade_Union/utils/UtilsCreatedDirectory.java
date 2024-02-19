@@ -1,5 +1,6 @@
 package International_Trade_Union.utils;
 
+import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -25,6 +26,40 @@ public class UtilsCreatedDirectory {
 
         }
 
+    }
+
+    //удаление временных файлов
+    public static void deleteTempPackages(){
+        Mining.deleteFiles(Seting.ORIGINAL_TEMP_BLOCKCHAIN);
+        Mining.deleteFiles(Seting.ORIGINAL_TEMP_BALANCE);
+    }
+
+    //создание временного файла
+    public static void createTempPackages() throws IOException {
+        List<String> files = new ArrayList<>();
+
+        files.add(Seting.ORIGINAL_TEMP_SHORT);
+        files.add(Seting.ORIGINAL_TEMP_BALANCE);
+        files.add(Seting.ORIGINAL_TEMP_BLOCKCHAIN);
+
+        for (String s : files) {
+            // specify an abstract pathname in the File object
+            File f = new File(s);
+            if (!s.contains(".txt") && !f.exists()) {
+
+                System.out.println("is directory: " + Files.isDirectory(Paths.get(s)) + " : " + s);
+                Files.createDirectories(f.toPath());
+
+
+            } else if (!f.exists()) {
+                Files.createDirectories(Paths.get(s).getParent());
+                Files.createFile(Paths.get(s));
+
+
+            }
+
+
+        }
     }
 
     public static void createPackages() throws IOException {
@@ -54,6 +89,10 @@ public class UtilsCreatedDirectory {
         files.add(Seting.ORIGINAL_TEMPORARY_SHORT);
         files.add(Seting.ORIGINAL_ALL_CLASSIC_LAWS);
 
+        //временные файлы
+        files.add(Seting.ORIGINAL_TEMP_SHORT);
+        files.add(Seting.ORIGINAL_TEMP_BALANCE);
+        files.add(Seting.ORIGINAL_TEMP_BLOCKCHAIN);
 
         for (String s : files) {
             // specify an abstract pathname in the File object

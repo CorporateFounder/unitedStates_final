@@ -12,11 +12,14 @@ import International_Trade_Union.entity.repository.EntityAccountRepository;
 import International_Trade_Union.entity.repository.EntityBlockRepository;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Account;
+import International_Trade_Union.model.HostEndDataShortB;
 import International_Trade_Union.model.Mining;
+import International_Trade_Union.model.comparator.HostEndDataShortBComparator;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.vote.LawEligibleForParliamentaryApproval;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.UtilsLaws;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -608,15 +611,16 @@ public class UtilsResolving {
             //размер локального блокчейна
             int blocks_current_size = BasisController.getBlockchainSize();
 
-            EntityChain entityChain = null;
             System.out.println(" resolve2:local size: " + blocks_current_size);
 
             //адреса узлов.
             Set<String> nodesAll = getNodes();
+            List<HostEndDataShortB> sortPriorityHost = sortPriorityHost(nodesAll);
             System.out.println(":resolve2: size nodes: " + getNodes().size());
             //goes through all hosts (repositories) in search of the most up-to-date blockchain
             //проходит по всем хостам(хранилищам) в поисках самого актуального блокчейна
-            for (String s : nodesAll) {
+            for (HostEndDataShortB hostEndDataShortB : sortPriorityHost) {
+                String s = hostEndDataShortB.getHost();
                 //if the local address matches the host address, it skips
                 //если локальный адрес совпадает с адресом хоста, он пропускает
                 if (BasisController.getExcludedAddresses().contains(s)) {
@@ -1006,6 +1010,45 @@ public class UtilsResolving {
 
     }
 
+    public List<HostEndDataShortB> sortPriorityHost(Set<String> hosts) throws IOException, JSONException {
+        List<HostEndDataShortB> list = new ArrayList<>();
+        for (String s : hosts) {
+            String jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
+            System.out.println("jsonGlobalData: " + jsonGlobalData);
+            DataShortBlockchainInformation global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
+            if(global.isValidation()){
+                HostEndDataShortB dataShortB = new HostEndDataShortB(s, global);
+                list.add(dataShortB);
+            }
+
+        }
+
+        //сортировать здесь.
+        // сортировка
+        Collections.sort(list, new HostEndDataShortBComparator());
+        return list;
+    }
+
+   /**Записывает Блоки и баланс во временный файл.*/
+    public void tempAddBlock3(List<Block> originalBlocks, Map<String, Account> balances) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        String filename = Seting.ORIGINAL_TEMP_BLOCKCHAIN;
+        List<String> signs = new ArrayList<>();
+
+        Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
+
+        for (Block block : originalBlocks) {
+            System.out.println(" :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());
+            //записывает блок в файл.
+            UtilsBlock.saveBLock(block, filename);
+
+            //вычисляет баланс исходя из блока.
+            calculateBalance(balances, block, signs);
+
+        }
+
+        Mining.deleteFiles(Seting.ORIGINAL_TEMP_BALANCE);
+        SaveBalances.saveBalances(balances, Seting.ORIGINAL_TEMP_BALANCE);
+    }
 
 
 }
