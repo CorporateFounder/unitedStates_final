@@ -924,6 +924,7 @@ public class UtilsResolving {
 
             //адреса узлов.
             Set<String> nodesAll = getNodes();
+            //сортирует по приоритетности блокчейны
             List<HostEndDataShortB> sortPriorityHost = sortPriorityHost(nodesAll);
             System.out.println(":resolve2: size nodes: " + getNodes().size());
             //goes through all hosts (repositories) in search of the most up-to-date blockchain
@@ -1358,7 +1359,18 @@ public class UtilsResolving {
         Mining.deleteFiles(Seting.ORIGINAL_TEMP_BALANCE);
         SaveBalances.saveBalances(balances, Seting.ORIGINAL_TEMP_BALANCE);
     }
-
+    public boolean isRightDSB(DataShortBlockchainInformation actual, DataShortBlockchainInformation expected){
+        boolean result = true;
+        if(actual.isValidation() != expected.isValidation()
+        || actual.getSize() < expected.getSize()
+        || actual.getTransactions() < expected.getTransactions()
+        || actual.getStaking() < expected.getStaking()
+        || actual.getBigRandomNumber() < expected.getBigRandomNumber()
+        || actual.getHashCount() < expected.getHashCount()){
+            result = false;
+        }
+        return result;
+    }
 
 }
 
