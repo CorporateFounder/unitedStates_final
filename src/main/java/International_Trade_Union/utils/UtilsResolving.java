@@ -522,7 +522,9 @@ public class UtilsResolving {
 
         //для удаления баланса
         Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
-        for (Block block : deleteBlocks) {
+
+        for (int i = deleteBlocks.size() -1; i > 0; i--) {
+            Block block = deleteBlocks.get(i);
             System.out.println("rollBackAddBlock3 :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());
 
             EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);

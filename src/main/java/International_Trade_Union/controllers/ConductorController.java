@@ -37,6 +37,8 @@ public class ConductorController {
 
     @Autowired
     BlockService blockService;
+    @Autowired
+    UtilsResolving utilsResolving;
     /**
      * создает новую пару ключ и пароль.
      * creates a new key and password pair.
@@ -54,7 +56,7 @@ public class ConductorController {
     @GetMapping("/updating")
     @ResponseBody
     public Integer updating() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        return BasisController.resovle2();
+        return utilsResolving.resovle2();
     }
 
     /**
