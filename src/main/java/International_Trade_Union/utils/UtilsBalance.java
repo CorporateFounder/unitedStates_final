@@ -117,11 +117,11 @@ public class UtilsBalance {
                         transaction.getBonusForMiner(),
                         transaction.getVoteEnum());
 
+
                 //если транзация валидная то записать данн иыезменения в баланс
                 if (sendTrue) {
                     balances.put(sender.getAccount(), sender);
                     balances.put(customer.getAccount(), customer);
-
                 }
 
             }
@@ -364,10 +364,7 @@ public class UtilsBalance {
         remnantDigitalStaking = senderAddress.getDigitalStakingBalance();
 
         if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
-            if (remnantDigitalDollar < digitalDollar + minerRewards) {
-                System.out.println("less dollar");
-                sendTrue = false;
-            } else if (remnantDigitalStock < digitalStock) {
+            if (remnantDigitalStock < digitalStock) {
                 System.out.println("less stock");
                 sendTrue = false;
 
@@ -377,6 +374,11 @@ public class UtilsBalance {
             } else if((voteEnum.equals(VoteEnum.YES)  || voteEnum.equals(VoteEnum.NO))){
                 if (senderAddress.getAccount().equals(recipientAddress.getAccount())) {
                     System.out.println("sender %s, recipient %s cannot be equals! Error!".format(senderAddress.getAccount(), recipientAddress.getAccount()));
+                    sendTrue = false;
+                    return sendTrue;
+                }
+                if (remnantDigitalDollar < digitalDollar + minerRewards) {
+                    System.out.println("less dollar");
                     sendTrue = false;
                     return sendTrue;
                 }
@@ -396,12 +398,17 @@ public class UtilsBalance {
             }
             else if (voteEnum.equals(VoteEnum.STAKING)) {
                 System.out.println("STAKING: ");
+                if (remnantDigitalDollar < digitalDollar + minerRewards) {
+                    System.out.println("less dollar");
+                    sendTrue = false;
+                    return sendTrue;
+                }
                 senderAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance() + digitalDollar);
                 senderAddress.setDigitalStakingBalance(senderAddress.getDigitalStakingBalance() - digitalDollar);
             }
             else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
                 System.out.println("UNSTAKING");
-                if (voteEnum.equals(VoteEnum.UNSTAKING) && remnantDigitalStaking < digitalDollar) {
+                if (remnantDigitalStaking < digitalDollar) {
                     System.out.println("less staking");
                     sendTrue = false;
                     return sendTrue;

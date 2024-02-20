@@ -60,7 +60,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class Testing {
-
+    @Test
+    public void rollbackBalance() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQC23Ee96vKPRaBID1VxOI5PmZQ5kPJLqWbxNaWeIUlq1QIhAMcVWtMfIji46nDO45Hs4St+aIz+s3j8xRPMfym93hCe\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nxAuzm8Tok88yfG3PzmmWbhM3YBHrTeVfmu77F68aCDq\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDuQX+ULdW59bdQCDZpyCnUx7Ga3RpGmAozF/HVHlxMTQIhAOuhVz6DYKWyY0ynvlApg39CvOngF7vAhMmVHnmImgsW\"}],\"previousHash\":\"1421830246480013c2c46220688116b050ca4900ae40220f2039254642c6904e\",\"minerAddress\":\"nxAuzm8Tok88yfG3PzmmWbhM3YBHrTeVfmu77F68aCDq\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":3602879728011247,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708418887000,\"index\":202869,\"hashBlock\":\"40341099282032d8d00b5a0c1d8416500117018880f01d1503889825422c90d2\"}");
+        Map<String, Account> balance = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+        System.out.println("before: " + balance.get("nxAuzm8Tok88yfG3PzmmWbhM3YBHrTeVfmu77F68aCDq") );
+        balance = UtilsBalance.rollbackCalculateBalance(balance, block, new ArrayList<>());
+        System.out.println("after: " + balance.get("nxAuzm8Tok88yfG3PzmmWbhM3YBHrTeVfmu77F68aCDq") );
+    }
     @Test
     public void TestHostComparator(){
         List<HostEndDataShortB> hostEndDataShortBS = new ArrayList<>();

@@ -21,17 +21,15 @@ public class HostEndDataShortBComparator implements Comparator<HostEndDataShortB
         if (d1.getBigRandomNumber() != d2.getBigRandomNumber()) {
             return Integer.compare(d2.getBigRandomNumber(), d1.getBigRandomNumber());
         }
-
-        // Сравнение hashCount
-        if (d1.getHashCount() != d2.getHashCount()) {
-            return Long.compare(d2.getHashCount(), d1.getHashCount());
-        }
-
         // Сравнение staking
         if (d1.getStaking() != d2.getStaking()) {
             return Double.compare(d2.getStaking(), d1.getStaking());
         }
 
+        // Сравнение hashCount
+        if (d1.getHashCount() != d2.getHashCount()) {
+            return Long.compare(d2.getHashCount(), d1.getHashCount());
+        }
 
 
         // Сравнение transactions

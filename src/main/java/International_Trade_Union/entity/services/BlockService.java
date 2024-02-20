@@ -4,10 +4,7 @@ import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.entities.EntityBlock;
 import International_Trade_Union.entity.entities.EntityDtoTransaction;
-import International_Trade_Union.entity.repository.EntityAccountRepository;
-import International_Trade_Union.entity.repository.EntityBlockRepository;
-import International_Trade_Union.entity.repository.EntityDtoTransactionRepository;
-import International_Trade_Union.entity.repository.EntityLawsRepository;
+import International_Trade_Union.entity.repository.*;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.utils.UtilsBlockToEntityBlock;
 import org.hibernate.Session;
@@ -27,6 +24,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class BlockService {
+    @PersistenceContext
+    EntityManager entityManager;
     @Autowired
     private EntityLawsRepository entityLawsRepository;
     private static EntityBlockRepository blockService;
@@ -96,9 +95,13 @@ public class BlockService {
 
 
 
-    @Transactional
+
     public  void deleteEntityBlocksAndRelatedData(Long threshold) {
-        blockService.deleteBySpecialIndexGreaterThanOrEqualTo(threshold);
+        Session session = entityManager.unwrap(Session.class);
+        session.setJdbcBatchSize(50);
+        entityBlockRepository.deleteAllBySpecialIndexGreaterThanEqual(threshold);
+        entityBlockRepository.flush();
+        session.clear();
     }
 
 
@@ -145,8 +148,7 @@ public class BlockService {
 
 
 
-    @PersistenceContext
-    EntityManager entityManager;
+
     public void saveAccountAllF(List<EntityAccount> entityAccounts){
         Session session = entityManager.unwrap(Session.class);
         session.setJdbcBatchSize(50);

@@ -91,8 +91,6 @@ public class Mining {
             balances = new HashMap<>();
         }
 
-
-
         Block block;
         if(blockchain != null && blockchain.sizeBlockhain() > 0){
             block = blockchain.getBlock(blockchain.sizeBlockhain() - 1);
