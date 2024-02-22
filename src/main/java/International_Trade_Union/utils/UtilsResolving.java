@@ -409,7 +409,7 @@ public class UtilsResolving {
             List<Block> emptyList = new ArrayList<>();
             List<Block> different = new ArrayList<>();
 
-            for (int i = (int) (global.getSize() - 1); i > 0; i--) {
+            for (int i = (int) (global.getSize() - 1); i >= 0; i--) {
 
                 Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(i), s + "/block"));
 
@@ -435,19 +435,16 @@ public class UtilsResolving {
                 }
             }
             System.out.println("different: ");
-            System.out.println("__________________________________");
-            different.stream().forEach(t -> System.out.println("--------------------\n" +
-                    t.toString() + "--------------------\n"));
-            System.out.println("__________________________________");
+
             System.out.println("shortDataBlockchain: " + BasisController.getShortDataBlockchain());
             temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
             System.out.println("rollback temp: " + temp);
-            Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(different.get(different.size() - 1).getIndex() - 1));
+            Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(different.get(0).getIndex() - 1));
 
             different = different.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
             emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
 
-            for (Block block : different) {
+            for (Block block : emptyList) {
                 List<Block> tempList = new ArrayList<>();
                 tempList.add(block);
                 temp = Blockchain.shortCheck(tempPrevBlock, tempList, temp, lastDiff, tempBalance, sign);
@@ -460,6 +457,8 @@ public class UtilsResolving {
                 System.out.println("rollback");
                 try {
                     rollBackAddBlock3(different, emptyList, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+
+
 
                     System.out.println("------------------------------------------");
                     System.out.println("emptyList start index: " + emptyList.get(0).getIndex());
@@ -487,13 +486,14 @@ public class UtilsResolving {
             addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
         }
 
+
         System.out.println("__________________________________________________________");
         return temp;
     }
     public  void rollBackAddBlock3(List<Block> deleteBlocks, List<Block> saveBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         java.sql.Timestamp lastIndex = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
 
-        List<EntityBlock> list = new ArrayList<>();
+
         List<String> signs = new ArrayList<>();
         //пакет законов.
         Map<String, Laws> allLaws = new HashMap<>();
@@ -519,16 +519,14 @@ public class UtilsResolving {
         Blockchain.deleteFileBlockchain(Integer.parseInt(file.getName().replace(".txt", "")), Seting.ORIGINAL_BLOCKCHAIN_FILE);
         System.out.println("rollBackAddBlock3: delete finish: " + file.getName());
 
+        long threshold =  deleteBlocks.get(0).getIndex();
 
         //для удаления баланса
         Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
 
-        for (int i = deleteBlocks.size() -1; i > 0; i--) {
+        for (int i = deleteBlocks.size() -1; i >= 0; i--) {
             Block block = deleteBlocks.get(i);
             System.out.println("rollBackAddBlock3 :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());
-
-            EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
-            list.add(entityBlock);
 
             //возвращаем деньги на счета и аннулируем добытые монеты в неверной ветке
             balances = rollbackCalculateBalance(balances, block, signs);
@@ -552,7 +550,7 @@ public class UtilsResolving {
         System.out.println("UtilsResolving: rollBackAddBlock3: total original balance: " + balances.size());
         //Удаляет блоки из неправильной ветки.
 //        BlockService.removeAllBlock(list);
-        blockService.deleteEntityBlocksAndRelatedData(list.get(0).getIndex());
+        blockService.deleteEntityBlocksAndRelatedData(threshold);
 
 
 
