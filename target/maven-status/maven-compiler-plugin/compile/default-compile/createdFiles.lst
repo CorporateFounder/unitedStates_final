@@ -128,6 +128,7 @@ International_Trade_Union\about_usDraft\AboutUsDraft.class
 International_Trade_Union\utils\base\Base.class
 International_Trade_Union\utils\UtilsTime.class
 International_Trade_Union\utils\UtilsJson$2.class
+International_Trade_Union\entity\blockchain\BasisBlocks.class
 International_Trade_Union\utils\UtilsCurrentLawVotesEndBalance.class
 International_Trade_Union\entity\blockchain\Blockchain$4.class
 International_Trade_Union\entity\entities\EntityBlock.class

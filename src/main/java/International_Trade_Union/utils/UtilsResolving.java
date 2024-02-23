@@ -167,6 +167,31 @@ public class UtilsResolving {
                                     //checks downloaded blocks for integrity
                                     temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                                     System.out.println("prevBlock: " + BasisController.getPrevBlock().getIndex());
+                                }else {
+
+                                    Block genesis = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":6.5E7,\"digitalStockBalance\":6.5E7,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIDDW9fKvwUY0aXpvamxOU6pypicO3eCqEVM9LDFrIpjIAiEA81Zh7yCBbJOLrAzx4mg5HS0hMdqvB0obO2CZARczmfY=\"}],\"previousHash\":\"0234a350f4d56ae45c5ece57b08c54496f372bc570bd83a465fb6d2d85531479\",\"minerAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":12,\"minerRewards\":0.0,\"hashCompexity\":1,\"timestamp\":1685942742706,\"index\":1,\"hashBlock\":\"08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c\"}");
+                                    Block firstBlock = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":400.0,\"digitalStockBalance\":400.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDfQ3TAOyuWi4NGr0hNuXjqzxDCL0U8DzwAmedSOw9eiwIgdRlZwmudMZJZURMtgmOwpT+wk569jo/Ok/fAGv0x/NE=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":8.0,\"digitalStockBalance\":8.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDV9MbTMPl/dWBTfc87rMcRBBKcNZsGtkuRx1pdzGrSKQIhALOFpX81JEyFCC8uQ//bZkSW9CaOODSgOaMkYgTHn5HC\"}],\"previousHash\":\"08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c\",\"minerAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":4,\"minerRewards\":0.0,\"hashCompexity\":1,\"timestamp\":1685942784960,\"index\":1,\"hashBlock\":\"06b932aadd602056b0fb7294ef693535009cb3ba54581f32fd4aa1d93108703f\"}");
+
+                                    if ( !subBlocks.get(0).equals(genesis) || !subBlocks.get(1).equals(firstBlock)) {
+                                        System.out.println("error basis block: ");
+                                        System.out.println("genesis: " + subBlocks.get(0).getIndex());
+                                        System.out.println("first: " + subBlocks.get(1).getIndex());
+                                        System.out.println("temp: " + temp);
+                                    }
+                                    addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                                    temp = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                                    if(!temp.isValidation()){
+                                        System.out.println("error validation: " + temp);
+                                    }
+                                    BasisController.setShortDataBlockchain(temp);
+                                    BasisController.setBlockchainSize((int) BasisController.getShortDataBlockchain().getSize());
+                                    BasisController.setBlockchainValid(BasisController.getShortDataBlockchain().isValidation());
+                                    EntityBlock tempBlock = BlockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
+                                    BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
+                                    System.out.println("prevBlock: " + BasisController.getPrevBlock().getIndex() + " shortDataBlockchain: " + BasisController.getShortDataBlockchain());
+                                    String json = UtilsJson.objToStringJson(BasisController.getShortDataBlockchain());
+                                    UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
+                                    continue;
                                 }
 
 
@@ -181,6 +206,7 @@ public class UtilsResolving {
                                 jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
                                 System.out.println("1: jsonGlobalData: " + jsonGlobalData);
                                 global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
+
                                 temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
 
                                 System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++");
@@ -439,7 +465,7 @@ public class UtilsResolving {
             System.out.println("shortDataBlockchain: " + BasisController.getShortDataBlockchain());
             temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
             System.out.println("rollback temp: " + temp);
-            Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(different.get(0).getIndex() - 1));
+            Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(BlockService.findBySpecialIndex(different.get(0).getIndex() - 1));
 
             different = different.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
             emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
