@@ -40,9 +40,9 @@ public class UtilsBalance {
         System.out.println("start rollbackCalculateBalance: index: " + block.getIndex());
         int i = (int) block.getIndex();
 
-
+        int BasisSendCount = 0;
         for (int j = 0; j < block.getDtoTransactions().size(); j++) {
-            int BasisSendCount = 0;
+
 
 
             DtoTransaction transaction = block.getDtoTransactions().get(j);
@@ -143,9 +143,9 @@ public class UtilsBalance {
         System.out.println("calculateBalance: index: " + block.getIndex());
         int i = (int) block.getIndex();
 
-
+        int BasisSendCount = 0;
         for (int j = 0; j < block.getDtoTransactions().size(); j++) {
-            int BasisSendCount = 0;
+
 
 
             DtoTransaction transaction = block.getDtoTransactions().get(j);
@@ -161,19 +161,21 @@ public class UtilsBalance {
                 System.out.println("law balance cannot be sender");
                 continue;
             }
+            Account sender = getBalance(transaction.getSender(), balances);
+            Account customer = getBalance(transaction.getCustomer(), balances);
             if (transaction.verify()) {
-                if (transaction.getSender().equals(Seting.BASIS_ADDRESS))
+                if (transaction.getSender().equals(Seting.BASIS_ADDRESS)){
                     BasisSendCount++;
+                    if (sender.getAccount().equals(Seting.BASIS_ADDRESS) && BasisSendCount > 2) {
+                        System.out.println("Basis address can send only two the base address can send no more than two times per block:" + Seting.BASIS_ADDRESS);
+                        continue;
+                    }
+                }
 
 
-                Account sender = getBalance(transaction.getSender(), balances);
-                Account customer = getBalance(transaction.getCustomer(), balances);
 
                 boolean sendTrue = true;
-                if (sender.getAccount().equals(Seting.BASIS_ADDRESS) && BasisSendCount > 2) {
-                    System.out.println("Basis address can send only two the base address can send no more than two times per block:" + Seting.BASIS_ADDRESS);
-                    continue;
-                }
+
 
                 double minerRewards = Seting.DIGITAL_DOLLAR_REWARDS_BEFORE;
                 double digitalReputationForMiner = Seting.DIGITAL_STOCK_REWARDS_BEFORE;

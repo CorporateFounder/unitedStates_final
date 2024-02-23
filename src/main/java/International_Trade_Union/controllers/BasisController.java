@@ -1208,7 +1208,12 @@ public class BasisController {
     @ResponseBody
     public String testResolving() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
        int result = utilsResolving.resolve3();
-
+       while (true){
+           result = utilsResolving.resolve3();
+           if(result >= 0){
+               break;
+           }
+       }
         return "resolving test";
     }
 
