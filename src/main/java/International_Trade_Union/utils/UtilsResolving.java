@@ -61,8 +61,6 @@ public class UtilsResolving {
             System.out.println(" :start resolve");
             utilsMethod();
 
-//            blockchainSize = (int) shortDataBlockchain.getSize();
-
             //local blockchain size
             //размер локального блокчейна
             int blocks_current_size = BasisController.getBlockchainSize();
@@ -70,7 +68,6 @@ public class UtilsResolving {
             EntityChain entityChain = null;
             System.out.println(" resolve3:local size: " + blocks_current_size);
 
-            //адреса узлов.
 
             System.out.println(":resolve3: size nodes: " + getNodes().size());
             //goes through all hosts (repositories) in search of the most up-to-date blockchain
@@ -140,11 +137,11 @@ public class UtilsResolving {
                                 System.out.println("1:sublockchainJson: " + subBlockchainJson);
                                 List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
                                 System.out.println("1:download sub block: " + subBlocks.size());
-                                if (subBlocks.size() < Seting.PORTION_DOWNLOAD) {
-                                    System.out.println("Blocked host");
-                                    //TODO записывать сюда заблокированные хосты
-                                    break stop;
-                                }
+//                                if (subBlocks.size() < Seting.PORTION_DOWNLOAD) {
+//                                    System.out.println("Blocked host");
+//                                    //TODO записывать сюда заблокированные хосты
+//                                    break stop;
+//                                }
 
                                 finish = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + Seting.PORTION_DOWNLOAD + 1;
                                 start = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + 1; //вот здесь возможно сделать + 2
@@ -164,11 +161,11 @@ public class UtilsResolving {
                                     );
                                 }
 
-                                if (subBlocks.size() < Seting.PORTION_DOWNLOAD) {
-                                    System.out.println("Blocked host");
-                                    //TODO записывать сюда заблокированные хосты
-                                    break stop;
-                                }
+//                                if (subBlocks.size() < Seting.PORTION_DOWNLOAD) {
+//                                    System.out.println("Blocked host");
+//                                    //TODO записывать сюда заблокированные хосты
+//                                    break stop;
+//                                }
                                 //класс мета данных блокчейна.
                                 DataShortBlockchainInformation temp = new DataShortBlockchainInformation();
 
@@ -288,10 +285,10 @@ public class UtilsResolving {
                                         temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                                     }
 
-                                    if(isSmall(hostEndDataShortB.getDataShortBlockchainInformation(), temp)){
-                                        //TODO добавить хост в заблокированный файл
-                                        continue;
-                                    }
+//                                    if(isSmall(hostEndDataShortB.getDataShortBlockchainInformation(), temp)){
+//                                        //TODO добавить хост в заблокированный файл
+//                                        continue;
+//                                    }
 
                                     System.out.println("2: temp: " + temp);
                                     System.out.println("2: blockchainsize: " + BasisController.getBlockchainSize());
@@ -356,10 +353,10 @@ public class UtilsResolving {
                                 temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                             }
 
-                            if(isSmall(hostEndDataShortB.getDataShortBlockchainInformation(), temp)){
-                                //TODO добавить хост в заблокированный файл
-                                continue;
-                            }
+//                            if(isSmall(hostEndDataShortB.getDataShortBlockchainInformation(), temp)){
+//                                //TODO добавить хост в заблокированный файл
+//                                continue;
+//                            }
                             System.out.println("3: temp: " + temp);
                             System.out.println("3: blockchainsize: " + BasisController.getBlockchainSize());
                             System.out.println("3: sublocks: " + subBlocks.size());
@@ -437,7 +434,7 @@ public class UtilsResolving {
                 if (global.getStaking() > actual.getStaking()) {
                     return true;
                 } else if (global.getTransactions() > actual.getTransactions()) {
-                    return global.getTransactions() > actual.getTransactions();
+                    return true;
                 }
 
             }
@@ -1095,25 +1092,6 @@ public class UtilsResolving {
     /**
      * Записывает Блоки и баланс во временный файл.
      */
-    public void tempAddBlock3(List<Block> originalBlocks, Map<String, Account> balances) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        String filename = Seting.ORIGINAL_TEMP_BLOCKCHAIN;
-        List<String> signs = new ArrayList<>();
-
-        Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
-
-        for (Block block : originalBlocks) {
-            System.out.println(" :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());
-            //записывает блок в файл.
-            UtilsBlock.saveBLock(block, filename);
-
-            //вычисляет баланс исходя из блока.
-            calculateBalance(balances, block, signs);
-
-        }
-
-        Mining.deleteFiles(Seting.ORIGINAL_TEMP_BALANCE);
-        SaveBalances.saveBalances(balances, Seting.ORIGINAL_TEMP_BALANCE);
-    }
 
     public boolean isRightDSB(DataShortBlockchainInformation actual, DataShortBlockchainInformation expected) {
         boolean result = true;
