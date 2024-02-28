@@ -372,9 +372,9 @@ public class BasisController {
 
 
 //        int result = resovle2();
-        int result = utilsResolving.resovle2();
+        int result = utilsResolving.resolve3();
         while (true){
-            result = utilsResolving.resovle2();
+            result = utilsResolving.resolve3();
             if (result >= 0){
                 break;
             }
@@ -391,18 +391,6 @@ public class BasisController {
 
 
 
-    public static boolean isBig(
-            DataShortBlockchainInformation actual,
-            DataShortBlockchainInformation global) {
-        return global.getSize() > actual.getSize()
-                && global.getHashCount() >= actual.getHashCount()
-                && global.getTransactions() >= actual.getTransactions()
-                && global.getStaking() >= actual.getStaking()
-                && global.getBigRandomNumber() >= actual.getBigRandomNumber();
-
-        //test
-//        return global.getSize() > actual.getSize();
-    }
 
     //String jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
 //                                System.out.println("jsonGlobalData: " + jsonGlobalData);

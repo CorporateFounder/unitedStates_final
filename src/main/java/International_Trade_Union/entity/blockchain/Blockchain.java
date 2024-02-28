@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 @Data
 public class Blockchain implements Cloneable {
 
+
     private List<Block> blockchainList;
     //как часто должно создаваться блок в миллисекундах 1000 миллисекунд = 1 секунд
     //каждый блок должен находиться каждые 150 секунд.

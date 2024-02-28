@@ -322,8 +322,8 @@ public class UtilsUse {
     }
 
     public static long powerDiff(long diff) {
-//        return (long) Math.pow(diff, 2);
-        return diff;
+        return (long) Math.pow(2, diff);
+//        return diff;
     }
 
 
@@ -349,7 +349,7 @@ public class UtilsUse {
         // Генерация случайного числа в диапазоне от 0 до 130
         int limit = 131; // Предполагается, что limit это максимальное значение + 1
         int result = deterministicRandom.nextInt(limit);
-        result = (int) ((int) (result + (actual.getHashCompexity() * 4)) + calculateScore(miner.getDigitalStakingBalance(), 1));
+        result = (int) ((int) (result + (actual.getHashCompexity() * Seting.WAIGHT_MINING)) + calculateScore(miner.getDigitalStakingBalance(), 1));
         //+ calculateScore(miner.getDigitalStakingBalance(), 1)
         return result;
 

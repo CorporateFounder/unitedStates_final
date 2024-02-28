@@ -61,6 +61,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class Testing {
     @Test
+    public void testSave() throws IOException {
+        String host1 = "http://localhost:8084\n";
+        String host2 = "http://localhost:8086\n";
+        UtilsFileSaveRead.save(host1, "C://strategy3/test.txt");
+        UtilsFileSaveRead.save(host2, "C://strategy3/test.txt");
+    }
+
+    @Test
     public void rollbackBalance() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balance = new HashMap<>();
      Account customer = new Account("rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM", 100, 50, 50);
@@ -131,7 +139,7 @@ public class Testing {
             blocks.get(0).setPreviousHash("41c408c41718500200306b0200a10a040280e08f4d2844f30258a23eb9715490");
             Account miner = new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", 0, 0, 1000);
              number = UtilsUse.bigRandomWinner(blocks.get(0),  miner);
-             score = UtilsUse.calculateScore(0, 1);
+             score = UtilsUse.calculateScore(100, 1);
         }
 
         System.out.println("score: " + score);

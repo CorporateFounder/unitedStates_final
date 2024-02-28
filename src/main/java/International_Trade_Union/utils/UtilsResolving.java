@@ -20,6 +20,7 @@ import International_Trade_Union.vote.LawEligibleForParliamentaryApproval;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.UtilsLaws;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sun.xml.bind.v2.TODO;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 
 import static International_Trade_Union.controllers.BasisController.getNodes;
 import static International_Trade_Union.controllers.BasisController.utilsMethod;
+import static International_Trade_Union.entity.blockchain.Blockchain.stakingForDataShort;
 import static International_Trade_Union.utils.UtilsBalance.calculateBalance;
 import static International_Trade_Union.utils.UtilsBalance.rollbackCalculateBalance;
 
@@ -52,8 +54,7 @@ public class UtilsResolving {
     EntityBlockRepository entityBlockRepository;
 
 
-
-    public  int resolve3() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public int resolve3() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         BasisController.setUpdating(true);
         int bigSize = 0;
         try {
@@ -76,6 +77,7 @@ public class UtilsResolving {
             //проходит по всем хостам(хранилищам) в поисках самого актуального блокчейна
             Set<String> nodesAll = getNodes();
             //сортирует по приоритетности блокчейны
+            Map<HostEndDataShortB, List<Block>> tempBestBlock = new HashMap<>();
             List<HostEndDataShortB> sortPriorityHost = sortPriorityHost(nodesAll);
             for (HostEndDataShortB hostEndDataShortB : sortPriorityHost) {
                 String s = hostEndDataShortB.getHost();
@@ -127,6 +129,7 @@ public class UtilsResolving {
                             int start = blocks_current_size;
                             //while the difference in the size of the local blockchain is greater than from the host, it will continue to download in portions to download the entire blockchain
                             //пока разница размера локального блокчейна больше чем с хоста будет продолжаться скачивать порциями, чтобы скачать весь блокчейн
+                            stop:
                             while (downloadPortion) {
                                 //здесь говориться, с какого блока по какой блок скачивать.
                                 subBlockchainEntity = new SubBlockchainEntity(start, finish);
@@ -137,13 +140,18 @@ public class UtilsResolving {
                                 System.out.println("1:sublockchainJson: " + subBlockchainJson);
                                 List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
                                 System.out.println("1:download sub block: " + subBlocks.size());
+                                if (subBlocks.size() < Seting.PORTION_DOWNLOAD) {
+                                    System.out.println("Blocked host");
+                                    //TODO записывать сюда заблокированные хосты
+                                    break stop;
+                                }
 
                                 finish = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + Seting.PORTION_DOWNLOAD + 1;
                                 start = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + 1; //вот здесь возможно сделать + 2
 
 
 //                                balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-                                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts( BlockService.findAllAccounts());
+                                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
 
                                 //вычисляет сложность блока, для текущего блока, на основе предыдущих блоков.
                                 //select a block class for the current block, based on previous blocks.
@@ -156,7 +164,11 @@ public class UtilsResolving {
                                     );
                                 }
 
-
+                                if (subBlocks.size() < Seting.PORTION_DOWNLOAD) {
+                                    System.out.println("Blocked host");
+                                    //TODO записывать сюда заблокированные хосты
+                                    break stop;
+                                }
                                 //класс мета данных блокчейна.
                                 DataShortBlockchainInformation temp = new DataShortBlockchainInformation();
 
@@ -167,12 +179,12 @@ public class UtilsResolving {
                                     //checks downloaded blocks for integrity
                                     temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                                     System.out.println("prevBlock: " + BasisController.getPrevBlock().getIndex());
-                                }else {
+                                } else {
 
                                     Block genesis = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":6.5E7,\"digitalStockBalance\":6.5E7,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIDDW9fKvwUY0aXpvamxOU6pypicO3eCqEVM9LDFrIpjIAiEA81Zh7yCBbJOLrAzx4mg5HS0hMdqvB0obO2CZARczmfY=\"}],\"previousHash\":\"0234a350f4d56ae45c5ece57b08c54496f372bc570bd83a465fb6d2d85531479\",\"minerAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":12,\"minerRewards\":0.0,\"hashCompexity\":1,\"timestamp\":1685942742706,\"index\":1,\"hashBlock\":\"08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c\"}");
                                     Block firstBlock = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":400.0,\"digitalStockBalance\":400.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDfQ3TAOyuWi4NGr0hNuXjqzxDCL0U8DzwAmedSOw9eiwIgdRlZwmudMZJZURMtgmOwpT+wk569jo/Ok/fAGv0x/NE=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":8.0,\"digitalStockBalance\":8.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDV9MbTMPl/dWBTfc87rMcRBBKcNZsGtkuRx1pdzGrSKQIhALOFpX81JEyFCC8uQ//bZkSW9CaOODSgOaMkYgTHn5HC\"}],\"previousHash\":\"08b1e6634457a40d3481e76ebd377e76322706e4ea27013b773686f7df8f8a4c\",\"minerAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":4,\"minerRewards\":0.0,\"hashCompexity\":1,\"timestamp\":1685942784960,\"index\":1,\"hashBlock\":\"06b932aadd602056b0fb7294ef693535009cb3ba54581f32fd4aa1d93108703f\"}");
 
-                                    if ( !subBlocks.get(0).equals(genesis) || !subBlocks.get(1).equals(firstBlock)) {
+                                    if (!subBlocks.get(0).equals(genesis) || !subBlocks.get(1).equals(firstBlock)) {
                                         System.out.println("error basis block: ");
                                         System.out.println("genesis: " + subBlocks.get(0).getIndex());
                                         System.out.println("first: " + subBlocks.get(1).getIndex());
@@ -180,7 +192,7 @@ public class UtilsResolving {
                                     }
                                     addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                                     temp = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-                                    if(!temp.isValidation()){
+                                    if (!temp.isValidation()) {
                                         System.out.println("error validation: " + temp);
                                     }
                                     BasisController.setShortDataBlockchain(temp);
@@ -198,7 +210,7 @@ public class UtilsResolving {
                                 System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++");
                                 System.out.println("1: temp: " + temp);
                                 System.out.println("1: blockchainsize: " + BasisController.getBlockchainSize());
-                                System.out.println("1: sublocks: " + subBlocks.size());
+                                System.out.println("1: sublocks: size: " + subBlocks.size());
                                 System.out.println("1: shortDataBlockchain: " + BasisController.getShortDataBlockchain());
                                 System.out.println("1: blockService count: " + BlockService.sizeBlock());
 
@@ -276,6 +288,10 @@ public class UtilsResolving {
                                         temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                                     }
 
+                                    if(isSmall(hostEndDataShortB.getDataShortBlockchainInformation(), temp)){
+                                        //TODO добавить хост в заблокированный файл
+                                        continue;
+                                    }
 
                                     System.out.println("2: temp: " + temp);
                                     System.out.println("2: blockchainsize: " + BasisController.getBlockchainSize());
@@ -323,7 +339,7 @@ public class UtilsResolving {
                             System.out.println("prev block:" + BasisController.getPrevBlock());
                             System.out.println("3: block " + subBlocks.get(0));
 //                            tempBalances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-                            tempBalances  = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+                            tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
                             List<String> sign = new ArrayList<>();
 
                             if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
@@ -340,6 +356,10 @@ public class UtilsResolving {
                                 temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                             }
 
+                            if(isSmall(hostEndDataShortB.getDataShortBlockchainInformation(), temp)){
+                                //TODO добавить хост в заблокированный файл
+                                continue;
+                            }
                             System.out.println("3: temp: " + temp);
                             System.out.println("3: blockchainsize: " + BasisController.getBlockchainSize());
                             System.out.println("3: sublocks: " + subBlocks.size());
@@ -405,27 +425,48 @@ public class UtilsResolving {
 
     }
 
-    public  boolean isBig(
+    public boolean isBig(
             DataShortBlockchainInformation actual,
             DataShortBlockchainInformation global) {
-        return global.getSize() > actual.getSize()
-                && global.getHashCount() >= actual.getHashCount()
-                && global.getTransactions() >= actual.getTransactions()
-                && global.getStaking() >= actual.getStaking()
-                && global.getBigRandomNumber() >= actual.getBigRandomNumber();
+        if (global.getBigRandomNumber() + global.getSize() > actual.getBigRandomNumber() + actual.getSize()) {
+            return true;
+        } else if (global.getBigRandomNumber() + global.getSize() == actual.getBigRandomNumber() + actual.getSize()) {
+            if (global.getHashCount() > actual.getHashCount()) {
+                return true;
+            } else if (global.getHashCount() == actual.getHashCount()) {
+                if (global.getStaking() > actual.getStaking()) {
+                    return true;
+                } else if (global.getTransactions() > actual.getTransactions()) {
+                    return global.getTransactions() > actual.getTransactions();
+                }
 
-        //test
-//        return global.getSize() > actual.getSize();
+            }
+        }
+        return false;
     }
 
-    public  DataShortBlockchainInformation helpResolve3(DataShortBlockchainInformation temp,
-                                                              DataShortBlockchainInformation global,
-                                                              String s,
-                                                              List<Block> lastDiff,
-                                                              Map<String, Account> tempBalances,
-                                                              List<String> sign,
-                                                              Map<String, Account> balances,
-                                                              List<Block> subBlocks) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public boolean isSmall(DataShortBlockchainInformation expected, DataShortBlockchainInformation actual) {
+        if (
+                expected.getSize() < actual.getSize()
+                || expected.getBigRandomNumber() < actual.getBigRandomNumber()
+                || expected.getHashCount() < actual.getHashCount()
+                || expected.getStaking() < actual.getStaking()
+                || expected.getTransactions() < actual.getTransactions()
+
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    public DataShortBlockchainInformation helpResolve3(DataShortBlockchainInformation temp,
+                                                       DataShortBlockchainInformation global,
+                                                       String s,
+                                                       List<Block> lastDiff,
+                                                       Map<String, Account> tempBalances,
+                                                       List<String> sign,
+                                                       Map<String, Account> balances,
+                                                       List<Block> subBlocks) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         //TODO сначала найти блок откуда начинается ответление и докуда
 
         Map<String, Account> tempBalance = UtilsUse.balancesClone(tempBalances);
@@ -485,7 +526,6 @@ public class UtilsResolving {
                     rollBackAddBlock3(different, emptyList, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
 
-
                     System.out.println("------------------------------------------");
                     System.out.println("emptyList start index: " + emptyList.get(0).getIndex());
                     System.out.println("emptyList finish index: " + emptyList.get(emptyList.size() - 1).getIndex());
@@ -516,7 +556,8 @@ public class UtilsResolving {
         System.out.println("__________________________________________________________");
         return temp;
     }
-    public  void rollBackAddBlock3(List<Block> deleteBlocks, List<Block> saveBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+
+    public void rollBackAddBlock3(List<Block> deleteBlocks, List<Block> saveBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         java.sql.Timestamp lastIndex = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
 
 
@@ -545,12 +586,12 @@ public class UtilsResolving {
         Blockchain.deleteFileBlockchain(Integer.parseInt(file.getName().replace(".txt", "")), Seting.ORIGINAL_BLOCKCHAIN_FILE);
         System.out.println("rollBackAddBlock3: delete finish: " + file.getName());
 
-        long threshold =  deleteBlocks.get(0).getIndex();
+        long threshold = deleteBlocks.get(0).getIndex();
 
         //для удаления баланса
         Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
 
-        for (int i = deleteBlocks.size() -1; i >= 0; i--) {
+        for (int i = deleteBlocks.size() - 1; i >= 0; i--) {
             Block block = deleteBlocks.get(i);
             System.out.println("rollBackAddBlock3 :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());
 
@@ -571,13 +612,12 @@ public class UtilsResolving {
         blockService.saveAccountAllF(accountList);
         long finishTime = UtilsTime.getUniversalTimestamp();
 
-        System.out.println("UtilsResolving: rollBackAddBlock3: time save accounts: " +UtilsTime.differentMillSecondTime(startTime, finishTime));
+        System.out.println("UtilsResolving: rollBackAddBlock3: time save accounts: " + UtilsTime.differentMillSecondTime(startTime, finishTime));
         System.out.println("UtilsResolving: rollBackAddBlock3: total different balance: " + tempBalances.size());
         System.out.println("UtilsResolving: rollBackAddBlock3: total original balance: " + balances.size());
         //Удаляет блоки из неправильной ветки.
 //        BlockService.removeAllBlock(list);
         blockService.deleteEntityBlocksAndRelatedData(threshold);
-
 
 
         //возвращает все законы с балансом,
@@ -620,23 +660,23 @@ public class UtilsResolving {
 //        addBlock3(tempBlock, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
         System.out.println("_____________________________________________");
         System.out.println("deleteBlock: ");
-        deleteBlocks.stream().forEach(t-> System.out.println(t.getIndex() + ":" + t.getHashBlock()));
+        deleteBlocks.stream().forEach(t -> System.out.println(t.getIndex() + ":" + t.getHashBlock()));
         System.out.println("_____________________________________________");
         System.out.println("tempBlock: ");
-        tempBlock.stream().filter(t->t.getIndex() < deleteBlocks.get(deleteBlocks.size()-1).getIndex())
-                .forEach(t-> System.out.println(t.getIndex() + ":" + t.getHashBlock()));
+        tempBlock.stream().filter(t -> t.getIndex() < deleteBlocks.get(deleteBlocks.size() - 1).getIndex())
+                .forEach(t -> System.out.println(t.getIndex() + ":" + t.getHashBlock()));
         System.out.println("_____________________________________________");
         System.out.println("blockFrom Db:");
-        for (int i = (int) deleteBlocks.get(0).getIndex(); i < deleteBlocks.get(deleteBlocks.size()-1).getIndex()+1; i++) {
+        for (int i = (int) deleteBlocks.get(0).getIndex(); i < deleteBlocks.get(deleteBlocks.size() - 1).getIndex() + 1; i++) {
             EntityBlock entityBlock = blockService.findBySpecialIndex(i);
-            System.out.println(entityBlock.getSpecialIndex() + ":" +entityBlock.getHashBlock());
+            System.out.println(entityBlock.getSpecialIndex() + ":" + entityBlock.getHashBlock());
         }
         System.out.println("------------------------------------------");
 
     }
 
 
-    public  int resovle2() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public int resovle2() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
         BasisController.setUpdating(true);
         int bigSize = 0;
@@ -721,7 +761,7 @@ public class UtilsResolving {
 
 
 //                                balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-                                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts( BlockService.findAllAccounts());
+                                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
 
                                 //вычисляет сложность блока, для текущего блока, на основе предыдущих блоков.
                                 //select a block class for the current block, based on previous blocks.
@@ -871,7 +911,7 @@ public class UtilsResolving {
                             System.out.println("prev block:" + BasisController.getPrevBlock());
                             System.out.println("3: block " + subBlocks.get(0));
 //                            tempBalances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-                            tempBalances  = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+                            tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
                             List<String> sign = new ArrayList<>();
 
                             if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
@@ -955,7 +995,7 @@ public class UtilsResolving {
      */
 
 
-    public  void addBlock3(List<Block> originalBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+    public void addBlock3(List<Block> originalBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         java.sql.Timestamp lastIndex = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
 
 
@@ -993,7 +1033,6 @@ public class UtilsResolving {
         blockService.saveAllBLockF(list);
 
 
-
         tempBalances = UtilsUse.differentAccount(tempBalances, balances);
         List<EntityAccount> accountList = blockService.findByAccountIn(balances);
         accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
@@ -1003,7 +1042,7 @@ public class UtilsResolving {
         blockService.saveAccountAllF(accountList);
         finish = UtilsTime.getUniversalTimestamp();
 
-        System.out.println("UtilsResolving: addBlock3: time save accounts: " +UtilsTime.differentMillSecondTime(start, finish));
+        System.out.println("UtilsResolving: addBlock3: time save accounts: " + UtilsTime.differentMillSecondTime(start, finish));
         System.out.println("UtilsResolving: addBlock3: total different balance: " + tempBalances.size());
         System.out.println("UtilsResolving: addBlock3: total original balance: " + balances.size());
 
@@ -1040,7 +1079,7 @@ public class UtilsResolving {
             String jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
             System.out.println("jsonGlobalData: " + jsonGlobalData);
             DataShortBlockchainInformation global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
-            if(global.isValidation()){
+            if (global.isValidation()) {
                 HostEndDataShortB dataShortB = new HostEndDataShortB(s, global);
                 list.add(dataShortB);
             }
@@ -1053,7 +1092,9 @@ public class UtilsResolving {
         return list;
     }
 
-   /**Записывает Блоки и баланс во временный файл.*/
+    /**
+     * Записывает Блоки и баланс во временный файл.
+     */
     public void tempAddBlock3(List<Block> originalBlocks, Map<String, Account> balances) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         String filename = Seting.ORIGINAL_TEMP_BLOCKCHAIN;
         List<String> signs = new ArrayList<>();
@@ -1073,14 +1114,15 @@ public class UtilsResolving {
         Mining.deleteFiles(Seting.ORIGINAL_TEMP_BALANCE);
         SaveBalances.saveBalances(balances, Seting.ORIGINAL_TEMP_BALANCE);
     }
-    public boolean isRightDSB(DataShortBlockchainInformation actual, DataShortBlockchainInformation expected){
+
+    public boolean isRightDSB(DataShortBlockchainInformation actual, DataShortBlockchainInformation expected) {
         boolean result = true;
-        if(actual.isValidation() != expected.isValidation()
-        || actual.getSize() < expected.getSize()
-        || actual.getTransactions() < expected.getTransactions()
-        || actual.getStaking() < expected.getStaking()
-        || actual.getBigRandomNumber() < expected.getBigRandomNumber()
-        || actual.getHashCount() < expected.getHashCount()){
+        if (actual.isValidation() != expected.isValidation()
+                || actual.getSize() < expected.getSize()
+                || actual.getTransactions() < expected.getTransactions()
+                || actual.getStaking() < expected.getStaking()
+                || actual.getBigRandomNumber() < expected.getBigRandomNumber()
+                || actual.getHashCount() < expected.getHashCount()) {
             result = false;
         }
         return result;
