@@ -13,8 +13,7 @@
 
   <div th:each="el : ${boardOfShareholders}" class="alert alert-info mt-2">
     <h4 th:text="'address: '+${el.account}"/>
-    <p th:text="'digital dollar: '+${#numbers.formatDecimal(el.digitalDollarBalance, 1, 'COMMA', 16, 'POINT')}"/>
-    <p th:text="'digital digital Stock Balance: '+${#numbers.formatDecimal(el.digitalStockBalance, 1, 'COMMA', 16, 'POINT')}"/>
+    <p th:text="' digital staking Balance: '+${#numbers.formatDecimal(el.digitalStakingBalance, 1, 'COMMA', 16, 'POINT')}"/>
 
   </div>
 

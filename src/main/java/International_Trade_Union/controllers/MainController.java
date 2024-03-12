@@ -44,6 +44,9 @@ import java.util.stream.Collectors;
 public class MainController {
     @Autowired
     BasisController basisController;
+
+    @Autowired
+    BlockService blockService;
     private static DataShortBlockchainInformation shortBlockchainInformation;
     private static int globalSize = 0;
 
@@ -211,7 +214,7 @@ public class MainController {
         }
         model.addAttribute("validation", validation);
 //        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
         Account account = UtilsBalance.getBalance(User.getUserAddress(), balances);
         model.addAttribute("account", account);

@@ -1,5 +1,6 @@
 package International_Trade_Union.entity.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,7 +43,8 @@ public class EntityBlock {
         this.hashBlock = hashBlock;
         this.specialIndex = specialIndex;
     }
-    @OneToMany(mappedBy = "entityBlock", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "entityBlock", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<EntityDtoTransaction> dtoTransactions;
     private String previousHash;
     private String minerAddress;

@@ -19,7 +19,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
+import static International_Trade_Union.setings.Seting.*;
 
 public class UtilsBlock {
     //wallet
@@ -545,7 +545,7 @@ public class UtilsBlock {
                 return false;
             }
         } else if (thisBlock.getHashCompexity() >= Seting.V34_NEW_ALGO) {
-            if(thisBlock.getHashCompexity() < Seting.V34_MIN_DIFF){
+            if(Seting.IS_TEST == false && thisBlock.getHashCompexity() < Seting.V34_MIN_DIFF){
                 System.out.printf("your diff %d, less than it %d\n", thisBlock.getHashCompexity(),
                         Seting.V34_MIN_DIFF);
             }
@@ -583,6 +583,19 @@ public class UtilsBlock {
             }
         }
 
+        long timeDifferenceSeconds = (thisBlock.getTimestamp().getTime() - previusblock.getTimestamp().getTime()) / 1000;
+
+        if(IS_SECURITY == true && thisBlock.getIndex() >= Seting.TIME_CHECK_BLOCK){
+            if (timeDifferenceSeconds < 100 || timeDifferenceSeconds >= 500) {
+                // Время thisBlock не соответствует условиям
+                System.out.println("----------------------------------------------");
+                System.out.println("wrong time different: " + timeDifferenceSeconds + " index: " + thisBlock.getIndex());
+                System.out.println("wrong time different: " + timeDifferenceSeconds + " prev index: " + previusblock.getIndex());
+                System.out.println("----------------------------------------------");
+                return false;
+            }
+        }
+        // Проверяем условия
 
         return validated;
     }

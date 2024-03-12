@@ -34,7 +34,12 @@ import static International_Trade_Union.controllers.BasisController.findAddresse
 import static International_Trade_Union.controllers.BasisController.getNodes;
 
 public class UtilsMining {
-    public static synchronized String mining(UtilsResolving utilsResolving) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
+    @Autowired
+    BlockService blockService;
+
+    @Autowired
+    Mining mining;
+    public  synchronized String mining(UtilsResolving utilsResolving) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
 
         BasisController.setMining(true);
         try {
@@ -44,7 +49,7 @@ public class UtilsMining {
             List<Block> tempBlockchain;
 
             tempBlockchain = UtilsBlockToEntityBlock.entityBlocksToBlocks(
-                    BlockService.findBySpecialIndexBetween(
+                    blockService.findBySpecialIndexBetween(
                             (BasisController.getBlockchainSize()) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
                             BasisController.getBlockchainSize() - 1
                     )
@@ -116,7 +121,7 @@ public class UtilsMining {
 
                 //получить список балансов из файла. get a list of balances from a file.
                 List<String> signs = new ArrayList<>();
-                balances = Mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain1, balances, signs);
+                balances = mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain1, balances, signs);
                 //удалить старые файлы баланса. delete old balance files.
                 Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
 
@@ -146,7 +151,7 @@ public class UtilsMining {
 
             List<Block> temp
                     = UtilsBlockToEntityBlock.entityBlocksToBlocks(
-                    BlockService.findBySpecialIndexBetween(
+                    blockService.findBySpecialIndexBetween(
                             (BasisController.getBlockchainSize()) - Seting.CHECK_DTO,
                             BasisController.getBlockchainSize() - 1
                     )
@@ -221,7 +226,7 @@ public class UtilsMining {
                 );
             }
 
-            String addresFounder = BlockService.findBySpecialIndex(0).getFounderAddress();
+            String addresFounder = blockService.findBySpecialIndex(0).getFounderAddress();
             if (!block.getFounderAddress().equals(addresFounder)) {
                 System.out.println("wrong address founder: ");
             }

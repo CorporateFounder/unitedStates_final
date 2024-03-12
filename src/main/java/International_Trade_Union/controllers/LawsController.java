@@ -295,7 +295,7 @@ public class LawsController {
 
         Directors directors = new Directors();
         List<Block> blocksList = UtilsBlockToEntityBlock.entityBlocksToBlocks(
-                BlockService.findBySpecialIndexBetween(
+                blockService.findBySpecialIndexBetween(
                         BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE,
                         BasisController.getBlockchainSize() -1
                 )
@@ -305,7 +305,7 @@ public class LawsController {
         Map<String, Account> balances = new HashMap<>();
         //считывать баланс
 //        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
         List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
                 UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
@@ -339,19 +339,17 @@ public class LawsController {
         //подсчет происходит с базы данных, таким образом вычисления происходят быст
         Map<String, CurrentLawVotes> votesMap = new HashMap<>();
         List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
+        long from = 0;
+        long to = BasisController.getBlockchainSize();
+
         if (BasisController.getBlockchainSize() > Seting.LAW_YEAR_VOTE) {
-
-            for (int i = BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE; i < BasisController.getBlockchainSize(); i++) {
-                votesMap = UtilsCurrentLaw.calculateVote(votesMap, accounts,
-                        UtilsBlockToEntityBlock.entityBlockToBlock(BlockService.findBySpecialIndex(i)));
-            }
-
-        } else {
-            for (int i = 0; i < BasisController.getBlockchainSize(); i++) {
-                votesMap = UtilsCurrentLaw.calculateVote(votesMap, accounts,
-                        UtilsBlockToEntityBlock.entityBlockToBlock(BlockService.findBySpecialIndex(i)));
-            }
+            from = BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE;
         }
+        List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(from, to));
+        for (Block block : list) {
+            UtilsCurrentLaw.calculateVote(votesMap, accounts, block);
+        }
+
 
         //подсчитать голоса за все проголосованные заканы
         List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
@@ -359,6 +357,15 @@ public class LawsController {
                 balances,
                 boardOfShareholders,
                 votesMap);
+
+//        for (long i = from; i < to; i += 10000) {
+//            List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(i, Math.min(to, i + 1000)));
+//            for (Block block : list) {
+//                votesMap = UtilsCurrentLaw.calculateVote(votesMap, accounts, block);
+//            }
+//        }
+
+
 
 
         //убрать появление всех бюджет и эмиссий из отображения в действующих законах
@@ -390,7 +397,7 @@ public class LawsController {
         //позиции созданные всеми участниками
         List<CurrentLawVotesEndBalance> createdByBoardOfDirectors = current.stream()
                 .filter(t -> t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
-                .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
+                .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .collect(Collectors.toList());
         //добавление позиций созданных советом директоров
@@ -402,8 +409,8 @@ public class LawsController {
         List<CurrentLawVotesEndBalance> electedByBoardOfDirectors = current.stream()
                 .filter(t -> directors.isofficeOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
                 .filter(t ->
-                        t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0 ||
-                        t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
+
+                        t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                                 && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                 .collect(Collectors.toList());
@@ -455,7 +462,7 @@ public class LawsController {
                 .filter(t -> !directors.isCabinets(t.getPackageName()))
                 .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))
                 .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))
-                .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
+                .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE && t.getFounderVote() >= 0 ||
                         t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS &&
                                 t.getVotesCorporateCouncilOfReferees() > Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)
@@ -468,14 +475,14 @@ public class LawsController {
                 .filter(t -> Seting.AMENDMENT_TO_THE_CHARTER.equals(t.getPackageName()))
                 .filter(t -> !directors.isCabinets(t.getPackageName()))
                 .filter(t -> t.getVotesBoardOfShareholders() >= Seting.ORIGINAL_LIMIT_MINT_VOTE_BOARD_OF_SHAREHOLDERS_AMENDMENT
-                        && t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_AMENDMENT
+                        && t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_AMENDMENT
                         && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES_AMENDMENT)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());
 
         //добавляет законы, которые создают новые должности утверждается всеми
         List<CurrentLawVotesEndBalance> addDirectors = current.stream()
                 .filter(t -> t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
-                .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
+                .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .collect(Collectors.toList());
 
@@ -484,7 +491,7 @@ public class LawsController {
                 .filter(t -> !directors.contains(t.getPackageName()))
                 .filter(t -> Seting.STRATEGIC_PLAN.equals(t.getPackageName()))
                 .filter(t -> !directors.isCabinets(t.getPackageName()))
-                .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
+                .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
                         && t.getVotes() >= Seting.ALL_STOCK_VOTE)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                 .limit(1)
@@ -583,14 +590,14 @@ public class LawsController {
 //                BlockchainFactoryEnum.ORIGINAL);
 
         List<Block> blocksList = UtilsBlockToEntityBlock.entityBlocksToBlocks(
-                BlockService.findBySpecialIndexBetween(
+                blockService.findBySpecialIndexBetween(
                         BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE,
                         BasisController.getBlockchainSize() -1
                 )
         );
         Map<String, Account> balances = new HashMap<>();
 //        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
 
 
@@ -630,19 +637,24 @@ public class LawsController {
         //подсчет происходит с базы данных, таким образом вычисления происходят быст
         Map<String, CurrentLawVotes> votesMap = new HashMap<>();
         List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
+        long from = 0;
+        long to = BasisController.getBlockchainSize();
+
         if (BasisController.getBlockchainSize() > Seting.LAW_YEAR_VOTE) {
-
-            for (int i = BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE; i < BasisController.getBlockchainSize(); i++) {
-                votesMap = UtilsCurrentLaw.calculateVote(votesMap, accounts,
-                        UtilsBlockToEntityBlock.entityBlockToBlock(BlockService.findBySpecialIndex(i)));
-            }
-
-        } else {
-            for (int i = 0; i < BasisController.getBlockchainSize(); i++) {
-                votesMap = UtilsCurrentLaw.calculateVote(votesMap, accounts,
-                        UtilsBlockToEntityBlock.entityBlockToBlock(BlockService.findBySpecialIndex(i)));
-            }
+            from = BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE;
         }
+        List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(from, to));
+        for (Block block : list) {
+            UtilsCurrentLaw.calculateVote(votesMap, accounts, block);
+        }
+
+//        for (long i = from; i < to; i += 10000) {
+//            List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(i, Math.min(to, i + 1000)));
+//            for (Block block : list) {
+//                UtilsCurrentLaw.calculateVote(votesMap, accounts, block);
+//            }
+//        }
+
 
         //подсчитать голоса за все проголосованные заканы
         List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
@@ -654,7 +666,10 @@ public class LawsController {
 
         current = current.stream().distinct().collect(Collectors.toList());
 
+
         current = current.stream().sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed()).collect(Collectors.toList());
+
+
         model.addAttribute("allLaws", current);
         return "all-laws";
     }
@@ -767,7 +782,7 @@ public class LawsController {
         Map<String, Account> balances = new HashMap<>();
         //считывать баланс
 //        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
         Account Budget = balances.get(Seting.BUDGET);
         if (Budget == null)

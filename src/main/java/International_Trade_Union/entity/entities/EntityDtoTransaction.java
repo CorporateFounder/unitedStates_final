@@ -44,7 +44,8 @@ public class EntityDtoTransaction {
     private double digitalDollar;
     private double digitalStockBalance;
 
-    @OneToOne(mappedBy = "entityDtoTransaction", cascade = CascadeType.ALL,  orphanRemoval = true)
+    @OneToOne(mappedBy = "entityDtoTransaction", cascade = CascadeType.ALL,  orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnore
     private EntityLaws entityLaws;
 
     private double bonusForMiner;

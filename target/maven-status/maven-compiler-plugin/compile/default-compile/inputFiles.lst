@@ -28,6 +28,7 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\enti
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\governments\UtilsGovernment.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\vote\Laws.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterEngDraft\ArticleFourAmendmentProcessEngDraft.java
+D:\unitedStates duplicates original\src\main\java\International_Trade_Union\vote\Vote.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\BoardOfShareholdersController.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\repository\EntityBlockRepository.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\model\Account.java
@@ -68,6 +69,7 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\enti
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\vote\CurrentLawVotesEndBalance.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\LawsController.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsResolving.java
+D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\HostValidator.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterDraft\ArticleSixBillOfRightsDraft.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\statistics\Statistic.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\vote\LawEligibleForParliamentaryApproval.java
@@ -102,6 +104,7 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\util
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\entities\EntityAccount.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\entities\EntityDtoTransaction.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\setings\originalCorporateCharter\OriginalCHARTER_ENG.java
+D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\MyHost.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\ResultMiningData.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\setings\originalCorporateCharter\OriginalCHARTER.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\UnitedStatesApplication.java

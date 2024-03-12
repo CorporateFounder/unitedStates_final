@@ -12,13 +12,13 @@
 <div class="container mt 5">
   <h1 th:text="${title}"></h1>
 </div>
-<h5>The cost of creating a law is five digital dollars, details are described in the charter.</h5>
-<h5>If the reward is less than five, then the law will not be added to the list.</h5>
+<h5>details are described in the charter.</h5>
+
 
 
   <form action="/create-law" method="post">
     <input type="text" name="sender" placeholder="enter the sender's address" class="form-control"><br>
-
+      <h5>reward always 0</h5>
     <input type="text" name="reward" placeholder="enter miner reward" class="form-control"><br>
     <input type="text" name="nameLaw" placeholder="enter the name of the package of laws" class="form-control"><br>
     <textarea name="password" placeholder="enter password" th:rows="8" th:cols="120"></textarea><br>

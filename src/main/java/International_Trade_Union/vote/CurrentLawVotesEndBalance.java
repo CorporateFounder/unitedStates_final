@@ -24,6 +24,7 @@ public class CurrentLawVotesEndBalance {
     private String packageName;
     private List<String> laws;
     private double fractionVote;
+    private List<Vote> directorsVote;
 
     public CurrentLawVotesEndBalance() {
     }
@@ -39,7 +40,8 @@ public class CurrentLawVotesEndBalance {
              int voteHightJudge,
                     int founderVote,
              double fractionVote,
-             List<String> laws) {
+             List<String> laws,
+             List<Vote> directorsVote) {
         this.addressLaw = addressLaw;
         this.packageName = packageName;
         this.votesCorporateCouncilOfReferees = votesCorporateCouncilOfReferees;
@@ -52,7 +54,7 @@ public class CurrentLawVotesEndBalance {
 
         this.votes = votes;
         this.laws = laws;
-
+        this.directorsVote = directorsVote;
     }
 
     @Override
@@ -66,5 +68,9 @@ public class CurrentLawVotesEndBalance {
     @Override
     public int hashCode() {
         return Objects.hash(getAddressLaw());
+    }
+
+    public double sumDirectorsVote(){
+        return directorsVote.stream().mapToDouble(t->t.getVote()).sum();
     }
 }

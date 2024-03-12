@@ -41,9 +41,11 @@ import org.thymeleaf.spring5.processor.SpringTextareaFieldTagProcessor;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -52,6 +54,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static International_Trade_Union.setings.Seting.*;
@@ -60,12 +63,40 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class Testing {
+
     @Test
-    public void testSave() throws IOException {
-        String host1 = "http://localhost:8084\n";
-        String host2 = "http://localhost:8086\n";
-        UtilsFileSaveRead.save(host1, "C://strategy3/test.txt");
-        UtilsFileSaveRead.save(host2, "C://strategy3/test.txt");
+    public void testReadHost() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        String url = "E://resources/poolAddress/";
+        Set<String> strings = UtilsAllAddresses.readLineObject(url);
+        List<HostEndDataShortB> list = new ArrayList<>();
+
+        System.out.println("before: " + strings);
+       strings = strings.stream().map(t->t.replaceAll("\"", "")).collect(Collectors.toSet());
+
+        System.out.println("after: " + strings);
+
+
+
+
+        //сортировать здесь.
+        // сортировка
+
+
+    }
+    @Test
+    public void testHost() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
+       String url = "http://localhost:8085/putNode";
+       Set<String> strings = BasisController.getNodes();
+        System.out.println(strings);
+
+
+
+       MyHost myHost = new MyHost("http://localhost:8083/putNode", "server", "key");
+       String json = UtilsJson.objToStringJson(myHost);
+
+
+        UtilUrl.sendPost(json, url );
+
     }
 
     @Test

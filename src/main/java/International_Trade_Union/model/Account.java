@@ -27,6 +27,8 @@ public class Account implements Cloneable {
     private double digitalStockBalance;
     private double digitalStakingBalance;
 
+    //TODO test count
+
 
 
     public Account(String account, double digitalDollarBalance) {

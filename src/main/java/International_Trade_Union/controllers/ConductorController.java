@@ -68,7 +68,7 @@ public class ConductorController {
     @ResponseBody
     public Account account(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 //        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
         Account account = UtilsBalance.getBalance(address, balances);
 
@@ -83,7 +83,7 @@ public class ConductorController {
     @ResponseBody
     public Double dollar(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 //        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
         Account account = UtilsBalance.getBalance(address, balances);
         return account.getDigitalDollarBalance();
@@ -97,7 +97,7 @@ public class ConductorController {
     @ResponseBody
     public Double stock(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 //        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
         Account account = UtilsBalance.getBalance(address, balances);
         return account.getDigitalStockBalance();
@@ -204,7 +204,7 @@ public class ConductorController {
     public Boolean isTransactionGet(@RequestParam String sign) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         boolean result = false;
 
-        EntityDtoTransaction entityDtoTransaction = BlockService.findBySign(sign);
+        EntityDtoTransaction entityDtoTransaction = blockService.findBySign(sign);
         System.out.println("entity: "+entityDtoTransaction);
         if(entityDtoTransaction != null){
             result = true;
@@ -220,7 +220,7 @@ public class ConductorController {
     public Block blockFromHash(@RequestParam String hash) throws IOException {
 //        return Blockchain.hashFromFile(hash, Seting.ORIGINAL_BLOCKCHAIN_FILE);
         Block block = UtilsBlockToEntityBlock.entityBlockToBlock(
-                BlockService.findByHashBlock(hash)
+                blockService.findByHashBlock(hash)
         );
         return block;
     }
@@ -240,7 +240,7 @@ public class ConductorController {
             index = BasisController.getBlockchainSize() - 1;
         }
         return UtilsBlockToEntityBlock.entityBlockToBlock(
-                BlockService.findBySpecialIndex(index)
+                blockService.findBySpecialIndex(index)
         );
     }
     /***
@@ -253,10 +253,10 @@ public class ConductorController {
     @ResponseBody
     public DtoTransaction transaction(@RequestParam String hash) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         List<EntityDtoTransaction> entityDtoTransactions =
-                BlockService.findAllDto();
+                blockService.findAllDto();
         EntityDtoTransaction entityDtoTransaction = null;
         try {
-             entityDtoTransaction = BlockService.findBySign(hash);
+             entityDtoTransaction = blockService.findBySign(hash);
 
             if(entityDtoTransaction == null){
                 return null;

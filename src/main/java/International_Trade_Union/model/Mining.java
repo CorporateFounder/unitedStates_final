@@ -19,6 +19,8 @@ import International_Trade_Union.vote.LawEligibleForParliamentaryApproval;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.UtilsLaws;
 import International_Trade_Union.vote.VoteEnum;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +31,10 @@ import java.util.stream.Collectors;
 
 import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
 
+@Component
 public class Mining {
+    @Autowired
+    BlockService blockService;
     private static int customDiff = Seting.V34_MIN_DIFF;
     public static boolean miningIsObsolete = false;
     private static volatile boolean isMiningStop = false;
@@ -64,7 +69,7 @@ public class Mining {
         Mining.isMiningStop = isMiningStop;
     }
 
-    public static Map<String, Account> getBalances(String filename, Blockchain blockchain, Map<String, Account> balances, List<String> signs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public  Map<String, Account> getBalances(String filename, Blockchain blockchain, Map<String, Account> balances, List<String> signs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         //start test
 
 
@@ -86,7 +91,7 @@ public class Mining {
 //        }
 //
 
-        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
         if (balances == null) {
             balances = new HashMap<>();
         }

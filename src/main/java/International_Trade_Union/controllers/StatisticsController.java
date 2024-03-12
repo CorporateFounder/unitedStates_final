@@ -12,6 +12,7 @@ import International_Trade_Union.statistics.Statistic;
 import International_Trade_Union.statistics.UtilsStatistics;
 import International_Trade_Union.utils.UtilsAccountToEntityAccount;
 import International_Trade_Union.utils.UtilsBalance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,8 @@ import java.util.stream.Collectors;
 
 @Controller
 public class StatisticsController {
+    @Autowired
+    BlockService blockService;
     private static Periud periud = International_Trade_Union.statistics.Periud.DAY;
 
     @PostMapping("/statistics")
@@ -61,7 +64,7 @@ public class StatisticsController {
         for (Block block : blockchain.getBlockchainList()) {
             System.out.println("index: " + block.getIndex());
 //            balances = UtilsBalance.calculateBalance(balances, block, signs);
-            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
             if (block.getIndex() > 576 && block.getIndex() % periud.getPeriud() == 0) {
                 System.out.println("per index: " + block.getIndex() + ":"

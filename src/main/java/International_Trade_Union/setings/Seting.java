@@ -2,6 +2,7 @@ package International_Trade_Union.setings;
 
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
+import International_Trade_Union.utils.MyHost;
 import International_Trade_Union.utils.UtilsUse;
 
 
@@ -9,6 +10,7 @@ import java.util.Set;
 
 public interface Seting {
     boolean IS_TEST = false;
+    boolean IS_SECURITY = false;
 
     int HUNDRED_PERCENT = 100;
     // значение используется как константа года,
@@ -37,7 +39,7 @@ public interface Seting {
 
 
     //Минимальное значение чтобы Совет Корпоративных Верховных Судей могла избрать Верховного Судью
-    int ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES =  2;
+    int ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES =  0;
 
 
     //Минимальное количество остатка голосов чтобы Совет Акционеров
@@ -48,10 +50,10 @@ public interface Seting {
     int ORIGINAL_LIMIT_MIN_VOTE_GENERAL_EXECUTIVE_DIRECTOR = 1;
 
 
-    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS =  10;
+    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS =  57;
 
     //голос Верховного Судьи
-    int ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE = 1;
+    int ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE = 2;
 
 
     //голос должностных лиц,
@@ -84,7 +86,7 @@ public interface Seting {
     int HALF_YEAR = 2;
 
     //стоимость создания закона 3
-    double COST_LAW = 3;
+    double COST_LAW = 0;
     //с чего начинается адрес пакета закона
     //сокращенно корпорация
     String NAME_LAW_ADDRESS_START = "LIBER";
@@ -106,11 +108,6 @@ public interface Seting {
     String BUDGET = "BUDGET";
     String EMISSION = "EMISSION";
 
-    //классические законы должны действовать постоянно,
-    //пока их не отменять либо верховный суд, либо совет директоров
-    String CURRENT_LAW = "CURRENT_LAW";
-    //сколько голосов нужно
-    int LIMIT_VOTING_FOR_BUDJET_END_EMISSION = 300000;
     double EMISSION_BUDGET = 25000;
 
     //план также утверждается на четыре года и утверждается только палатой представителей
@@ -124,9 +121,9 @@ public interface Seting {
     int ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES_AMENDMENT = 5;// 5;
     //палата представителей 20% голосов
     int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_AMENDMENT =
-           directors.getDirector(NamePOSITION.BOARD_OF_DIRECTORS.toString()).getCount() * 20 / 100;
+           75;
 
-    //Совет акционеров минимум 20% голосов
+    //Совет стэйкеров минимум 35% голосов
     int ORIGINAL_LIMIT_MINT_VOTE_BOARD_OF_SHAREHOLDERS_AMENDMENT = BOARD_OF_SHAREHOLDERS * 35 / 100;
 
 
@@ -150,9 +147,9 @@ public interface Seting {
     //которые не позже четырех лет для законов и должностей,
     //голоса отданные за законы должны обновляться каждые четыре года
     //как и за должности
-    int POSITION_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 4;
+    int POSITION_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 2;
     //подсчет голосов для законов в годах
-    int LAW_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 4;
+    int LAW_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 2;
 
     //используется для утверждения бюджета и эмиссии
     int LAW_MONTH_VOTE = (int) (FIFTEEN_DAYS * Seting.COUNT_BLOCK_IN_DAY);
@@ -305,19 +302,21 @@ public interface Seting {
     int V32_FIX_DIFF = 167343;
     int V34_NEW_ALGO = 187200;
     double V34_MINING_REWARD = 0.2;
-    int V34_MIN_DIFF = 17;
+    int V34_MIN_DIFF = IS_TEST == true? 1 : 17 ;
     String MAX_TARGET_v30 = "00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
 
-//    int STABILITY_ALGO_31 =
+
 
     //фиксированная награда за блок 5 монет
     double V28_REWARD = 5;
     double COEFFICIENT = 3;
     double ONE_HUNDRED_THOUSAND = 100000;
 
+
     int WAIGHT_MINING = 4;
 
+    int TIME_CHECK_BLOCK = 218690;
     //test
-
+    MyHost myhost = new MyHost("localhost", "first", "key");
 
 }

@@ -18,11 +18,11 @@ public class Directors {
         directors = new ArrayList<>();
         //Судебная власть.
         //Judicial branch.
-        Director CORPORATE_COUNCIL_OF_REFEREES = new Director("CORPORATE_COUNCIL_OF_REFEREES", 50, false, false, false, true, false);
+        Director CORPORATE_COUNCIL_OF_REFEREES = new Director("CORPORATE_COUNCIL_OF_REFEREES", 7, false, false, false, true, false);
 
         //Законодательная власть.
         //Legislature.
-        Director BOARD_OF_DIRECTORS = new Director("BOARD_OF_DIRECTORS", 201, false, false, false, true, false);
+        Director BOARD_OF_DIRECTORS = new Director("BOARD_OF_DIRECTORS", 7, false, false, false, true, false);
 
         //Исполнительная власть.
         //Executive power.

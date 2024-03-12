@@ -5,10 +5,7 @@ import International_Trade_Union.model.Account;
 import International_Trade_Union.setings.Seting;
 import org.apache.tomcat.util.net.jsse.JSSEUtil;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -68,16 +65,13 @@ public class CurrentLawVotes {
         //
         for (String s : YES) {
 
-            int count = 1;
-            count = yesAverage.get(s) > 0 ? yesAverage.get(s) : 1;
-            yes += balances.get(s).getDigitalStockBalance() / count;
+            yes += balances.get(s).getDigitalStakingBalance();
 
         }
         //
         for (String s : NO) {
-            int count = 1;
-            count = noAverage.get(s) > 0 ? noAverage.get(s) : 1;
-            no += balances.get(s).getDigitalStockBalance() / count;
+
+            no += balances.get(s).getDigitalStakingBalance();
 
         }
 
@@ -91,15 +85,12 @@ public class CurrentLawVotes {
         double yes = 0.0;
         double no = 0.0;
         for (String s : YES) {
-            int count = 1;
-            count = yesAverage.get(s) > 0 ? yesAverage.get(s) : 1;
-            yes += balances.get(s).getDigitalStockBalance() / count;
+            yes += balances.get(s).getDigitalStakingBalance() ;
 
         }
         for (String s : NO) {
-            int count = 1;
-            count = noAverage.get(s) > 0 ? noAverage.get(s) : 1;
-            no += balances.get(s).getDigitalStockBalance() / count;
+
+            no += balances.get(s).getDigitalStakingBalance() ;
 
         }
 
@@ -124,7 +115,7 @@ public class CurrentLawVotes {
     //голос фракции
     public double voteFractions(Map<String, Double> fractions){
         double yes = 0;
-        double no = 0;
+//        double no = 0;
         double sum = fractions.entrySet().stream()
                 .map(t->t.getValue())
                 .collect(Collectors.toList())
@@ -136,13 +127,35 @@ public class CurrentLawVotes {
             }
 
         }
-        for (String s : NO) {
+//        for (String s : NO) {
+//            if (fractions.containsKey(s)) {
+//                no += (fractions.get(s)/sum) * Seting.HUNDRED_PERCENT;
+//            }
+//
+//        }
+//        return yes - no;
+
+        return yes;
+    }
+
+    public List<Vote> directorsVote(Map<String, Double> fractions){
+        List<Vote> directorsVote = new ArrayList<>();
+        double yes = 0;
+
+        double sum = fractions.entrySet().stream()
+                .map(t->t.getValue())
+                .collect(Collectors.toList())
+                .stream().reduce(0.0, Double::sum);
+
+        for (String s : YES) {
             if (fractions.containsKey(s)) {
-                no += (fractions.get(s)/sum) * Seting.HUNDRED_PERCENT;
+                yes = (fractions.get(s)/sum) * Seting.HUNDRED_PERCENT;
+                directorsVote.add(new Vote(s, yes));
             }
 
         }
-        return yes - no;
 
+
+        return directorsVote;
     }
 }

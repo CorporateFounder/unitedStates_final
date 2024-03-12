@@ -5,6 +5,7 @@ import International_Trade_Union.entity.blockchain.DataShortBlockchainInformatio
 import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.entities.EntityBlock;
 import International_Trade_Union.entity.services.BlockService;
+import International_Trade_Union.governments.UtilsGovernment;
 import org.json.JSONException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,8 @@ public class BasisController {
     BlockService blockService;
 
 
+    @Autowired
+    Mining miningS;
     @Autowired
     UtilsResolving utilsResolving;
 
@@ -221,10 +224,10 @@ public class BasisController {
         nodes.addAll(temporary);
 
 
-        nodes = nodes.stream()
-                .filter(t -> !t.isBlank())
-                .filter(t -> t.startsWith("\""))
-                .collect(Collectors.toSet());
+//        nodes = nodes.stream()
+//                .filter(t -> !t.isBlank())
+//                .filter(t -> t.startsWith("\""))
+//                .collect(Collectors.toSet());
         nodes = nodes.stream().map(t -> t.replaceAll("\"", "")).collect(Collectors.toSet());
         Set<String> bloked = UtilsAllAddresses.readLineObject(Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
         //removes blocked hosts. удаляет заблокированные хосты
@@ -249,11 +252,12 @@ public class BasisController {
         Set<String> temporary = UtilsAllAddresses.readLineObject(Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
         nodes.addAll(temporary);
         nodes.addAll(Seting.ORIGINAL_ADDRESSES);
-        nodes = nodes.stream().filter(t -> t.startsWith("\""))
-                .collect(Collectors.toSet());
+//        nodes = nodes.stream().filter(t -> t.startsWith("\""))
+//                .collect(Collectors.toSet());
         Set<String> bloked = UtilsAllAddresses.readLineObject(Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
         nodes.removeAll(bloked);
         nodes.removeAll(Seting.ORIGINAL_BLOCKED_ADDRESS);
+        nodes = nodes.stream().map(t->t.replaceAll("\"", "")).collect(Collectors.toSet());
         return nodes;
     }
 
@@ -402,7 +406,7 @@ public class BasisController {
      * TODO Устарел и нигде не используется. TODO Deprecated and not used anywhere.
      */
 
-    public static void addBlock2(List<Block> originalBlocks, Map<String, Account> balances) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+    public  void addBlock2(List<Block> originalBlocks, Map<String, Account> balances) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
 
 
         System.out.println(" addBlock2 start: ");
@@ -423,10 +427,10 @@ public class BasisController {
 
 
         }
-        BlockService.saveAllBlock(entityBlocks);
+        blockService.saveAllBlock(entityBlocks);
         List<EntityAccount> entityBalances = UtilsAccountToEntityAccount
                 .accountsToEntityAccounts(balances);
-        BlockService.saveAccountAll(entityBalances);
+        blockService.saveAccountAll(entityBalances);
 
 
         Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
@@ -478,7 +482,7 @@ public class BasisController {
 
         UtilsFileSaveRead.deleteFile(Seting.TEMPORARY_BLOCKCHAIN_FILE);
         System.out.println("finish delete file get block:");
-        BlockService.deletedAll();
+        blockService.deletedAll();
         System.out.println("finish delete db get block:");
         List<Block> list = new ArrayList<>();
 
@@ -855,7 +859,7 @@ public class BasisController {
             List<Block> tempBlockchain;
 
             tempBlockchain = UtilsBlockToEntityBlock.entityBlocksToBlocks(
-                    BlockService.findBySpecialIndexBetween(
+                    blockService.findBySpecialIndexBetween(
                             (blockchainSize) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
                             blockchainSize - 1
                     )
@@ -864,7 +868,7 @@ public class BasisController {
             Block prevBlock = tempBlockchain.get(tempBlockchain.size() - 1);
             long index = prevBlock.getIndex() + 1;
 //            Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-            Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+            Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
 
             Account miner = balances.get(User.getUserAddress());
@@ -899,7 +903,7 @@ public class BasisController {
             //считывает все балансы из файла.
             //reads all balances from a file.
 //            balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
 
             String json = UtilsFileSaveRead.read(Seting.TEMPORARY_BLOCKCHAIN_FILE);
@@ -931,7 +935,7 @@ public class BasisController {
 
                 //получить список балансов из файла. get a list of balances from a file.
                 List<String> signs = new ArrayList<>();
-                balances = Mining.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain1, balances, signs);
+                balances = miningS.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain1, balances, signs);
                 //удалить старые файлы баланса. delete old balance files.
 //                Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
 //
@@ -943,7 +947,7 @@ public class BasisController {
             //скачать список балансов из файла. download a list of balances from a file.
             System.out.println("BasisController: minining: read list balance");
 //            balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
+            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
             //получить счет майнера. get the miner's account.
             miner = balances.get(User.getUserAddress());
@@ -961,7 +965,7 @@ public class BasisController {
 
             List<Block> temp
                     = UtilsBlockToEntityBlock.entityBlocksToBlocks(
-                    BlockService.findBySpecialIndexBetween(
+                    blockService.findBySpecialIndexBetween(
                             (blockchainSize) - Seting.CHECK_DTO,
                             blockchainSize - 1
                     )
@@ -1036,7 +1040,7 @@ public class BasisController {
                 );
             }
 
-            String addresFounder = BlockService.findBySpecialIndex(0).getFounderAddress();
+            String addresFounder = blockService.findBySpecialIndex(0).getFounderAddress();
             if (!block.getFounderAddress().equals(addresFounder)) {
                 System.out.println("wrong address founder: ");
             }
@@ -1192,110 +1196,58 @@ public class BasisController {
 
 
 
-    @GetMapping("/testResolving")
+    @GetMapping("/testCalculate")
     @ResponseBody
     public String testResolving() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-       int result = utilsResolving.resolve3();
-       while (true){
-           result = utilsResolving.resolve3();
-           if(result >= 0){
-               break;
-           }
-       }
-        return "resolving test";
-    }
+        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
-    @GetMapping("/testEqualsBalance")
-    @ResponseBody
-    public void test() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        System.out.println("start testEqualsBalance");
-        try {
-            Map<String, Account> fromFile = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-            List<EntityAccount> fromDb = BlockService.findAllAccounts();
-            boolean check = true;
-            int count = 0;
-            for (EntityAccount entityAccount : fromDb) {
-                if (fromFile.containsKey(entityAccount.getAccount())) {
-                    Account tempAccount = fromFile.get(entityAccount.getAccount());
-                    if (
-                            tempAccount.getAccount().equals(entityAccount.getAccount())
-                                    && tempAccount.getDigitalDollarBalance() == entityAccount.getDigitalDollarBalance()
-                                    && tempAccount.getDigitalStockBalance() == entityAccount.getDigitalStockBalance()
-                                    && tempAccount.getDigitalStakingBalance() == entityAccount.getDigitalStakingBalance()) {
-                        continue;
-                    } else {
-                        System.out.println("account from file: " + tempAccount);
-                        System.out.println("account from db: " + entityAccount);
-                        check = false;
-                        break;
-                    }
-                }
+        List<Block> blocksList = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                blockService.findBySpecialIndexBetween(
+                        BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE,
+                        BasisController.getBlockchainSize() -1
+                )
+        );
 
-                count++;
-            }
-            System.out.println("***************************************");
-            System.out.println("from file: " + fromFile.size());
-            System.out.println("from db: " + fromDb.size());
-            System.out.println("check: " + check);
-        } catch (Exception e) {
-            e.printStackTrace();
+        List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blocksList, Seting.BOARDS_BLOCK);
+
+
+        List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
+                UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+
+        Map<String, CurrentLawVotes> votesMap = new HashMap<>();
+        List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
+        long from = 0;
+        long to = BasisController.getBlockchainSize();
+
+        if (BasisController.getBlockchainSize() > Seting.LAW_YEAR_VOTE) {
+            from = BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE;
         }
 
+        for (long i = from; i < to; i += 10000) {
+            List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(i, Math.min(to, i + 1000)));
+            for (Block block : list) {
+               votesMap = UtilsCurrentLaw.calculateVote(votesMap, accounts, block);
+            }
+        }
+//        List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(from, to));
+//        for (Block block : list) {
+//            UtilsCurrentLaw.calculateVote(votesMap, accounts, block);
+//        }
+
+        List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
+                lawEligibleForParliamentaryApprovals,
+                balances,
+               boardOfShareholders,
+                votesMap);
+
+        System.out.println("vote Map: " + votesMap);
+        System.out.println("--------------------------------------------");
+        System.out.println("current: " + current);
+
+        return "ok";
+
     }
 
-    @GetMapping("/testrollback")
-    @ResponseBody
-    public String testing() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-
-        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCS52v8TM+rVYBv+Y+FRabj6Lts328TYHyKMbUhY0+uPwIhAPGiwmPhBWdd0lL0cG3CuUgQqxxhCJUWT3I3m/oQ+c46\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCH21sF95mIHj3b3UkqU98yuHSrB94cCxE8tHIAfVlUYMCIQDet6Grc2I/qwtkLcndkWKB0KxZFSoZBIGlAnpe8T4NiQ==\"}],\"previousHash\":\"1693006549e60d1034c002d205d420002261411c4190110450257f2806143c69\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":3258116,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708598156000,\"index\":204674,\"hashBlock\":\"0a2c080608b958b20809106a22d81aa90bb845463258200a9e00b00064b0a80c\"}");
-        Block block1 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDvIQqLDf8oU+FC73DkiiNR1+HDT73tkEsVE4b1rRvnUQIhALcU228EKZoAcYpWfjn8gOvR5/C1CiAihubX6k0bfb9N\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCaQuPGZdm4ppoh8ucNL8qRExIRsfCjp1ExO/3oz6OsXgIhANURKjk+eWiAgk8wrazfm9VRn5UOt7LKdSfUjCoIJrqG\"}],\"previousHash\":\"80035027844db00f540911b0114c0bb2020829208ca13595054108607d01d840\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":10808639114936202,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708598058000,\"index\":204673,\"hashBlock\":\"1693006549e60d1034c002d205d420002261411c4190110450257f2806143c69\"}");
-        Block block2 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCflVNwa/M3pX7plbI9ZMzBfWt4quDnp8ZWCG7Pqk/aagIgUFQ6vUgaN+ADvrHZhmvq4QlI9C6ywV+5bDTJEwPdajg=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCftyoFk2J02CKkWFRX3GvSOpqTa+O1p9xC61nyowiX+AIhALlguCYrtURReIwTmwSXmrk7hNfCNgm9eYPKZNVnESGq\"}],\"previousHash\":\"194860380c5816204b000882440196769d73828184973c10e020648040dc4059\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":1801439851358743,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708598043000,\"index\":204672,\"hashBlock\":\"80035027844db00f540911b0114c0bb2020829208ca13595054108607d01d840\"}");
-        Block block3 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIBlX9dnYHvIUR5niNTdx1DNZ4JkMUxRa1Nv+s9LJ1SgeAiEA//mwqJaBTxF65k2O1qTVCA031IXVN4OiilXfvJ97pVc=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIDeRELf6YRcdlFqenxDYkdFdoFSCX/T82yWjbdG0b6U5AiBMquOg0M8U13KtWFGWA1BsUzx/XO41B0aTZ74uxICQ1w==\"}],\"previousHash\":\"11280ab864c82430c442a1b8d0010c078043114039b4580026d0da203c148809\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":5404319553581238,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708598021000,\"index\":204671,\"hashBlock\":\"194860380c5816204b000882440196769d73828184973c10e020648040dc4059\"}");
-        Block block4 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIAR+DpLNaRLQby7C7OtSt6IUTUz3KAop1ieZK+B/LL4MAiBUP/gCviAIjPeZTlNv+KNsiu6n85nfq/HSddEkZ72zoA==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCu0qw+dXPEf2XMBgzq30/v7LJDUqTWg/VxKbn/NGEOgAIgfJCgxQ7LhUky4yzATapG7HMOn2JU1ALvAadj6oSQz/Y=\"}],\"previousHash\":\"883160054251024194c18d061488761c15280c18d91a0041c919b0004ac801a5\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":9907919181603188,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708597990000,\"index\":204670,\"hashBlock\":\"11280ab864c82430c442a1b8d0010c078043114039b4580026d0da203c148809\"}");
-
-        Map<String, Account> balance = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
-
-        Account before = balance.get("rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM").clone();
-
-        balance = UtilsBalance.rollbackCalculateBalance(balance, block, new ArrayList<>());
-        balance = UtilsBalance.rollbackCalculateBalance(balance, block1, new ArrayList<>());
-        balance = UtilsBalance.rollbackCalculateBalance(balance, block2, new ArrayList<>());
-        balance = UtilsBalance.rollbackCalculateBalance(balance, block3, new ArrayList<>());
-        balance = UtilsBalance.rollbackCalculateBalance(balance, block4, new ArrayList<>());
-       Account after  = balance.get("rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM").clone();
-        System.out.println("before: " + before);
-        System.out.println("after: " + after);
-        String str = before.toString() + " : " + after.toString();
-
-        return str;
-    }
-
-    @GetMapping("/testsend")
-    @ResponseBody
-    public String testing2() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-
-        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCS52v8TM+rVYBv+Y+FRabj6Lts328TYHyKMbUhY0+uPwIhAPGiwmPhBWdd0lL0cG3CuUgQqxxhCJUWT3I3m/oQ+c46\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCH21sF95mIHj3b3UkqU98yuHSrB94cCxE8tHIAfVlUYMCIQDet6Grc2I/qwtkLcndkWKB0KxZFSoZBIGlAnpe8T4NiQ==\"}],\"previousHash\":\"1693006549e60d1034c002d205d420002261411c4190110450257f2806143c69\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":3258116,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708598156000,\"index\":204674,\"hashBlock\":\"0a2c080608b958b20809106a22d81aa90bb845463258200a9e00b00064b0a80c\"}");
-        Block block1 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDvIQqLDf8oU+FC73DkiiNR1+HDT73tkEsVE4b1rRvnUQIhALcU228EKZoAcYpWfjn8gOvR5/C1CiAihubX6k0bfb9N\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCaQuPGZdm4ppoh8ucNL8qRExIRsfCjp1ExO/3oz6OsXgIhANURKjk+eWiAgk8wrazfm9VRn5UOt7LKdSfUjCoIJrqG\"}],\"previousHash\":\"80035027844db00f540911b0114c0bb2020829208ca13595054108607d01d840\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":10808639114936202,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708598058000,\"index\":204673,\"hashBlock\":\"1693006549e60d1034c002d205d420002261411c4190110450257f2806143c69\"}");
-        Block block2 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCflVNwa/M3pX7plbI9ZMzBfWt4quDnp8ZWCG7Pqk/aagIgUFQ6vUgaN+ADvrHZhmvq4QlI9C6ywV+5bDTJEwPdajg=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCftyoFk2J02CKkWFRX3GvSOpqTa+O1p9xC61nyowiX+AIhALlguCYrtURReIwTmwSXmrk7hNfCNgm9eYPKZNVnESGq\"}],\"previousHash\":\"194860380c5816204b000882440196769d73828184973c10e020648040dc4059\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":1801439851358743,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708598043000,\"index\":204672,\"hashBlock\":\"80035027844db00f540911b0114c0bb2020829208ca13595054108607d01d840\"}");
-        Block block3 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIBlX9dnYHvIUR5niNTdx1DNZ4JkMUxRa1Nv+s9LJ1SgeAiEA//mwqJaBTxF65k2O1qTVCA031IXVN4OiilXfvJ97pVc=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIDeRELf6YRcdlFqenxDYkdFdoFSCX/T82yWjbdG0b6U5AiBMquOg0M8U13KtWFGWA1BsUzx/XO41B0aTZ74uxICQ1w==\"}],\"previousHash\":\"11280ab864c82430c442a1b8d0010c078043114039b4580026d0da203c148809\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":5404319553581238,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708598021000,\"index\":204671,\"hashBlock\":\"194860380c5816204b000882440196769d73828184973c10e020648040dc4059\"}");
-        Block block4 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIAR+DpLNaRLQby7C7OtSt6IUTUz3KAop1ieZK+B/LL4MAiBUP/gCviAIjPeZTlNv+KNsiu6n85nfq/HSddEkZ72zoA==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCu0qw+dXPEf2XMBgzq30/v7LJDUqTWg/VxKbn/NGEOgAIgfJCgxQ7LhUky4yzATapG7HMOn2JU1ALvAadj6oSQz/Y=\"}],\"previousHash\":\"883160054251024194c18d061488761c15280c18d91a0041c919b0004ac801a5\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":9907919181603188,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708597990000,\"index\":204670,\"hashBlock\":\"11280ab864c82430c442a1b8d0010c078043114039b4580026d0da203c148809\"}");
-
-        Map<String, Account> balance = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(BlockService.findAllAccounts());
-
-        Account before = balance.get("rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM").clone();
-
-        balance = UtilsBalance.calculateBalance(balance, block4, new ArrayList<>());
-        balance = UtilsBalance.calculateBalance(balance, block3, new ArrayList<>());
-        balance = UtilsBalance.calculateBalance(balance, block2, new ArrayList<>());
-        balance = UtilsBalance.calculateBalance(balance, block1, new ArrayList<>());
-        balance = UtilsBalance.calculateBalance(balance, block, new ArrayList<>());
-        Account after  = balance.get("rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM").clone();
-        System.out.println("before: " + before);
-        System.out.println("after: " + after);
-        String str = before.toString() + " : " + after.toString();
-
-        return str;
-    }
 }
 
 

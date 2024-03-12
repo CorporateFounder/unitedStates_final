@@ -31,7 +31,7 @@ public class EntityLaws {
     String packetLawName;
 
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Type(type = "org.hibernate.type.TextType")
     List<String> laws;
     //

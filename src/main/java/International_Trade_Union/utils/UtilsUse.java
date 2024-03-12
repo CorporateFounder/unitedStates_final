@@ -347,7 +347,7 @@ public class UtilsUse {
         Random deterministicRandom = new Random(hashAsNumber.longValue());
 
         // Генерация случайного числа в диапазоне от 0 до 130
-        int limit = 131; // Предполагается, что limit это максимальное значение + 1
+        int limit = 71; // Предполагается, что limit это максимальное значение + 1
         int result = deterministicRandom.nextInt(limit);
         result = (int) ((int) (result + (actual.getHashCompexity() * Seting.WAIGHT_MINING)) + calculateScore(miner.getDigitalStakingBalance(), 1));
         //+ calculateScore(miner.getDigitalStakingBalance(), 1)

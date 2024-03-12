@@ -12,14 +12,18 @@
 
 
     <div th:each="el : ${currentLaw}" class="alert alert-info mt-2">
-        <h4 th:text="'law address: '+${el.addressLaw}"/>
-        <p th:text="'votes equal to shares raiting: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
-        <p th:text="'(CorporateCouncilOfReferee)votes of the Council of Chief Justices rating: '+${el.votesCorporateCouncilOfReferees}"/>
-        <p th:text="'votes board of directiors raitng: '+${el.votesBoardOfDirectors}"/>
-        <p th:text="'votes of the Board of Shareholders raiting: '+${el.votesBoardOfShareholders}"/>
-        <p th:text="'Voice of the CEO: '+${el.voteGeneralExecutiveDirector}"/>
-        <p th:text="'founder voice: '+${el.founderVote}"/>
-<!--        <p th:text="'fraction-leader voice: '+${el.fractionVote}"/>-->
+        <h4 th:text="'address package law: '+${el.addressLaw}"/>
+        <p th:text="'staking votes raiting: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
+        <p th:text="'votesCorporateCouncilOfReferees raiting: '+${el.votesCorporateCouncilOfReferees}"/>
+        <!--        <p th:text="'votes board of directiors raitng: '+${el.votesBoardOfDirectors}"/>-->
+        <p th:text="'votes BoardOfShareholders raiting: '+${el.votesBoardOfShareholders}"/>
+        <p th:text="'voteGeneral Executive Director: '+${el.voteGeneralExecutiveDirector}"/>
+        <p th:text="'founderVote: '+${el.founderVote}"/>
+        <p th:text="'voting directors: '+${#numbers.formatDecimal(el.fractionVote, 1, 'COMMA', 16, 'POINT')}"/>
+        <div th:each="director : ${el.directorsVote}" class="mt-1">
+            <span th:text="'Director: ' + ${director.address}"></span>
+            <span th:text="'Vote: ' + ${director.vote}"></span>
+        </div>
         <p th:text="'Name of the package of laws: '+${el.packageName}"/>
 
         <a th:href="'/detail-laws-current/' + ${el.addressLaw}" class="btn btn-warning">View in detail the list of laws in the package</a>
