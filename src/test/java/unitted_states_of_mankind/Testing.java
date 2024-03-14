@@ -63,7 +63,36 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class Testing {
+    @Test
+    public void testCode(){
 
+    }
+    public static void sendAddress(Set<String> nodes) throws IOException {
+
+        String host = "http://84.213.89.234:82";
+        MyHost myHost = new MyHost(host, "friend", "friend");
+        for (String s : nodes) {
+            try{
+                String hostStr = s;
+                if(s.contains("\""))
+                    hostStr = s.replaceAll("\"", "");
+                System.out.println("send " + s +" my host: " + myHost);
+                UtilUrl.sendPost(UtilsJson.objToStringJson(myHost), hostStr + "/putNode");
+            }catch (Exception e){
+                e.printStackTrace();
+                continue;
+            }
+
+        }
+
+    }
+    @Test
+    public void testSendHost() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        while (true){
+            System.out.println("sending");
+            sendAddress(BasisController.getNodes());
+        }
+    }
     @Test
     public void testReadHost() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         String url = "E://resources/poolAddress/";
