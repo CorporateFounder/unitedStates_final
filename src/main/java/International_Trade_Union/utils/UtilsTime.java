@@ -9,9 +9,14 @@ public class UtilsTime {
         return ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond() * 1000L;
     }
 
-
+    public static String timeToString(long secs) {
+        long hour = secs / 3600;
+        long min = secs / 60 % 60;
+        long sec = secs % 60;
+        return String.format("%02d:%02d:%02d", hour, min, sec);
+    }
     // Возвращает временную метку в текстовом формате UTC
-    String getUniversalTimestampString() {
+    public static String  getUniversalTimestampString() {
         return ZonedDateTime.now(ZoneOffset.UTC).toString();
     }
 

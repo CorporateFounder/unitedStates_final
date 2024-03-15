@@ -22,6 +22,7 @@ import International_Trade_Union.vote.UtilsLaws;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
 
 import static International_Trade_Union.controllers.BasisController.getNodes;
 import static International_Trade_Union.controllers.BasisController.utilsMethod;
+import static International_Trade_Union.setings.Seting.RANDOM_HOSTS;
 import static International_Trade_Union.utils.UtilsBalance.calculateBalance;
 import static International_Trade_Union.utils.UtilsBalance.rollbackCalculateBalance;
 
@@ -139,6 +141,10 @@ public class UtilsResolving {
                                     UtilsAllAddresses.saveAllAddresses(hostEndDataShortB.getHost(), Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
                                     break stop;
                                 }
+
+                                System.out.println("1. subBlocks: subBLock size - 1:"+(subBlocks.size()-1));
+                                System.out.println("1. finish: subBlocks: subBLock getIndex() + Seting.PORTION_DOWNLOAD + 1:" + (subBlocks.get(subBlocks.size() - 1).getIndex() + Seting.PORTION_DOWNLOAD + 1));
+                                System.out.println("1. start: subBlocks: subBLockstart = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + 1;:" + ( subBlocks.get(subBlocks.size() - 1).getIndex() + 1));
 
                                 finish = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + Seting.PORTION_DOWNLOAD + 1;
                                 start = (int) subBlocks.get(subBlocks.size() - 1).getIndex() + 1; //вот здесь возможно сделать + 2
@@ -404,7 +410,7 @@ public class UtilsResolving {
                         continue;
                     }
                 } catch (Exception e) {
-//                    e.printStackTrace();
+                    e.printStackTrace();
                     continue;
                 }
             }
@@ -991,6 +997,7 @@ public class UtilsResolving {
      */
 
 
+    @Transactional
     public void addBlock3(List<Block> originalBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         java.sql.Timestamp lastIndex = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
 
@@ -1112,6 +1119,22 @@ public class UtilsResolving {
     }
 
     public List<HostEndDataShortB> sortPriorityHost(Set<String> hosts) {
+
+        // Добавляем ORIGINAL_ADDRESSES к входящему набору хостов
+        Set<String> modifiedHosts = new HashSet<>(hosts);
+        modifiedHosts.addAll(Seting.ORIGINAL_ADDRESSES);
+
+        // Отбираем случайные 10 хостов
+        Set<String> selectedHosts = modifiedHosts.stream()
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        listHost -> {
+                            Collections.shuffle(listHost);
+                            return listHost.stream().limit(RANDOM_HOSTS).collect(Collectors.toSet());
+                        }
+                ));
+
+
         List<CompletableFuture<HostEndDataShortB>> futures = new ArrayList<>(); // Список для хранения CompletableFuture
 
         // Вывод информации о начале метода

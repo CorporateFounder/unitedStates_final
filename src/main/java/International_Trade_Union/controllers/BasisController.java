@@ -377,12 +377,12 @@ public class BasisController {
 
 //        int result = resovle2();
         int result = utilsResolving.resolve3();
-        while (true){
-            result = utilsResolving.resolve3();
-            if (result >= 0){
-                break;
-            }
-        }
+//        while (true){
+//            result = utilsResolving.resolve3();
+//            if (result >= 0){
+//                break;
+//            }
+//        }
         return result;
     }
 
@@ -461,7 +461,7 @@ public class BasisController {
 
     public  void getBlock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         int size = 0;
-
+        long startTime = UtilsTime.getUniversalTimestamp() / 1000;
         System.out.println("start get a block");
         Blockchain blockchain = Mining.getBlockchain(
                 Seting.ORIGINAL_BLOCKCHAIN_FILE,
@@ -514,6 +514,8 @@ public class BasisController {
         String json = UtilsJson.objToStringJson(shortDataBlockchain);
         UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
 
+        long finishTime = UtilsTime.getUniversalTimestamp() / 1000;
+        System.out.println("time: result time: " + UtilsTime.timeToString(finishTime - startTime));
         System.out.println("finish get a block");
     }
 
@@ -763,35 +765,6 @@ public class BasisController {
 
                     System.out.println(":BasisController: sendAllBlocksStorage: response: " + response);
 
-
-                    //there is an up-to-date branch on the global server, download it and delete the obsolete branch.
-                    //на глобальном сервере есть актуальная ветка, скачать ее и удалить устревшую ветку.
-//                    if (response == HttpStatus.CONFLICT.value()) {
-//                        System.out.println(":BasisController: sendAllBlocksStorage: start deleted 50 blocks:");
-//                        System.out.println(":size before delete: " + blockchainSize);
-//                       Blockchain blockchain1 = Mining.getBlockchain(
-//                                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-//                                BlockchainFactoryEnum.ORIGINAL);
-//                        List<Block> temporary = blockchain1.subBlock(0, blockchainSize - Seting.DELETED_PORTION);
-//                        UtilsBlock.deleteFiles();
-//                        blockchain1.setBlockchainList(temporary);
-//                        UtilsBlock.saveBlocks(blockchain1.getBlockchainList(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
-//                        blockchain1 = Mining.getBlockchain(
-//                                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-//                                BlockchainFactoryEnum.ORIGINAL);
-//
-//                        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-//                        blockchainSize = (int) shortDataBlockchain.getSize();
-//                        blockchainValid = shortDataBlockchain.isValidation();
-//
-//                        UtilsBlock.deleteFiles();
-//                        addBlock(blockchain1.getBlockchainList());
-//                        System.out.println(":size after delete: " + blockchainSize);
-//
-//
-//                        int result = resolve();
-//                        System.out.println(":resolve: updated: " + result);
-//                    }
 
 
                 }

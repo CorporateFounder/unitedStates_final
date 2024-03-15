@@ -118,8 +118,11 @@ public class BlockService {
 
     @Transactional
     public void saveAllBLockF(List<EntityBlock> entityBlocks){
+        Session session = entityManager.unwrap(Session.class);
+        session.setJdbcBatchSize(50);
         entityBlockRepository.saveAll(entityBlocks);
         entityBlockRepository.flush();
+        session.clear();
     }
     public  void saveAllBlock(List<EntityBlock> entityBlocks) {
         entityBlockRepository.saveAll(entityBlocks);
