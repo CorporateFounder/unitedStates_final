@@ -53,7 +53,7 @@ public interface Seting {
     int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS =  57;
 
     //голос Верховного Судьи
-    int ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE = 2;
+    int ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE = 1;
 
 
     //голос должностных лиц,
