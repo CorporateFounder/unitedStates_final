@@ -6,6 +6,7 @@ import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.entities.EntityBlock;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.UtilsGovernment;
+import International_Trade_Union.model.HostEndDataShortB;
 import org.json.JSONException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -689,16 +690,20 @@ public class BasisController {
      * Sends a list of blocks to central stores (example: http://194.87.236.238:82)
      * Отправляет список блоков в центральные хранилища (пример: http://194.87.236.238:82)
      */
-    public static int sendAllBlocksToStorage(List<Block> blocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public  int sendAllBlocksToStorage(List<Block> blocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
         System.out.println(new Date() + ":BasisController: sendAllBlocksToStorage: start: ");
         int bigsize = 0;
         int blocks_current_size = (int) blocks.get(blocks.size() - 1).getIndex() + 1;
         //отправка блокчейна на хранилище блокчейна
         System.out.println(":BasisController: sendAllBlocksToStorage: ");
-        getNodes().stream().forEach(System.out::println);
-        for (String s : getNodes()) {
+        Set<String> nodesAll = getNodes();
 
+        List<HostEndDataShortB> sortPriorityHost = utilsResolving.sortPriorityHost(nodesAll);
+
+        getNodes().stream().forEach(System.out::println);
+        for (HostEndDataShortB hostEndDataShortB : sortPriorityHost) {
+            String s = hostEndDataShortB.getHost();
             System.out.println(":trying to connect to the server send block: " + s + ": timeout 45 seconds");
 
             if (BasisController.getExcludedAddresses().contains(s)) {
