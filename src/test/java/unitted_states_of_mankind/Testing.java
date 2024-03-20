@@ -64,8 +64,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class Testing {
     @Test
-    public void testCode(){
-
+    public void testCode() throws JSONException, IOException {
+        String host = "http://194.87.236.238:82";
+        String addresses = UtilUrl.readJsonFromUrl(host + "/getNodes");
+        // Вывод загруженных данных
+        System.out.println("jsonGlobalData: " + addresses);
+        // Преобразование JSON данных в объект
+        Set<String> newAddresses = UtilsJson.jsonToSetAddresses(addresses);
+        System.out.println(newAddresses);
     }
     public static void sendAddress(Set<String> nodes) throws IOException {
 

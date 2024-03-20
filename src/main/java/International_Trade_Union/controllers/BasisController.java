@@ -223,11 +223,6 @@ public class BasisController {
 
         nodes.addAll(temporary);
 
-
-//        nodes = nodes.stream()
-//                .filter(t -> !t.isBlank())
-//                .filter(t -> t.startsWith("\""))
-//                .collect(Collectors.toSet());
         nodes = nodes.stream().map(t -> t.replaceAll("\"", "")).collect(Collectors.toSet());
         Set<String> bloked = UtilsAllAddresses.readLineObject(Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
         //removes blocked hosts. удаляет заблокированные хосты

@@ -73,7 +73,15 @@ public class UtilsResolving {
             Set<String> nodesAll = getNodes();
             //сортирует по приоритетности блокчейны
             Map<HostEndDataShortB, List<Block>> tempBestBlock = new HashMap<>();
+
             List<HostEndDataShortB> sortPriorityHost = sortPriorityHost(nodesAll);
+            Set<String> newAddress = newHostsLoop(sortPriorityHost.stream().map(t->t.getHost()).collect(Collectors.toSet()));
+            newAddress.remove(nodesAll);
+            for (String s : newAddress) {
+                UtilsAllAddresses.putHost(s);
+            }
+
+
             for (HostEndDataShortB hostEndDataShortB : sortPriorityHost) {
                 String s = hostEndDataShortB.getHost();
                 //if the local address matches the host address, it skips
@@ -1197,6 +1205,22 @@ public class UtilsResolving {
         return UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
     }
 
+    //скачивает хосты из других узлов
+    public Set<String> newHosts(String host) throws JSONException, IOException {
+        String addresses = UtilUrl.readJsonFromUrl(host + "/getNodes");
+        // Вывод загруженных данных
+        System.out.println("jsonGlobalData: " + addresses);
+        // Преобразование JSON данных в объект
+        return UtilsJson.jsonToSetAddresses(addresses);
+    }
+
+    public Set<String> newHostsLoop(Set<String> hosts) throws JSONException, IOException {
+        Set<String> addresses = new HashSet<>();
+        for (String s : hosts) {
+            addresses.addAll(newHosts(s));
+        }
+        return addresses;
+    }
     // Метод для логирования ошибки
     private void logError(String message, Exception e) {
         // Вывод ошибки и сообщения
