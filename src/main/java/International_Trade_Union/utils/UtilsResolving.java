@@ -480,9 +480,7 @@ public class UtilsResolving {
                                                        Map<String, Account> tempBalances,
                                                        List<String> sign,
                                                        Map<String, Account> balances,
-                                                       List<Block> subBlocks)
-            throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException,
-            InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+                                                       List<Block> subBlocks) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         //TODO сначала найти блок откуда начинается ответление и докуда
 
         Map<String, Account> tempBalance = UtilsUse.balancesClone(tempBalances);
@@ -492,43 +490,33 @@ public class UtilsResolving {
             List<Block> emptyList = new ArrayList<>();
             List<Block> different = new ArrayList<>();
 
-            int lastBlockIndex = (int) (global.getSize() - 1);
-            int startIndex = lastBlockIndex - (lastBlockIndex % 500);
-            int endIndex = Math.min(startIndex + 500, lastBlockIndex);
 
-            stop:
-            while (startIndex >= 0) {
-                SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(startIndex, endIndex);
-                String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
-                List<Block> blockList = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
+            for (int i = (int) (global.getSize() - 1); i >= 0; i--) {
 
-                for (int i = blockList.size() - 1; i >= 0; i--) {
-                    Block block = blockList.get(i);
-                    System.out.println("helpResolve3: block index: " + block.getIndex());
+                Block block = UtilsJson.jsonToBLock(UtilUrl.getObject(UtilsJson.objToStringJson(i), s + "/block"));
 
-                    if (block.getIndex() > BasisController.getBlockchainSize() - 1) {
-                        System.out.println(":download blocks: " + block.getIndex() +
-                                " your block : " + (BasisController.getBlockchainSize()) + ":waiting need download blocks: " + (block.getIndex() - BasisController.getBlockchainSize()));
-                        emptyList.add(block);
-                    } else if (!blockService.findBySpecialIndex(block.getIndex()).getHashBlock().equals(block.getHashBlock())) {
-                        emptyList.add(block);
-                        different.add(UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(block.getIndex())));
-                        System.out.println("********************************");
-                        System.out.println(":dowdnload block index: " + block.getIndex());
-                        System.out.println(":block original index: " + blockService.findBySpecialIndex(block.getIndex()).getIndex());
-                        System.out.println(":block from index: " + block.getIndex());
-                    } else {
-                        emptyList.add(block);
-                        different.add(UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(block.getIndex())));
-                        // Останавливаем итерацию, т.к. дальнейшие блоки будут идентичными
-                        break stop;
-                    }
+                System.out.println("helpResolve3: block index: " + block.getIndex());
+                if (i > BasisController.getBlockchainSize() - 1) {
+                    System.out.println(":download blocks: " + block.getIndex() +
+                            " your block : " + (BasisController.getBlockchainSize()) + ":waiting need download blocks: " + (block.getIndex() - BasisController.getBlockchainSize()));
+                    emptyList.add(block);
+
+                } else if (!blockService.findBySpecialIndex(i).getHashBlock().equals(block.getHashBlock())) {
+                    emptyList.add(block);
+                    different.add(UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(i)));
+                    System.out.println("********************************");
+                    System.out.println(":dowdnload block index: " + i);
+                    System.out.println(":block original index: " + blockService.findBySpecialIndex(i).getIndex());
+                    System.out.println(":block from index: " + block.getIndex());
+
+                } else {
+                    emptyList.add(block);
+                    different.add(UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(i)));
+
+                    break;
                 }
-
-                // Обновляем индексы для следующей итерации
-                endIndex = startIndex - 1;
-                startIndex = Math.max(startIndex - 500, 0);
-            }            System.out.println("different: ");
+            }
+            System.out.println("different: ");
 
             System.out.println("shortDataBlockchain: " + BasisController.getShortDataBlockchain());
             temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
