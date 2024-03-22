@@ -65,13 +65,18 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Testing {
     @Test
     public void testCode() throws JSONException, IOException {
-        String host = "http://194.87.236.238:82";
-        String addresses = UtilUrl.readJsonFromUrl(host + "/getNodes");
-        // Вывод загруженных данных
-        System.out.println("jsonGlobalData: " + addresses);
-        // Преобразование JSON данных в объект
-        Set<String> newAddresses = UtilsJson.jsonToSetAddresses(addresses);
-        System.out.println(newAddresses);
+        int start = 0;
+        int finish = 500;
+        SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(start, finish);
+
+        System.out.println("1:shortDataBlockchain:  " + BasisController.getShortDataBlockchain());
+        System.out.println("1:sublockchainEntity: " + subBlockchainEntity);
+        String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
+        System.out.println("1:sublockchainJson: " + subBlockchainJson);
+        String s = "http://194.87.236.238:82";
+        List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
+        System.out.println("index start: " + subBlocks.get(0).getIndex());
+        System.out.println("index finish: " + subBlocks.get(subBlocks.size()-1).getIndex());
     }
     public static void sendAddress(Set<String> nodes) throws IOException {
 
