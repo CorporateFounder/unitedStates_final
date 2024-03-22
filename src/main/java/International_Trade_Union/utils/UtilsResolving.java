@@ -518,6 +518,7 @@ public class UtilsResolving {
             }
             System.out.println("different: ");
 
+
             System.out.println("shortDataBlockchain: " + BasisController.getShortDataBlockchain());
             temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
             System.out.println("rollback temp: " + temp);

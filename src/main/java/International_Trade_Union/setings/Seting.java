@@ -10,7 +10,7 @@ import java.util.Set;
 
 public interface Seting {
     boolean IS_TEST = false;
-    boolean IS_SECURITY = true;
+    boolean IS_SECURITY = false;
 
     int HUNDRED_PERCENT = 100;
     // значение используется как константа года,
