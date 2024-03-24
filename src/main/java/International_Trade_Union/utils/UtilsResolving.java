@@ -1148,10 +1148,10 @@ public class UtilsResolving {
         List<CompletableFuture<HostEndDataShortB>> futures = new ArrayList<>(); // Список для хранения CompletableFuture
 
         // Вывод информации о начале метода
-        System.out.println("start: sortPriorityHost: " + hosts);
+        System.out.println("start: sortPriorityHost: " + selectedHosts);
 
         // Перебираем все хосты
-        for (String host : hosts) {
+        for (String host : selectedHosts) {
             // Создаем CompletableFuture для каждого хоста
             CompletableFuture<HostEndDataShortB> future = CompletableFuture.supplyAsync(() -> {
                 try {
