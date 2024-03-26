@@ -9,7 +9,7 @@ import International_Trade_Union.utils.UtilsUse;
 import java.util.Set;
 
 public interface Seting {
-    boolean IS_TEST = false;
+    boolean IS_TEST = true;
     boolean IS_SECURITY = true;
 
     int HUNDRED_PERCENT = 100;
@@ -195,6 +195,8 @@ public interface Seting {
     String ORIGINAL_TEMP_BALANCE = "/resources/temporaryBlocks/balance/";
     String ORIGINAL_TEMP_BLOCKCHAIN = "/resources/temporaryBlocks/blockchain/";
     String ORIGINAL_TEMPORARY_SHORT = "/resources/short/shortBlockchain.txt";
+
+    String ERROR_FILE = "/resources/error/error.txt";
 
 
 

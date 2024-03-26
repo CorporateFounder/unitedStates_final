@@ -229,6 +229,7 @@ public class UtilsResolving {
                                 global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
 
                                 temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
+//                                temp = helpResolve4(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
 
                                 System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++");
                                 //если скачанный блокчейн не валидный, то не добавляет в блокчейн, возвращает -10
@@ -318,6 +319,7 @@ public class UtilsResolving {
                                     System.out.println("2: jsonGlobalData: " + jsonGlobalData);
                                     global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
                                     temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
+//                                    temp = helpResolve4(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
 
                                     if (BasisController.getBlockchainSize() > 1 && !temp.isValidation()) {
                                         return -10;
@@ -388,6 +390,7 @@ public class UtilsResolving {
                             System.out.println("3: jsonGlobalData: " + jsonGlobalData);
                             global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
                             temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
+//                            temp = helpResolve4(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
 
                             if (temp.getSize() > 1 && !temp.isValidation()) {
                                 System.out.println("error resolve 2 in portion upper < 500");
@@ -419,6 +422,7 @@ public class UtilsResolving {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+
                     continue;
                 }
             }
@@ -472,6 +476,121 @@ public class UtilsResolving {
         }
         return false;
     }
+
+    public DataShortBlockchainInformation helpResolve4(DataShortBlockchainInformation temp,
+                                                       DataShortBlockchainInformation global,
+                                                       String s,
+                                                       List<Block> lastDiff,
+                                                       Map<String, Account> tempBalances,
+                                                       List<String> sign,
+                                                       Map<String, Account> balances,
+                                                       List<Block> subBlocks)
+            throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException,
+            InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        //TODO сначала найти блок откуда начинается ответление и докуда
+
+        Map<String, Account> tempBalance = UtilsUse.balancesClone(tempBalances);
+        if (BasisController.getShortDataBlockchain().getSize() > 1 && !temp.isValidation()) {
+            System.out.println("__________________________________________________________");
+
+            List<Block> emptyList = new ArrayList<>();
+            List<Block> different = new ArrayList<>();
+
+            int lastBlockIndex = (int) (global.getSize() - 1);
+            int currentIndex = lastBlockIndex;
+
+            stop:
+            while (currentIndex >= 0) {
+                int startIndex = Math.max(currentIndex - 499, 0);
+                int endIndex = currentIndex;
+
+                SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(startIndex, endIndex);
+                String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
+                List<Block> blockList = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
+                System.out.println("subBlockchainEntity: " + subBlockchainEntity);
+
+                for (Block block : blockList) {
+                    System.out.println("helpResolve3: block index: " + block.getIndex());
+
+                    if (block.getIndex() > BasisController.getBlockchainSize() - 1) {
+                        System.out.println(":download blocks: " + block.getIndex() +
+                                " your block : " + (BasisController.getBlockchainSize()) + ":waiting need download blocks: " + (block.getIndex() - BasisController.getBlockchainSize()));
+                        emptyList.add(block);
+                    } else if (!blockService.findBySpecialIndex(block.getIndex()).getHashBlock().equals(block.getHashBlock())) {
+                        emptyList.add(block);
+                        different.add(UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(block.getIndex())));
+                        System.out.println("********************************");
+                        System.out.println(":dowdnload block index: " + block.getIndex());
+                        System.out.println(":block original index: " + blockService.findBySpecialIndex(block.getIndex()).getIndex());
+                        System.out.println(":block from index: " + block.getIndex());
+                    } else {
+                        // Останавливаем итерацию, т.к. дальнейшие блоки будут идентичными
+                        emptyList.add(block);
+                        different.add(UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(block.getIndex())));
+
+                        break stop;
+                    }
+                }
+
+                // Обновляем индекс для следующей итерации
+                currentIndex = startIndex - 1;
+            }
+            System.out.println("different: ");
+
+            System.out.println("shortDataBlockchain: " + BasisController.getShortDataBlockchain());
+            temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
+            System.out.println("rollback temp: " + temp);
+            Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(different.get(0).getIndex() - 1));
+
+            different = different.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+            emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+
+            for (Block block : emptyList) {
+                List<Block> tempList = new ArrayList<>();
+                tempList.add(block);
+                temp = Blockchain.shortCheck(tempPrevBlock, tempList, temp, lastDiff, tempBalance, sign);
+                tempPrevBlock = block;
+            }
+
+            System.out.println("after rollback: " + temp);
+            if (temp.isValidation()) {
+                System.out.println("------------------------------------------");
+                System.out.println("rollback");
+                try {
+                    rollBackAddBlock3(different, emptyList, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+
+
+                    System.out.println("------------------------------------------");
+                    System.out.println("emptyList start index: " + emptyList.get(0).getIndex());
+                    System.out.println("emptyList finish index: " + emptyList.get(emptyList.size() - 1).getIndex());
+                    System.out.println("==========================================");
+                    System.out.println("different start index: " + different.get(0).getIndex());
+                    System.out.println("different finish index: " + different.get(different.size() - 1).getIndex());
+                    System.out.println("------------------------------------------");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                System.out.println("------------------------------------------");
+                System.out.println("helpResolve3: temp: " + temp);
+                System.out.println("------------------------------------------");
+            } else {
+
+                return temp;
+            }
+
+
+        } else if (BasisController.getShortDataBlockchain().getSize() > 1 && temp.isValidation()) {
+            //вызывает методы, для сохранения списка блоков в текущий блокчейн,
+            //так же записывает в базу h2, делает перерасчет всех балансов,
+            //и так же их записывает, а так же записывает другие данные.
+            addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        }
+
+
+        System.out.println("__________________________________________________________");
+        return temp;
+    }
+
 
     public DataShortBlockchainInformation helpResolve3(DataShortBlockchainInformation temp,
                                                        DataShortBlockchainInformation global,
