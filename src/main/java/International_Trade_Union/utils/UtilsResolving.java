@@ -501,6 +501,7 @@ public class UtilsResolving {
 
             stop:
             while (currentIndex >= 0) {
+
                 int startIndex = Math.max(currentIndex - 499, 0);
                 int endIndex = currentIndex;
 
@@ -508,9 +509,9 @@ public class UtilsResolving {
                 String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
                 List<Block> blockList = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
                 System.out.println("subBlockchainEntity: " + subBlockchainEntity);
-
+                blockList = blockList.stream().sorted(Comparator.comparing(Block::getIndex).reversed()).collect(Collectors.toList());
                 for (Block block : blockList) {
-                    System.out.println("helpResolve3: block index: " + block.getIndex());
+                    System.out.println("helpResolve4: block index: " + block.getIndex());
 
                     if (block.getIndex() > BasisController.getBlockchainSize() - 1) {
                         System.out.println(":download blocks: " + block.getIndex() +
@@ -571,7 +572,7 @@ public class UtilsResolving {
                     e.printStackTrace();
                 }
                 System.out.println("------------------------------------------");
-                System.out.println("helpResolve3: temp: " + temp);
+                System.out.println("helpResolve4: temp: " + temp);
                 System.out.println("------------------------------------------");
             } else {
 
@@ -599,6 +600,7 @@ public class UtilsResolving {
                                                        Map<String, Account> tempBalances,
                                                        List<String> sign,
                                                        Map<String, Account> balances,
+
                                                        List<Block> subBlocks) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         //TODO сначала найти блок откуда начинается ответление и докуда
 
@@ -691,7 +693,7 @@ public class UtilsResolving {
         System.out.println("__________________________________________________________");
         return temp;
     }
-
+    @Transactional
     public void rollBackAddBlock3(List<Block> deleteBlocks, List<Block> saveBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         java.sql.Timestamp lastIndex = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
 
