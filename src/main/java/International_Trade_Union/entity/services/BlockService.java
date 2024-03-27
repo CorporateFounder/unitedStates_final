@@ -85,7 +85,6 @@ public class BlockService {
 
 
 
-    @Transactional
     public  void deleteEntityBlocksAndRelatedData(Long threshold) {
         Session session = entityManager.unwrap(Session.class);
         session.setJdbcBatchSize(50);
@@ -96,7 +95,6 @@ public class BlockService {
 
 
 
-    @Transactional
     public List<EntityAccount> findByAccountIn(Map<String, Account> map){
         List<String> accounts = map.entrySet().stream().map(t->t.getValue().getAccount()).collect(Collectors.toList());
         return entityAccountRepository.findByAccountIn(accounts);
