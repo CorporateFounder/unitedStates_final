@@ -529,8 +529,8 @@ public class UtilsResolving {
                         System.out.println(":block from index: " + block.getIndex());
                     } else {
                         // Останавливаем итерацию, т.к. дальнейшие блоки будут идентичными
-                        emptyList.add(block);
-                        different.add(UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(block.getIndex())));
+//                        emptyList.add(block);
+//                        different.add(UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(block.getIndex())));
 
                         break stop;
                     }
