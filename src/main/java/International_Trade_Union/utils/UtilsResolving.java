@@ -443,6 +443,9 @@ public class UtilsResolving {
 
     }
 
+    //TODO возникает ошибка, потому что высота одинаковая, но при этом big random разный.
+    //TODO нужно сделать еще один if внутри него поместить все if этого метода
+    //TODO или он должен удалять свой блок и добавлять другой блок
     public boolean isBig(
             DataShortBlockchainInformation actual,
             DataShortBlockchainInformation global) {
@@ -631,8 +634,8 @@ public class UtilsResolving {
                     System.out.println(":block from index: " + block.getIndex());
 
                 } else {
-                    emptyList.add(block);
-                    different.add(UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(i)));
+//                    emptyList.add(block);
+//                    different.add(UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(i)));
 
                     break;
                 }
@@ -694,6 +697,7 @@ public class UtilsResolving {
         return temp;
     }
 
+    @Transactional
     public void rollBackAddBlock3(List<Block> deleteBlocks, List<Block> saveBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         java.sql.Timestamp lastIndex = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
 
@@ -727,6 +731,7 @@ public class UtilsResolving {
 
         //для удаления баланса
         Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
+
 
         for (int i = deleteBlocks.size() - 1; i >= 0; i--) {
             Block block = deleteBlocks.get(i);
@@ -787,29 +792,15 @@ public class UtilsResolving {
 
         System.out.println("balances size: " + balances.size());
 
-
         for (int start = 0; start < tempBlock.size(); start += Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
             int end = Math.min(tempBlock.size(), start + Seting.PORTION_BLOCK_TO_COMPLEXCITY);
             List<Block> batch = tempBlock.subList(start, end);
             addBlock3(batch, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
         }
+//
 
 //        addBlock3(tempBlock, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-        System.out.println("_____________________________________________");
-        System.out.println("deleteBlock: ");
-        deleteBlocks.stream().forEach(t -> System.out.println(t.getIndex() + ":" + t.getHashBlock()));
-        System.out.println("_____________________________________________");
-        System.out.println("tempBlock: ");
-        tempBlock.stream().filter(t -> t.getIndex() < deleteBlocks.get(deleteBlocks.size() - 1).getIndex())
-                .forEach(t -> System.out.println(t.getIndex() + ":" + t.getHashBlock()));
-        System.out.println("_____________________________________________");
-        System.out.println("blockFrom Db:");
-        for (int i = (int) deleteBlocks.get(0).getIndex(); i < deleteBlocks.get(deleteBlocks.size() - 1).getIndex() + 1; i++) {
-            EntityBlock entityBlock = blockService.findBySpecialIndex(i);
-            System.out.println(entityBlock.getSpecialIndex() + ":" + entityBlock.getHashBlock());
-        }
-        System.out.println("------------------------------------------");
-
+        deleteBlocks.stream().forEach(t-> System.out.println("delete block: index: " + t.getIndex()));
     }
 
 
