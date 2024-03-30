@@ -82,9 +82,7 @@ public class BlockService {
     }
 
 
-
-
-
+    @Transactional
     public  void deleteEntityBlocksAndRelatedData(Long threshold) {
         Session session = entityManager.unwrap(Session.class);
         session.setJdbcBatchSize(50);
@@ -92,6 +90,7 @@ public class BlockService {
         entityBlockRepository.flush();
         session.clear();
     }
+
 
 
 

@@ -31,6 +31,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.Connection;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -41,6 +42,7 @@ import static International_Trade_Union.controllers.BasisController.utilsMethod;
 import static International_Trade_Union.setings.Seting.RANDOM_HOSTS;
 import static International_Trade_Union.utils.UtilsBalance.calculateBalance;
 import static International_Trade_Union.utils.UtilsBalance.rollbackCalculateBalance;
+import static java.sql.DriverManager.getConnection;
 
 @Component
 public class UtilsResolving {
@@ -130,11 +132,13 @@ public class UtilsResolving {
                             boolean downloadPortion = true;
                             int finish = blocks_current_size + Seting.PORTION_DOWNLOAD;
                             int start = blocks_current_size;
+
                             //while the difference in the size of the local blockchain is greater than from the host, it will continue to download in portions to download the entire blockchain
                             //пока разница размера локального блокчейна больше чем с хоста будет продолжаться скачивать порциями, чтобы скачать весь блокчейн
                             stop:
                             while (downloadPortion) {
                                 //здесь говориться, с какого блока по какой блок скачивать.
+
                                 subBlockchainEntity = new SubBlockchainEntity(start, finish);
 
                                 System.out.println("1:shortDataBlockchain:  " + BasisController.getShortDataBlockchain());
@@ -228,8 +232,8 @@ public class UtilsResolving {
                                 System.out.println("1: jsonGlobalData: " + jsonGlobalData);
                                 global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
 
-                                temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
-//                                temp = helpResolve4(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
+//                                temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
+                                temp = helpResolve4(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
 
                                 System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++");
                                 //если скачанный блокчейн не валидный, то не добавляет в блокчейн, возвращает -10
@@ -318,8 +322,8 @@ public class UtilsResolving {
                                     jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
                                     System.out.println("2: jsonGlobalData: " + jsonGlobalData);
                                     global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
-                                    temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
-//                                    temp = helpResolve4(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
+//                                    temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
+                                    temp = helpResolve4(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
 
                                     if (BasisController.getBlockchainSize() > 1 && !temp.isValidation()) {
                                         return -10;
@@ -346,6 +350,12 @@ public class UtilsResolving {
                             //If the difference is not greater than PORTION_DOWNLOAD, then downloads once a portion of this difference
                             //Если разница не больше PORTION_DOWNLOAD, то скачивает один раз порцию эту разницу
                             subBlockchainEntity = new SubBlockchainEntity(blocks_current_size, size);
+
+                            //TODO возможно это решит проблему, если блоки будут равны
+                            if(blocks_current_size == size){
+                                subBlockchainEntity = new SubBlockchainEntity(blocks_current_size - 1, size);
+                            }
+
 
                             subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
 
@@ -389,8 +399,8 @@ public class UtilsResolving {
                             jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
                             System.out.println("3: jsonGlobalData: " + jsonGlobalData);
                             global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
-                            temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
-//                            temp = helpResolve4(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
+//                            temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
+                            temp = helpResolve4(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
 
                             if (temp.getSize() > 1 && !temp.isValidation()) {
                                 System.out.println("error resolve 2 in portion upper < 500");
@@ -449,9 +459,9 @@ public class UtilsResolving {
     public boolean isBig(
             DataShortBlockchainInformation actual,
             DataShortBlockchainInformation global) {
-        if (global.getBigRandomNumber() + global.getSize() > actual.getBigRandomNumber() + actual.getSize()) {
+        if (global.getSize() >= actual.getSize() && global.getBigRandomNumber() > actual.getBigRandomNumber()) {
             return true;
-        } else if (global.getBigRandomNumber() + global.getSize() == actual.getBigRandomNumber() + actual.getSize()) {
+        } else if (global.getSize() >= actual.getSize() && global.getBigRandomNumber() == actual.getBigRandomNumber()) {
             if (global.getHashCount() > actual.getHashCount()) {
                 return true;
             } else if (global.getHashCount() == actual.getHashCount()) {
@@ -779,9 +789,12 @@ public class UtilsResolving {
 
         int tempIndexTest = (int) tempBlock.get(0).getIndex();
         int tempIndexTest2 = (int) tempBlock.get(tempBlock.size() - 1).getIndex();
-        tempBlock.addAll(saveBlocks);
 
         tempBlock = tempBlock.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+        for (Block block : tempBlock) {
+            UtilsBlock.saveBLock(block, filename);
+        }
+
 
 
         System.out.println("addBlock 3: time: result: " + result);
@@ -792,15 +805,14 @@ public class UtilsResolving {
 
         System.out.println("balances size: " + balances.size());
 
-        for (int start = 0; start < tempBlock.size(); start += Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
-            int end = Math.min(tempBlock.size(), start + Seting.PORTION_BLOCK_TO_COMPLEXCITY);
-            List<Block> batch = tempBlock.subList(start, end);
-            addBlock3(batch, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-        }
-//
+//        for (int start = 0; start < saveBlocks.size(); start += Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
+//            int end = Math.min(saveBlocks.size(), start + Seting.PORTION_BLOCK_TO_COMPLEXCITY);
+//            List<Block> batch = saveBlocks.subList(start, end);
+//            addBlock3(batch, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+//        }
 
-//        addBlock3(tempBlock, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-        deleteBlocks.stream().forEach(t-> System.out.println("delete block: index: " + t.getIndex()));
+        addBlock3(saveBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+
     }
 
 
