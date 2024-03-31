@@ -24,6 +24,19 @@ public class CurrentLawVotes {
         this.NO = NO;
     }
 
+    public int voteDirector (Map<String, Account> balances,
+                             List<String> governments
+    ){
+        int yes = 0;
+        List<String> addressGovernment = governments;
+        for (String s : YES) {
+            if (addressGovernment.contains(s)) {
+                yes += Seting.VOTE_GOVERNMENT;
+            }
+
+        }
+        return yes;
+    }
 
 
     //подсчет голосов для палат

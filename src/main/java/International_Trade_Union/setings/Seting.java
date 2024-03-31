@@ -1,7 +1,6 @@
 package International_Trade_Union.setings;
 
 import International_Trade_Union.governments.Directors;
-import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.utils.MyHost;
 import International_Trade_Union.utils.UtilsUse;
 
@@ -50,7 +49,8 @@ public interface Seting {
     int ORIGINAL_LIMIT_MIN_VOTE_GENERAL_EXECUTIVE_DIRECTOR = 1;
 
 
-    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS =  57;
+    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT =  57;
+    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_VOTE = 4;
 
     //голос Верховного Судьи
     int ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE = 1;
@@ -324,4 +324,5 @@ public interface Seting {
     //отбриет случайное количество хостов для подлючения
     int RANDOM_HOSTS = 10;
 
+    int DELETED_FILE_BLOCKED_HOST = 5;
 }

@@ -186,7 +186,7 @@ public class UtilsGovernment {
 
                 double vote = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).votesLaw(balances, yesAverage, noAverage);
                 int supremeVotes  = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteGovernment(balances, corporateCouncilOfReferees);
-                int boardOfDirectorsVotes = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteGovernment(balances, boardOfDirectors);
+                int boardOfDirectorsVotes = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteDirector(balances, boardOfDirectors);
                 double boardOfDirectorsVotesPR = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteFractions(fractions);
                 List<Vote> directorsVote = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).directorsVote(fractions);
                 currentLawVotesEndBalance.setVotes(vote);
@@ -205,8 +205,10 @@ public class UtilsGovernment {
         List<String> hightJudge = new ArrayList<>();
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : current) {
             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString())){
-                if(currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS
-                && currentLawVotesEndBalance.getVotes() >= Seting.ALL_STOCK_VOTE
+                if(currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT
+                 ||
+                        currentLawVotesEndBalance.getVotesBoardOfDirectors() > Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_VOTE
+
                 ){
                     primeMinister.add(currentLawVotesEndBalance.getLaws().get(0));
                 }

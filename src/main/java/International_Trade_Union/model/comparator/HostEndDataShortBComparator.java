@@ -14,7 +14,7 @@ public class HostEndDataShortBComparator implements Comparator<HostEndDataShortB
 
 
         // Сравнение bigRandomNumber
-        if (d1.getBigRandomNumber() + d1.getSize() != d2.getBigRandomNumber() + d2.getSize()) {
+        if (d1.getBigRandomNumber()  != d2.getBigRandomNumber()) {
             return Integer.compare(d2.getBigRandomNumber(), d1.getBigRandomNumber());
         }
 
