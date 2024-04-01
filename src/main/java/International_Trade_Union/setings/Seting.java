@@ -325,4 +325,6 @@ public interface Seting {
     int RANDOM_HOSTS = 10;
 
     int DELETED_FILE_BLOCKED_HOST = 5;
+
+    int ROLLBACK_BLOCK_IN_IS_BIG = 10;
 }

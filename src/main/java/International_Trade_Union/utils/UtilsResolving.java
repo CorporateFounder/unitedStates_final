@@ -503,7 +503,7 @@ public class UtilsResolving {
     public boolean isBig(
             DataShortBlockchainInformation actual,
             DataShortBlockchainInformation global) {
-        if (global.getSize() >= actual.getSize() && global.getBigRandomNumber() > actual.getBigRandomNumber()) {
+        if (global.getSize() >= (actual.getSize() - Seting.ROLLBACK_BLOCK_IN_IS_BIG) && global.getBigRandomNumber() > actual.getBigRandomNumber()) {
             return true;
         } else if (global.getSize() >= actual.getSize() && global.getBigRandomNumber() == actual.getBigRandomNumber()) {
             if (global.getHashCount() > actual.getHashCount()) {

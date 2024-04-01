@@ -12,6 +12,9 @@ public class HostEndDataShortBComparator implements Comparator<HostEndDataShortB
         DataShortBlockchainInformation d1 = h1.getDataShortBlockchainInformation();
         DataShortBlockchainInformation d2 = h2.getDataShortBlockchainInformation();
 
+        if(d1.getSize() != d1.getSize()){
+            return Long.compare(d2.getSize(), d1.getSize());
+        }
 
         // Сравнение bigRandomNumber
         if (d1.getBigRandomNumber()  != d2.getBigRandomNumber()) {
