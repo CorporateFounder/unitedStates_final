@@ -317,7 +317,7 @@ public interface Seting {
 
     int WAIGHT_MINING = 4;
 
-    int TIME_CHECK_BLOCK = 241055;
+    int TIME_CHECK_BLOCK = 232475;
     //test
     MyHost myhost = new MyHost("localhost", "first", "key");
 
