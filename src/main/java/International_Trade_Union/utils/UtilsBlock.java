@@ -601,6 +601,7 @@ public class UtilsBlock {
         return validated;
     }
 
+
     public static void deleteFiles() {
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_BLOCKCHAIN_FILE);
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_TEMPORARY_BLOCKS);
