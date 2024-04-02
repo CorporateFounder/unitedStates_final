@@ -370,10 +370,14 @@ public class UtilsResolving {
                             //Если разница не больше PORTION_DOWNLOAD, то скачивает один раз порцию эту разницу
                             subBlockchainEntity = new SubBlockchainEntity(blocks_current_size, size);
 
+                            boolean different_value = false;
                             //TODO возможно это решит проблему, если блоки будут равны
                             if(blocks_current_size == size){
                                 subBlockchainEntity = new SubBlockchainEntity(blocks_current_size - 1, size);
+                                different_value = true;
                             }
+
+
 
 
                             subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
@@ -396,10 +400,10 @@ public class UtilsResolving {
 
                             DataShortBlockchainInformation temp = new DataShortBlockchainInformation();
                             DataShortBlockchainInformation anotherCheck = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
-                            if (BasisController.getBlockchainSize() > 1 && blocks_current_size != size) {
+                            if (BasisController.getBlockchainSize() > 1 && blocks_current_size < size) {
                                 temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                                 jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
-                                System.out.println("2: jsonGlobalData: " + jsonGlobalData);
+                                System.out.println("3: jsonGlobalData: " + jsonGlobalData);
                                 global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
                                 if(Seting.IS_SECURITY == true && isSmall(global, temp) ){
                                     //TODO добавить хост в заблокированный файл
@@ -413,14 +417,14 @@ public class UtilsResolving {
 
                                     continue hostContinue;
                                 }
-                            }else if(BasisController.getBlockchainSize() > 1 && blocks_current_size == size) {
+                            }else if(BasisController.getBlockchainSize() > 1 && different_value) {
 
                                 temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                                  anotherCheck = check(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
                                 System.out.println("if size end curent size equals: " + anotherCheck);
 
                                 jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
-                                System.out.println("2: jsonGlobalData: " + jsonGlobalData);
+                                System.out.println("3: jsonGlobalData: " + jsonGlobalData);
                                 global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
                                 if(Seting.IS_SECURITY == true && isSmall(global, anotherCheck) ){
                                     //TODO добавить хост в заблокированный файл
@@ -472,12 +476,12 @@ public class UtilsResolving {
                         System.out.println("resolve: temporaryBlockchain: ");
                     } else {
                         System.out.println(":BasisController: resove: size less: " + size + " address: " + s);
-                        continue;
+                        continue hostContinue;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
 
-                    continue;
+                    continue hostContinue;
                 }
             }
 
@@ -503,7 +507,7 @@ public class UtilsResolving {
     public boolean isBig(
             DataShortBlockchainInformation actual,
             DataShortBlockchainInformation global) {
-        if (global.getSize() >= (actual.getSize() - Seting.ROLLBACK_BLOCK_IN_IS_BIG) && global.getBigRandomNumber() > actual.getBigRandomNumber()) {
+        if (global.getSize() + global.getBigRandomNumber() > actual.getSize() + actual.getBigRandomNumber() && global.getSize() >= actual.getSize()) {
             return true;
         } else if (global.getSize() >= actual.getSize() && global.getBigRandomNumber() == actual.getBigRandomNumber()) {
             if (global.getHashCount() > actual.getHashCount()) {

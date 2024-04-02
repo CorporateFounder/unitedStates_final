@@ -586,7 +586,8 @@ public class UtilsBlock {
         long timeDifferenceSeconds = (thisBlock.getTimestamp().getTime() - previusblock.getTimestamp().getTime()) / 1000;
 
         if(IS_SECURITY == true && thisBlock.getIndex() >= Seting.TIME_CHECK_BLOCK){
-            if (timeDifferenceSeconds < 100 || timeDifferenceSeconds >= 5000) {
+            long actualTime = UtilsTime.getUniversalTimestamp() / 1000L;
+            if (timeDifferenceSeconds < 100 || timeDifferenceSeconds > actualTime) {
                 // Время thisBlock не соответствует условиям
                 System.out.println("----------------------------------------------");
                 System.out.println("wrong time different: " + timeDifferenceSeconds + " index: " + thisBlock.getIndex());
