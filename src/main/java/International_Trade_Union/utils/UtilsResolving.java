@@ -415,7 +415,7 @@ public class UtilsResolving {
                                     System.out.println("-------------------------------------------------");
                                     UtilsAllAddresses.saveAllAddresses(hostEndDataShortB.getHost(), Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
 
-                                    continue hostContinue;
+                                    continue ;
                                 }
                             }else if(BasisController.getBlockchainSize() > 1 && different_value) {
 
@@ -436,7 +436,7 @@ public class UtilsResolving {
                                     System.out.println("-------------------------------------------------");
                                     UtilsAllAddresses.saveAllAddresses(hostEndDataShortB.getHost(), Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
 
-                                    continue hostContinue;
+                                    continue ;
                                 }
                             }
                             System.out.println("3: temp: " + temp);
@@ -476,12 +476,12 @@ public class UtilsResolving {
                         System.out.println("resolve: temporaryBlockchain: ");
                     } else {
                         System.out.println(":BasisController: resove: size less: " + size + " address: " + s);
-                        continue hostContinue;
+                        continue ;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
 
-                    continue hostContinue;
+                    continue ;
                 }
             }
 
@@ -572,8 +572,9 @@ public class UtilsResolving {
                     System.out.println("helpResolve4: block index: " + block.getIndex());
 
                     if (block.getIndex() > BasisController.getBlockchainSize() - 1) {
-                        System.out.println(":download blocks: " + block.getIndex() +
-                                " your block : " + (BasisController.getBlockchainSize()) + ":waiting need download blocks: " + (block.getIndex() - BasisController.getBlockchainSize()));
+                        System.out.println("check :download blocks: " + block.getIndex() +
+                                " your block : " + (BasisController.getBlockchainSize()) + ":waiting need download blocks: " + (block.getIndex() - BasisController.getBlockchainSize())
+                        + " host: " + s);
                         emptyList.add(block);
                     } else if (!blockService.findBySpecialIndex(block.getIndex()).getHashBlock().equals(block.getHashBlock())) {
                         emptyList.add(block);
@@ -652,8 +653,9 @@ public class UtilsResolving {
                     System.out.println("helpResolve4: block index: " + block.getIndex());
 
                     if (block.getIndex() > BasisController.getBlockchainSize() - 1) {
-                        System.out.println(":download blocks: " + block.getIndex() +
-                                " your block : " + (BasisController.getBlockchainSize()) + ":waiting need download blocks: " + (block.getIndex() - BasisController.getBlockchainSize()));
+                        System.out.println("helpResolve4 :download blocks: " + block.getIndex() +
+                                " your block : " + (BasisController.getBlockchainSize()) + ":waiting need download blocks: " + (block.getIndex() - BasisController.getBlockchainSize())
+                        + " host: " + s);
                         emptyList.add(block);
                     } else if (!blockService.findBySpecialIndex(block.getIndex()).getHashBlock().equals(block.getHashBlock())) {
                         emptyList.add(block);
