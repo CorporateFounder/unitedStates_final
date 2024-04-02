@@ -507,7 +507,7 @@ public class UtilsResolving {
     public boolean isBig(
             DataShortBlockchainInformation actual,
             DataShortBlockchainInformation global) {
-        if (global.getSize() + global.getBigRandomNumber() > actual.getSize() + actual.getBigRandomNumber() && global.getSize() >= actual.getSize()) {
+        if (global.getSize() + global.getBigRandomNumber() > actual.getSize() + actual.getBigRandomNumber()) {
             return true;
         } else if (global.getSize() >= actual.getSize() && global.getBigRandomNumber() == actual.getBigRandomNumber()) {
             if (global.getHashCount() > actual.getHashCount()) {
@@ -1412,7 +1412,7 @@ public class UtilsResolving {
                     }
                 } catch (IOException | JSONException e) {
                     // Перехват и логирование ошибки
-                    logError("Ошибка при получении данных для хоста: " + host, e);
+                    logError("Error while retrieving data for host: " + host, e);
                 }
                 return null;
             });

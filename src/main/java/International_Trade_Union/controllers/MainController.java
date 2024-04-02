@@ -8,6 +8,7 @@ import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
+import International_Trade_Union.model.HostEndDataShortB;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.originalCorporateCharter.OriginalPreamble;
 import International_Trade_Union.setings.originalCorporateCharter.OriginalPreambleEng;
@@ -47,6 +48,9 @@ public class MainController {
 
     @Autowired
     BlockService blockService;
+
+    @Autowired
+    UtilsResolving utilsResolving;
     private static DataShortBlockchainInformation shortBlockchainInformation;
     private static int globalSize = 0;
 
@@ -102,6 +106,9 @@ public class MainController {
         }
 
         String address = "http://194.87.236.238:82";
+        Set<String> nodes = BasisController.getNodes();
+        List<HostEndDataShortB> hostEndDataShortBS = utilsResolving.sortPriorityHost(nodes);
+
         for (String s : Seting.ORIGINAL_ADDRESSES) {
             address = s;
         }
