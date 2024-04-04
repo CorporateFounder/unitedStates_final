@@ -326,5 +326,8 @@ public interface Seting {
 
     int DELETED_FILE_BLOCKED_HOST = 5;
 
+    //проверяет ценность блока для отката
+    int IS_BIG_DIFFERENT = 60;
+
 
 }
