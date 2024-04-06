@@ -84,6 +84,7 @@ International_Trade_Union\controllers\ConstitutionController.class
 International_Trade_Union\entity\blockchain\Blockchain$3.class
 International_Trade_Union\simulation\AccountSimulation.class
 International_Trade_Union\sheduled\SchedulerConfig.class
+International_Trade_Union\controllers\ServerController.class
 International_Trade_Union\utils\base\Base58.class
 International_Trade_Union\controllers\BasisController.class
 International_Trade_Union\controllers\BlockchainCheckController.class

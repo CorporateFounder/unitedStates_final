@@ -74,6 +74,12 @@ public class MainController {
                String stringJson = UtilsJson.objToStringJson(shortBlockchainInformation);
                UtilsFileSaveRead.save(stringJson, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
            }
+
+           String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
+           if(!server.isBlank() || !server.isEmpty()){
+               Seting.ORIGINAL_ADDRESSES.removeAll(Seting.ORIGINAL_ADDRESSES);
+               Seting.ORIGINAL_ADDRESSES.add(server);
+           }
        } catch (Exception e) {
 //           try {
 //               BasisController.resolve_conflicts();
@@ -104,6 +110,12 @@ public class MainController {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
+        String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
+        if(!server.isBlank() || !server.isEmpty()){
+            Seting.ORIGINAL_ADDRESSES.removeAll(Seting.ORIGINAL_ADDRESSES);
+            Seting.ORIGINAL_ADDRESSES.add(server);
+        }
+        model.addAttribute("server", Seting.ORIGINAL_ADDRESSES);
 
         String address = "http://194.87.236.238:82";
         Set<String> nodes = BasisController.getNodes();
@@ -112,7 +124,7 @@ public class MainController {
         for (String s : Seting.ORIGINAL_ADDRESSES) {
             address = s;
         }
-        System.out.println("address: " + address);
+
 
         String stringShort = UtilsFileSaveRead.read(Seting.TEMPORARY_BLOCKCHAIN_FILE);
     if(stringShort != null && !stringShort.isEmpty())

@@ -5,6 +5,8 @@ import International_Trade_Union.utils.MyHost;
 import International_Trade_Union.utils.UtilsUse;
 
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 public interface Seting {
@@ -197,12 +199,13 @@ public interface Seting {
     String ORIGINAL_TEMPORARY_SHORT = "/resources/short/shortBlockchain.txt";
 
     String ERROR_FILE = "/resources/error/error.txt";
+    String YOUR_SERVER = "/resources/server/server.txt";
 
 
 
     //адресса внешних сервисов
 //    Set<String> ORIGINAL_ADDRESSES = Set.of("http://194.87.236.238:80");
-    Set<String> ORIGINAL_ADDRESSES = IS_TEST ? Set.of("http://localhost:8083"): Set.of("http://194.87.236.238:82");
+    Set<String> ORIGINAL_ADDRESSES = IS_TEST ? new HashSet<>(Arrays.asList("http://localhost:8083")) : new HashSet<>(Arrays.asList("http://194.87.236.238:82"));
     Set<String> ORIGINAL_BLOCKED_ADDRESS = Set.of("http://154.40.38.130:80",
             "http://10.0.36.2:80", "http://localhost:8083");
 
@@ -315,7 +318,7 @@ public interface Seting {
     double ONE_HUNDRED_THOUSAND = 100000;
 
 
-    int WAIGHT_MINING = 4;
+    int WAIGHT_MINING = 9;
 
     int TIME_CHECK_BLOCK = 230889;
     //test

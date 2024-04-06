@@ -826,6 +826,11 @@ public class BasisController {
     public  synchronized String mining() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
         mining = true;
         try {
+            String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
+            if(!server.isBlank() || !server.isEmpty()){
+                Seting.ORIGINAL_ADDRESSES.removeAll(Seting.ORIGINAL_ADDRESSES);
+                Seting.ORIGINAL_ADDRESSES.add(server);
+            }
             findAddresses();
             resolve_conflicts();
 

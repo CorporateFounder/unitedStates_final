@@ -89,6 +89,7 @@ public class UtilsCreatedDirectory {
         files.add(Seting.ORIGINAL_TEMPORARY_SHORT);
         files.add(Seting.ORIGINAL_ALL_CLASSIC_LAWS);
         files.add(Seting.ERROR_FILE);
+        files.add(Seting.YOUR_SERVER);
 
         //временные файлы
         files.add(Seting.ORIGINAL_TEMP_SHORT);
