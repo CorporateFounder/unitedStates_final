@@ -11,7 +11,7 @@ import java.util.Set;
 
 public interface Seting {
     boolean IS_TEST = false;
-    boolean IS_SECURITY = true;
+    boolean IS_SECURITY = false;
 
     int HUNDRED_PERCENT = 100;
     // значение используется как константа года,
@@ -320,7 +320,7 @@ public interface Seting {
 
     int WAIGHT_MINING = 9;
 
-    int TIME_CHECK_BLOCK = 230889;
+    int TIME_CHECK_BLOCK = 233682;
     //test
     MyHost myhost = new MyHost("localhost", "first", "key");
 

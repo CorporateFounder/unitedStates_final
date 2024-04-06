@@ -561,6 +561,7 @@ public class UtilsResolving {
             }
         }
         return false;
+
     }
 
 
@@ -1581,7 +1582,7 @@ public class UtilsResolving {
                         continue;
                     }
                 } catch (IOException e) {
-//                    e.printStackTrace();
+                    e.printStackTrace();
                     System.out.println("BasisController: resove2: " + e.getMessage());
                     continue;
                 } catch (JSONException e) {
