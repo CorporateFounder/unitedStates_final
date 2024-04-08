@@ -774,10 +774,10 @@ public class UtilsResolving {
 
             //TODO тестовая версия, мы проверяем если блокчейн ценее, но при этом меньше
             if (global.getSize() < BasisController.getBlockchainSize()) {
-                List<EntityBlock> entityBlocks = blockService.findBySpecialIndexBetween(global.getSize(), BasisController.getBlockchainSize());
+                List<EntityBlock> entityBlocks = blockService.findBySpecialIndexBetween(global.getSize()+1, BasisController.getBlockchainSize());
                 different.addAll(UtilsBlockToEntityBlock.entityBlocksToBlocks(entityBlocks));
-
             }
+
 
             stop:
             while (currentIndex >= 0) {
