@@ -332,5 +332,8 @@ public interface Seting {
     //проверяет ценность блока для отката
     int IS_BIG_DIFFERENT = 300;
 
+    double WEIGHT_SIZE = 0.05;
+    double WEIGHT_BIG_RANDOM = 0.6;
+
 
 }

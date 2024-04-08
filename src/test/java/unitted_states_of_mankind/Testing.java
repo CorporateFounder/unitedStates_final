@@ -65,15 +65,19 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Testing {
     @Test
     public void testCode() throws JSONException, IOException {
-        int start = 0;
-        int finish = 500;
+        int start = (int) ((234229 + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY);
+        int finish = (int) (234229 + 1);
+        System.out.println("start: " + start);
+        System.out.println("finish: " + finish);
+
         SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(start, finish);
 
         System.out.println("1:shortDataBlockchain:  " + BasisController.getShortDataBlockchain());
         System.out.println("1:sublockchainEntity: " + subBlockchainEntity);
         String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
         System.out.println("1:sublockchainJson: " + subBlockchainJson);
-        String s = "http://194.87.236.238:82";
+//        String s = "http://194.87.236.238:82";
+        String s = "http://37.205.15.167:82";
         List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
         System.out.println("index start: " + subBlocks.get(0).getIndex());
         System.out.println("index finish: " + subBlocks.get(subBlocks.size()-1).getIndex());
