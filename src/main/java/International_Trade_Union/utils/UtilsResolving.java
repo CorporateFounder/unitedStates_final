@@ -21,6 +21,7 @@ import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.UtilsLaws;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -434,8 +435,11 @@ public class UtilsResolving {
 
                                 temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                                 anotherCheck = check(temp, global, s, lastDiff, tempBalances, sign);
-                                System.out.println("if size end curent size equals: " + anotherCheck);
+                                System.out.println("--------------------------------------------------------");
+                                System.out.println("different_value: temp: " + temp);
+                                System.out.println("different_value: anotherCheck: " + anotherCheck);
 
+                                System.out.println("--------------------------------------------------------");
                                 jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
                                 System.out.println("3: jsonGlobalData: " + jsonGlobalData);
                                 global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
@@ -452,14 +456,21 @@ public class UtilsResolving {
                                     continue;
                                 }
                             } else if (BasisController.getBlockchainSize() > 1 && local_size_upper) {
+                                UtilsFileSaveRead.save("************************************: " , Seting.ERROR_FILE, true);
+
                                 temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                                 anotherCheck = check2(temp, global, s, lastDiff, tempBalances, sign);
+                                System.out.println("------------------------------------------------------------");
                                 System.out.println("if size end curent size equals: " + anotherCheck);
+                                System.out.println("local_size_upper: temp: " + temp);
+                                System.out.println("local_size_upper: anotherCheck:  " + anotherCheck);
+                                System.out.println("------------------------------------------------------------");
 
                                 jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
                                 System.out.println("3: jsonGlobalData: " + jsonGlobalData);
                                 global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
                                 if (Seting.IS_SECURITY == true && isSmall(global, anotherCheck)) {
+                                    UtilsFileSaveRead.save("-----------------------------------------------: " , Seting.ERROR_FILE, true);
                                     //TODO добавить хост в заблокированный файл
                                     System.out.println("-------------------------------------------------");
                                     System.out.println("Blocked host: ");
@@ -468,6 +479,9 @@ public class UtilsResolving {
                                     System.out.println("host: " + hostEndDataShortB.getHost());
                                     System.out.println("-------------------------------------------------");
                                     UtilsAllAddresses.saveAllAddresses(hostEndDataShortB.getHost(), Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
+                                    UtilsFileSaveRead.save("anotherCheck: " + anotherCheck+ "\n", Seting.ERROR_FILE, true);
+                                    UtilsFileSaveRead.save("temp: " + anotherCheck+ "\n", Seting.ERROR_FILE, true);
+                                    UtilsFileSaveRead.save("-----------------------------------------------: " , Seting.ERROR_FILE, true);
 
                                     continue;
                                 }
@@ -601,9 +615,8 @@ public class UtilsResolving {
 
             int lastBlockIndex = (int) (global.getSize() - 1);
             int currentIndex = lastBlockIndex;
-            if(emptyList.isEmpty() && different.isEmpty()){
-                return temp;
-            }
+
+
 
             stop:
             while (currentIndex >= 0) {
@@ -611,10 +624,11 @@ public class UtilsResolving {
                 int startIndex = Math.max(currentIndex - 499, 0);
                 int endIndex = currentIndex;
 
+
                 SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(startIndex, endIndex);
                 String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
                 List<Block> blockList = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
-                System.out.println("subBlockchainEntity: " + subBlockchainEntity);
+                System.out.println("check subBlockchainEntity: " + subBlockchainEntity);
                 blockList = blockList.stream().sorted(Comparator.comparing(Block::getIndex).reversed()).collect(Collectors.toList());
                 for (Block block : blockList) {
                     System.out.println("helpResolve4: block index: " + block.getIndex());
@@ -643,11 +657,12 @@ public class UtilsResolving {
                 // Обновляем индекс для следующей итерации
                 currentIndex = startIndex - 1;
             }
-            System.out.println("different: ");
+            System.out.println("different: " + different.size());
+            System.out.println("emptyList: " + emptyList.size());
 
-            System.out.println("shortDataBlockchain: " + BasisController.getShortDataBlockchain());
+            System.out.println("check: shortDataBlockchain: " + BasisController.getShortDataBlockchain());
             temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
-            System.out.println("rollback temp: " + temp);
+            System.out.println("check temp: " + temp);
             Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(different.get(0).getIndex() - 1));
 
             different = different.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
@@ -658,9 +673,13 @@ public class UtilsResolving {
                 tempList.add(block);
                 temp = Blockchain.shortCheck(tempPrevBlock, tempList, temp, lastDiff, tempBalance, sign);
                 tempPrevBlock = block;
+//                System.out.println("check: " + block.getIndex());
+//                System.out.println("check: temp " + temp);
             }
 
         }
+//        System.out.println("rollback temp: " + temp);
+
         return temp;
     }
 
@@ -681,6 +700,9 @@ public class UtilsResolving {
             int lastBlockIndex = (int) (global.getSize() - 1);
             int currentIndex = lastBlockIndex;
 
+            UtilsFileSaveRead.save("lastBlockIndex: " + lastBlockIndex+ "\n", Seting.ERROR_FILE, true);
+            UtilsFileSaveRead.save("currentIndex: " + currentIndex+ "\n", Seting.ERROR_FILE, true);
+
             //TODO тестовая версия, мы проверяем если блокчейн ценее, но при этом меньше
             if (global.getSize() < BasisController.getBlockchainSize()) {
                 List<EntityBlock> entityBlocks = blockService.findBySpecialIndexBetween(global.getSize(), BasisController.getBlockchainSize()-1);
@@ -688,6 +710,7 @@ public class UtilsResolving {
 
             }
 
+            UtilsFileSaveRead.save("different: 1: " + different+ "\n", Seting.ERROR_FILE, true);
             stop:
             while (currentIndex >= 0) {
 
@@ -697,7 +720,7 @@ public class UtilsResolving {
                 SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(startIndex, endIndex);
                 String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
                 List<Block> blockList = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
-                System.out.println("subBlockchainEntity: " + subBlockchainEntity);
+                System.out.println("check2 subBlockchainEntity: " + subBlockchainEntity);
                 blockList = blockList.stream().sorted(Comparator.comparing(Block::getIndex).reversed()).collect(Collectors.toList());
 
                 for (Block block : blockList) {
@@ -724,7 +747,7 @@ public class UtilsResolving {
                 // Обновляем индекс для следующей итерации
                 currentIndex = startIndex - 1;
             }
-            System.out.println("different: ");
+
 
             System.out.println("shortDataBlockchain: " + BasisController.getShortDataBlockchain());
             temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
@@ -733,6 +756,9 @@ public class UtilsResolving {
 
 
             emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+
+            UtilsFileSaveRead.save("check2 different: 2: " + different + "\n", Seting.ERROR_FILE, true);
+            UtilsFileSaveRead.save("check2 emptyList: 2: " + emptyList+ "\n", Seting.ERROR_FILE, true);
 
             if (!emptyList.isEmpty()) {
                 Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(different.get(0).getIndex() - 1));
@@ -896,11 +922,13 @@ public class UtilsResolving {
             int lastBlockIndex = (int) (global.getSize() - 1);
             int currentIndex = lastBlockIndex;
 
+
             stop:
             while (currentIndex >= 0) {
 
                 int startIndex = Math.max(currentIndex - 499, 0);
                 int endIndex = currentIndex;
+
 
                 SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(startIndex, endIndex);
                 String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
@@ -924,6 +952,7 @@ public class UtilsResolving {
                         System.out.println(":block from index: " + block.getIndex());
                     } else {
                         // Останавливаем итерацию, т.к. дальнейшие блоки будут идентичными
+
 
                         break stop;
                     }

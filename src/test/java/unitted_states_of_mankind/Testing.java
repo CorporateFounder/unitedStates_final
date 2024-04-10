@@ -63,6 +63,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class Testing {
+
+
+
+    @Test
+    public void testCheck2(){
+        DataShortBlockchainInformation temp  = new DataShortBlockchainInformation();
+    }
     @Test
     public void testCode() throws JSONException, IOException {
         int start = (int) ((234229 + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY);
