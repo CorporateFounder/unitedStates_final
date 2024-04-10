@@ -293,6 +293,20 @@ public class UtilsResolving {
                                 //if the number of new blocks relative to the local blockchain is less than 500,
                                 //then download these blocks and stop trying to download from this node.
                                 if (size - BasisController.getPrevBlock().getIndex() < Seting.PORTION_DOWNLOAD) {
+
+                                    boolean different_value = false;
+                                    boolean local_size_upper = false;
+                                    //TODO возможно это решит проблему, если блоки будут равны
+                                    if (blocks_current_size == size) {
+                                        subBlockchainEntity = new SubBlockchainEntity(blocks_current_size - 1, size);
+                                        different_value = true;
+                                    }
+                                    if (size < blocks_current_size) {
+                                        subBlockchainEntity = new SubBlockchainEntity(size - Seting.IS_BIG_DIFFERENT, size);
+                                        System.out.println("subBlockchainEntity: size < blocks_current_size: " + subBlockchainEntity);
+                                        local_size_upper = true;
+                                    }
+
                                     downloadPortion = false;
                                     finish = size;
                                     subBlockchainEntity = new SubBlockchainEntity(start, finish);
@@ -305,7 +319,7 @@ public class UtilsResolving {
 
 //                                    balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
                                     balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
-                                    if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
+                                    if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY && BasisController.getBlockchainSize() < Seting.V34_NEW_ALGO) {
                                         lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                                                 blockService.findBySpecialIndexBetween(
                                                         (BasisController.getPrevBlock().getIndex() + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
@@ -314,24 +328,94 @@ public class UtilsResolving {
                                         );
                                     }
 
-                                    if (BasisController.getBlockchainSize() > 1) {
-                                        temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
-                                    }
+//                                    if (BasisController.getBlockchainSize() > 1) {
+//                                        temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
+//                                    }
 
                                     jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
                                     System.out.println("2: jsonGlobalData: " + jsonGlobalData);
                                     global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
-                                    if (Seting.IS_SECURITY == true && isSmall(global, temp)) {
-                                        //TODO добавить хост в заблокированный файл
-                                        System.out.println("-------------------------------------------------");
-                                        System.out.println("Blocked host: ");
+
+                                    DataShortBlockchainInformation anotherCheck = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
+                                    if (BasisController.getBlockchainSize() > 1 && blocks_current_size < size) {
+                                        temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
+                                        jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
+                                        System.out.println("3: jsonGlobalData: " + jsonGlobalData);
+                                        global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
+                                        System.out.println("++++++++++++++++++++++++++++++++++++++=");
+                                        System.out.println("blocks_current_size < size");
                                         System.out.println("expected host: " + hostEndDataShortB.getDataShortBlockchainInformation());
                                         System.out.println("actual host: " + temp);
                                         System.out.println("host: " + hostEndDataShortB.getHost());
-                                        UtilsAllAddresses.saveAllAddresses(hostEndDataShortB.getHost(), Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
-                                        System.out.println("-------------------------------------------------");
+                                        System.out.println("prev block: " + BasisController.getPrevBlock().getIndex());
+                                        System.out.println("prev block: " + BasisController.getPrevBlock().hashForTransaction());
+                                        System.out.println("++++++++++++++++++++++++++++++++++++++=");
+                                        if (Seting.IS_SECURITY == true && isSmall(global, temp)) {
+                                            //TODO добавить хост в заблокированный файл
+                                            System.out.println("-------------------------------------------------");
+                                            System.out.println("Blocked host: ");
+                                            System.out.println("expected host: " + hostEndDataShortB.getDataShortBlockchainInformation());
+                                            System.out.println("actual host: " + temp);
+                                            System.out.println("host: " + hostEndDataShortB.getHost());
+                                            System.out.println("-------------------------------------------------");
+                                            UtilsAllAddresses.saveAllAddresses(hostEndDataShortB.getHost(), Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
 
-                                        break hostContinue;
+                                            continue;
+                                        }
+                                    } else if (BasisController.getBlockchainSize() > 1 && different_value) {
+
+                                        temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
+                                        anotherCheck = check(temp, global, s, lastDiff, tempBalances, sign);
+                                        System.out.println("--------------------------------------------------------");
+                                        System.out.println("different_value: temp: " + temp);
+                                        System.out.println("different_value: anotherCheck: " + anotherCheck);
+
+                                        System.out.println("--------------------------------------------------------");
+                                        jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
+                                        System.out.println("3: jsonGlobalData: " + jsonGlobalData);
+                                        global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
+                                        if (Seting.IS_SECURITY == true && isSmall(global, anotherCheck)) {
+                                            //TODO добавить хост в заблокированный файл
+                                            System.out.println("-------------------------------------------------");
+                                            System.out.println("Blocked host: ");
+                                            System.out.println("expected host: " + hostEndDataShortB.getDataShortBlockchainInformation());
+                                            System.out.println("actual host: " + anotherCheck);
+                                            System.out.println("host: " + hostEndDataShortB.getHost());
+                                            System.out.println("-------------------------------------------------");
+                                            UtilsAllAddresses.saveAllAddresses(hostEndDataShortB.getHost(), Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
+
+                                            continue;
+                                        }
+                                    } else if (BasisController.getBlockchainSize() > 1 && local_size_upper) {
+                                        UtilsFileSaveRead.save("************************************: " , Seting.ERROR_FILE, true);
+
+                                        temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
+                                        anotherCheck = check2(temp, global, s, lastDiff, tempBalances, sign);
+                                        System.out.println("------------------------------------------------------------");
+                                        System.out.println("if size end curent size equals: " + anotherCheck);
+                                        System.out.println("local_size_upper: temp: " + temp);
+                                        System.out.println("local_size_upper: anotherCheck:  " + anotherCheck);
+                                        System.out.println("------------------------------------------------------------");
+
+                                        jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
+                                        System.out.println("3: jsonGlobalData: " + jsonGlobalData);
+                                        global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
+                                        if (Seting.IS_SECURITY == true && isSmall(global, anotherCheck)) {
+                                            UtilsFileSaveRead.save("-----------------------------------------------: " , Seting.ERROR_FILE, true);
+                                            //TODO добавить хост в заблокированный файл
+                                            System.out.println("-------------------------------------------------");
+                                            System.out.println("Blocked host: ");
+                                            System.out.println("expected host: " + hostEndDataShortB.getDataShortBlockchainInformation());
+                                            System.out.println("actual host: " + anotherCheck);
+                                            System.out.println("host: " + hostEndDataShortB.getHost());
+                                            System.out.println("-------------------------------------------------");
+                                            UtilsAllAddresses.saveAllAddresses(hostEndDataShortB.getHost(), Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
+                                            UtilsFileSaveRead.save("anotherCheck: " + anotherCheck+ "\n", Seting.ERROR_FILE, true);
+                                            UtilsFileSaveRead.save("temp: " + anotherCheck+ "\n", Seting.ERROR_FILE, true);
+                                            UtilsFileSaveRead.save("-----------------------------------------------: " , Seting.ERROR_FILE, true);
+
+                                            continue;
+                                        }
                                     }
 
                                     System.out.println("2: temp: " + temp);
@@ -340,11 +424,27 @@ public class UtilsResolving {
                                     System.out.println("2: host: " + s);
 
 
-                                    jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
-                                    System.out.println("2: jsonGlobalData: " + jsonGlobalData);
-                                    global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
+//                                    jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
+//                                    System.out.println("2: jsonGlobalData: " + jsonGlobalData);
+//                                    global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
 //                                    temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
-                                    temp = helpResolve4(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
+                                    temp = new DataShortBlockchainInformation();
+                                    temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
+
+                                    if (!local_size_upper){
+                                        System.out.println("===========================");
+                                        System.out.println("!local_size_upper: " + !local_size_upper);
+                                        System.out.println("===========================");
+                                        temp = helpResolve4(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
+
+                                    }
+
+                                    if(local_size_upper){
+                                        System.out.println("===========================");
+                                        System.out.println("local_size_upper: " + local_size_upper);
+                                        System.out.println("===========================");
+                                        temp = helpResolve5(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
+                                    }
 
                                     if (BasisController.getBlockchainSize() > 1 && !temp.isValidation()) {
                                         return -10;
@@ -491,10 +591,13 @@ public class UtilsResolving {
                             System.out.println("3: sublocks: " + subBlocks.size());
 
 
-                            jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
-                            System.out.println("3: jsonGlobalData: " + jsonGlobalData);
-                            global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
+//                            jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
+//                            System.out.println("3: jsonGlobalData: " + jsonGlobalData);
+//                            global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
 //                            temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
+                            temp = new DataShortBlockchainInformation();
+                            temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
+
                             if (!local_size_upper){
                                 System.out.println("===========================");
                                 System.out.println("!local_size_upper: " + !local_size_upper);
