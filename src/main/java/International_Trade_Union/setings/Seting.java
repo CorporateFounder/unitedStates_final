@@ -168,38 +168,39 @@ public interface Seting {
     double COUNT_BLOCK_IN_DAY = (DAY_SECOND / BLOCK_TIME);
 
 
+//    String testPath = IS_TEST ? "D:/" : "";
+    String testPath = IS_TEST ? "" : "";
 
+    String ORIGINAL_BLOCKCHAIN_FILE = testPath +"/resources/blockchain/";
+    String ORIGINAL_BALANCE_FILE = testPath +"/resources/balance/";
+    String ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE = testPath +"/resources/federalGovernment/federalGovernment.txt";
+    String ORIGINAL_ALL_CORPORATION_LAWS_FILE = testPath +"/resources/federalLaws/";
+    String ORIGINAL_ACCOUNT = testPath +"/resources/minerAccount/minerAccount.txt";
+    String ORIGINAL_CORPORATE_VOTE_FILE = testPath +"/resources/vote/";
 
-    String ORIGINAL_BLOCKCHAIN_FILE = "/resources/blockchain/";
-    String ORIGINAL_BALANCE_FILE = "/resources/balance/";
-    String ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE = "/resources/federalGovernment/federalGovernment.txt";
-    String ORIGINAL_ALL_CORPORATION_LAWS_FILE = "/resources/federalLaws/";
-    String ORIGINAL_ACCOUNT = "/resources/minerAccount/minerAccount.txt";
-    String ORIGINAL_CORPORATE_VOTE_FILE = "/resources/vote/";
+    String ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE = testPath +"/resources/allLawsWithBalance/";
+    String ORIGINAL_ALL_CLASSIC_LAWS = testPath +"/resources/allClassicLaws/";
+    String ORGINAL_ALL_TRANSACTION_FILE =testPath + "/resources/transactions/";
 
-    String ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE = "/resources/allLawsWithBalance/";
-    String ORIGINAL_ALL_CLASSIC_LAWS = "/resources/allClassicLaws/";
-    String ORGINAL_ALL_TRANSACTION_FILE = "/resources/transactions/";
+    String ORIGINAL_ALL_SENDED_TRANSACTION_FILE = testPath +"/resources/sendedTransaction/";
+    String ORIGINAL_POOL_URL_ADDRESS_FILE =testPath + "/resources/poolAddress/";
+    String ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE = testPath +"/resources/pooAddressBlocked/";
 
-    String ORIGINAL_ALL_SENDED_TRANSACTION_FILE = "/resources/sendedTransaction/";
-    String ORIGINAL_POOL_URL_ADDRESS_FILE = "/resources/poolAddress/";
-    String ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE = "/resources/pooAddressBlocked/";
-
-    String TEMPORARY_BLOCKCHAIN_FILE = "/resources/tempblockchain/shortBlockchain.txt";
+    String TEMPORARY_BLOCKCHAIN_FILE = testPath +"/resources/tempblockchain/shortBlockchain.txt";
 
     //отчет об уничтоженных монетах
-    String BALANCE_REPORT_ON_DESTROYED_COINS = "/resources/balanceReportOnDestroyedCoins/";
-    String CURRENT_BUDGET_END_EMISSION = "/resources/budgetEndEmission/";
-    String H2_DB = "/resources/h2DB/";
-    String ORIGINAL_TEMPORARY_BLOCKS = "/resources/temporaryBlocks/";
+    String BALANCE_REPORT_ON_DESTROYED_COINS = testPath +"/resources/balanceReportOnDestroyedCoins/";
+    String CURRENT_BUDGET_END_EMISSION =testPath + "/resources/budgetEndEmission/";
+    String H2_DB = testPath +"/resources/h2DB/";
+    String ORIGINAL_TEMPORARY_BLOCKS = testPath +"/resources/temporaryBlocks/";
 
-    String ORIGINAL_TEMP_SHORT = "/resources/temporaryBlocks/short/shortBlockchain.txt";
-    String ORIGINAL_TEMP_BALANCE = "/resources/temporaryBlocks/balance/";
-    String ORIGINAL_TEMP_BLOCKCHAIN = "/resources/temporaryBlocks/blockchain/";
-    String ORIGINAL_TEMPORARY_SHORT = "/resources/short/shortBlockchain.txt";
+    String ORIGINAL_TEMP_SHORT =testPath + "/resources/temporaryBlocks/short/shortBlockchain.txt";
+    String ORIGINAL_TEMP_BALANCE =testPath + "/resources/temporaryBlocks/balance/";
+    String ORIGINAL_TEMP_BLOCKCHAIN = testPath +"/resources/temporaryBlocks/blockchain/";
+    String ORIGINAL_TEMPORARY_SHORT =testPath + "/resources/short/shortBlockchain.txt";
 
-    String ERROR_FILE = "/resources/error/error.txt";
-    String YOUR_SERVER = "/resources/server/server.txt";
+    String ERROR_FILE = testPath +"/resources/error/error.txt";
+    String YOUR_SERVER =testPath + "/resources/server/server.txt";
 
 
 
