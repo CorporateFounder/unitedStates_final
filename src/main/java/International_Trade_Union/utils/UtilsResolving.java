@@ -845,10 +845,10 @@ public class UtilsResolving {
             System.out.println("check: shortDataBlockchain: " + BasisController.getShortDataBlockchain());
             temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
             System.out.println("check temp: " + temp);
-            Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(different.get(0).getIndex() - 1));
 
             different = different.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
             emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+            Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(different.get(0).getIndex() - 1));
 
             for (Block block : emptyList) {
                 List<Block> tempList = new ArrayList<>();
