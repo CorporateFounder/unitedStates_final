@@ -533,7 +533,7 @@ public class UtilsResolving {
                                         temp = helpResolve5(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
                                     }
 
-                                    if (BasisController.getBlockchainSize() > 1 && !temp.isValidation()) {
+                                    if (Seting.IS_SECURITY && BasisController.getBlockchainSize() > 1 && !temp.isValidation()) {
                                         return -10;
                                     }
 
@@ -595,7 +595,15 @@ public class UtilsResolving {
                             global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
                             DataShortBlockchainInformation anotherCheck = null;
                             if (BasisController.getBlockchainSize() > 1 && blocks_current_size < size) {
+                                System.out.println("===============================================");
+                                System.out.println("global: " + global);
+                                System.out.println("temp: " + temp);
                                 anotherCheck = check(temp, global, s, lastDiff, tempBalances, sign);
+                                System.out.println("anotherCheck: " + anotherCheck);
+                                System.out.println("===============================================");
+
+
+
                                 System.out.println("++++++++++++++++++++++++++++++++++++++=");
                                 System.out.println("blocks_current_size < size");
                                 System.out.println("expected host: " + hostEndDataShortB.getDataShortBlockchainInformation());
@@ -843,11 +851,11 @@ public class UtilsResolving {
             System.out.println("emptyList: " + emptyList.size());
 
             System.out.println("check: shortDataBlockchain: " + BasisController.getShortDataBlockchain());
-            temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
             System.out.println("check temp: " + temp);
 
             different = different.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
             emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+            temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
             Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(different.get(0).getIndex() - 1));
 
             for (Block block : emptyList) {
@@ -934,12 +942,10 @@ public class UtilsResolving {
                 return temp;
             }
             System.out.println("shortDataBlockchain: " + BasisController.getShortDataBlockchain());
-            temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
             System.out.println("check 2: rollback temp: " + temp);
             different = different.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
-
-
             emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+            temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
 
             UtilsFileSaveRead.save("check2 different: 2: " + different + "\n", Seting.ERROR_FILE, true);
             UtilsFileSaveRead.save("check2 emptyList: 2: " + emptyList+ "\n", Seting.ERROR_FILE, true);
@@ -1026,13 +1032,12 @@ public class UtilsResolving {
             }
 
             System.out.println("shortDataBlockchain: " + BasisController.getShortDataBlockchain());
-            temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
             System.out.println("rollback temp: " + temp);
 
             different = different.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
-
-
             emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+
+            temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
 
             if (!emptyList.isEmpty()) {
                 Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(different.get(0).getIndex() - 1));
@@ -1151,12 +1156,12 @@ public class UtilsResolving {
             }
 
             System.out.println("shortDataBlockchain: " + BasisController.getShortDataBlockchain());
-            temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
             System.out.println("rollback temp: " + temp);
 
 
             different = different.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
             emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+            temp = Blockchain.rollBackShortCheck(BasisController.getPrevBlock(), different, BasisController.getShortDataBlockchain(), lastDiff, tempBalance, sign);
             Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(different.get(0).getIndex() - 1));
 
             for (Block block : emptyList) {
