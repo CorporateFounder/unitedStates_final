@@ -83,6 +83,7 @@ public class UtilsResolving {
             List<HostEndDataShortB> sortPriorityHost = sortPriorityHost(nodesAll);
             Set<String> newAddress = newHostsLoop(sortPriorityHost.stream().map(t -> t.getHost()).collect(Collectors.toSet()));
             newAddress.remove(nodesAll);
+
             for (String s : newAddress) {
                 UtilsAllAddresses.putHost(s);
             }
@@ -91,6 +92,10 @@ public class UtilsResolving {
             hostContinue:
             for (HostEndDataShortB hostEndDataShortB : sortPriorityHost) {
                 String s = hostEndDataShortB.getHost();
+                String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
+                if (!server.isEmpty() && !server.isBlank()){
+                    s = server;
+                }
                 //if the local address matches the host address, it skips
                 //если локальный адрес совпадает с адресом хоста, он пропускает
                 if (BasisController.getExcludedAddresses().contains(s)) {
