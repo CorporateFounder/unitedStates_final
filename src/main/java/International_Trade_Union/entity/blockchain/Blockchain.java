@@ -895,9 +895,8 @@ public class Blockchain implements Cloneable {
     }
 
     public static DataShortBlockchainInformation rollBackShortCheck(
-            Block prevBlock, List<Block> blocks,
+            List<Block> blocks,
             DataShortBlockchainInformation data,
-            List<Block> tempList,
             Map<String, Account> balances,
             List<String> sign
     ) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
@@ -909,23 +908,12 @@ public class Blockchain implements Cloneable {
         long tranasactions = data.getTransactions();
         int bigRandomNumber = data.getBigRandomNumber();
         boolean validation = true;
-        Block prev = prevBlock.clone();
-        List<Block> blockList = new ArrayList<>();
-        for (int i = 0; i < tempList.size(); i++) {
-            blockList.add(tempList.get(i).clone());
-        }
+//        Block prev = prevBlock.clone();
 
-        for (int i = 0; i < blocks.size(); i++) {
-            blockList.add(prev);
-            if (blockList.size() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
-                blockList.remove(0);
-            }
 
-            blockList = blockList.stream()
-                    .sorted(Comparator.comparing(Block::getIndex))
-                    .collect(Collectors.toList());
+        for (int i = blocks.size() - 1; i >= 0; i--) {
+
             size--;
-
 
             hashcount -= UtilsUse.powerDiff(blocks.get(i).getHashCompexity());
             staking -= stakingForDataShort(balances.get(blocks.get(i).getMinerAddress()).getDigitalStakingBalance() );
