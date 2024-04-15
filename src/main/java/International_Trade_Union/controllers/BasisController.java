@@ -704,6 +704,13 @@ public class BasisController {
         getNodes().stream().forEach(System.out::println);
         for (HostEndDataShortB hostEndDataShortB : sortPriorityHost) {
             String s = hostEndDataShortB.getHost();
+            String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
+            if(!server.isBlank() || !server.isEmpty()){
+                Seting.ORIGINAL_ADDRESSES.removeAll(Seting.ORIGINAL_ADDRESSES);
+                Seting.ORIGINAL_ADDRESSES.add(server);
+                s = server;
+            }
+
             System.out.println(":trying to connect to the server send block: " + s + ": timeout 45 seconds");
 
             if (BasisController.getExcludedAddresses().contains(s)) {
@@ -748,8 +755,9 @@ public class BasisController {
                         System.out.println(":CONFLICT VERSION: " + HttpStatus.FAILED_DEPENDENCY.value());
                         System.out.println(":response: " + response);
                     } catch (Exception e) {
-                        System.out.println(":exception resolve_from_to_block: " + originalF);
 
+                        System.out.println(":exception resolve_from_to_block: " + originalF);
+                        continue;
                     }
                     System.out.println(":CONFLICT TREE, IN GLOBAL DIFFERENT TREE: " + HttpStatus.CONFLICT.value());
                     System.out.println(":GOOD SUCCESS: " + HttpStatus.OK.value());
@@ -856,6 +864,7 @@ public class BasisController {
             for (String s : Seting.ORIGINAL_ADDRESSES) {
                 address = s;
             }
+
 
             String sizeStr = "-1";
             try {
