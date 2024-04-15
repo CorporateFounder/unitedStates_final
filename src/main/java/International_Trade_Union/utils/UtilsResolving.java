@@ -1813,6 +1813,7 @@ public class UtilsResolving {
 
                                 return -10;
                             }
+
                             addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                             if (!temp.isValidation()) {
                                 System.out.println("check all file");
