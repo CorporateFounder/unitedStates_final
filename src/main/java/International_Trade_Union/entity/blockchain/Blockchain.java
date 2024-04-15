@@ -908,7 +908,6 @@ public class Blockchain implements Cloneable {
         long tranasactions = data.getTransactions();
         int bigRandomNumber = data.getBigRandomNumber();
         boolean validation = true;
-//        Block prev = prevBlock.clone();
 
 
         for (int i = blocks.size() - 1; i >= 0; i--) {

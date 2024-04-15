@@ -151,40 +151,6 @@ public class Testing {
     }
 
     @Test
-    public void rollbackBalance() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        Map<String, Account> balance = new HashMap<>();
-     Account customer = new Account("rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM", 100, 50, 50);
-     Account founder = new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", 100, 50, 50);
-
-     balance.put(customer.getAccount(), customer);
-     balance.put(founder.getAccount(), founder);
-        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCS52v8TM+rVYBv+Y+FRabj6Lts328TYHyKMbUhY0+uPwIhAPGiwmPhBWdd0lL0cG3CuUgQqxxhCJUWT3I3m/oQ+c46\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCH21sF95mIHj3b3UkqU98yuHSrB94cCxE8tHIAfVlUYMCIQDet6Grc2I/qwtkLcndkWKB0KxZFSoZBIGlAnpe8T4NiQ==\"}],\"previousHash\":\"1693006549e60d1034c002d205d420002261411c4190110450257f2806143c69\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":3258116,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708598156000,\"index\":204674,\"hashBlock\":\"0a2c080608b958b20809106a22d81aa90bb845463258200a9e00b00064b0a80c\"}");
-        Block block1 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDvIQqLDf8oU+FC73DkiiNR1+HDT73tkEsVE4b1rRvnUQIhALcU228EKZoAcYpWfjn8gOvR5/C1CiAihubX6k0bfb9N\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCaQuPGZdm4ppoh8ucNL8qRExIRsfCjp1ExO/3oz6OsXgIhANURKjk+eWiAgk8wrazfm9VRn5UOt7LKdSfUjCoIJrqG\"}],\"previousHash\":\"80035027844db00f540911b0114c0bb2020829208ca13595054108607d01d840\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":10808639114936202,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708598058000,\"index\":204673,\"hashBlock\":\"1693006549e60d1034c002d205d420002261411c4190110450257f2806143c69\"}");
-        Block block2 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCflVNwa/M3pX7plbI9ZMzBfWt4quDnp8ZWCG7Pqk/aagIgUFQ6vUgaN+ADvrHZhmvq4QlI9C6ywV+5bDTJEwPdajg=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCftyoFk2J02CKkWFRX3GvSOpqTa+O1p9xC61nyowiX+AIhALlguCYrtURReIwTmwSXmrk7hNfCNgm9eYPKZNVnESGq\"}],\"previousHash\":\"194860380c5816204b000882440196769d73828184973c10e020648040dc4059\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":1801439851358743,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708598043000,\"index\":204672,\"hashBlock\":\"80035027844db00f540911b0114c0bb2020829208ca13595054108607d01d840\"}");
-        Block block3 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIBlX9dnYHvIUR5niNTdx1DNZ4JkMUxRa1Nv+s9LJ1SgeAiEA//mwqJaBTxF65k2O1qTVCA031IXVN4OiilXfvJ97pVc=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIDeRELf6YRcdlFqenxDYkdFdoFSCX/T82yWjbdG0b6U5AiBMquOg0M8U13KtWFGWA1BsUzx/XO41B0aTZ74uxICQ1w==\"}],\"previousHash\":\"11280ab864c82430c442a1b8d0010c078043114039b4580026d0da203c148809\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":5404319553581238,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708598021000,\"index\":204671,\"hashBlock\":\"194860380c5816204b000882440196769d73828184973c10e020648040dc4059\"}");
-        Block block4 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.360000000000003,\"digitalStockBalance\":24.360000000000003,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIAR+DpLNaRLQby7C7OtSt6IUTUz3KAop1ieZK+B/LL4MAiBUP/gCviAIjPeZTlNv+KNsiu6n85nfq/HSddEkZ72zoA==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":243.60000000000002,\"digitalStockBalance\":243.60000000000002,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCu0qw+dXPEf2XMBgzq30/v7LJDUqTWg/VxKbn/NGEOgAIgfJCgxQ7LhUky4yzATapG7HMOn2JU1ALvAadj6oSQz/Y=\"}],\"previousHash\":\"883160054251024194c18d061488761c15280c18d91a0041c919b0004ac801a5\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":9907919181603188,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1708597990000,\"index\":204670,\"hashBlock\":\"11280ab864c82430c442a1b8d0010c078043114039b4580026d0da203c148809\"}");
-    UtilsBalance.calculateBalance(balance, block4, new ArrayList<>());
-    UtilsBalance.calculateBalance(balance, block3, new ArrayList<>());
-    UtilsBalance.calculateBalance(balance, block2, new ArrayList<>());
-    UtilsBalance.calculateBalance(balance, block1, new ArrayList<>());
-    UtilsBalance.calculateBalance(balance, block, new ArrayList<>());
-        System.out.println("---------------------------------------------------------------------");
-        System.out.println("before");
-        System.out.println(balance.get(customer.getAccount()));
-        System.out.println(balance.get(founder.getAccount()));
-        System.out.println("---------------------------------------------------------------------");
-        UtilsBalance.rollbackCalculateBalance(balance, block, new ArrayList<>());
-        UtilsBalance.rollbackCalculateBalance(balance, block1, new ArrayList<>());
-        UtilsBalance.rollbackCalculateBalance(balance, block2, new ArrayList<>());
-        UtilsBalance.rollbackCalculateBalance(balance, block3, new ArrayList<>());
-        UtilsBalance.rollbackCalculateBalance(balance, block4, new ArrayList<>());
-        System.out.println("---------------------------------------------------------------------");
-        System.out.println("after");
-
-        System.out.println(balance.get(customer.getAccount()));
-        System.out.println(balance.get(founder.getAccount()));
-    }
-    @Test
     public void TestHostComparator(){
         List<HostEndDataShortB> hostEndDataShortBS = new ArrayList<>();
         Random random = new Random();
@@ -309,51 +275,6 @@ public class Testing {
         System.out.println("hash: " + hash);
     }
 
-    // Метод, который вычисляет экономический рост или спад блокчейна в процентах
-    //Пусть
-    // At - средняя сумма транзакций в текущем блоке,
-    // Ap - средняя сумма транзакций в предыдущем блоке,
-    // Nt - количество транзакций в текущем блоке,
-    // Np- количество транзакций в предыдущем блоке,
-    // Ut - количество уникальных адресов в текущем блоке,
-    // Up - количество уникальных адресов в предыдущем блоке.
-    // Тогда экономический рост или спад блокчейна в процентах можно выразить как:
-    //G=(Ap/At)*(Nt/Np)*(Ut/Up)-1
-    //Эта формула учитывает, что если средняя сумма транзакций уменьшается, то экономика растет, а если количество транзакций и уникальных адресов увеличивается, то экономика также растет. Если G>0, то экономика блокчейна растет, а если G<0, то экономика блокчейна снижается.
-    //формула
-    public static double growth(double Ap, double At, double Np, double Nt, double Up, double Ut) {
-        // Веса для каждого показателя
-        double wA = 1.1; // Вес для средней суммы транзакций
-        double wN = 0.99; // Вес для количества транзакций
-        double wU = 1.21; // Вес для количества уникальных адресов
-        // Формула, которая учитывает ваши критерии и логику
-        double G = (wA * (Ap / At)) * (wN * (Nt / Np)) * (wU * (Ut / Up)) - 1;
-        // Возвращаем результат
-
-
-        //Награда дополнительная не может быть ниже нуля и выше 10
-        G = G > 10 ? 10 : G;
-        G = G < 0 ? 0 : G;
-        G = Math.round(G);
-        return G;
-    }
-
-    @Test
-    public void economic() {
-
-
-        double Ap = 270; // Ap - средняя сумма транзакций в предыдущем блоке,
-        double At = 40;  // At - средняя сумма транзакций в текущем блоке,
-        double Nt = 1;   // Nt - количество транзакций в текущем блоке,
-        double Np = 2;   // Np- количество транзакций в предыдущем блоке,
-        double Ut = 2;   // Ut - количество уникальных адресов в текущем блоке,
-        double Up = 3;   // Up - количество уникальных адресов в предыдущем блоке
-
-        Double G = growth(Ap, At, Np, Nt, Up, Ut);
-
-        System.out.println("G " + G);
-
-    }
 
 
     @Test
@@ -422,15 +343,6 @@ public class Testing {
         }
     }
 
-    @Test
-    public void showBalance() throws IOException, JSONException {
-//        String address = "http://194.87.236.238:80/account?address=nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43";
-        String address = "http://localhost:8083/account?address=nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43";
-        String json = UtilUrl.readJsonFromUrl(address);
-        Account account = (Account) UtilsJson.jsonToListBLock(json, Account.class);
-        System.out.printf("dollar %f.0000000000000000 stock %f.0000000000000000 \n",
-                account.getDigitalDollarBalance(), account.getDigitalStockBalance());
-    }
 
 
     public static int countLeadingZeroBits(byte[] hash) {
@@ -720,15 +632,7 @@ public class Testing {
         System.out.println("foundhash: " + foundHash);
     }
 
-    @Test
-    public void actualTransactionsInServer() throws InterruptedException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        List<DtoTransaction> temporaryDtoList = AllTransactions.getInstance();
-        System.out.println("size: " + temporaryDtoList.size());
-        for (DtoTransaction transaction : temporaryDtoList) {
-            System.out.println(transaction);
-        }
 
-    }
 
     Map<String, Account> cheater = new HashMap<>();
 
@@ -836,20 +740,7 @@ public class Testing {
         }
     }
 
-    @Test
-    public void sendBlocks() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        System.out.println(":CONFLICT TREE, IN GLOBAL DIFFERENT TREE: " + HttpStatus.CONFLICT.value());
-        System.out.println(":GOOD SUCCESS: " + HttpStatus.OK.value());
-        System.out.println(":FAIL BAD BLOCKHAIN: " + HttpStatus.EXPECTATION_FAILED.value());
-        System.out.println(":CONFLICT VERSION: " + HttpStatus.FAILED_DEPENDENCY.value());
-        System.out.println(":NAME CONFLICT: " + HttpStatus.NOT_ACCEPTABLE.value());
-        System.out.println("two miner addresses cannot be consecutive: " + HttpStatus.NOT_ACCEPTABLE.value());
-        System.out.println("PARITY ERROR" + HttpStatus.LOCKED);
-        System.out.println("Test version: If the index is even, then the stock balance must also be even; if the index is not even, all can mining"
-                + HttpStatus.LOCKED.value());
 
-
-    }
 
     @Test
     public void testLimitedMoney() {
@@ -958,91 +849,6 @@ public class Testing {
         assertNotEquals(wrongHash.getHashBlock(), wrongHash.hashForTransaction());
     }
 
-    public String send(@RequestParam String sender,
-                       @RequestParam String recipient,
-                       @RequestParam Double dollar,
-                       @RequestParam Double stock,
-                       @RequestParam Double reward,
-                       @RequestParam String password) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
-        Base base = new Base58();
-        String result = "wrong";
-        if (dollar == null)
-            dollar = 0.0;
-
-        if (stock == null)
-            stock = 0.0;
-
-        if (reward == null)
-            reward = 0.0;
-
-        Laws laws = new Laws();
-        laws.setLaws(new ArrayList<>());
-        laws.setHashLaw("");
-        laws.setPacketLawName("");
-        DtoTransaction dtoTransaction = new DtoTransaction(
-                sender,
-                recipient,
-                dollar,
-                stock,
-                laws,
-                reward,
-                VoteEnum.YES);
-        PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));
-        byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
-        System.out.println("Main Controller: new transaction: vote: " + VoteEnum.YES);
-        dtoTransaction.setSign(sign);
-        Directors directors = new Directors();
-        System.out.println("sender: " + sender);
-        System.out.println("recipient: " + recipient);
-        System.out.println("dollar: " + dollar + ": class: " + dollar.getClass());
-        System.out.println("stock: " + stock + ": class: " + stock.getClass());
-        System.out.println("reward: " + reward + ": class: " + reward.getClass());
-        System.out.println("password: " + password);
-        System.out.println("sign: " + dtoTransaction.toSign());
-        System.out.println("verify: " + dtoTransaction.verify());
-
-        if (dtoTransaction.verify()) {
-
-            //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
-            //отправитель совпадает с законом
-            List<String> corporateSeniorPositions = directors.getDirectors().stream()
-                    .map(t -> t.getName()).collect(Collectors.toList());
-            System.out.println("LawsController: create_law: " + laws.getPacketLawName() + "contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
-            if (corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(sender, laws)) {
-                System.out.println("sending" + "wrong transaction: Position to be equals whith send");
-                return result;
-            }
-            result = dtoTransaction.toSign();
-
-            String str = base.encode(dtoTransaction.getSign());
-            System.out.println("sign: " + str);
-            AllTransactions.addTransaction(dtoTransaction);
-            String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
-            for (String s : Seting.ORIGINAL_ADDRESSES) {
-
-                String original = s;
-                String url = s + "/addTransaction";
-                //если адресс совпадает с внутреним хостом, то не отправляет самому себе
-                if (BasisController.getExcludedAddresses().contains(url)) {
-                    System.out.println("MainController: its your address or excluded address: " + url);
-                    continue;
-                }
-                try {
-                    //отправка в сеть
-                    UtilUrl.sendPost(jsonDto, url);
-
-                } catch (Exception e) {
-                    System.out.println("exception discover: " + original);
-
-                }
-            }
-
-
-        } else
-            return result;
-        return result;
-
-    }
 
     @Test
     public void testBalance() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -1235,19 +1041,6 @@ public class Testing {
 
     }
 
-    void printBitSet(byte[] bytes) {
-        BitSet bits = BitSet.valueOf(bytes);
-
-        for (int i = 0; i < bits.length(); i++) {
-            if (bits.get(i)) {
-                System.out.print(1);
-            } else {
-                System.out.print(0);
-            }
-        }
-
-        System.out.println();
-    }
 
     @Test
     public void TestChangeDiff() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, InterruptedException {
