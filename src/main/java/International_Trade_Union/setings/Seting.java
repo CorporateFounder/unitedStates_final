@@ -169,7 +169,7 @@ public interface Seting {
     double COUNT_BLOCK_IN_DAY = (DAY_SECOND / BLOCK_TIME);
 
 
-//    String testPath = IS_TEST ? "D:/" : "";
+//    String testPath = IS_TEST ? "D:/" : "D:/";
     String testPath = IS_TEST ? "" : "";
 
     String ORIGINAL_BLOCKCHAIN_FILE = testPath +"/resources/blockchain/";

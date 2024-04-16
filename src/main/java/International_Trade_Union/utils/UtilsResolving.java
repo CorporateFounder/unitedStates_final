@@ -715,13 +715,13 @@ public class UtilsResolving {
                                 temp = helpResolve5(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
                             }
 
-                            if (temp.getSize() > 1 && !temp.isValidation()) {
-                                System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++");
-                                System.out.println("error resolve 2 in portion upper < 500");
-                                System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++");
-
-                                return -10;
-                            }
+//                            if (temp.getSize() > 1 && !temp.isValidation()) {
+//                                System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++");
+//                                System.out.println("error resolve 2 in portion upper < 500");
+//                                System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++");
+//
+//                                return -10;
+//                            }
 
 
                             BasisController.setShortDataBlockchain(temp);
@@ -1222,7 +1222,8 @@ public class UtilsResolving {
             }
 
 
-        } else if (BasisController.getShortDataBlockchain().getSize() > 1 && temp.isValidation()) {
+        }
+        else if (BasisController.getShortDataBlockchain().getSize() > 1 && temp.isValidation()) {
             //вызывает методы, для сохранения списка блоков в текущий блокчейн,
             //так же записывает в базу h2, делает перерасчет всех балансов,
             //и так же их записывает, а так же записывает другие данные.
