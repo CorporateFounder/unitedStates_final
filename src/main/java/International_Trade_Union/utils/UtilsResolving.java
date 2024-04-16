@@ -360,8 +360,6 @@ public class UtilsResolving {
                                     System.out.println("===========================");
                                     temp = helpResolve5(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
                                 }
-//                                temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
-//                                temp = helpResolve4(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
 
                                 System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++");
                                 //если скачанный блокчейн не валидный, то не добавляет в блокчейн, возвращает -10
@@ -715,13 +713,6 @@ public class UtilsResolving {
                                 temp = helpResolve5(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
                             }
 
-//                            if (temp.getSize() > 1 && !temp.isValidation()) {
-//                                System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++");
-//                                System.out.println("error resolve 2 in portion upper < 500");
-//                                System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++");
-//
-//                                return -10;
-//                            }
 
 
                             BasisController.setShortDataBlockchain(temp);
