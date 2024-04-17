@@ -63,7 +63,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class Testing {
-
+    @Test
+    public void getAddress() throws IOException, JSONException {
+        String address = "http://194.87.236.238:82";
+        String account = "rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM";
+        address = address + "/account?address=" +account;
+        String result = UtilUrl.readJsonFromUrl(address);
+        System.out.println(result);
+    }
 
 
     @Test

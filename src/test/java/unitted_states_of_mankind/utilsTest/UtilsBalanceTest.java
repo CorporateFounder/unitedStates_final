@@ -4,6 +4,7 @@ import International_Trade_Union.utils.*;
 import International_Trade_Union.vote.Laws;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
@@ -32,6 +33,8 @@ import java.util.stream.Collectors;
 //TODO высянить почему не списывается правильно долги
 @SpringBootTest
 public class UtilsBalanceTest {
+
+
 
 
 
