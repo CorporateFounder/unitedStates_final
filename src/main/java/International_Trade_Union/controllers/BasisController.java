@@ -673,9 +673,10 @@ public class BasisController {
                     AddressUrl addressUrl = new AddressUrl(s1);
                     String json = UtilsJson.objToStringJson(addressUrl);
                     UtilUrl.sendPost(json, url);
+
                 }
             } catch (Exception e) {
-                System.out.println(":BasisController: sendAddress: wronge node: " + original);
+                System.out.println(":BasisController: sendAddress: wronge node: " + original + " address: " + s);
 
                 continue;
             }
@@ -753,9 +754,9 @@ public class BasisController {
                         System.out.println(":GOOD: SUCCESS  " + HttpStatus.OK.value());
                         System.out.println(":FAIL BAD BLOCKCHAIN: " + HttpStatus.EXPECTATION_FAILED.value());
                         System.out.println(":CONFLICT VERSION: " + HttpStatus.FAILED_DEPENDENCY.value());
-                        System.out.println(":response: " + response);
+                        System.out.println(":response: " + response + " address: " + s);
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                         System.out.println(":exception resolve_from_to_block: " + originalF);
                         continue;
                     }
@@ -769,9 +770,9 @@ public class BasisController {
                     System.out.println("Test version: If the index is even, then the stock balance must also be even; if the index is not even, all can mining"
                             + HttpStatus.LOCKED.value());
                     System.out.println("BLOCK HAS CHEATER ADDRESS: " + HttpStatus.SEE_OTHER);
-                    System.out.println(":response: " + response);
+                    System.out.println(":response: " + response + " address: " + s);
 
-                    System.out.println(":BasisController: sendAllBlocksStorage: response: " + response);
+                    System.out.println(":BasisController: sendAllBlocksStorage: response: " + response + " address: " + s);
 
 
 
