@@ -507,12 +507,17 @@ public final class Block implements Cloneable {
 
     /*if the index advanced, then we quit the current hasfind() */
      private int isAdvanced() {
+
      try {
         String  s;
 //       s="http://125.229.48.110:16888";
        s="http://194.87.236.238:82";
          for (String address : Seting.ORIGINAL_ADDRESSES) {
              s = address;
+         }
+         String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
+         if (!server.isEmpty() && !server.isBlank()){
+             s = server;
          }
 
 
