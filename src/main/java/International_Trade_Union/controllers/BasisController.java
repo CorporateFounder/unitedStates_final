@@ -7,7 +7,6 @@ import International_Trade_Union.entity.entities.EntityBlock;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.HostEndDataShortB;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1187,34 +1186,53 @@ public class BasisController {
 
     @GetMapping("/testCalculate")
     @ResponseBody
-    public String testResolving() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
-        utilsResolving.resolve3();
+    public String testResolving() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
-        Map<String, Account> accounts = UtilsJson.balances(UtilUrl.readJsonFromUrl("http://194.87.236.238:82/addresses"));
+        List<Block> blocksList = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                blockService.findBySpecialIndexBetween(
+                        BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE,
+                        BasisController.getBlockchainSize() -1
+                )
+        );
+
+        List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blocksList, Seting.BOARDS_BLOCK);
 
 
-        System.out.println("=========================================");
-        System.out.println(balances.size());
-        System.out.println("=========================================");
-        System.out.println(accounts.size());
-        System.out.println("=========================================");
-        System.out.println("=========================================");
-        Map<String, Account> result = UtilsUse.differentAccount(balances, accounts);
+        List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
+                UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
-        System.out.println(result);
-        System.out.println("=========================================");
-        for (Map.Entry<String, Account> accountEntry : result.entrySet()) {
-            System.out.println(balances.get(accountEntry.getKey()));
+        Map<String, CurrentLawVotes> votesMap = new HashMap<>();
+        List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
+        long from = 0;
+        long to = BasisController.getBlockchainSize();
+
+        if (BasisController.getBlockchainSize() > Seting.LAW_YEAR_VOTE) {
+            from = BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE;
         }
 
-        System.out.println("=========================================");
-        for (Map.Entry<String, Account> accountEntry : result.entrySet()) {
-            System.out.println(accounts.get(accountEntry.getKey()));
+        for (long i = from; i < to; i += 10000) {
+            List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(i, Math.min(to, i + 1000)));
+            for (Block block : list) {
+               votesMap = UtilsCurrentLaw.calculateVote(votesMap, accounts, block);
+            }
         }
+//        List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(from, to));
+//        for (Block block : list) {
+//            UtilsCurrentLaw.calculateVote(votesMap, accounts, block);
+//        }
 
+        List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
+                lawEligibleForParliamentaryApprovals,
+                balances,
+               boardOfShareholders,
+                votesMap);
 
-        return  "result: " + (balances.equals(accounts));
+        System.out.println("vote Map: " + votesMap);
+        System.out.println("--------------------------------------------");
+        System.out.println("current: " + current);
+
+        return "ok";
 
     }
 

@@ -19,7 +19,6 @@ import International_Trade_Union.vote.Laws;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class UtilsJson {
@@ -106,10 +105,5 @@ public class UtilsJson {
     public static List<DtoTransaction> jsonToDtoTransactionList(String json) throws  JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, new TypeReference<List<DtoTransaction>>(){});
-    }
-
-    public static Map<String, Account> balances(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(json, new TypeReference<Map<String, Account>>(){});
     }
 }

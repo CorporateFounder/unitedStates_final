@@ -68,7 +68,6 @@ International_Trade_Union\utils\SaveBalances.class
 International_Trade_Union\utils\UtilsCreatedDirectory.class
 International_Trade_Union\node\Nodes.class
 International_Trade_Union\utils\UtilsUse.class
-International_Trade_Union\utils\UtilsJson$5.class
 International_Trade_Union\setings\originalCorporateCharter\OriginalPreambleEng.class
 International_Trade_Union\utils\UtilsBlock$2.class
 International_Trade_Union\utils\UtilsBalance.class
