@@ -12,7 +12,8 @@ import java.util.List;
 public interface EntityDtoTransactionRepository extends PagingAndSortingRepository<EntityDtoTransaction, Long> {
     EntityDtoTransaction findById(long id);
     List<EntityDtoTransaction> findAll();
-    EntityDtoTransaction findBySign(byte[] sign);
+    EntityDtoTransaction findBySign(String sign);
+    boolean existsBySign(String sign);
     Page<EntityDtoTransaction> findBySender(String sender, Pageable pageable);
     Page<EntityDtoTransaction> findByCustomer(String customer, Pageable pageable);
     long countBySender(String sender);

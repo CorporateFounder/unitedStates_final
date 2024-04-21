@@ -366,8 +366,9 @@ public class MainController {
         redirectAttrs.addFlashAttribute("vote", VoteEnum.YES);
 
         dtoTransaction.setSign(sign);
-        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
-        redirectAttrs.addFlashAttribute("sign", encoded);
+
+//        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
+        redirectAttrs.addFlashAttribute("sign", base.encode(dtoTransaction.getSign()));
         Directors directors = new Directors();
         if(dtoTransaction.verify()){
 

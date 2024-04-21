@@ -54,6 +54,9 @@ public class UtilsResolving {
 
     public int resolve3() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         BasisController.setUpdating(true);
+        UtilsBalance.setBlockService(blockService);
+        Blockchain.setBlockService(blockService);
+        UtilsBlock.setBlockService(blockService);
 
         //удаляет файлы которые хранять заблокированные хосты
         if (BasisController.getBlockchainSize() % Seting.DELETED_FILE_BLOCKED_HOST == 0) {
@@ -777,6 +780,10 @@ public class UtilsResolving {
             }
         }
         return false;
+//        if(global.getSize() > actual.getSize())
+//            return true;
+//        else return false;
+
     }
 
 
@@ -1867,7 +1874,9 @@ public class UtilsResolving {
     @Transactional
     public void addBlock3(List<Block> originalBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         java.sql.Timestamp lastIndex = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
-
+        UtilsBalance.setBlockService(blockService);
+        Blockchain.setBlockService(blockService);
+        UtilsBlock.setBlockService(blockService);
         List<EntityBlock> list = new ArrayList<>();
         List<String> signs = new ArrayList<>();
         //пакет законов.

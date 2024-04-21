@@ -2,6 +2,7 @@ package International_Trade_Union.entity.blockchain;
 
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
@@ -27,6 +28,15 @@ import java.util.stream.Collectors;
 @Data
 public class Blockchain implements Cloneable {
 
+    private static BlockService blockService;
+
+    public static BlockService getBlockService() {
+        return blockService;
+    }
+
+    public static void setBlockService(BlockService blockService) {
+        Blockchain.blockService = blockService;
+    }
 
     private List<Block> blockchainList;
     //как часто должно создаваться блок в миллисекундах 1000 миллисекунд = 1 секунд
@@ -242,6 +252,9 @@ public class Blockchain implements Cloneable {
 
                 tranasactions += blocks.get(i).getDtoTransactions().size();
 
+                //TODO обнуляем подпись, как так используем базу данных и чтобы не было переполнения
+                sign = new ArrayList<>();
+
                 balances = UtilsBalance.calculateBalance(balances, blocks.get(i), sign);
 
 
@@ -441,6 +454,11 @@ public class Blockchain implements Cloneable {
                     }
 
                     hashCount += UtilsUse.powerDiff(block.getHashCompexity());
+
+                    //TODO обнуляем подпись, так как используем базу данных и чтобы не было переполнения
+                    //TODO пямяти
+                    sign = new ArrayList<>();
+
                     balances = UtilsBalance.calculateBalance(balances, block, sign);
                     Account miner = balances.get(block.getMinerAddress());
                     miner = miner != null? miner: new Account(block.getMinerAddress(), 0, 0, 0);
@@ -503,6 +521,10 @@ public class Blockchain implements Cloneable {
                 for (String s : list) {
 
                     Block block = UtilsJson.jsonToBLock(s);
+
+                    //TODO обнуляем подпись, чтобы не учитывалось
+                    //TODO как так используем базу данных
+                    signs = new ArrayList<>();
 
                     UtilsBalance.calculateBalance(balances, block, signs);
                 }

@@ -28,7 +28,15 @@ import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
 //wallet
 
 public class UtilsBalance {
+    private static BlockService blockService;
 
+    public static BlockService getBlockService() {
+        return blockService;
+    }
+
+    public static void setBlockService(BlockService blockService) {
+        UtilsBalance.blockService = blockService;
+    }
 
     /**Возвращает баланс обратно, нужно когда есть множество веток.*/
     public static Map<String, Account> rollbackCalculateBalance(
@@ -46,13 +54,13 @@ public class UtilsBalance {
 
 
             DtoTransaction transaction = block.getDtoTransactions().get(j);
-            if (sign.contains(base.encode(transaction.getSign()))) {
-                System.out.println("this transaction signature has already been used and is not valid");
-                continue;
-            } else {
-//                    System.out.println("we added new sign transaction");
-                sign.add(base.encode(transaction.getSign()));
-            }
+//            if (sign.contains(base.encode(transaction.getSign()))) {
+//                System.out.println("this transaction signature has already been used and is not valid");
+//                continue;
+//            } else {
+////                    System.out.println("we added new sign transaction");
+//                sign.add(base.encode(transaction.getSign()));
+//            }
 
             if (transaction.getSender().startsWith(Seting.NAME_LAW_ADDRESS_START)) {
                 System.out.println("law balance cannot be sender");
@@ -149,6 +157,12 @@ public class UtilsBalance {
 
 
             DtoTransaction transaction = block.getDtoTransactions().get(j);
+            if(blockService != null){
+                if(blockService.existsBySign(transaction.getSign())){
+                    System.out.println("this transaction signature has already been used and is not valid from db");
+                    continue;
+                }
+            }
             if (sign.contains(base.encode(transaction.getSign()))) {
                 System.out.println("this transaction signature has already been used and is not valid");
                 continue;

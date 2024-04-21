@@ -112,8 +112,8 @@ public class MineController {
         redirectAttrs.addFlashAttribute("vote", VoteEnum.STAKING);
 
         dtoTransaction.setSign(sign);
-        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
-        redirectAttrs.addFlashAttribute("sign", encoded);
+//        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
+        redirectAttrs.addFlashAttribute("sign", base.encode(dtoTransaction.getSign()));
         Directors directors = new Directors();
         if(dtoTransaction.verify()){
 
@@ -203,8 +203,8 @@ public class MineController {
         redirectAttrs.addFlashAttribute("vote", VoteEnum.UNSTAKING);
 
         dtoTransaction.setSign(sign);
-        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
-        redirectAttrs.addFlashAttribute("sign", encoded);
+//        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
+        redirectAttrs.addFlashAttribute("sign", base.encode(dtoTransaction.getSign()));
         Directors directors = new Directors();
         if(dtoTransaction.verify()){
 

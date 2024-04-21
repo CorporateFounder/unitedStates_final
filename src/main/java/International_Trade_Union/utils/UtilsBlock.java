@@ -1,8 +1,11 @@
 package International_Trade_Union.utils;
 
 
+import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.Mining;
+import International_Trade_Union.utils.base.Base;
+import International_Trade_Union.utils.base.Base58;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
@@ -22,6 +25,17 @@ import java.util.stream.Collectors;
 import static International_Trade_Union.setings.Seting.*;
 
 public class UtilsBlock {
+
+
+    private static BlockService blockService;
+
+    public static BlockService getBlockService() {
+        return blockService;
+    }
+
+    public static void setBlockService(BlockService blockService) {
+        UtilsBlock.blockService = blockService;
+    }
     //wallet
 
     //this need olny find cheater
@@ -360,6 +374,7 @@ public class UtilsBlock {
             int difficultyAdjustmentInterval,
             List<Block> lastBlock) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
+        Base base = new Base58();
         if (!addressFounder.equals(thisBlock.getFounderAddress())) {
             System.out.println("genesis address not equals block founder: ");
             System.out.println("genesis address: " + addressFounder);
@@ -399,6 +414,8 @@ public class UtilsBlock {
         int countBasisSendAll = 0;
         finished:
         for (DtoTransaction transaction : thisBlock.getDtoTransactions()) {
+
+
             if (transaction.verify() && transaction.getSender().equals(Seting.BASIS_ADDRESS)) {
                 double minerReward = Seting.DIGITAL_DOLLAR_REWARDS_BEFORE;
                 double minerPowerReward = Seting.DIGITAL_STOCK_REWARDS_BEFORE;
@@ -521,6 +538,18 @@ public class UtilsBlock {
                 System.out.println("wrong transaction: " + transaction + " verify: " + transaction.verify());
                 validated = false;
                 break finished;
+            }
+
+            if(thisBlock.getIndex() > Seting.DUPLICATE_INDEX ){
+                if(blockService != null){
+                    if(blockService.existsBySign(transaction.getSign())){
+                        System.out.println("=====================================");
+                        System.out.println("has duplicate transaction");
+                        System.out.println("=====================================");
+                        validated = false;
+                        break finished;
+                    }
+                }
             }
 
         }

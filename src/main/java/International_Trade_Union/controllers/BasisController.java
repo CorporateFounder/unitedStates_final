@@ -419,6 +419,7 @@ public class BasisController {
             UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
             EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
             entityBlocks.add(entityBlock);
+
             calculateBalance(balances, block, signs);
 
 
@@ -961,6 +962,11 @@ public class BasisController {
             //удаляет транзакции которые были ранее уже добавлены в блок.
             //deletes transactions that were previously added to the block.
             temporaryDtoList = UtilsBlock.validDto(temp, temporaryDtoList);
+            //TODO убирает транзакции которые уже были добавлены в блокчейн
+            temporaryDtoList = temporaryDtoList.stream()
+                    .filter(t->!blockService.existsBySign(t.getSign()))
+                    .collect(Collectors.toList());
+
 
             //отказ от транзакций которые меньше данного вознаграждения, если количество транзакций на блок выше 1000.
             //rejection of transactions that are less than this reward, if the number of transactions per block is above 1000.

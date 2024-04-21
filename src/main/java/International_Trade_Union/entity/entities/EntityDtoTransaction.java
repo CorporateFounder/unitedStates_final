@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import org.hibernate.annotations.Index;
 import java.util.Arrays;
 
 
@@ -27,7 +28,7 @@ public class EntityDtoTransaction {
     }
 
 
-    public EntityDtoTransaction(String sender, String customer, double digitalDollar, double digitalStockBalance, EntityLaws entityLaws, double bonusForMiner, VoteEnum voteEnum, byte[] sign) {
+    public EntityDtoTransaction(String sender, String customer, double digitalDollar, double digitalStockBalance, EntityLaws entityLaws, double bonusForMiner, VoteEnum voteEnum, String sign) {
 
         this.sender = sender;
         this.customer = customer;
@@ -50,7 +51,10 @@ public class EntityDtoTransaction {
 
     private double bonusForMiner;
     private VoteEnum voteEnum;
-    private byte[] sign;
+
+    @Column(name = "sign")
+    @Index(name = "idx_entity_dto_transaction_sign")
+    private String sign;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "entity_block_id")
@@ -78,7 +82,7 @@ public class EntityDtoTransaction {
                 ", entityLaws=" + entityLaws +
                 ", bonusForMiner=" + bonusForMiner +
                 ", voteEnum=" + voteEnum +
-                ", sign=" + Arrays.toString(sign) +
+                ", sign=" + sign +
                 '}';
     }
 }

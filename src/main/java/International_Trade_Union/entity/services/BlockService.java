@@ -7,6 +7,8 @@ import International_Trade_Union.entity.entities.EntityDtoTransaction;
 import International_Trade_Union.entity.repository.*;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.utils.UtilsBlockToEntityBlock;
+import International_Trade_Union.utils.base.Base;
+import International_Trade_Union.utils.base.Base58;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -206,12 +208,13 @@ public class BlockService {
     }
 
     public  EntityDtoTransaction findBySign(String sign){
-        Base64.Decoder decoder = Base64.getDecoder();
+        return dtoTransactionRepository.findBySign(sign);
 
-// декодируем строку обратно в массив байтов
-        byte[] decoded = decoder.decode(sign);
-        return dtoTransactionRepository.findBySign(decoded);
+    }
 
+    public boolean existsBySign(byte[] sign){
+        Base base = new Base58();
+        return dtoTransactionRepository.existsBySign(base.encode(sign));
     }
     @javax.transaction.Transactional
     public  List<EntityDtoTransaction> findAllDto(){
