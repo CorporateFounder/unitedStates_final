@@ -335,7 +335,7 @@ public interface Seting {
     int IS_BIG_DIFFERENT = 300;
 
 //    int DUPLICATE_INDEX = 0;
-    int DUPLICATE_INDEX = 244829;
+    int DUPLICATE_INDEX = 243927;
 
 
 }
