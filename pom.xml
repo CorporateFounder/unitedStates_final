@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.UNITED_STATES_CORPORATION_OF_HUMANITY</groupId>
 	<artifactId>unitedStates</artifactId>
-	<version>0.32.25-SNAPSHOT</version>
+	<version>0.32.26-SNAPSHOT</version>
 	<name>unitedStates</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -21,7 +21,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
-
 
 
 		<dependency>

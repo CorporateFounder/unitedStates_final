@@ -269,6 +269,7 @@ public class UtilsResolving {
                                 System.out.println("2: jsonGlobalData: " + jsonGlobalData);
                                 global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
                                 temp = new DataShortBlockchainInformation();
+                                sign = new ArrayList<>();
                                 temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
 
                                 DataShortBlockchainInformation anotherCheck = null;
@@ -343,12 +344,14 @@ public class UtilsResolving {
                                     }
                                 }
 
-
+                                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+                                tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+                                sign = new ArrayList<>();
                                 temp = new DataShortBlockchainInformation();
                                 temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                                 balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
                                 tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
-
+                                sign = new ArrayList<>();
                                 if (!local_size_upper){
                                     System.out.println("===========================");
                                     System.out.println("!local_size_upper: " + !local_size_upper);
@@ -441,10 +444,13 @@ public class UtilsResolving {
                                     jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
                                     System.out.println("2: jsonGlobalData: " + jsonGlobalData);
                                     global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
+                                    balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+                                    tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+                                    sign = new ArrayList<>();
                                     temp = new DataShortBlockchainInformation();
                                     temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                                     tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
-
+                                    sign = new ArrayList<>();
                                     if (BasisController.getBlockchainSize() > 1 && blocks_current_size < size) {
                                         anotherCheck = check(temp, global, s, lastDiff, tempBalances, sign);
                                         System.out.println("++++++++++++++++++++++++++++++++++++++=");
@@ -526,11 +532,14 @@ public class UtilsResolving {
 //                                    System.out.println("2: jsonGlobalData: " + jsonGlobalData);
 //                                    global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
 //                                    temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
+                                    balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+                                    tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+                                    sign = new ArrayList<>();
                                     temp = new DataShortBlockchainInformation();
                                     temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                                     balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
                                     tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
-
+                                    sign = new ArrayList<>();
                                     if (!local_size_upper){
                                         System.out.println("===========================");
                                         System.out.println("!local_size_upper: " + !local_size_upper);
@@ -607,6 +616,7 @@ public class UtilsResolving {
                             System.out.println("3: jsonGlobalData: " + jsonGlobalData);
                             global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
                             DataShortBlockchainInformation anotherCheck = null;
+                            sign = new ArrayList<>();
 
                             if (BasisController.getBlockchainSize() > 1 && blocks_current_size < size) {
                                 System.out.println("===============================================");
@@ -696,11 +706,15 @@ public class UtilsResolving {
 //                            System.out.println("3: jsonGlobalData: " + jsonGlobalData);
 //                            global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
 //                            temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
+
+                            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+                            tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+                            sign = new ArrayList<>();
                             temp = new DataShortBlockchainInformation();
                             temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
                             balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
                             tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
-
+                            sign = new ArrayList<>();
                             if (!local_size_upper){
                                 System.out.println("===========================");
                                 System.out.println("!local_size_upper: " + !local_size_upper);
@@ -765,24 +779,24 @@ public class UtilsResolving {
     public boolean isBig(
             DataShortBlockchainInformation actual,
             DataShortBlockchainInformation global) {
-        if (global.getSize() >= actual.getSize() - Seting.IS_BIG_DIFFERENT && global.getBigRandomNumber() > actual.getBigRandomNumber()) {
-            return true;
-        } else if (global.getSize() >= actual.getSize() - Seting.IS_BIG_DIFFERENT && global.getBigRandomNumber() == actual.getBigRandomNumber()) {
-            if (global.getHashCount() > actual.getHashCount()) {
-                return true;
-            } else if (global.getHashCount() == actual.getHashCount()) {
-                if (global.getStaking() > actual.getStaking()) {
-                    return true;
-                } else if (global.getTransactions() > actual.getTransactions()) {
-                    return true;
-                }
-
-            }
-        }
-        return false;
-//        if(global.getSize() > actual.getSize())
+//        if (global.getSize() >= actual.getSize() - Seting.IS_BIG_DIFFERENT && global.getBigRandomNumber() > actual.getBigRandomNumber()) {
 //            return true;
-//        else return false;
+//        } else if (global.getSize() >= actual.getSize() - Seting.IS_BIG_DIFFERENT && global.getBigRandomNumber() == actual.getBigRandomNumber()) {
+//            if (global.getHashCount() > actual.getHashCount()) {
+//                return true;
+//            } else if (global.getHashCount() == actual.getHashCount()) {
+//                if (global.getStaking() > actual.getStaking()) {
+//                    return true;
+//                } else if (global.getTransactions() > actual.getTransactions()) {
+//                    return true;
+//                }
+//
+//            }
+//        }
+//        return false;
+        if(global.getSize() > actual.getSize())
+            return true;
+        else return false;
 
     }
 

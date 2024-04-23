@@ -14,7 +14,6 @@ import International_Trade_Union.vote.VoteEnum;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Data;
-import org.springframework.scheduling.support.SimpleTriggerContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -252,9 +251,6 @@ public class Blockchain implements Cloneable {
 
                 tranasactions += blocks.get(i).getDtoTransactions().size();
 
-                //TODO обнуляем подпись, как так используем базу данных и чтобы не было переполнения
-                sign = new ArrayList<>();
-
                 balances = UtilsBalance.calculateBalance(balances, blocks.get(i), sign);
 
 
@@ -454,11 +450,6 @@ public class Blockchain implements Cloneable {
                     }
 
                     hashCount += UtilsUse.powerDiff(block.getHashCompexity());
-
-                    //TODO обнуляем подпись, так как используем базу данных и чтобы не было переполнения
-                    //TODO пямяти
-                    sign = new ArrayList<>();
-
                     balances = UtilsBalance.calculateBalance(balances, block, sign);
                     Account miner = balances.get(block.getMinerAddress());
                     miner = miner != null? miner: new Account(block.getMinerAddress(), 0, 0, 0);
@@ -521,10 +512,6 @@ public class Blockchain implements Cloneable {
                 for (String s : list) {
 
                     Block block = UtilsJson.jsonToBLock(s);
-
-                    //TODO обнуляем подпись, чтобы не учитывалось
-                    //TODO как так используем базу данных
-                    signs = new ArrayList<>();
 
                     UtilsBalance.calculateBalance(balances, block, signs);
                 }

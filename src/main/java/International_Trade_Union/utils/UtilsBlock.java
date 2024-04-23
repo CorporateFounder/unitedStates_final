@@ -414,8 +414,6 @@ public class UtilsBlock {
         int countBasisSendAll = 0;
         finished:
         for (DtoTransaction transaction : thisBlock.getDtoTransactions()) {
-
-
             if (transaction.verify() && transaction.getSender().equals(Seting.BASIS_ADDRESS)) {
                 double minerReward = Seting.DIGITAL_DOLLAR_REWARDS_BEFORE;
                 double minerPowerReward = Seting.DIGITAL_STOCK_REWARDS_BEFORE;
