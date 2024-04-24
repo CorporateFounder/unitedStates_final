@@ -29,7 +29,12 @@ public class UtilUrl {
         }
     }
     public static String readJsonFromUrl(String url) throws IOException, JSONException {
-        InputStream is = new URL(url).openStream();
+        URL url1 = new URL(url);
+        URLConnection conn = url1.openConnection();
+        conn.setConnectTimeout(5000); // Устанавливаем таймаут соединения в 5 секунд
+        conn.setReadTimeout(5000); // Устанавливаем таймаут чтения в 5 секунд
+        InputStream is = conn.getInputStream();
+
         try {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
