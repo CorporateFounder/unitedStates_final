@@ -781,18 +781,19 @@ public class UtilsResolving {
             DataShortBlockchainInformation global) {
         if (global.getSize() >= actual.getSize() - Seting.IS_BIG_DIFFERENT && global.getBigRandomNumber() > actual.getBigRandomNumber()) {
             return true;
-        } else if (global.getSize() >= actual.getSize() - Seting.IS_BIG_DIFFERENT && global.getBigRandomNumber() == actual.getBigRandomNumber()) {
-            if (global.getHashCount() > actual.getHashCount()) {
-                return true;
-            } else if (global.getHashCount() == actual.getHashCount()) {
-                if (global.getStaking() > actual.getStaking()) {
-                    return true;
-                } else if (global.getTransactions() > actual.getTransactions()) {
-                    return true;
-                }
-
-            }
         }
+//        else if (global.getSize() >= actual.getSize() - Seting.IS_BIG_DIFFERENT && global.getBigRandomNumber() == actual.getBigRandomNumber()) {
+//            if (global.getHashCount() > actual.getHashCount()) {
+//                return true;
+//            } else if (global.getHashCount() == actual.getHashCount()) {
+//                if (global.getStaking() > actual.getStaking()) {
+//                    return true;
+//                } else if (global.getTransactions() > actual.getTransactions()) {
+//                    return true;
+//                }
+//
+//            }
+//        }
         return false;
 //        if(global.getSize() > actual.getSize())
 //            return true;

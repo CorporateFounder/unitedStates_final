@@ -197,11 +197,7 @@ public class Mining {
                             System.out.println("digital reputation for send: " + (transaction.getDigitalDollar() + transaction.getBonusForMiner()));
                             continue cicle;
                         }
-//                        if (transaction.getSender().equals(transaction.getCustomer()) && !transaction.getVoteEnum().equals(VoteEnum.STAKING) ||
-//                                transaction.getSender().equals(transaction.getCustomer()) && !transaction.getVoteEnum().equals(VoteEnum.UNSTAKING)) {
-//                            System.out.println("sender end recipient equals " + transaction.getSender() + " : recipient: " + transaction.getCustomer());
-//                            continue cicle;
-//                        }
+
                         forAdd.add(transaction);
                     }
 
