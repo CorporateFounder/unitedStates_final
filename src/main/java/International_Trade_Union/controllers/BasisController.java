@@ -711,6 +711,10 @@ public class BasisController {
                 Seting.ORIGINAL_ADDRESSES.add(server);
                 s = server;
             }
+            for (String s1 : Seting.ORIGINAL_ADDRESSES) {
+                s = s1;
+            }
+
 
             System.out.println(":trying to connect to the server send block: " + s + ": timeout 45 seconds");
 

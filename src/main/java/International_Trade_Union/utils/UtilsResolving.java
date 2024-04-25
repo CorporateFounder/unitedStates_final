@@ -96,9 +96,15 @@ public class UtilsResolving {
             for (HostEndDataShortB hostEndDataShortB : sortPriorityHost) {
                 String s = hostEndDataShortB.getHost();
                 String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
+
+
                 if (!server.isEmpty() && !server.isBlank()){
                     s = server;
                 }
+                for (String s1 : Seting.ORIGINAL_ADDRESSES) {
+                    s = s1;
+                }
+
                 //if the local address matches the host address, it skips
                 //если локальный адрес совпадает с адресом хоста, он пропускает
                 if (BasisController.getExcludedAddresses().contains(s)) {
@@ -779,25 +785,13 @@ public class UtilsResolving {
     public boolean isBig(
             DataShortBlockchainInformation actual,
             DataShortBlockchainInformation global) {
-        if (global.getSize() >= actual.getSize() - Seting.IS_BIG_DIFFERENT && global.getBigRandomNumber() > actual.getBigRandomNumber()) {
-            return true;
-        }
-//        else if (global.getSize() >= actual.getSize() - Seting.IS_BIG_DIFFERENT && global.getBigRandomNumber() == actual.getBigRandomNumber()) {
-//            if (global.getHashCount() > actual.getHashCount()) {
-//                return true;
-//            } else if (global.getHashCount() == actual.getHashCount()) {
-//                if (global.getStaking() > actual.getStaking()) {
-//                    return true;
-//                } else if (global.getTransactions() > actual.getTransactions()) {
-//                    return true;
-//                }
-//
-//            }
-//        }
-        return false;
-//        if(global.getSize() > actual.getSize())
+//        if (global.getSize() >= actual.getSize() - Seting.IS_BIG_DIFFERENT && global.getBigRandomNumber() > actual.getBigRandomNumber()) {
 //            return true;
-//        else return false;
+//        }
+//        return false;
+        if(global.getSize() != actual.getSize())
+            return true;
+        else return false;
 
     }
 
