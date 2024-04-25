@@ -110,6 +110,7 @@ public class MainController {
         if(BasisController.isUpdating() || BasisController.isMining()){
             return "redirect:/processUpdating";
         }
+        System.out.println("start Main ");
         String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
         if(!server.isBlank() || !server.isEmpty()){
             Seting.ORIGINAL_ADDRESSES.removeAll(Seting.ORIGINAL_ADDRESSES);
@@ -119,7 +120,7 @@ public class MainController {
 
         String address = "http://194.87.236.238:82";
         Set<String> nodes = BasisController.getNodes();
-        List<HostEndDataShortB> hostEndDataShortBS = utilsResolving.sortPriorityHost(nodes);
+//        List<HostEndDataShortB> hostEndDataShortBS = utilsResolving.sortPriorityHost(nodes);
 
         for (String s : Seting.ORIGINAL_ADDRESSES) {
             address = s;
@@ -132,11 +133,7 @@ public class MainController {
         String sizeStr = "-1";
         try {
             sizeStr = UtilUrl.readJsonFromUrl(address + "/size");
-        }catch (NoRouteToHostException e){
-            System.out.println("home page you cannot connect to global server," +
-                    "you can't give size global server");
-            sizeStr = "-1";
-        }catch (SocketException e){
+        }catch (Exception e){
             System.out.println("home page you cannot connect to global server," +
                     "you can't give size global server");
             sizeStr = "-1";
@@ -155,12 +152,8 @@ public class MainController {
         String versionStr = "-1";
         try {
             versionStr = UtilUrl.readJsonFromUrl(address + "/version");
-        }catch (NoRouteToHostException e){
+        }catch (Exception e){
             System.out.println("home page you cannot connect to global server," +
-                    "you can't give version global server");
-            versionStr = "-1";
-        }catch (SocketException e){
-            System.out.println("," +
                     "you can't give version global server");
             versionStr = "-1";
         }
@@ -172,13 +165,10 @@ public class MainController {
             String json = UtilUrl.readJsonFromUrl(address + "/difficultyBlockchain");
              infoDificultyBlockchain = UtilsJson.jsonToInfoDifficulty(json);
 
-        }catch (NoRouteToHostException e){
+        }catch (Exception e){
             System.out.println("home page you cannot connect to global server," +
                     "you can't give difficulty global server");
 
-        }catch (SocketException e){
-            System.out.println("," +
-                    "you can't give difficulty global server");
         }
 
         difficultOneBlock = Long.toString(infoDificultyBlockchain.getDiffultyOneBlock());
@@ -194,6 +184,8 @@ public class MainController {
         Block block =  null;
         if(shortBlockchainInformation == null ||
          shortBlockchainInformation.isValidation() == false){
+            System.out.println("start calculat short chain");
+
              blockchain = Mining.getBlockchain(
                     Seting.ORIGINAL_BLOCKCHAIN_FILE,
                     BlockchainFactoryEnum.ORIGINAL);
