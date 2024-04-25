@@ -219,6 +219,8 @@ public class MainController {
             System.out.println("**************************************");
             System.out.println("deleted blockchain files");
             System.out.println("wrong blockchain");
+            System.out.println("File blockchain broken ");
+
             System.out.println("**************************************");
 
             UtilsBlock.deleteFiles();

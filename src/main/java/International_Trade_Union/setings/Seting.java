@@ -211,7 +211,7 @@ public interface Seting {
     Set<String> ORIGINAL_BLOCKED_ADDRESS = Set.of("http://154.40.38.130:80",
             "http://10.0.36.2:80", "http://localhost:8083");
 
-    int SIZE_FILE_LIMIT = 10;
+    int SIZE_FILE_LIMIT = 2;
 
     //папки файла для тестирования с сохранениям файла
 
