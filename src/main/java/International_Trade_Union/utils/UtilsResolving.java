@@ -789,7 +789,7 @@ public class UtilsResolving {
 //            return true;
 //        }
 //        return false;
-        if(global.getSize() != actual.getSize())
+        if(global.getBigRandomNumber() != actual.getBigRandomNumber())
             return true;
         else return false;
 
