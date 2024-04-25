@@ -98,7 +98,9 @@ public class UtilsResolving {
                 String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
 
 
-                if (!server.isEmpty() && !server.isBlank()){
+                if(!server.isBlank() || !server.isEmpty()){
+                    Seting.ORIGINAL_ADDRESSES.removeAll(Seting.ORIGINAL_ADDRESSES);
+                    Seting.ORIGINAL_ADDRESSES.add(server);
                     s = server;
                 }
                 for (String s1 : Seting.ORIGINAL_ADDRESSES) {
