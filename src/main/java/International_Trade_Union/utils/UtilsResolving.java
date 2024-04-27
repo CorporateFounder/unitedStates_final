@@ -888,8 +888,10 @@ public class UtilsResolving {
 
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
             if (Seting.IS_SECURITY == true && isSmall(global, temp)){
+                temp.setValidation(false);
                 return temp;
             }
+
 
             System.out.println("after rollback: " + temp);
             if (temp.isValidation()) {
@@ -926,8 +928,10 @@ public class UtilsResolving {
 
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
             if (Seting.IS_SECURITY == true && isSmall(global, temp)){
+                temp.setValidation(false);
                 return temp;
             }
+
             addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
         }
 
@@ -1023,8 +1027,10 @@ public class UtilsResolving {
 
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
             if (Seting.IS_SECURITY == true && isSmall(global, temp)){
+                temp.setValidation(false);
                 return temp;
             }
+
             System.out.println("after rollback: " + temp);
             if (temp.isValidation()) {
                 System.out.println("------------------------------------------");
@@ -1060,8 +1066,10 @@ public class UtilsResolving {
 
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
             if (Seting.IS_SECURITY == true && isSmall(global, temp)){
+                temp.setValidation(false);
                 return temp;
             }
+
 
             addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
         }
