@@ -107,6 +107,7 @@ public class UtilsResolving {
                     s = s1;
                 }
 
+
                 //if the local address matches the host address, it skips
                 //если локальный адрес совпадает с адресом хоста, он пропускает
                 if (BasisController.getExcludedAddresses().contains(s)) {
@@ -887,7 +888,7 @@ public class UtilsResolving {
             }
 
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
-            if (Seting.IS_SECURITY == true && isSmall(global, temp)){
+            if (Seting.IS_SECURITY == true && global.getSize() <= BasisController.getBlockchainSize() + Seting.PORTION_DOWNLOAD && isSmall(global, temp)){
                 temp.setValidation(false);
                 return temp;
             }
@@ -927,7 +928,7 @@ public class UtilsResolving {
             //и так же их записывает, а так же записывает другие данные.
 
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
-            if (Seting.IS_SECURITY == true && isSmall(global, temp)){
+            if (Seting.IS_SECURITY == true && global.getSize() <= BasisController.getBlockchainSize() + Seting.PORTION_DOWNLOAD && isSmall(global, temp)){
                 temp.setValidation(false);
                 return temp;
             }
@@ -1026,7 +1027,7 @@ public class UtilsResolving {
             }
 
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
-            if (Seting.IS_SECURITY == true && isSmall(global, temp)){
+            if (Seting.IS_SECURITY == true && global.getSize() <= BasisController.getBlockchainSize() + Seting.PORTION_DOWNLOAD && isSmall(global, temp)){
                 temp.setValidation(false);
                 return temp;
             }
@@ -1065,7 +1066,7 @@ public class UtilsResolving {
             //и так же их записывает, а так же записывает другие данные.
 
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
-            if (Seting.IS_SECURITY == true && isSmall(global, temp)){
+            if (Seting.IS_SECURITY == true && global.getSize() <= BasisController.getBlockchainSize() + Seting.PORTION_DOWNLOAD && isSmall(global, temp)){
                 temp.setValidation(false);
                 return temp;
             }
