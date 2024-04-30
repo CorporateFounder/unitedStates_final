@@ -525,7 +525,7 @@ public class UtilsResolving {
                             }
 
 
-                            if (Seting.IS_SECURITY && BasisController.getBlockchainSize() > 1 && !temp.isValidation()) {
+                            if (  !temp.isValidation()) {
                                 UtilsFileSaveRead.save("-----------------------------------------------: " , Seting.ERROR_FILE, true);
                                 //TODO добавить хост в заблокированный файл
                                 System.out.println("-------------------------------------------------");
@@ -893,6 +893,9 @@ public class UtilsResolving {
                 temp.setValidation(false);
                 return temp;
             }
+            if(!temp.isValidation()){
+                return temp;
+            }
 
 
             System.out.println("after rollback: " + temp);
@@ -931,6 +934,9 @@ public class UtilsResolving {
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
             if (Seting.IS_SECURITY == true && checking && isSmall(global, temp)){
                 temp.setValidation(false);
+                return temp;
+            }
+            if(!temp.isValidation()){
                 return temp;
             }
 
@@ -1033,6 +1039,9 @@ public class UtilsResolving {
                 temp.setValidation(false);
                 return temp;
             }
+            if(!temp.isValidation()){
+                return temp;
+            }
 
             System.out.println("after rollback: " + temp);
             if (temp.isValidation()) {
@@ -1072,7 +1081,9 @@ public class UtilsResolving {
                 temp.setValidation(false);
                 return temp;
             }
-
+            if(!temp.isValidation()){
+                return temp;
+            }
 
             addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
         }

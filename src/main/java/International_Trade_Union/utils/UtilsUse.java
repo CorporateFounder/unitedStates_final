@@ -346,10 +346,27 @@ public class UtilsUse {
         // Использование BigInteger как seed для детерминированного генератора случайных чисел
         Random deterministicRandom = new Random(hashAsNumber.longValue());
 
+        int waight = 0;
+        int number =0;
+        int limit = 135; // Предполагается, что limit это максимальное значение + 1
+
+        if(actual.getIndex() < Seting.WAIGHT_MINING_INDEX){
+            waight = Seting.WAIGHT_MINING;
+            number = 1;
+            limit = 55;
+        }else {
+            waight = Seting.WAIGHT_MINING_2;
+            number = 10;
+            limit = 135;
+
+        }
         // Генерация случайного числа в диапазоне от 0 до 25
-        int limit = 55; // Предполагается, что limit это максимальное значение + 1
         int result = deterministicRandom.nextInt(limit);
-        result = (int) ((int) (result + (actual.getHashCompexity() * Seting.WAIGHT_MINING)) + calculateScore(miner.getDigitalStakingBalance(), 1));
+        result = (int) ((int) (result + (actual.getHashCompexity() * waight)) + calculateScore(miner.getDigitalStakingBalance(), number)
+       );
+
+
+
         //+ calculateScore(miner.getDigitalStakingBalance(), 1)
         return result;
 

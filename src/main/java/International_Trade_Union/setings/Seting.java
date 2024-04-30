@@ -321,6 +321,8 @@ public interface Seting {
 
 
     int WAIGHT_MINING = 9;
+    int WAIGHT_MINING_2 = 35;
+    int WAIGHT_MINING_INDEX =247867;
 
     int TIME_CHECK_BLOCK = 233682;
     //test
