@@ -100,6 +100,10 @@ public class BlockService {
         List<String> accounts = map.entrySet().stream().map(t->t.getValue().getAccount()).collect(Collectors.toList());
         return entityAccountRepository.findByAccountIn(accounts);
     }
+    public List<EntityAccount> findBYAccountString(List<String> accounts){
+        return entityAccountRepository.findByAccountIn(accounts);
+    }
+
 
 
     public  List<EntityAccount> findAllAccounts(){

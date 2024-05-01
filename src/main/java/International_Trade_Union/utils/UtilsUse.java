@@ -4,6 +4,7 @@ package International_Trade_Union.utils;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.entities.EntityAccount;
+import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.setings.Seting;
 
@@ -322,8 +323,8 @@ public class UtilsUse {
     }
 
     public static long powerDiff(long diff) {
-        return (long) Math.pow(2, diff);
-//        return diff;
+//        return (long) Math.pow(2, diff);
+        return diff;
     }
 
 
@@ -439,6 +440,16 @@ public class UtilsUse {
         }
 
         return db;
+    }
+    public static List<EntityAccount> accounts (List<Block> blocks, BlockService blockService){
+        List<String> accounts = new ArrayList<>();
+        for (Block block : blocks) {
+            for (DtoTransaction transaction : block.getDtoTransactions()) {
+                accounts.add(transaction.getSender());
+                accounts.add(transaction.getCustomer());
+            }
+        }
+        return blockService.findBYAccountString(accounts);
     }
 
 }
