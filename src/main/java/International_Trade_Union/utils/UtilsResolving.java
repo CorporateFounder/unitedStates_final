@@ -1692,7 +1692,14 @@ public class UtilsResolving {
                             subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
 
 
-                            List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
+                            String str = UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks");
+                            if(str.isEmpty() || str.isBlank()){
+                                System.out.println("-------------------------------------");
+                                System.out.println("sublocks:  str: empty " + str);
+                                System.out.println("-------------------------------------");
+                                continue;
+                            }
+                            List<Block> subBlocks = UtilsJson.jsonToListBLock(str);
                             System.out.println("3:download sub block: " + subBlocks.size());
 
                             if(subBlocks.isEmpty() || subBlocks.size() == 0){
