@@ -186,7 +186,21 @@ public class UtilsResolving {
                                 System.out.println("1:sublockchainEntity: " + subBlockchainEntity);
                                 subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
                                 System.out.println("1:sublockchainJson: " + subBlockchainJson);
-                                List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
+                                String str = UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks");
+                                if(str.isEmpty() || str.isBlank()){
+                                    System.out.println("-------------------------------------");
+                                    System.out.println("sublocks:  str: empty " + str);
+                                    System.out.println("-------------------------------------");
+                                    continue;
+                                }
+                                List<Block> subBlocks = UtilsJson.jsonToListBLock(str);
+
+                                if(subBlocks.isEmpty() || subBlocks.size() == 0){
+                                    System.out.println("-------------------------------------");
+                                    System.out.println("sublocks: " + subBlocks.size());
+                                    System.out.println("-------------------------------------");
+                                    continue;
+                                }
                                 System.out.println("1:download sub block: " + subBlocks.size());
                                 System.out.println("2: host: " + s);
                                 if (Seting.IS_SECURITY == true && subBlocks.size() < Seting.PORTION_DOWNLOAD) {
@@ -373,8 +387,21 @@ public class UtilsResolving {
                                     System.out.println("2:sublockchainEntity: " + subBlockchainEntity);
                                     subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
                                     System.out.println("2:sublockchainJson: " + subBlockchainJson);
-                                    subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
-                                    System.out.println("2:download sub block: " + subBlocks.size());
+                                     str = UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks");
+                                    if(str.isEmpty() || str.isBlank()){
+                                        System.out.println("-------------------------------------");
+                                        System.out.println("sublocks:  str: empty " + str);
+                                        System.out.println("-------------------------------------");
+                                        continue;
+                                    }
+                                     subBlocks = UtilsJson.jsonToListBLock(str);
+
+                                    if(subBlocks.isEmpty() || subBlocks.size() == 0){
+                                        System.out.println("-------------------------------------");
+                                        System.out.println("sublocks: " + subBlocks.size());
+                                        System.out.println("-------------------------------------");
+                                        continue;
+                                    }                                    System.out.println("2:download sub block: " + subBlocks.size());
                                     System.out.println("2: host: " + s);
 
 //                                    balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
@@ -486,8 +513,21 @@ public class UtilsResolving {
                             subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
 
 
-                            List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
-                            System.out.println("3:download sub block: " + subBlocks.size());
+                            String str = UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks");
+                            if(str.isEmpty() || str.isBlank()){
+                                System.out.println("-------------------------------------");
+                                System.out.println("sublocks:  str: empty " + str);
+                                System.out.println("-------------------------------------");
+                                continue;
+                            }
+                            List<Block> subBlocks = UtilsJson.jsonToListBLock(str);
+
+                            if(subBlocks.isEmpty() || subBlocks.size() == 0){
+                                System.out.println("-------------------------------------");
+                                System.out.println("sublocks: " + subBlocks.size());
+                                System.out.println("-------------------------------------");
+                                continue;
+                            }                            System.out.println("3:download sub block: " + subBlocks.size());
 //                            tempBalances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
                             tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
                             List<String> sign = new ArrayList<>();
