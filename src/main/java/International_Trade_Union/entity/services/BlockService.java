@@ -6,6 +6,7 @@ import International_Trade_Union.entity.entities.EntityBlock;
 import International_Trade_Union.entity.entities.EntityDtoTransaction;
 import International_Trade_Union.entity.repository.*;
 import International_Trade_Union.model.Account;
+import International_Trade_Union.utils.UtilsAccountToEntityAccount;
 import International_Trade_Union.utils.UtilsBlockToEntityBlock;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
@@ -95,6 +96,9 @@ public class BlockService {
 
 
 
+    public Account findAccount(String account){
+        return UtilsAccountToEntityAccount.entityAccountToAccount(entityAccountRepository.findByAccount(account));
+    }
 
     public List<EntityAccount> findByAccountIn(Map<String, Account> map){
         List<String> accounts = map.entrySet().stream().map(t->t.getValue().getAccount()).collect(Collectors.toList());

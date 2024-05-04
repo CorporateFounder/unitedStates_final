@@ -1197,8 +1197,10 @@ public class BasisController {
     @ResponseBody
     public String testResolving() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         utilsResolving.resolve3();
+        long beforeMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
-
+        long afterMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        System.out.println("Memory, used object remains balances: " + (afterMemory - beforeMemory) + "bytes");
         Map<String, Account> accounts = UtilsJson.balances(UtilUrl.readJsonFromUrl("http://194.87.236.238:82/addresses"));
 
 
