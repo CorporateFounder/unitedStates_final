@@ -1699,6 +1699,7 @@ public class UtilsResolving {
                                 System.out.println("-------------------------------------");
                                 System.out.println("sublocks: " + subBlocks.size());
                                 System.out.println("-------------------------------------");
+                                continue;
                             }
 //                            tempBalances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
                             tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
