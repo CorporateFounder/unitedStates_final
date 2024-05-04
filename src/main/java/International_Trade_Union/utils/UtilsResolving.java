@@ -1694,6 +1694,12 @@ public class UtilsResolving {
 
                             List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
                             System.out.println("3:download sub block: " + subBlocks.size());
+
+                            if(subBlocks.isEmpty() || subBlocks.size() == 0){
+                                System.out.println("-------------------------------------");
+                                System.out.println("sublocks: " + subBlocks.size());
+                                System.out.println("-------------------------------------");
+                            }
 //                            tempBalances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
                             tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
                             List<String> sign = new ArrayList<>();
