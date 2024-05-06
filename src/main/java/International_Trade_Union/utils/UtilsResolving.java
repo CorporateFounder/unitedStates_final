@@ -131,6 +131,12 @@ public class UtilsResolving {
 
                     String jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
                     System.out.println("jsonGlobalData: " + jsonGlobalData);
+                    if(jsonGlobalData == null || jsonGlobalData.isEmpty() || jsonGlobalData.isBlank() ){
+                        System.out.println("*********************************************************");
+                        System.out.println("jsonGlobalData: error: " + jsonGlobalData);
+                        System.out.println("*********************************************************");
+                        continue;
+                    }
                     DataShortBlockchainInformation global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
 //
                     //if the size from the storage is larger than on the local server, start checking
@@ -296,6 +302,12 @@ public class UtilsResolving {
 
 
                                 jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
+                                if(jsonGlobalData == null || jsonGlobalData.isEmpty() || jsonGlobalData.isBlank() ){
+                                    System.out.println("*********************************************************");
+                                    System.out.println(" 2 jsonGlobalData: error: " + jsonGlobalData);
+                                    System.out.println("*********************************************************");
+                                    continue;
+                                }
                                 System.out.println("2: jsonGlobalData: " + jsonGlobalData);
                                 global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
                                 temp = new DataShortBlockchainInformation();
@@ -346,21 +358,21 @@ public class UtilsResolving {
                                 //уже эти мета данные являются актуальными.
                                 //adds capacitor metadata to a static variable like so
                                 //this metadata is already relevant.
-                                BasisController.setShortDataBlockchain(temp);
-                                BasisController.setBlockchainSize((int) temp.getSize());
-                                BasisController.setBlockchainValid(temp.isValidation());
-
-
-                                //получить последний блок из базы данных.
-                                //get the last block from the database.
-                                EntityBlock tempBlock = blockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
-                                //последний блок в локальном сервере.
-                                //last block in the local server.
-                                BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
-                                System.out.println("prevBlock: " + BasisController.getPrevBlock().getIndex() + " shortDataBlockchain: " + BasisController.getShortDataBlockchain());
-                                String json = UtilsJson.objToStringJson(BasisController.getShortDataBlockchain());
-                                //сохранить мета данные блокчейна.
-                                UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
+//                                BasisController.setShortDataBlockchain(temp);
+//                                BasisController.setBlockcheinSize((int) temp.getSize());
+//                                BasisController.setBlockchainValid(temp.isValidation());
+//
+//
+//                                //получить последний блок из базы данных.
+//                                //get the last block from the database.
+//                                EntityBlock tempBlock = blockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
+//                                //последний блок в локальном сервере.
+//                                //last block in the local server.
+//                                BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
+//                                System.out.println("prevBlock: " + BasisController.prevBlock().getIndex() + " shortDataBlockchain: " + BasisController.getShortDataBlockchain());
+//                                String json = UtilsJson.objToStringJson(BasisController.getShortDataBlockchain());
+//                                //сохранить мета данные блокчейна.
+//                                UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
 
                                 //если количество новых блоков, относительно локального блокчейна меньше 500,
                                 //то скачать эти блоки и прекратить попытки скачивания с данного узла.
@@ -419,6 +431,12 @@ public class UtilsResolving {
 //                                    }
 
                                     jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
+                                    if(jsonGlobalData == null || jsonGlobalData.isEmpty() || jsonGlobalData.isBlank() ){
+                                        System.out.println("*********************************************************");
+                                        System.out.println(" 2 jsonGlobalData: error: " + jsonGlobalData);
+                                        System.out.println("*********************************************************");
+                                        continue;
+                                    }
                                     System.out.println("2: jsonGlobalData: " + jsonGlobalData);
                                     global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
 //                                    balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
@@ -478,15 +496,15 @@ public class UtilsResolving {
                                         continue ;
                                     }
 
-                                    BasisController.setShortDataBlockchain(temp);
-                                    BasisController.setBlockchainSize((int) temp.getSize());
-                                    BasisController.setBlockchainValid(temp.isValidation());
-
-                                    tempBlock = blockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
-                                    BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
-
-                                    json = UtilsJson.objToStringJson(BasisController.getShortDataBlockchain());
-                                    UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
+//                                    BasisController.setShortDataBlockchain(temp);
+//                                    BasisController.setBlockcheinSize((int) temp.getSize());
+//                                    BasisController.setBlockchainValid(temp.isValidation());
+//
+//                                    tempBlock = blockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
+//                                    BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
+//
+//                                    json = UtilsJson.objToStringJson(BasisController.getShortDataBlockchain());
+//                                    UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
                                 }
                             }
                         } else {
@@ -527,9 +545,14 @@ public class UtilsResolving {
                                 System.out.println("sublocks: " + subBlocks.size());
                                 System.out.println("-------------------------------------");
                                 continue;
-                            }                            System.out.println("3:download sub block: " + subBlocks.size());
+                            }
+                            System.out.println("3:download sub block: " + subBlocks.size());
 //                            tempBalances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-                            tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+                            List<EntityAccount> accounts = blockService.findAllAccounts();
+                            if(accounts == null || accounts.isEmpty()){
+                                continue;
+                            }
+                            tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(accounts);
                             List<String> sign = new ArrayList<>();
 
                             if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY && BasisController.getBlockchainSize() < Seting.V34_NEW_ALGO) {
@@ -545,6 +568,12 @@ public class UtilsResolving {
                             temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
 
                             jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
+                            if(jsonGlobalData == null || jsonGlobalData.isEmpty() || jsonGlobalData.isBlank() ){
+                                System.out.println("*********************************************************");
+                                System.out.println("jsonGlobalData: error: " + jsonGlobalData);
+                                System.out.println("*********************************************************");
+                                continue;
+                            }
                             System.out.println("3: jsonGlobalData: " + jsonGlobalData);
                             global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
                             DataShortBlockchainInformation anotherCheck = null;
@@ -601,15 +630,15 @@ public class UtilsResolving {
                                 continue ;
                             }
 
-                            BasisController.setShortDataBlockchain(temp);
-                            BasisController.setBlockchainSize((int) temp.getSize());
-                            BasisController.setBlockchainValid(temp.isValidation());
-
-                            EntityBlock tempBlock = blockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
-                            BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
-
-                            String json = UtilsJson.objToStringJson(BasisController.getShortDataBlockchain());
-                            UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
+//                            BasisController.setShortDataBlockchain(temp);
+//                            BasisController.setBlockcheinSize((int) temp.getSize());
+//                            BasisController.setBlockchainValid(temp.isValidation());
+//
+//                            EntityBlock tempBlock = blockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
+//                            BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
+//
+//                            String json = UtilsJson.objToStringJson(BasisController.getShortDataBlockchain());
+//                            UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
                         }
                         System.out.println("size temporaryBlockchain: ");
                         System.out.println("resolve: temporaryBlockchain: ");
@@ -800,6 +829,7 @@ public class UtilsResolving {
                 System.out.println("check2 subBlockchainEntity: " + subBlockchainEntity);
                 blockList = blockList.stream().sorted(Comparator.comparing(Block::getIndex).reversed()).collect(Collectors.toList());
 
+
                 for (Block block : blockList) {
                     System.out.println("check2: block index: " + block.getIndex());
 
@@ -981,6 +1011,15 @@ public class UtilsResolving {
                 try {
                     System.out.println("before roll back emptyList: " + emptyList);
                     rollBackAddBlock4(different, emptyList,  balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                    BasisController.setShortDataBlockchain(temp);
+                    BasisController.setBlockchainSize((int) temp.getSize());
+                    BasisController.setBlockchainValid(temp.isValidation());
+
+                    EntityBlock tempBlock = blockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
+                    BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
+
+                    String json = UtilsJson.objToStringJson(BasisController.getShortDataBlockchain());
+                    UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
 
 
                     System.out.println("------------------------------------------");
@@ -1017,6 +1056,15 @@ public class UtilsResolving {
             }
 
             addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            BasisController.setShortDataBlockchain(temp);
+            BasisController.setBlockchainSize((int) temp.getSize());
+            BasisController.setBlockchainValid(temp.isValidation());
+
+            EntityBlock tempBlock = blockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
+            BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
+
+            String json = UtilsJson.objToStringJson(BasisController.getShortDataBlockchain());
+            UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
         }
 
 
@@ -1138,6 +1186,15 @@ public class UtilsResolving {
                 System.out.println("rollback");
                 try {
                     rollBackAddBlock3(different, emptyList, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                    BasisController.setShortDataBlockchain(temp);
+                    BasisController.setBlockchainSize((int) temp.getSize());
+                    BasisController.setBlockchainValid(temp.isValidation());
+
+                    EntityBlock tempBlock = blockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
+                    BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
+                    System.out.println("prevBlock: " + BasisController.getPrevBlock().getIndex() + " shortDataBlockchain: " + BasisController.getShortDataBlockchain());
+                    String json = UtilsJson.objToStringJson(BasisController.getShortDataBlockchain());
+                    UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
 
 
                     System.out.println("------------------------------------------");
@@ -1175,6 +1232,15 @@ public class UtilsResolving {
             }
 
             addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            BasisController.setShortDataBlockchain(temp);
+            BasisController.setBlockchainSize((int) temp.getSize());
+            BasisController.setBlockchainValid(temp.isValidation());
+
+            EntityBlock tempBlock = blockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
+            BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
+            System.out.println("prevBlock: " + BasisController.getPrevBlock().getIndex() + " shortDataBlockchain: " + BasisController.getShortDataBlockchain());
+            String json = UtilsJson.objToStringJson(BasisController.getShortDataBlockchain());
+            UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
         }
 
 
@@ -1493,11 +1559,6 @@ public class UtilsResolving {
 
         System.out.println("balances size: " + balances.size());
 
-//        for (int start = 0; start < saveBlocks.size(); start += Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
-//            int end = Math.min(saveBlocks.size(), start + Seting.PORTION_BLOCK_TO_COMPLEXCITY);
-//            List<Block> batch = saveBlocks.subList(start, end);
-//            addBlock3(batch, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-//        }
 
         addBlock3(saveBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
@@ -1552,6 +1613,7 @@ public class UtilsResolving {
                     System.out.println("resolve2 size: " + size + " blocks_current_size: " + blocks_current_size);
                     String jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
                     System.out.println("jsonGlobalData: " + jsonGlobalData);
+
                     DataShortBlockchainInformation global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
                     if (isBig(BasisController.getShortDataBlockchain(), global)) {
                         System.out.println(":size from address: " + s + " upper than: " + size + ":blocks_current_size " + blocks_current_size);
@@ -1731,7 +1793,6 @@ public class UtilsResolving {
 
                             subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
 
-
                             String str = UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks");
                             if(str.isEmpty() || str.isBlank()){
                                 System.out.println("-------------------------------------");
@@ -1740,7 +1801,6 @@ public class UtilsResolving {
                                 continue;
                             }
                             List<Block> subBlocks = UtilsJson.jsonToListBLock(str);
-                            System.out.println("3:download sub block: " + subBlocks.size());
 
                             if(subBlocks.isEmpty() || subBlocks.size() == 0){
                                 System.out.println("-------------------------------------");
@@ -1748,6 +1808,7 @@ public class UtilsResolving {
                                 System.out.println("-------------------------------------");
                                 continue;
                             }
+                            System.out.println("3:download sub block: " + subBlocks.size());
 //                            tempBalances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
                             tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
                             List<String> sign = new ArrayList<>();
