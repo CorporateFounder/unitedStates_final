@@ -928,7 +928,7 @@ public class Blockchain implements Cloneable {
 
             tranasactions -= blocks.get(i).getDtoTransactions().size();
             bigRandomNumber -= UtilsUse.bigRandomWinner(blocks.get(i), balances.get(blocks.get(i).getMinerAddress()));
-            balances = UtilsBalance.rollbackCalculateBalance(balances, blocks.get(i), sign);
+            balances = UtilsBalance.rollbackCalculateBalance(balances, blocks.get(i));
 
 
         }

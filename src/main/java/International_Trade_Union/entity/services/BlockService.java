@@ -31,16 +31,9 @@ public class BlockService {
     EntityManager entityManager;
     @Autowired
     private EntityLawsRepository entityLawsRepository;
-//    private static EntityBlockRepository blockService;
-//    private static EntityLawsRepository lawService;
-//    private static EntityDtoTransactionRepository dtoService;
-//
-//    private static EntityAccountRepository accountService;
-
 
     @Autowired
     private EntityBlockRepository entityBlockRepository;
-
 
     @Autowired
     private EntityDtoTransactionRepository dtoTransactionRepository;
@@ -49,19 +42,16 @@ public class BlockService {
     private EntityAccountRepository entityAccountRepository;
 
 
-
-
-    public  void deletedAll(){
+    public void deletedAll() {
         entityBlockRepository.deleteAll();
         entityAccountRepository.deleteAll();
         entityLawsRepository.deleteAll();
         dtoTransactionRepository.deleteAll();
 
 
-
     }
 
-    public  EntityLawsRepository getLawService() {
+    public EntityLawsRepository getLawService() {
         return entityLawsRepository;
     }
 
@@ -77,7 +67,7 @@ public class BlockService {
         return entityAccountRepository;
     }
 
-    public  void saveBlock(EntityBlock entityBlock) {
+    public void saveBlock(EntityBlock entityBlock) {
 
         entityBlockRepository.save(entityBlock);
         entityBlockRepository.flush();
@@ -86,91 +76,111 @@ public class BlockService {
 
 
     @Transactional
-    public  void deleteEntityBlocksAndRelatedData(Long threshold) {
-        Session session = entityManager.unwrap(Session.class);
-        session.setJdbcBatchSize(50);
-        entityBlockRepository.deleteAllBySpecialIndexGreaterThanEqual(threshold);
-        entityBlockRepository.flush();
-        session.clear();
+    public void deleteEntityBlocksAndRelatedData(Long threshold) {
+        Session session = null;
+        try {
+            session = entityManager.unwrap(Session.class);
+            session.setJdbcBatchSize(50);
+            entityBlockRepository.deleteAllBySpecialIndexGreaterThanEqual(threshold);
+            entityBlockRepository.flush();
+        } finally {
+
+
+            session.clear();
+        }
+
     }
 
 
-
-    public Account findAccount(String account){
+    public Account findAccount(String account) {
         return UtilsAccountToEntityAccount.entityAccountToAccount(entityAccountRepository.findByAccount(account));
     }
 
-    public List<EntityAccount> findByAccountIn(Map<String, Account> map){
-        List<String> accounts = map.entrySet().stream().map(t->t.getValue().getAccount()).collect(Collectors.toList());
-        return entityAccountRepository.findByAccountIn(accounts);
-    }
-    public List<EntityAccount> findBYAccountString(List<String> accounts){
+    public List<EntityAccount> findByAccountIn(Map<String, Account> map) {
+        List<String> accounts = map.entrySet().stream().map(t -> t.getValue().getAccount()).collect(Collectors.toList());
         return entityAccountRepository.findByAccountIn(accounts);
     }
 
+    public List<EntityAccount> findBYAccountString(List<String> accounts) {
+        return entityAccountRepository.findByAccountIn(accounts);
+    }
 
 
-    public  List<EntityAccount> findAllAccounts(){
+    public List<EntityAccount> findAllAccounts() {
         return entityAccountRepository.findAll();
 
     }
 
 
-
-
-    public  long sizeBlock(){
-        return  entityBlockRepository.count();
+    public long sizeBlock() {
+        return entityBlockRepository.count();
     }
-    public  EntityBlock lastBlock(){
-        return entityBlockRepository.findBySpecialIndex(entityBlockRepository.count()-1);
+
+    public EntityBlock lastBlock() {
+        return entityBlockRepository.findBySpecialIndex(entityBlockRepository.count() - 1);
     }
 
     @Transactional
-    public void saveAllBLockF(List<EntityBlock> entityBlocks){
-        Session session = entityManager.unwrap(Session.class);
-        session.setJdbcBatchSize(50);
+    public void saveAllBLockF(List<EntityBlock> entityBlocks) {
+        Session session = null;
+        try {
+            session = entityManager.unwrap(Session.class);
+            session.setJdbcBatchSize(50);
+            entityBlockRepository.saveAll(entityBlocks);
+            entityBlockRepository.flush();
+
+        } finally {
+
+            session.clear();
+        }
+
+    }
+
+    public void saveAllBlock(List<EntityBlock> entityBlocks) {
         entityBlockRepository.saveAll(entityBlocks);
         entityBlockRepository.flush();
-        session.clear();
     }
-    public  void saveAllBlock(List<EntityBlock> entityBlocks) {
-        entityBlockRepository.saveAll(entityBlocks);
-        entityBlockRepository.flush();
-    }
-    public  void removeAllBlock(List<EntityBlock> entityBlocks){
+
+    public void removeAllBlock(List<EntityBlock> entityBlocks) {
         entityBlockRepository.deleteAll(entityBlocks);
         entityBlockRepository.flush();
     }
-    public  void saveAccount(EntityAccount entityAccount){
+
+    public void saveAccount(EntityAccount entityAccount) {
 
         entityAccountRepository.save(entityAccount);
         entityAccountRepository.flush();
     }
 
 
-
     @Transactional
 
-    public void saveAccountAllF(List<EntityAccount> entityAccounts){
-        Session session = entityManager.unwrap(Session.class);
-        session.setJdbcBatchSize(50);
-        List<EntityAccount> entityResult = new ArrayList<>();
-        for (EntityAccount entityAccount : entityAccounts) {
-            if(entityAccountRepository.findByAccount(entityAccount.getAccount()) != null){
-                EntityAccount temp = entityAccountRepository.findByAccount(entityAccount.getAccount());
-                temp.setDigitalDollarBalance(entityAccount.getDigitalDollarBalance());
-                temp.setDigitalStockBalance(entityAccount.getDigitalStockBalance());
-                entityResult.add(temp);
-            }else {
-                entityResult.add(entityAccount);
+    public void saveAccountAllF(List<EntityAccount> entityAccounts) {
+        Session session = null;
+        try {
+            session = entityManager.unwrap(Session.class);
+            session.setJdbcBatchSize(50);
+            List<EntityAccount> entityResult = new ArrayList<>();
+            for (EntityAccount entityAccount : entityAccounts) {
+                if (entityAccountRepository.findByAccount(entityAccount.getAccount()) != null) {
+                    EntityAccount temp = entityAccountRepository.findByAccount(entityAccount.getAccount());
+                    temp.setDigitalDollarBalance(entityAccount.getDigitalDollarBalance());
+                    temp.setDigitalStockBalance(entityAccount.getDigitalStockBalance());
+                    entityResult.add(temp);
+                } else {
+                    entityResult.add(entityAccount);
+                }
             }
-        }
 
-        entityAccountRepository.saveAll(entityResult);
-        entityAccountRepository.flush();
-        session.clear();
+            entityAccountRepository.saveAll(entityResult);
+            entityAccountRepository.flush();
+        } finally {
+
+            session.clear();
+        }
     }
-    public  void saveAccountAll(List<EntityAccount> entityAccounts){
+
+    public void saveAccountAll(List<EntityAccount> entityAccounts) {
 
 
         // Кэш для результатов findByAccount
@@ -211,95 +221,96 @@ public class BlockService {
 
     }
 
-    public  EntityBlock findByHashBlock(String hashBlock){
+    public EntityBlock findByHashBlock(String hashBlock) {
         return entityBlockRepository.findByHashBlock(hashBlock);
     }
 
-    public  EntityDtoTransaction findBySign(String sign){
+    public EntityDtoTransaction findBySign(String sign) {
         return dtoTransactionRepository.findBySign(sign);
 
     }
 
-    public boolean existsBySign(byte[] sign){
+    public boolean existsBySign(byte[] sign) {
         Base base = new Base58();
         return dtoTransactionRepository.existsBySign(base.encode(sign));
     }
+
     @javax.transaction.Transactional
-    public  List<EntityDtoTransaction> findAllDto(){
+    public List<EntityDtoTransaction> findAllDto() {
         return dtoTransactionRepository.findAll();
     }
 
     @Transactional
-    public  EntityDtoTransaction findByIdDto(long id){
+    public EntityDtoTransaction findByIdDto(long id) {
         return dtoTransactionRepository.findById(id);
     }
 
     @Transactional
-    public  EntityBlock findById(long id){
+    public EntityBlock findById(long id) {
         return entityBlockRepository.findById(id);
     }
 
     @Transactional
-    public  EntityBlock findBySpecialIndex(long specialIndex){
+    public EntityBlock findBySpecialIndex(long specialIndex) {
         return entityBlockRepository.findBySpecialIndex(specialIndex);
     }
 
-    public  List<EntityBlock> findAllByIdBetween(long from, long to){
+    public List<EntityBlock> findAllByIdBetween(long from, long to) {
         return entityBlockRepository.findAllByIdBetween(from, to);
     }
 
     @Transactional
-    public  List<EntityBlock> findBySpecialIndexBetween(long from, long to){
+    public List<EntityBlock> findBySpecialIndexBetween(long from, long to) {
         return entityBlockRepository.findBySpecialIndexBetween(from, to);
     }
 
-    public  List<EntityBlock> findAll() {
+    public List<EntityBlock> findAll() {
         return entityBlockRepository.findAll();
     }
 
-    public  EntityAccount entityAccount(String account){
+    public EntityAccount entityAccount(String account) {
         return entityAccountRepository.findByAccount(account);
     }
 
-    public  long countBlock() {
+    public long countBlock() {
         return entityBlockRepository.count();
     }
 
-    public  long countAccount() {
+    public long countAccount() {
         return entityAccountRepository.count();
     }
 
-    public  boolean isEmpty() {
+    public boolean isEmpty() {
         boolean exists = entityBlockRepository.existsById(1L);
         return exists;
     }
 
 
-    public  List<DtoTransaction> findBySender(String sender, int from, int to) throws IOException {
+    public List<DtoTransaction> findBySender(String sender, int from, int to) throws IOException {
         Pageable firstPageWithTenElements = (Pageable) PageRequest.of(from, to);
         List<EntityDtoTransaction> list =
-                 dtoTransactionRepository.findBySender(sender, firstPageWithTenElements)
+                dtoTransactionRepository.findBySender(sender, firstPageWithTenElements)
                         .getContent();
         List<DtoTransaction> dtoTransactions =
                 UtilsBlockToEntityBlock.entityDtoTransactionToDtoTransaction(list);
         return dtoTransactions;
     }
 
-    public  List<DtoTransaction> findByCustomer(String customer, int from, int to) throws IOException {
+    public List<DtoTransaction> findByCustomer(String customer, int from, int to) throws IOException {
         Pageable firstPageWithTenElements = (Pageable) PageRequest.of(from, to);
         List<EntityDtoTransaction> list =
-                 dtoTransactionRepository.findByCustomer(customer,firstPageWithTenElements)
+                dtoTransactionRepository.findByCustomer(customer, firstPageWithTenElements)
                         .getContent();
         List<DtoTransaction> dtoTransactions =
                 UtilsBlockToEntityBlock.entityDtoTransactionToDtoTransaction(list);
         return dtoTransactions;
     }
 
-    public  long countSenderTransaction(String sender){
+    public long countSenderTransaction(String sender) {
         return dtoTransactionRepository.countBySender(sender);
     }
 
-    public  long countCustomerTransaction(String customer){
+    public long countCustomerTransaction(String customer) {
         return dtoTransactionRepository.countByCustomer(customer);
     }
 

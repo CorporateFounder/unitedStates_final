@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -20,17 +21,17 @@ public class EntityBlock {
     public EntityBlock() {
     }
 
-    public EntityBlock( List<EntityDtoTransaction> dtoTransactions,
-                        String previousHash,
-                        String minerAddress,
-                        String founderAddress,
-                        long randomNumberProof,
-                        double minerRewards,
-                        long hashCompexity,
-                        long timestamp,
-                        long index,
-                        String hashBlock,
-                        long specialIndex) {
+    public EntityBlock(List<EntityDtoTransaction> dtoTransactions,
+                       String previousHash,
+                       String minerAddress,
+                       String founderAddress,
+                       long randomNumberProof,
+                       double minerRewards,
+                       long hashCompexity,
+                       long timestamp,
+                       long index,
+                       String hashBlock,
+                       long specialIndex) {
         this.dtoTransactions = dtoTransactions;
         this.previousHash = previousHash;
         this.minerAddress = minerAddress;

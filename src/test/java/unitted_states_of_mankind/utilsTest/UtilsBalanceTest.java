@@ -60,11 +60,11 @@ public class UtilsBalanceTest {
         System.out.println(balance.get(customer.getAccount()));
         System.out.println(balance.get(founder.getAccount()));
         System.out.println("---------------------------------------------------------------------");
-        UtilsBalance.rollbackCalculateBalance(balance, block, new ArrayList<>());
-        UtilsBalance.rollbackCalculateBalance(balance, block1, new ArrayList<>());
-        UtilsBalance.rollbackCalculateBalance(balance, block2, new ArrayList<>());
-        UtilsBalance.rollbackCalculateBalance(balance, block3, new ArrayList<>());
-        UtilsBalance.rollbackCalculateBalance(balance, block4, new ArrayList<>());
+        UtilsBalance.rollbackCalculateBalance(balance, block );
+        UtilsBalance.rollbackCalculateBalance(balance, block1);
+        UtilsBalance.rollbackCalculateBalance(balance, block2);
+        UtilsBalance.rollbackCalculateBalance(balance, block3);
+        UtilsBalance.rollbackCalculateBalance(balance, block4);
         System.out.println("---------------------------------------------------------------------");
         System.out.println("after");
 

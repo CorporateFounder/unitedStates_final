@@ -1201,7 +1201,7 @@ public class BasisController {
         Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
         long afterMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         System.out.println("Memory, used object remains balances: " + (afterMemory - beforeMemory) + "bytes");
-        Map<String, Account> accounts = UtilsJson.balances(UtilUrl.readJsonFromUrl("http://194.87.236.238:82/addresses"));
+        Map<String, Account> accounts = UtilsJson.balances(UtilUrl.readJsonFromUrl("http://localhost:8083/addresses"));
 
 
         System.out.println("=========================================");
@@ -1227,7 +1227,34 @@ public class BasisController {
         return  "result: " + (balances.equals(accounts));
 
     }
+    @GetMapping("/status")
+    @ResponseBody
+    public String status() {
+        String result = "";
+        try {
 
+            String strBlockchainSize = "blockchainSize: " + getBlockchainSize() + "\n";
+
+            String blockFromDb =
+                    "blockFromDb: " + String.valueOf(blockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1))
+                            + "\n";
+            String blockFromFile = "*********************************\nblockFromFile: " + Blockchain.indexFromFileBing(BasisController.blockchainSize - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE)
+                    + "\n";
+
+
+            result = strBlockchainSize+ blockFromDb + blockFromFile;
+
+            result += "**********************************************\n";
+
+            result += "**********************************************\n";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+
+
+        return result;
+    }
 }
 
 

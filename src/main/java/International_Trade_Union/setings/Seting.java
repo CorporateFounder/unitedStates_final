@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public interface Seting {
-    boolean IS_TEST = false;
+    boolean IS_TEST = true;
     boolean IS_SECURITY = true;
 
     int HUNDRED_PERCENT = 100;

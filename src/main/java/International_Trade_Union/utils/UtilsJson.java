@@ -23,93 +23,94 @@ import java.util.Map;
 import java.util.Set;
 
 public class UtilsJson {
+    private static ObjectMapper mapper = new ObjectMapper();
     public static String objToStringJson(Object object) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+
         StringWriter writer = new StringWriter();
         mapper.writeValue(writer, object);
         return writer.toString();
     }
 
     public static Object jsonToListBLock(String json, Class cls) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, cls);
     }
 
     public static List<Block> jsonToListBLock(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, new TypeReference<List<Block>>(){});
     }
     public static List<Account> jsonToListAccounts(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, new TypeReference<List<Account>>(){});
     }
 
     public static Set<String> jsonToSetAddresses(String json) throws  JsonProcessingException{
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, new TypeReference<Set<String>>(){});
     }
     public static Block jsonToBLock(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, Block.class);
     }
 
 
     public static InfoDificultyBlockchain jsonToInfoDifficulty(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, InfoDificultyBlockchain.class);
     }
 
     public static Laws jsonToLaw(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, Laws.class);
     }
 
     public static InfoDemerageMoney jsonInfoDemerageMoney(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, InfoDemerageMoney.class);
     }
 
     public static CurrentLawVotes jsonToVote(String json) throws  JsonProcessingException{
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, CurrentLawVotes.class);
     }
 
     public static LawEligibleForParliamentaryApproval jsonToCurrentLaw(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, LawEligibleForParliamentaryApproval.class);
     }
     public static Account jsonToAccount(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, Account.class);
     }
 
     public static CurrentLawVotesEndBalance jsonToCurrentLawVotesBalance(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, CurrentLawVotesEndBalance.class);
     }
     public static EntityChain jsonToEntityChain(String json) throws  JsonProcessingException{
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, EntityChain.class);
     }
 
     public static DtoTransaction jsonToDtoTransaction(String json) throws  JsonProcessingException{
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, DtoTransaction.class);
 
     }
 
     public static DataShortBlockchainInformation jsonToDataShortBlockchainInformation(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, DataShortBlockchainInformation.class);
     }
 
     public static List<DtoTransaction> jsonToDtoTransactionList(String json) throws  JsonProcessingException{
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, new TypeReference<List<DtoTransaction>>(){});
     }
 
     public static Map<String, Account> balances(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+
         return mapper.readValue(json, new TypeReference<Map<String, Account>>(){});
     }
 }

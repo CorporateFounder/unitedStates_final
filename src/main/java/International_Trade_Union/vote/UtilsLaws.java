@@ -14,6 +14,7 @@ import International_Trade_Union.utils.UtilsUse;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -25,47 +26,36 @@ import java.util.stream.Collectors;
 public class UtilsLaws {
     public static void saveLaws(List<Laws> laws, String filename) throws IOException {
         int fileLimit = Seting.SIZE_FILE_LIMIT * 1024 * 1024;
-
-        //папка чтобы проверить есть ли
         File folder = new File(filename);
         List<String> files = new ArrayList<>();
+
         for (File file : folder.listFiles()) {
-            if(!file.isDirectory()){
+            if (!file.isDirectory()) {
                 files.add(file.getAbsolutePath());
             }
         }
 
-        int count = 0;
         files = files.stream().sorted().collect(Collectors.toList());
-        String nextFile = "";
+        int count = 0;
+        String nextFile = files.isEmpty() ? filename + "0.txt" : files.get(files.size() - 1);
 
-        if (files.size() > 0) {
-            nextFile = files.get(files.size()-1);
-
-            count = Integer.parseInt(nextFile.replaceAll("[^\\d]", ""));
-
-
+        if (new File(nextFile).length() >= fileLimit) {
+            count = Integer.parseInt(nextFile.replaceAll("[^\\d]", "")) + 1;
+            nextFile = filename + count + ".txt";
         }
 
-        File file = new File(nextFile);
+        // Обработка IOException внутри лямбды
+        List<String> jsons = laws.stream().map(law -> {
+            try {
+                return UtilsJson.objToStringJson(law);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }).collect(Collectors.toList());
 
-        if(file.length() >= fileLimit){
-            count++;
-
-        }
-
-        nextFile = filename + count + ".txt";
-
-        List<String> jsons = new ArrayList<>();
-        for (Laws laws1: laws) {
-            String json = UtilsJson.objToStringJson(laws1);
-            jsons.add(json);
-        }
-
-//        String json = UtilsJson.objToStringJson(minerAccount);
-//        UtilsFileSaveRead.save(json + "\n", nextFile);
         UtilsFileSaveRead.saves(jsons, nextFile, true);
     }
+
     public static void saveCurrentsLaws(List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals, String filename) throws IOException {
         int fileLimit = Seting.SIZE_FILE_LIMIT * 1024 * 1024;
 
@@ -110,30 +100,22 @@ public class UtilsLaws {
         UtilsFileSaveRead.saves(jsons, nextFile, true);
     }
 
-    public static List<Laws> readLineLaws(String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        List<Laws> laws = new ArrayList<>();
-        File folder = new File(filename);
-        for (final File fileEntry : folder.listFiles()) {
-            if (fileEntry.isDirectory()) {
-                System.out.println("is directory " + fileEntry.getAbsolutePath());
-            } else {
-                List<String> list = UtilsFileSaveRead.reads(fileEntry.getAbsolutePath());
-                for (String s : list) {
+   public static List<Laws> readLineLaws(String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    List<Laws> laws = new ArrayList<>();
+    File folder = new File(filename);
 
-                    Laws laws1 = UtilsJson.jsonToLaw(s);
-                    laws.add(laws1);
-                }
-
+    for (File fileEntry : folder.listFiles()) {
+        if (!fileEntry.isDirectory()) {
+            List<String> list = UtilsFileSaveRead.reads(fileEntry.getAbsolutePath());
+            for (String s : list) {
+                laws.add(UtilsJson.jsonToLaw(s));
             }
         }
-        laws = laws
-                .stream()
-                .sorted(Comparator.comparing(Laws::getPacketLawName))
-                .collect(Collectors.toList());
-
-        return laws;
     }
 
+    // Sort laws once after reading
+    return laws.stream().sorted(Comparator.comparing(Laws::getPacketLawName)).collect(Collectors.toList());
+}
     public static List<LawEligibleForParliamentaryApproval> readLineCurrentLaws(String filename) throws JsonProcessingException {
         List<LawEligibleForParliamentaryApproval> laws = new ArrayList<>();
         File folder = new File(filename);
@@ -230,37 +212,34 @@ public class UtilsLaws {
 
 
     /**возвращает список всех законов, как действующих, так и не действующих, если закон новый то автоматически сохраняет его*/
-    public static Map<String, Laws> getLaws(Block block, String fileLaws, Map<String, Laws> lawsMap) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public static Map<String, Laws> getLaws(List<Block> blocks, String fileLaws, Map<String, Laws> lawsMap) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         List<Laws> lawsForSave = new ArrayList<>();
-//        Map<String, Laws> lawsMap = new HashMap<>();
         File file = new File(fileLaws);
         List<Laws> lawsList = new ArrayList<>();
+
         if (file.exists()) {
             lawsList = readLineLaws(fileLaws);
         }
 
-        Map<String, Laws> laws = new HashMap<>();
-//        lawsMap = getPackageLaws(block, laws);
-        lawsMap.putAll(getPackageLaws(block, laws));
+        for (Block block : blocks) {
+            Map<String, Laws> laws = new HashMap<>();
+            lawsMap.putAll(getPackageLaws(block, laws));
+        }
 
         for (Map.Entry<String, Laws> map : lawsMap.entrySet()) {
-            if (!lawsList.contains(map.getValue())) {
-                if( map.getValue() != null &&
-                        map.getValue().packetLawName != null&&
-                        map.getValue().getLaws() != null
-                        && !map.getValue().getHashLaw().isEmpty()
-                        && (map.getValue().getLaws().size() > 0)){
-
-                        lawsForSave.add(map.getValue());
+            Laws law = map.getValue();
+            if (law != null && law.packetLawName != null && law.getLaws() != null && !law.getHashLaw().isEmpty() && !lawsList.contains(law)) {
+                if (!law.getLaws().isEmpty()) {
+                    lawsForSave.add(law);
                 }
-
             }
-
         }
+
         saveLaws(lawsForSave, fileLaws);
 
         return lawsMap;
     }
+
     public static List<LawEligibleForParliamentaryApproval> getCurrentLaws(Map<String, Laws> lawsMap, Map<String, Account> balances, String fileCurrentLaws) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         List<Account> lawsBalances = allPackegeLaws(balances);
 

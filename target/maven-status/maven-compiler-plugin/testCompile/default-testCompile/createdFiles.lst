@@ -4,6 +4,8 @@ unitted_states_of_mankind\modelTest\AccountTest.class
 unitted_states_of_mankind\Testing.class
 unitted_states_of_mankind\utilsTest\TestingBitcoinAlgo.class
 unitted_states_of_mankind\TestedBlock.class
+unitted_states_of_mankind\DAADifficultyAdjustement2.class
+unitted_states_of_mankind\utilsTest\BitcoinTarget.class
 unitted_states_of_mankind\utilsTest\UtilsBalanceTest.class
 unitted_states_of_mankind\Difficulty.class
 unitted_states_of_mankind\entityTest\blockchainTest\BlockchainTest.class
@@ -19,6 +21,7 @@ unitted_states_of_mankind\Mavenproject1.class
 unitted_states_of_mankind\entityTest\blockchainTest\BlockchainReadTest.class
 unitted_states_of_mankind\entityTest\blockchainTest\GenerateBlockchainFileTest.class
 unitted_states_of_mankind\utilsTest\UtilsAccountTest.class
+unitted_states_of_mankind\Block.class
 unitted_states_of_mankind\MiningUtils.class
 unitted_states_of_mankind\networkTest\TransactionsTest.class
 unitted_states_of_mankind\entityTest\blockchainTest\blockTest\BlockTest.class
@@ -28,3 +31,4 @@ unitted_states_of_mankind\utilsTest\UtilsSecurityTest.class
 unitted_states_of_mankind\entityTest\blockchainTest\BlockchainRead.class
 unitted_states_of_mankind\BitcoinAlgo.class
 unitted_states_of_mankind\MultiThreadExample.class
+unitted_states_of_mankind\DAADifficultyAdjustement.class

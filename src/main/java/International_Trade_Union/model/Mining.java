@@ -69,7 +69,7 @@ public class Mining {
         Mining.isMiningStop = isMiningStop;
     }
 
-    public  Map<String, Account> getBalances(String filename, Blockchain blockchain, Map<String, Account> balances, List<String> signs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public  Map<String, Account> getBalances(String filename, Blockchain blockchain, Map<String, Account> balances, List<String> signs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         //start test
 
 
@@ -97,17 +97,16 @@ public class Mining {
         }
 
         Block block;
-        if(blockchain != null && blockchain.sizeBlockhain() > 0){
+        if (blockchain != null && blockchain.sizeBlockhain() > 0) {
             block = blockchain.getBlock(blockchain.sizeBlockhain() - 1);
             balances = UtilsBalance.calculateBalance(balances, block, signs);
             //test
             Map<String, Laws> allLaws = new HashMap<>();
 
-            for (int i = blockchain.sizeBlockhain()-Seting.LAW_MONTH_VOTE; i < blockchain.sizeBlockhain(); i++) {
-                allLaws = UtilsLaws.getLaws(blockchain.getBlock(i), Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE, allLaws);
-            }
+            allLaws = UtilsLaws.getLaws(blockchain.subBlock(blockchain.sizeBlockhain() - Seting.LAW_MONTH_VOTE, blockchain.sizeBlockhain()), Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE, allLaws);
 
-//получает все созданные когда либо законы
+
+            //получает все созданные когда либо законы
 
 
             //возвращает все законы с голосами проголосовавшими за них
