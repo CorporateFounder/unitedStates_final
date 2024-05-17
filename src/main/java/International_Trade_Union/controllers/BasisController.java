@@ -1197,17 +1197,33 @@ public class BasisController {
     @ResponseBody
     public String testResolving() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         utilsResolving.resolve3();
+        String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
+        String s = "http://194.87.236.238:82";
+
+        for (String s1 : Seting.ORIGINAL_ADDRESSES) {
+            s = s1;
+        }
+        if(!server.isBlank() || !server.isEmpty()){
+            Seting.ORIGINAL_ADDRESSES.removeAll(Seting.ORIGINAL_ADDRESSES);
+            Seting.ORIGINAL_ADDRESSES.add(server);
+            s = server;
+
+        }
+
+
         long beforeMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
         long afterMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         System.out.println("Memory, used object remains balances: " + (afterMemory - beforeMemory) + "bytes");
-        Map<String, Account> accounts = UtilsJson.balances(UtilUrl.readJsonFromUrl("http://localhost:8083/addresses"));
+        Map<String, Account> accounts = UtilsJson.balances(UtilUrl.readJsonFromUrl(s + "/addresses"));
+
 
 
         System.out.println("=========================================");
         System.out.println(balances.size());
         System.out.println("=========================================");
         System.out.println(accounts.size());
+
         System.out.println("=========================================");
         System.out.println("=========================================");
         Map<String, Account> result = UtilsUse.differentAccount(balances, accounts);

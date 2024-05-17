@@ -338,6 +338,6 @@ public interface Seting {
 
 //    int DUPLICATE_INDEX = 0;
     int DUPLICATE_INDEX = 243927;
-
+    int NONCE_TRANSACTION_INDEX = 256616;
 
 }

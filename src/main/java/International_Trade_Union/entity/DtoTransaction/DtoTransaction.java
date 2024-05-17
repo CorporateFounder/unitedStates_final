@@ -1,5 +1,6 @@
 package International_Trade_Union.entity.DtoTransaction;
 
+import International_Trade_Union.controllers.BasisController;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.UtilsJson;

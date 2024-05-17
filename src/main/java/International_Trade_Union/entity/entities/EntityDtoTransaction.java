@@ -56,6 +56,7 @@ public class EntityDtoTransaction {
     @Index(name = "idx_entity_dto_transaction_sign")
     private String sign;
 
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "entity_block_id")
     @JsonIgnore
