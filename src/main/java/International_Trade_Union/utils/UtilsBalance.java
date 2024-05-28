@@ -155,8 +155,7 @@ public class UtilsBalance {
                     System.out.println("this transaction signature has already been used and is not valid from db");
                     continue;
                 }
-            }
-            if (sign.contains(base.encode(transaction.getSign()))) {
+            }else if (sign.contains(base.encode(transaction.getSign()))) {
                 System.out.println("this transaction signature has already been used and is not valid");
                 continue;
             } else {

@@ -253,7 +253,7 @@ public class BasisController {
         Set<String> bloked = UtilsAllAddresses.readLineObject(Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
         nodes.removeAll(bloked);
         nodes.removeAll(Seting.ORIGINAL_BLOCKED_ADDRESS);
-        nodes = nodes.stream().map(t->t.replaceAll("\"", "")).collect(Collectors.toSet());
+        nodes = nodes.stream().map(t -> t.replaceAll("\"", "")).collect(Collectors.toSet());
         return nodes;
     }
 
@@ -367,15 +367,15 @@ public class BasisController {
      * подключается к хранилищу и обновляет свой внутренний блокчейн
      */
     @GetMapping("/nodes/resolve")
-    public  synchronized int resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
+    public synchronized int resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         System.out.println(":resolve_conflicts");
 
 
 //        int result = resovle2();
         int result = utilsResolving.resolve3();
-        while (true){
+        while (true) {
             result = utilsResolving.resolve3();
-            if (result >= 0){
+            if (result >= 0) {
                 break;
             }
         }
@@ -389,9 +389,6 @@ public class BasisController {
     }
 
 
-
-
-
     //String jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
 //                                System.out.println("jsonGlobalData: " + jsonGlobalData);
 //                                DataShortBlockchainInformation global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
@@ -402,7 +399,7 @@ public class BasisController {
      * TODO Устарел и нигде не используется. TODO Deprecated and not used anywhere.
      */
 
-    public  void addBlock2(List<Block> originalBlocks, Map<String, Account> balances) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+    public void addBlock2(List<Block> originalBlocks, Map<String, Account> balances) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
 
 
         System.out.println(" addBlock2 start: ");
@@ -455,7 +452,7 @@ public class BasisController {
      * * recalculation of all files for the entire blockchain.
      */
 
-    public  void getBlock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+    public void getBlock() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         int size = 0;
         long startTime = UtilsTime.getUniversalTimestamp() / 1000;
         System.out.println("start get a block");
@@ -483,32 +480,85 @@ public class BasisController {
         List<Block> list = new ArrayList<>();
 
         Map<String, Account> balances = new HashMap<>();
-
-        System.out.println("START ADD BLOCK");
+        Map<String, Account> tempBalances = new HashMap<>();
+        List<String> sign = new ArrayList<>();
         while (true) {
-            if (size > Seting.PORTION_DOWNLOAD) {
-                list = blockchain.subBlock(size, Seting.PORTION_DOWNLOAD);
-                list = list.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
-
-                utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-
+            if (size + Seting.PORTION_DOWNLOAD < blockchain.sizeBlockhain()) {
+                list = blockchain.subBlock(size, size + Seting.PORTION_DOWNLOAD);
             } else {
                 list = blockchain.subBlock(size, blockchain.sizeBlockhain());
-                list = list.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
-                utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            }
+
+            List<Block> lastDiff = new ArrayList<>();
+            if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY && BasisController.getBlockchainSize() < Seting.V34_NEW_ALGO) {
+                lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                        blockService.findBySpecialIndexBetween(
+                                (BasisController.getPrevBlock().getIndex() + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
+                                BasisController.getPrevBlock().getIndex() + 1
+                        )
+                );
+            }
+
+            list = list.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
+            tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
+            DataShortBlockchainInformation temp = new DataShortBlockchainInformation();
+            if (BasisController.getBlockchainSize() > 1){
+                temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
+
+
+                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                if (result) {
+                    BasisController.setShortDataBlockchain(temp);
+                    BasisController.setBlockchainSize((int) temp.getSize());
+                    BasisController.setBlockchainValid(temp.isValidation());
+
+                    EntityBlock tempBlock = blockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
+                    BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
+
+                    String json = UtilsJson.objToStringJson(BasisController.getShortDataBlockchain());
+                    UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
+
+                }
+            }else {
+                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
+                tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
+                if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY && BasisController.getBlockchainSize() < Seting.V34_NEW_ALGO) {
+                    lastDiff = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                            blockService.findBySpecialIndexBetween(
+                                    (BasisController.getPrevBlock().getIndex() + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY,
+                                    BasisController.getPrevBlock().getIndex() + 1
+                            )
+                    );
+                }
+                temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
+
+                BasisController.setShortDataBlockchain(temp);
+                BasisController.setBlockchainSize((int) temp.getSize());
+                BasisController.setBlockchainValid(temp.isValidation());
+
+                EntityBlock tempBlock = blockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
+                BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
+
+                String json = UtilsJson.objToStringJson(BasisController.getShortDataBlockchain());
+                UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
+            }
+
+            if (list.size() < Seting.PORTION_DOWNLOAD) {
                 break;
             }
-            Block block = list.get(list.size() - 1);
-            size = (int) (block.getIndex());
 
+            Block block = list.get(list.size() - 1);
+            size = (int) block.getIndex() + 1;  // Обновляем размер для следующей итерации
         }
 
-
-        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-        blockchainSize = (int) shortDataBlockchain.getSize();
-        blockchainValid = shortDataBlockchain.isValidation();
-        String json = UtilsJson.objToStringJson(shortDataBlockchain);
-        UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
+//
+//        shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+//        blockchainSize = (int) shortDataBlockchain.getSize();
+//        blockchainValid = shortDataBlockchain.isValidation();
+//        String json = UtilsJson.objToStringJson(shortDataBlockchain);
+//        UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
 
         long finishTime = UtilsTime.getUniversalTimestamp() / 1000;
         System.out.println("time: result time: " + UtilsTime.timeToString(finishTime - startTime));
@@ -552,7 +602,6 @@ public class BasisController {
     /**
      * blockchain update. обновление блокчейна
      */
-
 
 
     /**
@@ -691,7 +740,7 @@ public class BasisController {
      * Sends a list of blocks to central stores (example: http://194.87.236.238:82)
      * Отправляет список блоков в центральные хранилища (пример: http://194.87.236.238:82)
      */
-    public  int sendAllBlocksToStorage(List<Block> blocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public int sendAllBlocksToStorage(List<Block> blocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
         System.out.println(new Date() + ":BasisController: sendAllBlocksToStorage: start: ");
         int bigsize = 0;
@@ -706,7 +755,7 @@ public class BasisController {
         for (HostEndDataShortB hostEndDataShortB : sortPriorityHost) {
             String s = hostEndDataShortB.getHost();
             String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
-            if(!server.isBlank() || !server.isEmpty()){
+            if (!server.isBlank() || !server.isEmpty()) {
                 Seting.ORIGINAL_ADDRESSES.removeAll(Seting.ORIGINAL_ADDRESSES);
                 Seting.ORIGINAL_ADDRESSES.add(server);
                 s = server;
@@ -779,7 +828,6 @@ public class BasisController {
                     System.out.println(":BasisController: sendAllBlocksStorage: response: " + response + " address: " + s);
 
 
-
                 }
 
 
@@ -836,11 +884,11 @@ public class BasisController {
      * Mines a block and sends it to the server.
      */
 
-    public  synchronized String mining() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
+    public synchronized String mining() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException, CloneNotSupportedException {
         mining = true;
         try {
             String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
-            if(!server.isBlank() || !server.isEmpty()){
+            if (!server.isBlank() || !server.isEmpty()) {
                 Seting.ORIGINAL_ADDRESSES.removeAll(Seting.ORIGINAL_ADDRESSES);
                 Seting.ORIGINAL_ADDRESSES.add(server);
             }
@@ -967,7 +1015,7 @@ public class BasisController {
             temporaryDtoList = UtilsBlock.validDto(temp, temporaryDtoList);
             //TODO убирает транзакции которые уже были добавлены в блокчейн
             temporaryDtoList = temporaryDtoList.stream()
-                    .filter(t->!blockService.existsBySign(t.getSign()))
+                    .filter(t -> !blockService.existsBySign(t.getSign()))
                     .collect(Collectors.toList());
 
 
@@ -1192,7 +1240,6 @@ public class BasisController {
     }
 
 
-
     @GetMapping("/testCalculate")
     @ResponseBody
     public String testResolving() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
@@ -1203,7 +1250,7 @@ public class BasisController {
         for (String s1 : Seting.ORIGINAL_ADDRESSES) {
             s = s1;
         }
-        if(!server.isBlank() || !server.isEmpty()){
+        if (!server.isBlank() || !server.isEmpty()) {
             Seting.ORIGINAL_ADDRESSES.removeAll(Seting.ORIGINAL_ADDRESSES);
             Seting.ORIGINAL_ADDRESSES.add(server);
             s = server;
@@ -1216,7 +1263,6 @@ public class BasisController {
         long afterMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         System.out.println("Memory, used object remains balances: " + (afterMemory - beforeMemory) + "bytes");
         Map<String, Account> accounts = UtilsJson.balances(UtilUrl.readJsonFromUrl(s + "/addresses"));
-
 
 
         System.out.println("=========================================");
@@ -1240,9 +1286,10 @@ public class BasisController {
         }
 
 
-        return  "result: " + (balances.equals(accounts));
+        return "result: " + (balances.equals(accounts));
 
     }
+
     @GetMapping("/status")
     @ResponseBody
     public String status() {
@@ -1258,7 +1305,7 @@ public class BasisController {
                     + "\n";
 
 
-            result = strBlockchainSize+ blockFromDb + blockFromFile;
+            result = strBlockchainSize + blockFromDb + blockFromFile;
 
             result += "**********************************************\n";
 

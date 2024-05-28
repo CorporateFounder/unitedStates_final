@@ -67,8 +67,14 @@ public class Testing {
 
 
     @Test
-    public void testCheck2(){
-        DataShortBlockchainInformation temp  = new DataShortBlockchainInformation();
+    public void testCheck2() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+        Blockchain blockchain = Mining.getBlockchain(
+                Seting.ORIGINAL_BLOCKCHAIN_FILE,
+                BlockchainFactoryEnum.ORIGINAL);
+
+        List<Block> blocks = blockchain.subBlock(0, 500);
+        System.out.println("block index 0: " + blocks.get(0).getIndex());
+        System.out.println("block index size-1: " + blocks.get(blocks.size()-1).getIndex());
     }
     @Test
     public void testCode() throws JSONException, IOException {

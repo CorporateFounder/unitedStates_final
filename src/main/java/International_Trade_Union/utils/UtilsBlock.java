@@ -543,6 +543,17 @@ public class UtilsBlock {
                     if(blockService.existsBySign(transaction.getSign())){
                         System.out.println("=====================================");
                         System.out.println("has duplicate transaction");
+                        System.out.println("sign: " + base.encode(transaction.getSign()));
+                        System.out.println("=====================================");
+                        for (DtoTransaction dtoTransaction : thisBlock.getDtoTransactions()) {
+
+                            System.out.println("dto: sign" + base.encode(transaction.getSign()));
+                            System.out.println("dto:getSender " + dtoTransaction.getSender());
+                            System.out.println("dto:getCustomer " + dtoTransaction.getCustomer());
+                            System.out.println("dto:getDigitalDollar " + dtoTransaction.getDigitalDollar());
+                            System.out.println("dto:getDigitalStockBalance " + dtoTransaction.getDigitalStockBalance());
+                        }
+
                         System.out.println("=====================================");
                         validated = false;
                         break finished;
