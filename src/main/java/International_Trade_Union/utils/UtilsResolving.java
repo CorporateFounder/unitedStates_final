@@ -1439,6 +1439,7 @@ public class UtilsResolving {
 
 
 
+    @Transactional
     public boolean rollBackAddBlock3(List<Block> deleteBlocks, List<Block> saveBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         java.sql.Timestamp lastIndex = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
         boolean existM = true;
@@ -1447,6 +1448,11 @@ public class UtilsResolving {
         List<LawEligibleForParliamentaryApproval> allLawsWithBalance = new ArrayList<>();
         deleteBlocks = deleteBlocks.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
         long threshold = deleteBlocks.get(0).getIndex();
+        if(threshold <= 0 ){
+
+            return false;
+        }
+
         File file = Blockchain.indexNameFileBlock((int) threshold, filename);
 
         if (file == null) {
@@ -1469,20 +1475,26 @@ public class UtilsResolving {
 
         Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
 
-        for (int i = deleteBlocks.size() - 1; i >= 0; i--) {
-            Block block = deleteBlocks.get(i);
-            balances = rollbackCalculateBalance(balances, block);
-            allLaws = UtilsLaws.rollBackLaws(block, Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE, allLaws);
+        try {
+            for (int i = deleteBlocks.size() - 1; i >= 0; i--) {
+                Block block = deleteBlocks.get(i);
+                balances = rollbackCalculateBalance(balances, block);
+                allLaws = UtilsLaws.rollBackLaws(block, Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE, allLaws);
+            }
+        }catch (Exception e){
+            return false;
         }
 
         tempBalances = UtilsUse.differentAccount(tempBalances, balances);
+        List<EntityAccount> accountList = null;
+        try {
+            accountList = blockService.findByAccountIn(balances);
+            accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
+            blockService.saveAccountAllF(accountList);
 
-        List<EntityAccount> accountList = blockService.findByAccountIn(balances);
-        accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
-
-        long startTime = UtilsTime.getUniversalTimestamp();
-        blockService.saveAccountAllF(accountList);
-        long finishTime = UtilsTime.getUniversalTimestamp();
+        }catch (Exception e){
+            return false;
+        }
 
         blockService.deleteEntityBlocksAndRelatedData(threshold);
 
