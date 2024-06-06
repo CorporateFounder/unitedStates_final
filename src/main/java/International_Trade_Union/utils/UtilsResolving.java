@@ -592,26 +592,9 @@ public class UtilsResolving {
 
 
                             if (!temp.isValidation()) {
-                                //TODO добавить хост в заблокированный файл
-                                System.out.println("-------------------------------------------------");
-                                System.out.println("Blocked host: ");
-                                System.out.println("expected host: " + hostEndDataShortB.getDataShortBlockchainInformation());
-
-                                System.out.println("host: " + hostEndDataShortB.getHost());
-                                System.out.println("-------------------------------------------------");
-                                UtilsAllAddresses.saveAllAddresses(hostEndDataShortB.getHost(), Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
                                 continue;
                             }
 
-//                            BasisController.setShortDataBlockchain(temp);
-//                            BasisController.setBlockcheinSize((int) temp.getSize());
-//                            BasisController.setBlockchainValid(temp.isValidation());
-//
-//                            EntityBlock tempBlock = blockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
-//                            BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
-//
-//                            String json = UtilsJson.objToStringJson(BasisController.getShortDataBlockchain());
-//                            UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
                         }
                         System.out.println("size temporaryBlockchain: ");
                         System.out.println("resolve: temporaryBlockchain: ");
@@ -959,7 +942,9 @@ public class UtilsResolving {
 
 
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
-            if (Seting.IS_SECURITY == true && checking && isSmall(global, temp)){
+            if (Seting.IS_SECURITY == true && checking && isSmall(global, temp)) {
+                System.out.println("host: " + s);
+                UtilsAllAddresses.saveAllAddresses(s, Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
                 temp.setValidation(false);
                 return temp;
             }
@@ -1018,11 +1003,12 @@ public class UtilsResolving {
             //и так же их записывает, а так же записывает другие данные.
 
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
-            if (Seting.IS_SECURITY == true && checking && isSmall(global, temp)){
+            if (Seting.IS_SECURITY == true && checking && isSmall(global, temp)) {
+                System.out.println("host: " + s);
+                UtilsAllAddresses.saveAllAddresses(s, Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
                 temp.setValidation(false);
                 return temp;
             }
-
 
             boolean save = addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
             if (save) {
@@ -1150,6 +1136,8 @@ public class UtilsResolving {
 
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
             if (Seting.IS_SECURITY == true && checking && isSmall(global, temp)){
+                                UtilsAllAddresses.saveAllAddresses(s, Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
+
                 temp.setValidation(false);
                 return temp;
             }
@@ -1209,7 +1197,9 @@ public class UtilsResolving {
             //и так же их записывает, а так же записывает другие данные.
 
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
-            if (Seting.IS_SECURITY == true && checking && isSmall(global, temp)){
+            if (Seting.IS_SECURITY == true && checking && isSmall(global, temp)) {
+                System.out.println("host: " + s);
+                UtilsAllAddresses.saveAllAddresses(s, Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
                 temp.setValidation(false);
                 return temp;
             }
@@ -1347,10 +1337,11 @@ public class UtilsResolving {
 
 
         System.out.println("__________________________________________________________");
+        temp.setValidation(false);
         return temp;
     }
 
-
+    @Transactional
     public boolean rollBackAddBlock4(List<Block> deleteBlocks, List<Block> saveBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
     java.sql.Timestamp lastIndex = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
     boolean existM = true;
@@ -1360,6 +1351,8 @@ public class UtilsResolving {
     List<LawEligibleForParliamentaryApproval> allLawsWithBalance = new ArrayList<>();
     deleteBlocks = deleteBlocks.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
     long threshold = deleteBlocks.get(0).getIndex();
+    if(threshold <= 0 )
+        return false;
 
     File file = Blockchain.indexNameFileBlock((int) threshold, filename);
     if (file == null) {
@@ -1390,23 +1383,24 @@ public class UtilsResolving {
         System.out.println("rollBackAddBlock4 :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());
 
         balances = rollbackCalculateBalance(balances, block);
-        allLaws = UtilsLaws.rollBackLaws(block, Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE, allLaws);
     }
 
     tempBalances = UtilsUse.differentAccount(tempBalances, balances);
     List<EntityAccount> accountList = blockService.findByAccountIn(balances);
     accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
 
-    long startTime = UtilsTime.getUniversalTimestamp();
-    blockService.saveAccountAllF(accountList);
-    long finishTime = UtilsTime.getUniversalTimestamp();
+    try {
+        blockService.saveAccountAllF(accountList);
+    }catch (Exception e){
 
-    System.out.println("UtilsResolving: rollBackAddBlock4: time save accounts: " + UtilsTime.differentMillSecondTime(startTime, finishTime));
+        return false;
+    }
+
     System.out.println("UtilsResolving: rollBackAddBlock4: total different balance: " + tempBalances.size());
     System.out.println("UtilsResolving: rollBackAddBlock4: total original balance: " + balances.size());
 
-    if (threshold > 0)
-        blockService.deleteEntityBlocksAndRelatedData(threshold);
+
+    blockService.deleteEntityBlocksAndRelatedData(threshold);
 
     allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
@@ -1479,9 +1473,8 @@ public class UtilsResolving {
             for (int i = deleteBlocks.size() - 1; i >= 0; i--) {
                 Block block = deleteBlocks.get(i);
                 balances = rollbackCalculateBalance(balances, block);
-                allLaws = UtilsLaws.rollBackLaws(block, Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE, allLaws);
             }
-        }catch (Exception e){
+        }catch (Throwable  e){
             return false;
         }
 
