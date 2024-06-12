@@ -1484,7 +1484,7 @@ public class UtilsResolving {
         try {
 //            accountList = blockService.findByAccountIn(balances);
 //            accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
-            accountList = UtilsAccountToEntityAccount.accountsToEntityAccounts(tempBalances);
+            accountList  = UtilsAccountToEntityAccount.accountsToEntityAccounts(tempBalances);
             blockService.saveAccountAllF(accountList);
 
         }catch (Exception e){
