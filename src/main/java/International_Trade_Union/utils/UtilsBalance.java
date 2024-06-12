@@ -50,11 +50,7 @@ public class UtilsBalance {
         int BasisSendCount = 0;
         for (int j = 0; j < block.getDtoTransactions().size(); j++) {
 
-
-
             DtoTransaction transaction = block.getDtoTransactions().get(j);
-
-
             if (transaction.getSender().startsWith(Seting.NAME_LAW_ADDRESS_START)) {
                 System.out.println("law balance cannot be sender");
                 continue;
