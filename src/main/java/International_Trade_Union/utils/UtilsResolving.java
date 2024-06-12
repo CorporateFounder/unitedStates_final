@@ -1386,9 +1386,8 @@ public class UtilsResolving {
     }
 
     tempBalances = UtilsUse.differentAccount(tempBalances, balances);
-//    List<EntityAccount> accountList = blockService.findByAccountIn(balances);
-    List<EntityAccount> accountList = UtilsAccountToEntityAccount.accountsToEntityAccounts(tempBalances);
-//    accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
+    List<EntityAccount> accountList = blockService.findByAccountIn(balances);
+    accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
 
     try {
         blockService.saveAccountAllF(accountList);
@@ -1482,9 +1481,8 @@ public class UtilsResolving {
         tempBalances = UtilsUse.differentAccount(tempBalances, balances);
         List<EntityAccount> accountList = null;
         try {
-//            accountList = blockService.findByAccountIn(balances);
-//            accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
-            accountList  = UtilsAccountToEntityAccount.accountsToEntityAccounts(tempBalances);
+            accountList = blockService.findByAccountIn(balances);
+            accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
             blockService.saveAccountAllF(accountList);
 
         }catch (Exception e){
@@ -1877,8 +1875,8 @@ public class UtilsResolving {
             blockService.saveAllBLockF(list);
 
             tempBalances = UtilsUse.differentAccount(tempBalances, balances);
-            List<EntityAccount> accountList  = UtilsAccountToEntityAccount.accountsToEntityAccounts(tempBalances);
-//            accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
+            List<EntityAccount> accountList = blockService.findByAccountIn(tempBalances);
+            accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
 
             start = UtilsTime.getUniversalTimestamp();
             blockService.saveAccountAllF(accountList);

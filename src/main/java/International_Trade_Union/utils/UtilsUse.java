@@ -418,10 +418,13 @@ public class UtilsUse {
         return filteredMap;
     }
     public static List<EntityAccount> mergeAccounts(Map<String, Account> map, List<EntityAccount> db) {
+        if (map == null || db == null) throw new IllegalArgumentException("map and db cannot be null");
+
         Map<String, EntityAccount> dbMap = db.stream()
                 .collect(Collectors.toMap(e -> e.getAccount(), e -> e));
 
         for (Account account : map.values()) {
+            if (account == null) continue; // Skip null accounts
             EntityAccount entityAccount = dbMap.get(account.getAccount());
             if (entityAccount != null) {
                 entityAccount.setDigitalDollarBalance(account.getDigitalDollarBalance());
@@ -441,6 +444,7 @@ public class UtilsUse {
 
         return db;
     }
+
 
     public static List<EntityAccount> accounts (List<Block> blocks, BlockService blockService){
         List<String> accounts = new ArrayList<>();
