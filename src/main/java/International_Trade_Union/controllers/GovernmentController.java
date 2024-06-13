@@ -252,10 +252,12 @@ public class GovernmentController {
     @GetMapping("/create-position")
     public String createPositionShow(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
-
-        Blockchain blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
+        List<Block> blocks = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                blockService.findBySpecialIndexBetween(
+                        BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE,
+                        BasisController.getBlockchainSize() -1
+                )
+        );
         Map<String, Account> balances = new HashMap<>();
         //считывать баланс
 //        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
@@ -268,7 +270,7 @@ public class GovernmentController {
                 UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
 
-        List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blockchain.getBlockchainList(), Seting.BOARDS_BLOCK);
+        List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blocks, Seting.BOARDS_BLOCK);
 
         //подсчет происходит с базы данных, таким образом вычисления происходят быст
         Map<String, CurrentLawVotes> votesMap = new HashMap<>();

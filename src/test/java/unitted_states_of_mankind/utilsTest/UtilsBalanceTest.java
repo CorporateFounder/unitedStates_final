@@ -1,32 +1,18 @@
 package unitted_states_of_mankind.utilsTest;
 
 import International_Trade_Union.utils.*;
-import International_Trade_Union.vote.Laws;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.*;
 import org.springframework.boot.test.context.SpringBootTest;
-import International_Trade_Union.config.BLockchainFactory;
-import International_Trade_Union.config.BlockchainFactoryEnum;
-import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
-import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.model.Account;
-import International_Trade_Union.model.Keys;
-import International_Trade_Union.setings.Seting;
-import International_Trade_Union.utils.base.Base;
-import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.VoteEnum;
-import unitted_states_of_mankind.entityTest.blockchainTest.BlockchainRead;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 //TODO высянить почему не списывается правильно долги

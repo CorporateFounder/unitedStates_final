@@ -31,25 +31,8 @@ import java.util.stream.Collectors;
 @Controller
 public class MineController {
     private static int computers = 1;
-    private static Blockchain blockchain;
 
-    static {
-        try {
-            blockchain = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SignatureException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchProviderException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidKeyException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     /**
      * Отправляет в страницу майнинга.

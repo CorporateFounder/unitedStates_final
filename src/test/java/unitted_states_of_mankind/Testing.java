@@ -66,61 +66,8 @@ public class Testing {
 
 
 
-    @Test
-    public void testCheck2() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
-        Blockchain blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
 
-        List<Block> blocks = blockchain.subBlock(0, 500);
-        System.out.println("block index 0: " + blocks.get(0).getIndex());
-        System.out.println("block index size-1: " + blocks.get(blocks.size()-1).getIndex());
-    }
-    @Test
-    public void testCode() throws JSONException, IOException {
-        int start = (int) ((234229 + 1) - Seting.PORTION_BLOCK_TO_COMPLEXCITY);
-        int finish = (int) (234229 + 1);
-        System.out.println("start: " + start);
-        System.out.println("finish: " + finish);
 
-        SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(start, finish);
-
-        System.out.println("1:shortDataBlockchain:  " + BasisController.getShortDataBlockchain());
-        System.out.println("1:sublockchainEntity: " + subBlockchainEntity);
-        String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
-        System.out.println("1:sublockchainJson: " + subBlockchainJson);
-        String s = "http://194.87.236.238:82";
-//        String s = "http://37.205.15.167:82";
-        List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
-        System.out.println("index start: " + subBlocks.get(0).getIndex());
-        System.out.println("index finish: " + subBlocks.get(subBlocks.size()-1).getIndex());
-    }
-    public static void sendAddress(Set<String> nodes) throws IOException {
-
-        String host = "http://84.213.89.234:82";
-        MyHost myHost = new MyHost(host, "friend", "friend");
-        for (String s : nodes) {
-            try{
-                String hostStr = s;
-                if(s.contains("\""))
-                    hostStr = s.replaceAll("\"", "");
-                System.out.println("send " + s +" my host: " + myHost);
-                UtilUrl.sendPost(UtilsJson.objToStringJson(myHost), hostStr + "/putNode");
-            }catch (Exception e){
-                e.printStackTrace();
-                continue;
-            }
-
-        }
-
-    }
-    @Test
-    public void testSendHost() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        while (true){
-            System.out.println("sending");
-            sendAddress(BasisController.getNodes());
-        }
-    }
     @Test
     public void testReadHost() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         String url = "E://resources/poolAddress/";
@@ -640,56 +587,9 @@ public class Testing {
 
 
 
-    Map<String, Account> cheater = new HashMap<>();
-
-    @GetMapping("/showCheater")
-    public void showCheater() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        Blockchain blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
-
-        List<Block> blocks = blockchain.getBlockchainList();
-        for (Block block : blocks) {
-            if (block.getIndex() > Seting.NEW_CHECK_UTILS_BLOCK &&
-                    !block.getHashBlock().equals(block.hashForTransaction())) {
-                System.out.println("false hash added wrong hash");
-//            System.out.println("actual: " + thisBlock.getHashBlock());
-//            System.out.println("expected: " + thisBlock.hashForTransaction());
-                System.out.println("address: " + block.getMinerAddress());
 
 
-                //for find cheater
-                stop:
-                for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
-                    if (dtoTransaction.getSender().equals(Seting.BASIS_ADDRESS) &&
-                            dtoTransaction.getCustomer().equals(block.getMinerAddress())) {
-                        String address = block.getMinerAddress();
-                        double dollar = dtoTransaction.getDigitalDollar();
-                        double stock = dtoTransaction.getDigitalStockBalance();
-                        System.out.printf("cheater address %s: stole dollar %f end stock %f: from block index %d ",
-                                address, dollar, stock, block.getIndex());
 
-
-                        if (cheater.containsKey(address)) {
-                            double sumDollar = cheater.get(address).getDigitalDollarBalance() + dollar;
-                            double sumStock = cheater.get(address).getDigitalStockBalance() + stock;
-                            Account account = new Account(address, sumDollar, sumStock, 0);
-                            cheater.put(address, account);
-                        } else {
-                            Account account = new Account(address, dollar, stock, 0);
-                            cheater.put(address, account);
-                        }
-                        break stop;
-                    }
-                }
-
-
-            }
-
-
-        }
-
-    }
 
     @Test
     public void generateOriginalBlocks() throws IOException, JSONException, InterruptedException {

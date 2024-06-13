@@ -260,12 +260,7 @@ public class BasisController {
     /**
      * Возвращает действующий блокчейн. Returns a valid blockchain
      */
-    public static Blockchain getBlockchain() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        Blockchain blockchain1 = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
-        return blockchain1;
-    }
+
 
     static {
         try {
@@ -316,15 +311,7 @@ public class BasisController {
      * Returns an EntityChain which stores the size of the blockchain and the list of blocks
      * Возвращает EntityChain который, хранит в себе размер блокчейна и список блоков
      */
-    @GetMapping("/chain")
-    @ResponseBody
-    public EntityChain full_chain() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
-        utilsMethod();
-        Blockchain blockchain1 = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
-        return new EntityChain(blockchain1.sizeBlockhain(), blockchain1.getBlockchainList());
-    }
+
 
     /**
      * returns the size of the local blockchain

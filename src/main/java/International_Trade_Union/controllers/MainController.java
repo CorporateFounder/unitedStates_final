@@ -185,12 +185,10 @@ public class MainController {
         if(shortBlockchainInformation == null ||
          shortBlockchainInformation.isValidation() == false){
             System.out.println("start calculat short chain");
+            shortBlockchainInformation = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
-             blockchain = Mining.getBlockchain(
-                    Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                    BlockchainFactoryEnum.ORIGINAL);
-            size = blockchain.sizeBlockhain();
-            validation = blockchain.validatedBlockchain();
+            size = (int) shortBlockchainInformation.getSize();
+            validation = shortBlockchainInformation.isValidation();
             blockchain.getBlock(blockchain.sizeBlockhain()-1);
         }else {
             size = (int) shortBlockchainInformation.getSize();
@@ -203,7 +201,7 @@ public class MainController {
                         BlockchainFactoryEnum.ORIGINAL);
                 block =  blockchain.getBlock(blockchain.sizeBlockhain()-1);
             }
-
+            BasisController.setPrevBlock(block);
         }
 
 

@@ -175,14 +175,7 @@ public class TestAlgorithm {
 
     }
 
-    @Test
-    public void validTest() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        Blockchain blockchain = Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
-        System.out.println("blockchain valid: " + blockchain.validatedBlockchain());
-        Assert.assertTrue(blockchain.validatedBlockchain());
-    }
+
 
     @Test
     public void TestSignCheck() throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, SignatureException, IOException, InvalidKeyException {
@@ -220,22 +213,7 @@ public class TestAlgorithm {
 
     }
 
-    @Test
-    public void testCloneBlocks() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
-        Blockchain blockchain =  Mining.getBlockchain(
-                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-                BlockchainFactoryEnum.ORIGINAL);
 
-        Blockchain blockchain1 = BLockchainFactory.getBlockchain(BlockchainFactoryEnum.ORIGINAL);
-        List<Block> temporary = new ArrayList<>();
-        for (Block block : blockchain.getBlockchainList()) {
-            temporary.add(block.clone());
-        }
-        temporary.get(temporary.size() - 1).setHashBlock("Hello");
-        blockchain1.setBlockchainList(temporary);
-        Assert.assertTrue(!blockchain1.equals(blockchain));
-
-    }
 
 
 
