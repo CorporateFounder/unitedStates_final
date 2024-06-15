@@ -5,6 +5,7 @@ package International_Trade_Union.model;
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 
+import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
@@ -265,6 +266,13 @@ public class Mining {
             digitalReputationForMiner = (Seting.V28_REWARD + G + (difficulty * Seting.V34_MINING_REWARD))* money;
             founderReward = minerRewards/Seting.DOLLAR;
             founderDigigtalReputationReward = digitalReputationForMiner/Seting.STOCK;
+
+            if(BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES){
+                minerRewards = UtilsUse.round(minerRewards, Seting.DECIMAL_PLACES);
+                digitalReputationForMiner = UtilsUse.round(digitalReputationForMiner, Seting.DECIMAL_PLACES);
+                founderReward = UtilsUse.round(founderReward, Seting.DECIMAL_PLACES);
+                founderDigigtalReputationReward = UtilsUse.round(founderDigigtalReputationReward, Seting.DECIMAL_PLACES);
+            }
         }
         Base base = new Base58();
 

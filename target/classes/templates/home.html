@@ -16,9 +16,9 @@
 
 <div  class="alert alert-info mt-2">
     <h4 th:text="'miner address: '+${account.account}"/>
-    <p th:text="'digital dollar: '+${#numbers.formatDecimal(account.digitalDollarBalance, 1, 'COMMA', 16, 'POINT')}"/>
-    <p th:text="'digital stock: '+${#numbers.formatDecimal(account.digitalStockBalance, 1, 'COMMA', 16, 'POINT')}"/>
-    <p th:text="'digital staking: '+${#numbers.formatDecimal(account.digitalStakingBalance, 1, 'COMMA', 16, 'POINT')}"/>
+    <p th:text="'digital dollar: '+${#numbers.formatDecimal(account.digitalDollarBalance, 1, 'COMMA', 10, 'POINT')}"/>
+    <p th:text="'digital stock: '+${#numbers.formatDecimal(account.digitalStockBalance, 1, 'COMMA', 10, 'POINT')}"/>
+    <p th:text="'digital staking: '+${#numbers.formatDecimal(account.digitalStakingBalance, 1, 'COMMA', 10, 'POINT')}"/>
     <p th:text="'staking score: '+${score}"/>
 
 

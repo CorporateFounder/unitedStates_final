@@ -8,7 +8,6 @@ import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
-import International_Trade_Union.model.HostEndDataShortB;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.originalCorporateCharter.OriginalPreamble;
 import International_Trade_Union.setings.originalCorporateCharter.OriginalPreambleEng;
@@ -34,8 +33,6 @@ import International_Trade_Union.vote.VoteEnum;
 
 
 import java.io.IOException;
-import java.net.NoRouteToHostException;
-import java.net.SocketException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
@@ -325,11 +322,15 @@ public class MainController {
                                   @RequestParam  String password,
                                   RedirectAttributes redirectAttrs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Base base = new Base58();
+
         double reward = 0.0;
-        if(dollar == null)
+        dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
+        stock = UtilsUse.round(stock, Seting.DECIMAL_PLACES);
+        reward = UtilsUse.round(reward, Seting.DECIMAL_PLACES);
+        if(dollar == null || dollar < 0.0)
             dollar = 0.0;
 
-        if(stock == null)
+        if(stock == null || stock < 0.0)
             stock = 0.0;
 
 
@@ -337,6 +338,7 @@ public class MainController {
         laws.setLaws(new ArrayList<>());
         laws.setHashLaw("");
         laws.setPacketLawName("");
+
         DtoTransaction dtoTransaction = new DtoTransaction(
                 sender,
                 recipient,

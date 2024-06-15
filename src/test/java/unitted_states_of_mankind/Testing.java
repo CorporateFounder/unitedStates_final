@@ -59,6 +59,7 @@ import java.util.stream.Collectors;
 
 import static International_Trade_Union.setings.Seting.*;
 import static International_Trade_Union.utils.BlockchainDifficulty.*;
+import static International_Trade_Union.utils.UtilsBalance.rollbackCalculateBalance;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -586,10 +587,53 @@ public class Testing {
     }
 
 
+    @Test
+    public void testRollback() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.679999999999996,\"digitalStockBalance\":26.679999999999996,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIGUmscRx3/ry3+JCXEn5IUPvztkp8wssWVncXrboTT7WAiBzoushgN/njGCBu2giDT4BdPlt6lWk1ng6eDG3O6+10A==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\"digitalDollar\":266.79999999999995,\"digitalStockBalance\":266.79999999999995,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIHSBd0UTPOBcYLp8CgcK0GDLTNWdLQjKXoX7RDIjCP5cAiBkVtlG037xou6eTEK3EnbhdmpDDwClemoUGKB3c2CoJg==\"}],\"previousHash\":\"010568240909052200811b000a049ac25a8df8ee44204046e0070c38dc108608\",\"minerAddress\":\"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":5717820000077086321,\"minerRewards\":0.0,\"hashCompexity\":21,\"timestamp\":1718355281000,\"index\":268086,\"hashBlock\":\"08b04c22294ca9e3291d5168c2163ba000a0400900060e20452230480640909c\"}\n");
+        Block block1 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.679999999999996,\"digitalStockBalance\":26.679999999999996,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIQCq3OPKoLDRTMn39QX0Dw3j5aHkMFyB8pqGLfhUaDrFhwIfFrLYsXiNAQJpB9B8N0EL5Ft40nkf9npaOqODMlo8jQ==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az\",\"digitalDollar\":266.79999999999995,\"digitalStockBalance\":266.79999999999995,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDmb7a4gSr4HA/xOxWDxfLlhrBeWKoxKDuKYWdw4HlfDwIgBEJ4RQjbg4XRIG4VoxNpkljQ+K0dy7WZVPxbcnONlFg=\"}],\"previousHash\":\"08b04c22294ca9e3291d5168c2163ba000a0400900060e20452230480640909c\",\"minerAddress\":\"28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":3602879713466940,\"minerRewards\":0.0,\"hashCompexity\":21,\"timestamp\":1718355436000,\"index\":268087,\"hashBlock\":\"c0811412a835915404c01202540128a201a0052518c06d460600225a7432963a\"}\n");
+        Block block2 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.679999999999996,\"digitalStockBalance\":26.679999999999996,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIEgT2vk/wOxjFlYJoADR8JtApy5pp28NrHRk4rDmD1kbAiEArjA9mpnk4LZJ2LqRBeq/kJwKanJJzqoX63CkmIws7UY=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"s66m816Dakw1zs1MBXjJr5UuVABnAgA8ahPxvXNyAWyq\",\"digitalDollar\":266.79999999999995,\"digitalStockBalance\":266.79999999999995,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCYGK9AwF24/oxhJsRRsu+GmkySWWtlBoqnUPsRpvYIJwIgGnOwcYPdq0UD+txIgM2B759XufOt7FjFGkE6qpqYz8w=\"}],\"previousHash\":\"c0811412a835915404c01202540128a201a0052518c06d460600225a7432963a\",\"minerAddress\":\"s66m816Dakw1zs1MBXjJr5UuVABnAgA8ahPxvXNyAWyq\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":17113678609889273,\"minerRewards\":0.0,\"hashCompexity\":21,\"timestamp\":1718355643000,\"index\":268088,\"hashBlock\":\"c8021823126b424287805002cb14ae4fb40022a8948842606592105218104040\"}\n");
+        Block block3 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.679999999999996,\"digitalStockBalance\":26.679999999999996,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQC/hnEtsAP4E6wMTvhu0ejO2nWVh5KoP2IwPywj3vP8NQIgMTplpc0CXXHQbCNtzrh2rgeYb6MTcnc2cBEHMi9rxZc=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"hK6XwB7LxM5wkqbHV3WTpjhZG1TstggsxqEWMw8FnbGf\",\"digitalDollar\":266.79999999999995,\"digitalStockBalance\":266.79999999999995,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDyzfwiWbYCpVy3lp4fjVLp0fzAUPUtwbSZgtU7AVuycAIgSFqsdYAtrhBDbT0zn3RVYoUfEjDtziqmYj8ILvjgqcc=\"}],\"previousHash\":\"c8021823126b424287805002cb14ae4fb40022a8948842606592105218104040\",\"minerAddress\":\"hK6XwB7LxM5wkqbHV3WTpjhZG1TstggsxqEWMw8FnbGf\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":17113678593776157,\"minerRewards\":0.0,\"hashCompexity\":21,\"timestamp\":1718355820000,\"index\":268089,\"hashBlock\":\"88262801c521884304084066a1000646a11400084ed2b1642a1d2a42a4328516\"}\n");
+        List<Block> deleteBlocks = new ArrayList<>();
+        deleteBlocks.add(block);
+        deleteBlocks.add(block1);
+        deleteBlocks.add(block2);
+        deleteBlocks.add(block3);
+
+        Map<String, Account> balances = new HashMap<>();
+        double founderBalance = 26.679999999999996 * 4;
+        double minerBalance = 266.79999999999995;
+        balances.put("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", founderBalance, founderBalance , 0.0));
+        balances.put("2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL", new Account("2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL", minerBalance, minerBalance , 0.0));
+        balances.put("28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az", new Account("28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az", minerBalance, minerBalance , 0.0));
+        balances.put("s66m816Dakw1zs1MBXjJr5UuVABnAgA8ahPxvXNyAWyq", new Account("s66m816Dakw1zs1MBXjJr5UuVABnAgA8ahPxvXNyAWyq", minerBalance, minerBalance , 0.0));
+        balances.put("hK6XwB7LxM5wkqbHV3WTpjhZG1TstggsxqEWMw8FnbGf", new Account("hK6XwB7LxM5wkqbHV3WTpjhZG1TstggsxqEWMw8FnbGf", minerBalance, minerBalance , 0.0));
 
 
+        for (int i = deleteBlocks.size() - 1; i >= 0; i--) {
+            Block temp = deleteBlocks.get(i);
+            System.out.println("rollBackAddBlock4 :BasisController: addBlock3: blockchain is being updated: index" + temp.getIndex());
+
+            balances = rollbackCalculateBalance(balances, temp);
+        }
+        System.out.println("===========================================");
+        balances.entrySet().stream().forEach(System.out::println);
+        System.out.println("===========================================");
+        double balance = balances.get("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43").getDigitalDollarBalance();
+
+        System.out.printf("balance: %.16f", balance);
+        System.out.printf("round: %.16f" , round(balance, 10));
+
+    }
 
 
+    private double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
+    }
 
     @Test
     public void generateOriginalBlocks() throws IOException, JSONException, InterruptedException {

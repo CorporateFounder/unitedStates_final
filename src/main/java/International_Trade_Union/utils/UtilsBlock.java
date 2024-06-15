@@ -1,6 +1,7 @@
 package International_Trade_Union.utils;
 
 
+import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.Mining;
@@ -82,6 +83,7 @@ public class UtilsBlock {
         nextFile = filename + count + ".txt";
 
         List<String> jsons = new ArrayList<>();
+        blocks = blocks.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
         for (Block block : blocks) {
             String json = UtilsJson.objToStringJson(block);
             jsons.add(json);
@@ -445,6 +447,11 @@ public class UtilsBlock {
                     minerReward = (Seting.V28_REWARD + G + (thisBlock.getHashCompexity() * Seting.V34_MINING_REWARD)) * money;
                     minerPowerReward = (Seting.V28_REWARD + G + (thisBlock.getHashCompexity() * Seting.V34_MINING_REWARD))* money;
 
+                    if(BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES){
+                        minerReward = UtilsUse.round(minerReward, Seting.DECIMAL_PLACES);
+                        minerPowerReward = UtilsUse.round(minerPowerReward, Seting.DECIMAL_PLACES);
+                    }
+
                 }
 
                 if (thisBlock.getIndex() == Seting.SPECIAL_BLOCK_FORK && thisBlock.getMinerAddress().equals(Seting.FORK_ADDRESS_SPECIAL)) {
@@ -498,21 +505,46 @@ public class UtilsBlock {
 
                     }
                     else if(thisBlock.getIndex() > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX){
-                        if(transaction.getDigitalDollar() < minerReward/Seting.DOLLAR || transaction.getDigitalDollar() > minerReward){
-                            System.out.printf("wrong founder reward dollar: index: %d, " +
-                                    " expected : %f, dollar actual: %f: ", thisBlock.getIndex(),
-                                    (minerReward/Seting.DOLLAR), transaction.getDigitalDollar());
-                            validated = false;
-                            break;
+                        if(thisBlock.getIndex() > START_BLOCK_DECIMAL_PLACES){
+                            double epsilon = 1e-9;  // Define a small margin of error
+                            double expectedDollar = minerReward / Seting.DOLLAR;
+                            double actualDollar = transaction.getDigitalDollar();
+                            double expectedStock = minerPowerReward / Seting.STOCK;
+                            double actualStock = transaction.getDigitalStockBalance();
+
+                            if(Math.abs(expectedDollar - actualDollar) > epsilon){
+                                System.out.printf("wrong founder reward dollar: index: %d, expected: %.10f, dollar actual: %.10f\n",
+                                        thisBlock.getIndex(), expectedDollar, actualDollar);
+                                validated = false;
+                                break;
+                            }
+
+                            if(Math.abs(expectedStock - actualStock) > epsilon){
+                                System.out.printf("wrong founder reward stock: index: %d, expected: %.10f, stock actual: %.10f\n",
+                                        thisBlock.getIndex(), expectedStock, actualStock);
+                                validated = false;
+                                break;
+                            }
                         }
-                        if (transaction.getDigitalStockBalance() < minerPowerReward/Seting.STOCK || transaction.getDigitalStockBalance() > minerPowerReward){
-                            System.out.printf("wrong founder reward stock: index: %d, " +
-                                            " expected : %f, dollar actual: %f: ", thisBlock.getIndex(),
-                                    (minerPowerReward/Seting.STOCK), transaction.getDigitalStockBalance());
-                            validated = false;
-                            break;
+                        else {
+                            if(transaction.getDigitalDollar() < minerReward/Seting.DOLLAR || transaction.getDigitalDollar() > minerReward){
+                                System.out.printf("wrong founder reward dollar: index: %d, " +
+                                                " expected : %f, dollar actual: %f: ", thisBlock.getIndex(),
+                                        (minerReward/Seting.DOLLAR), transaction.getDigitalDollar());
+                                validated = false;
+                                break;
+                            }
+                            if (transaction.getDigitalStockBalance() < minerPowerReward/Seting.STOCK || transaction.getDigitalStockBalance() > minerPowerReward){
+                                System.out.printf("wrong founder reward stock: index: %d, " +
+                                                " expected : %f, dollar actual: %f: ", thisBlock.getIndex(),
+                                        (minerPowerReward/Seting.STOCK), transaction.getDigitalStockBalance());
+                                validated = false;
+                                break;
+                            }
                         }
+
                     }
+
                 }
 
                 if (transaction.getSender().equals(Seting.BASIS_ADDRESS) &&

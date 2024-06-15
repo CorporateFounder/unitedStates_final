@@ -1,8 +1,6 @@
 package International_Trade_Union.controllers;
 
-import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
-import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.entities.EntityDtoTransaction;
 import International_Trade_Union.entity.services.BlockService;
@@ -10,7 +8,6 @@ import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.CreateAccount;
-import International_Trade_Union.model.Mining;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
@@ -18,7 +15,6 @@ import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +22,6 @@ import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -86,7 +81,7 @@ public class ConductorController {
         Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
         Account account = UtilsBalance.getBalance(address, balances);
-        return account.getDigitalDollarBalance();
+        return UtilsUse.round(account.getDigitalDollarBalance(), Seting.DECIMAL_PLACES);
     }
 
     /**
@@ -100,7 +95,7 @@ public class ConductorController {
         Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
         Account account = UtilsBalance.getBalance(address, balances);
-        return account.getDigitalStockBalance();
+        return UtilsUse.round(account.getDigitalStockBalance(), Seting.DECIMAL_PLACES);
     }
 
     /**
@@ -117,13 +112,17 @@ public class ConductorController {
                        @RequestParam String password) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         Base base = new Base58();
         String result = "wrong";
-        if (dollar == null)
+
+        dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
+        stock = UtilsUse.round(stock, Seting.DECIMAL_PLACES);
+        reward = UtilsUse.round(reward, Seting.DECIMAL_PLACES);
+        if (dollar == null || dollar < 0.0)
             dollar = 0.0;
 
-        if (stock == null)
+        if (stock == null || stock < 0.0)
             stock = 0.0;
 
-        if (reward == null)
+        if (reward == null || reward < 0.0)
             reward = 0.0;
 
         Laws laws = new Laws();
@@ -200,16 +199,12 @@ public class ConductorController {
      * (check from local host)
      */
     @GetMapping("/isTransactionAdd")
-    @ResponseBody
     public Boolean isTransactionGet(@RequestParam String sign) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        boolean result = false;
 
-        EntityDtoTransaction entityDtoTransaction = blockService.findBySign(sign);
-        System.out.println("entity: "+entityDtoTransaction);
-        if(entityDtoTransaction != null){
-            result = true;
-        }
-        return result;
+        Base base = new Base58();
+        return blockService.existsBySign(base.decode(sign));
+
+
     }
 
 

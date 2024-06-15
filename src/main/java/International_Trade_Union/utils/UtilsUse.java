@@ -446,15 +446,24 @@ public class UtilsUse {
     }
 
 
-    public static List<EntityAccount> accounts (List<Block> blocks, BlockService blockService){
+    public static List<EntityAccount> accounts (List<Block> blocks, BlockService blockService) throws IOException {
         List<String> accounts = new ArrayList<>();
         for (Block block : blocks) {
             for (DtoTransaction transaction : block.getDtoTransactions()) {
-                accounts.add(transaction.getSender());
-                accounts.add(transaction.getCustomer());
+                if (transaction.getSender() != null && !transaction.getSender().isBlank())
+                    accounts.add(transaction.getSender());
+
+                if (transaction.getCustomer() != null && !transaction.getCustomer().isBlank())
+                    accounts.add(transaction.getCustomer());
             }
         }
         return blockService.findBYAccountString(accounts);
+    }
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+        long factor = (long) Math.pow(10, places);
+        value *= factor;
+        return (double) Math.round(value) / factor;
     }
 
 }

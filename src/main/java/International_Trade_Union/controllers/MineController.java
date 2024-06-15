@@ -1,15 +1,9 @@
 package International_Trade_Union.controllers;
 
-import International_Trade_Union.config.BLockchainFactory;
-import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
-import International_Trade_Union.entity.blockchain.Blockchain;
-import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
-import International_Trade_Union.model.Account;
 import International_Trade_Union.model.Mining;
-import International_Trade_Union.model.User;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
@@ -65,8 +59,11 @@ public class MineController {
 
         System.out.println("start post /miningTransaction");
         Base base = new Base58();
+
         double reward = 0.0;
-        if(dollar == null)
+        dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
+        reward = UtilsUse.round(reward, Seting.DECIMAL_PLACES);
+        if(dollar == null || dollar < 0.0)
             dollar = 0.0;
 
 
@@ -74,6 +71,8 @@ public class MineController {
         laws.setLaws(new ArrayList<>());
         laws.setHashLaw("");
         laws.setPacketLawName("");
+
+
         DtoTransaction dtoTransaction = new DtoTransaction(
                 miner,
                 miner,
@@ -157,7 +156,9 @@ public class MineController {
         System.out.println("start post /miningTransaction");
         Base base = new Base58();
         double reward = 0.0;
-        if(dollar == null)
+        dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
+        reward = UtilsUse.round(reward, Seting.DECIMAL_PLACES);
+        if(dollar == null || dollar < 0.0)
             dollar = 0.0;
 
 

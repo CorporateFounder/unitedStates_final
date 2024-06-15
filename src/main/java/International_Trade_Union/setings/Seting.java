@@ -338,6 +338,7 @@ public interface Seting {
 
 //    int DUPLICATE_INDEX = 0;
     int DUPLICATE_INDEX = 243927;
-    int NONCE_TRANSACTION_INDEX = 256616;
+    int DECIMAL_PLACES = 10;
+    int START_BLOCK_DECIMAL_PLACES = 268765;
 
 }
