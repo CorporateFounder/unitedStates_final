@@ -4,9 +4,11 @@ import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.entities.EntityBlock;
 import International_Trade_Union.entity.entities.EntityDtoTransaction;
-import International_Trade_Union.entity.repository.*;
+import International_Trade_Union.entity.repository.EntityAccountRepository;
+import International_Trade_Union.entity.repository.EntityBlockRepository;
+import International_Trade_Union.entity.repository.EntityDtoTransactionRepository;
+import International_Trade_Union.entity.repository.EntityLawsRepository;
 import International_Trade_Union.model.Account;
-import International_Trade_Union.utils.UtilsAccountToEntityAccount;
 import International_Trade_Union.utils.UtilsBlockToEntityBlock;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
@@ -17,12 +19,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -42,11 +45,18 @@ public class BlockService {
     private EntityAccountRepository entityAccountRepository;
 
 
-    public void deletedAll() {
-        entityBlockRepository.deleteAll();
-        entityAccountRepository.deleteAll();
-        entityLawsRepository.deleteAll();
-        dtoTransactionRepository.deleteAll();
+    @Transactional
+    public void deletedAll() throws IOException {
+        try {
+            entityBlockRepository.deleteAll();
+            entityAccountRepository.deleteAll();
+            entityLawsRepository.deleteAll();
+            dtoTransactionRepository.deleteAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("deletedAll: error: save: ", e);
+
+        }
 
 
     }
@@ -54,6 +64,7 @@ public class BlockService {
     public EntityLawsRepository getLawService() {
         return entityLawsRepository;
     }
+
 
     public EntityBlockRepository getEntityBlockRepository() {
         return entityBlockRepository;
@@ -63,61 +74,154 @@ public class BlockService {
         return entityLawsRepository;
     }
 
+
     public EntityAccountRepository getEntityAccountRepository() {
         return entityAccountRepository;
     }
 
-    public void saveBlock(EntityBlock entityBlock) {
+    public void saveBlock(EntityBlock entityBlock) throws IOException {
+        try {
+            entityBlockRepository.save(entityBlock);
+            entityBlockRepository.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("saveBlock: error: save: ", e);
 
-        entityBlockRepository.save(entityBlock);
-        entityBlockRepository.flush();
+        }
+
 
     }
 
 
     @Transactional
-    public void deleteEntityBlocksAndRelatedData(Long threshold) {
-        Session session = null;
+    public void deleteEntityBlocksAndRelatedData(Long threshold) throws IOException {
         try {
-            session = entityManager.unwrap(Session.class);
-            session.setJdbcBatchSize(50);
+
             entityBlockRepository.deleteAllBySpecialIndexGreaterThanEqual(threshold);
             entityBlockRepository.flush();
-        } finally {
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("deleteEntityBlocksAndRelatedData: error: save: ", e);
+
+        }
+    }
 
 
-            session.clear();
+    public List<EntityAccount> findByAccountIn(Map<String, Account> map) throws IOException {
+        List<EntityAccount> entityAccounts = new ArrayList<>();
+        try {
+            List<String> accounts = map.entrySet().stream().map(t -> t.getValue().getAccount()).collect(Collectors.toList());
+            entityAccounts = entityAccountRepository.findByAccountIn(accounts);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("findByAccountIn: error: save: ", e);
+
         }
 
-    }
-
-
-    public Account findAccount(String account) {
-        return UtilsAccountToEntityAccount.entityAccountToAccount(entityAccountRepository.findByAccount(account));
-    }
-
-    public List<EntityAccount> findByAccountIn(Map<String, Account> map) {
-        List<String> accounts = map.entrySet().stream().map(t -> t.getValue().getAccount()).collect(Collectors.toList());
-        return entityAccountRepository.findByAccountIn(accounts);
-    }
-
-    public List<EntityAccount> findBYAccountString(List<String> accounts) {
-        return entityAccountRepository.findByAccountIn(accounts);
-    }
-
-
-    public List<EntityAccount> findAllAccounts() {
-        return entityAccountRepository.findAll();
+        return entityAccounts;
 
     }
 
-
-    public long sizeBlock() {
-        return entityBlockRepository.count();
+    @Transactional(readOnly = true)
+    public double getTotalDigitalDollarBalance() {
+        Double totalBalance = entityAccountRepository.getTotalDigitalDollarBalance();
+        return (totalBalance != null) ? totalBalance : 0.0;
     }
 
-    public EntityBlock lastBlock() {
-        return entityBlockRepository.findBySpecialIndex(entityBlockRepository.count() - 1);
+    public EntityAccount findByAccount(String account) throws IOException {
+        EntityAccount entityAccounts = null;
+        try {
+            entityAccounts = entityAccountRepository.findByAccount(account);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("findByAccount: error: save: ", e);
+
+        }
+        return entityAccounts;
+    }
+
+    public List<EntityAccount> findBYAccountString(List<String> accounts) throws IOException {
+        List<EntityAccount> entityAccounts = new ArrayList<>();
+        try {
+            accounts = accounts.stream().filter(t->t != null).collect(Collectors.toList());
+            entityAccounts = entityAccountRepository.findByAccountIn(accounts);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("findBYAccountString: error: save: ", e);
+
+        }
+
+        return entityAccounts;
+    }
+
+    @Transactional
+    public void saveAllBlocksAndAccounts(List<EntityBlock> entityBlocks, List<EntityAccount> entityAccounts) throws IOException {
+        try {
+            saveAllBLockF(entityBlocks);
+            saveAccountAllF(entityAccounts);
+        } catch (Exception e) {
+            throw new IOException("saveAllBlocksAndAccounts: error: ", e);
+        }
+    }
+
+    public List<EntityAccount> findByDtoAccounts(List<DtoTransaction> transactions) throws IOException {
+        List<String> accounts = new ArrayList<>();
+        for (DtoTransaction transaction : transactions) {
+            accounts.add(transaction.getSender());
+            accounts.add(transaction.getCustomer());
+        }
+        List<EntityAccount> entityAccounts = new ArrayList<>();
+        try {
+            entityAccounts = entityAccountRepository.findByAccountIn(accounts);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("findByDtoAccounts: error: save: ", e);
+
+        }
+
+        return entityAccounts;
+    }
+
+
+    public List<EntityAccount> findAllAccounts() throws IOException {
+        List<EntityAccount> entityAccounts = new ArrayList<>();
+        try {
+            entityAccounts = entityAccountRepository.findAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("findAllAccounts: error: save: ", e);
+
+        }
+
+        return entityAccounts;
+    }
+
+
+    public long sizeBlock() throws IOException {
+        long size = 0;
+        try {
+            size = entityBlockRepository.count();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("sizeBlock: error: save: ", e);
+        }
+
+        return size;
+    }
+
+
+    public EntityBlock lastBlock() throws IOException {
+        EntityBlock entityBlock = null;
+        try {
+            entityBlock = entityBlockRepository.findBySpecialIndex(entityBlockRepository.count() - 1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("lastBlock: error: save: ", e);
+        }
+        return entityBlock;
     }
 
     @Transactional
@@ -136,87 +240,130 @@ public class BlockService {
 
     }
 
-    public void saveAllBlock(List<EntityBlock> entityBlocks) {
-        entityBlockRepository.saveAll(entityBlocks);
-        entityBlockRepository.flush();
+    @Transactional
+    public void saveAllBlock(List<EntityBlock> entityBlocks) throws IOException {
+        try {
+            entityBlockRepository.saveAll(entityBlocks);
+            entityBlockRepository.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("saveAllBlock: error: save: ", e);
+        }
+
     }
 
-    public void removeAllBlock(List<EntityBlock> entityBlocks) {
-        entityBlockRepository.deleteAll(entityBlocks);
-        entityBlockRepository.flush();
+    public void removeAllBlock(List<EntityBlock> entityBlocks) throws IOException {
+        try {
+            entityBlockRepository.deleteAll(entityBlocks);
+            entityBlockRepository.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("removeAllBlock: error: save: ", e);
+
+        }
     }
 
-    public void saveAccount(EntityAccount entityAccount) {
+    public void saveAccount(EntityAccount entityAccount) throws IOException {
+        try {
+            entityAccountRepository.save(entityAccount);
+            entityAccountRepository.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("saveAccount: error: save: ", e);
 
-        entityAccountRepository.save(entityAccount);
-        entityAccountRepository.flush();
+        }
+
     }
-
+    private boolean accountsAreEqual(EntityAccount existingAccount, EntityAccount newAccount) {
+        return existingAccount.getDigitalDollarBalance() == newAccount.getDigitalDollarBalance()
+                && existingAccount.getDigitalStockBalance() == newAccount.getDigitalStockBalance()
+                && existingAccount.getDigitalStakingBalance() == newAccount.getDigitalStakingBalance();
+    }
 
     @Transactional
-
     public void saveAccountAllF(List<EntityAccount> entityAccounts) {
         Session session = null;
         try {
             session = entityManager.unwrap(Session.class);
             session.setJdbcBatchSize(50);
-            List<EntityAccount> entityResult = new ArrayList<>();
-            for (EntityAccount entityAccount : entityAccounts) {
-                if (entityAccountRepository.findByAccount(entityAccount.getAccount()) != null) {
-                    EntityAccount temp = entityAccountRepository.findByAccount(entityAccount.getAccount());
-                    temp.setDigitalDollarBalance(entityAccount.getDigitalDollarBalance());
-                    temp.setDigitalStockBalance(entityAccount.getDigitalStockBalance());
-                    entityResult.add(temp);
-                } else {
-                    entityResult.add(entityAccount);
-                }
-            }
+
+            // Fetch all existing accounts in a single query
+            List<String> accountNames = entityAccounts.stream()
+                    .map(EntityAccount::getAccount)
+                    .collect(Collectors.toList());
+
+            Map<String, EntityAccount> existingAccounts = entityAccountRepository.findAllByAccountIn(accountNames)
+                    .stream()
+                    .collect(Collectors.toMap(EntityAccount::getAccount, account -> account));
+
+            List<EntityAccount> entityResult = entityAccounts.stream()
+                    .map(entityAccount -> {
+                        if (existingAccounts.containsKey(entityAccount.getAccount())) {
+                            EntityAccount existingAccount = existingAccounts.get(entityAccount.getAccount());
+                            if (!accountsAreEqual(existingAccount, entityAccount)) {
+                                existingAccount.setDigitalDollarBalance(entityAccount.getDigitalDollarBalance());
+                                existingAccount.setDigitalStockBalance(entityAccount.getDigitalStockBalance());
+                                existingAccount.setDigitalStakingBalance(entityAccount.getDigitalStakingBalance());
+                            }
+                            return existingAccount;
+                        } else {
+                            return entityAccount;
+                        }
+                    })
+                    .collect(Collectors.toList());
 
             entityAccountRepository.saveAll(entityResult);
             entityAccountRepository.flush();
         } finally {
-
-            session.clear();
+            if (session != null) {
+                session.clear();
+            }
         }
     }
 
-    public void saveAccountAll(List<EntityAccount> entityAccounts) {
+    @Transactional
+    public void saveAccountAll(List<EntityAccount> entityAccounts) throws IOException {
+        try {
+            // Кэш для результатов findByAccount
+            Map<String, EntityAccount> cache = new HashMap<>();
 
+            // Списки для пакетного обновления
+            List<String> accounts = new ArrayList<>();
+            List<Double> digitalDollarBalances = new ArrayList<>();
+            List<Double> digitalStockBalances = new ArrayList<>();
+            List<Double> digitalStakingBalances = new ArrayList<>();
 
-        // Кэш для результатов findByAccount
-        Map<String, EntityAccount> cache = new HashMap<>();
+            for (EntityAccount entityAccount : entityAccounts) {
+                EntityAccount cachedAccount = cache.get(entityAccount.getAccount());
 
-        // Списки для пакетного обновления
-        List<String> accounts = new ArrayList<>();
-        List<Double> digitalDollarBalances = new ArrayList<>();
-        List<Double> digitalStockBalances = new ArrayList<>();
-        List<Double> digitalStakingBalances = new ArrayList<>();
+                if (cachedAccount != null) {
+                    // Обновить существующую запись в кэше
+                    cachedAccount.setDigitalDollarBalance(entityAccount.getDigitalDollarBalance());
+                    cachedAccount.setDigitalStockBalance(entityAccount.getDigitalStockBalance());
+                } else {
+                    // Добавить новую запись для пакетного обновления
+                    accounts.add(entityAccount.getAccount());
+                    digitalDollarBalances.add(entityAccount.getDigitalDollarBalance());
+                    digitalStockBalances.add(entityAccount.getDigitalStockBalance());
+                    digitalStakingBalances.add(entityAccount.getDigitalStakingBalance());
+                }
 
-        for (EntityAccount entityAccount : entityAccounts) {
-            EntityAccount cachedAccount = cache.get(entityAccount.getAccount());
+                // Сохранить в кэш для потенциального обновления
+                cache.put(entityAccount.getAccount(), entityAccount);
 
-            if (cachedAccount != null) {
-                // Обновить существующую запись в кэше
-                cachedAccount.setDigitalDollarBalance(entityAccount.getDigitalDollarBalance());
-                cachedAccount.setDigitalStockBalance(entityAccount.getDigitalStockBalance());
-            } else {
-                // Добавить новую запись для пакетного обновления
-                accounts.add(entityAccount.getAccount());
-                digitalDollarBalances.add(entityAccount.getDigitalDollarBalance());
-                digitalStockBalances.add(entityAccount.getDigitalStockBalance());
-                digitalStakingBalances.add(entityAccount.getDigitalStakingBalance());
             }
 
-            // Сохранить в кэш для потенциального обновления
-            cache.put(entityAccount.getAccount(), entityAccount);
-        }
+            // Пакетное обновление
+            entityAccountRepository.batchInsert(accounts, digitalDollarBalances, digitalStockBalances, digitalStakingBalances);
 
-        // Пакетное обновление
-        entityAccountRepository.batchInsert(accounts, digitalDollarBalances, digitalStockBalances, digitalStakingBalances);
+            // Обновить кэш с новыми данными (необязательно, зависит от логики)
+            for (EntityAccount entityAccount : entityAccounts) {
+                cache.put(entityAccount.getAccount(), entityAccount);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("saveAccountAll: error: save: ", e);
 
-        // Обновить кэш с новыми данными (необязательно, зависит от логики)
-        for (EntityAccount entityAccount : entityAccounts) {
-            cache.put(entityAccount.getAccount(), entityAccount);
         }
 
     }
@@ -225,43 +372,79 @@ public class BlockService {
         return entityBlockRepository.findByHashBlock(hashBlock);
     }
 
-    public EntityDtoTransaction findBySign(String sign) {
-        return dtoTransactionRepository.findBySign(sign);
 
+    public EntityDtoTransaction findBySign(String sign) throws IOException {
+        EntityDtoTransaction entityDtoTransaction = null;
+        try {
+            entityDtoTransaction = dtoTransactionRepository.findBySign(sign);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("findBySign: error: save: ", e);
+
+        }
+        return entityDtoTransaction;
     }
+
 
     public boolean existsBySign(byte[] sign) {
         Base base = new Base58();
         return dtoTransactionRepository.existsBySign(base.encode(sign));
     }
 
-    @javax.transaction.Transactional
-    public List<EntityDtoTransaction> findAllDto() {
-        return dtoTransactionRepository.findAll();
+
+    public List<EntityDtoTransaction> findAllDto() throws IOException {
+        List<EntityDtoTransaction> dtoTransactions = new ArrayList<>();
+        try {
+            dtoTransactions = dtoTransactionRepository.findAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("findAllDto: error: save: ", e);
+
+        }
+        return dtoTransactions;
     }
 
-    @Transactional
+
     public EntityDtoTransaction findByIdDto(long id) {
         return dtoTransactionRepository.findById(id);
     }
 
-    @Transactional
+
     public EntityBlock findById(long id) {
         return entityBlockRepository.findById(id);
     }
 
-    @Transactional
-    public EntityBlock findBySpecialIndex(long specialIndex) {
-        return entityBlockRepository.findBySpecialIndex(specialIndex);
+
+    public EntityBlock findBySpecialIndex(long specialIndex) throws IOException {
+        EntityBlock entityBlock = null;
+        try {
+            entityBlock = entityBlockRepository.findBySpecialIndex(specialIndex);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("findBySpecialIndex: error: save: ", e);
+
+        }
+
+        return entityBlock;
     }
 
     public List<EntityBlock> findAllByIdBetween(long from, long to) {
         return entityBlockRepository.findAllByIdBetween(from, to);
     }
 
-    @Transactional
-    public List<EntityBlock> findBySpecialIndexBetween(long from, long to) {
-        return entityBlockRepository.findBySpecialIndexBetween(from, to);
+
+    public List<EntityBlock> findBySpecialIndexBetween(long from, long to) throws IOException {
+        List<EntityBlock> entityBlocks = null;
+        try {
+            entityBlocks = entityBlockRepository.findBySpecialIndexBetween(from, to);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("findBySpecialIndexBetween: error: save: ", e);
+
+        }
+        return entityBlocks;
+
     }
 
     public List<EntityBlock> findAll() {
@@ -276,42 +459,91 @@ public class BlockService {
         return entityBlockRepository.count();
     }
 
+
     public long countAccount() {
         return entityAccountRepository.count();
     }
 
-    public boolean isEmpty() {
-        boolean exists = entityBlockRepository.existsById(1L);
+
+    public boolean isEmpty() throws IOException {
+        boolean exists = false;
+        try {
+            exists = entityBlockRepository.existsById(1L);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("isEmpty: error: save: ", e);
+
+        }
+
         return exists;
     }
 
 
     public List<DtoTransaction> findBySender(String sender, int from, int to) throws IOException {
-        Pageable firstPageWithTenElements = (Pageable) PageRequest.of(from, to);
-        List<EntityDtoTransaction> list =
-                dtoTransactionRepository.findBySender(sender, firstPageWithTenElements)
-                        .getContent();
-        List<DtoTransaction> dtoTransactions =
-                UtilsBlockToEntityBlock.entityDtoTransactionToDtoTransaction(list);
+        List<DtoTransaction> dtoTransactions = null;
+        try {
+            Pageable firstPageWithTenElements = (Pageable) PageRequest.of(from, to);
+            List<EntityDtoTransaction> list =
+                    dtoTransactionRepository.findBySender(sender, firstPageWithTenElements)
+                            .getContent();
+            dtoTransactions =
+                    UtilsBlockToEntityBlock.entityDtoTransactionToDtoTransaction(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("findBySender: error: save: ", e);
+
+        }
         return dtoTransactions;
     }
+
 
     public List<DtoTransaction> findByCustomer(String customer, int from, int to) throws IOException {
-        Pageable firstPageWithTenElements = (Pageable) PageRequest.of(from, to);
-        List<EntityDtoTransaction> list =
-                dtoTransactionRepository.findByCustomer(customer, firstPageWithTenElements)
-                        .getContent();
-        List<DtoTransaction> dtoTransactions =
-                UtilsBlockToEntityBlock.entityDtoTransactionToDtoTransaction(list);
+        List<DtoTransaction> dtoTransactions = null;
+        try {
+            Pageable firstPageWithTenElements = (Pageable) PageRequest.of(from, to);
+            List<EntityDtoTransaction> list =
+                    dtoTransactionRepository.findByCustomer(customer, firstPageWithTenElements)
+                            .getContent();
+            dtoTransactions =
+                    UtilsBlockToEntityBlock.entityDtoTransactionToDtoTransaction(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("findByCustomer: error: save: ", e);
+
+        }
+
+
         return dtoTransactions;
     }
 
-    public long countSenderTransaction(String sender) {
-        return dtoTransactionRepository.countBySender(sender);
+
+    public long countSenderTransaction(String sender) throws IOException {
+        long size = 0;
+        try {
+            size = dtoTransactionRepository.countBySender(sender);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("countSenderTransaction: error: save: ", e);
+
+        }
+
+        return size;
+
     }
 
-    public long countCustomerTransaction(String customer) {
-        return dtoTransactionRepository.countByCustomer(customer);
+
+    public long countCustomerTransaction(String customer) throws IOException {
+        long size = 0;
+        try {
+            size = dtoTransactionRepository.countByCustomer(customer);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("countCustomerTransaction: error: save: ", e);
+
+        }
+
+        return size;
+
     }
 
 }

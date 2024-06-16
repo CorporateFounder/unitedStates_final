@@ -57,7 +57,7 @@ public class ConstitutionController {
         List<String> rus = new ArrayList<>();
 
 
-        rus.add("OriginalPreamble.ARTICLE_0\n"+ OriginalPreamble.ARTICLE_0);
+        rus.add("УСТАВ\n"+ OriginalCHARTER.LAW_1);
 
 
 
@@ -69,7 +69,7 @@ public class ConstitutionController {
         List<String> eng = new ArrayList<>();
 
 
-        eng.add("OriginalPreamble.ARTICLE_0\n"+ OriginalPreambleEng.ARTICLE_0);
+        eng.add("CHARTER\n"+ OriginalCHARTER_ENG.LAW_1);
 
 
 

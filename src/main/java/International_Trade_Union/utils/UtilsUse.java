@@ -317,6 +317,11 @@ public class UtilsUse {
     public static Map<String, Account> balancesClone(Map<String, Account> balances) throws CloneNotSupportedException {
         Map<String, Account> temp = new HashMap<>();
         for (Map.Entry<String, Account> accountEntry : balances.entrySet()) {
+            if(accountEntry == null
+                    || accountEntry.getKey().isBlank()
+                    || accountEntry.getValue() == null){
+                continue;
+            }
             temp.put(accountEntry.getKey(), accountEntry.getValue().clone());
         }
         return temp;
@@ -330,9 +335,11 @@ public class UtilsUse {
 
     /**Вычисляет случайное число на основе предыдущего хэша и текущего и чем выше число, тем выше
      * значимость.*/
-    /**Вычисляет случайное число на основе предыдущего хэша и текущего и чем выше число, тем выше
-     * значимость.*/
-    public static int bigRandomWinner( Block actual, Account miner) {
+    /**
+     * Вычисляет случайное число на основе предыдущего хэша и текущего и чем выше число, тем выше
+     * значимость.
+     */
+    public static int bigRandomWinner(Block actual, Account miner) {
         // Конкатенация двух хешей
         String combinedHash = actual.getHashBlock();
 
@@ -340,7 +347,7 @@ public class UtilsUse {
             return 0;
         // Преобразование объединенных хешей в BigInteger
         BigInteger hashAsNumber = new BigInteger(combinedHash, 16);
-        if(hashAsNumber == null){
+        if (hashAsNumber == null) {
             return 0;
         }
 
@@ -348,32 +355,32 @@ public class UtilsUse {
         Random deterministicRandom = new Random(hashAsNumber.longValue());
 
         int waight = 0;
-        int number =0;
+        int number = 0;
         int limit = 135; // Предполагается, что limit это максимальное значение + 1
 
-        if(actual.getIndex() < Seting.WAIGHT_MINING_INDEX){
+        if (actual.getIndex() < Seting.WAIGHT_MINING_INDEX) {
             waight = Seting.WAIGHT_MINING;
             number = 1;
             limit = 55;
-        }else {
+        } else {
             waight = Seting.WAIGHT_MINING_2;
             number = 10;
             limit = 135;
 
         }
-        // Генерация случайного числа в диапазоне от 0 до 25
+        // Генерация случайного числа в диапазоне от 0 до 135
         int result = deterministicRandom.nextInt(limit);
         result = (int) ((int) (result + (actual.getHashCompexity() * waight)) + calculateScore(miner.getDigitalStakingBalance(), number)
-       );
-
+        );
 
 
         //+ calculateScore(miner.getDigitalStakingBalance(), 1)
         return result;
 
     }
+
     public static long calculateScore(double x, double x0) {
-        if(x <= 0){
+        if (x <= 0) {
             return 0;
         }
         double score = Math.ceil(Math.log(x / x0) / Math.log(2));
@@ -382,10 +389,13 @@ public class UtilsUse {
 
     //позволяет получить список балансов, если баланс до калькуляции в addBlock отличается от
     //баланса после изменения. Что позволяет добавлятьв h2 только те балансы которые изменились
-    public static Map<String, Account> differentAccount(Map<String, Account> first, Map<String, Account> second){
+    public static Map<String, Account> differentAccount(Map<String, Account> first, Map<String, Account> second) {
         Map<String, Account> thirdMap = new HashMap<>();
         for (Map.Entry<String, Account> entry : second.entrySet()) {
             String key = entry.getKey();
+            if(key.isBlank() || key.isEmpty()){
+                continue;
+            }
             Account accountInSecondMap = entry.getValue();
             Account accountInFirstMap = first.get(key);
 
@@ -407,7 +417,7 @@ public class UtilsUse {
 
     public static Map<String, Account> getEqualsKeyBalance(
             Map<String, Account> tempBalance,
-            Map<String, Account> originalBalance){
+            Map<String, Account> originalBalance) {
         Map<String, Account> filteredMap = new HashMap<>();
 
         for (String key : tempBalance.keySet()) {
@@ -417,6 +427,24 @@ public class UtilsUse {
         }
         return filteredMap;
     }
+
+    public static Map<String, Account> merge(Map<String, Account> first, Map<String, Account> second) {
+        Map<String, Account> mergedMap = new HashMap<>(first);
+        for (Map.Entry<String, Account> entry : second.entrySet()) {
+            String key = entry.getKey();
+            if (key.isBlank() || key.isEmpty()) {
+                continue;
+            }
+            Account accountInSecondMap = entry.getValue();
+            Account accountInFirstMap = first.get(key);
+
+            if (accountInFirstMap == null || areAccountsDifferent(accountInFirstMap, accountInSecondMap)) {
+                mergedMap.put(key, accountInSecondMap);
+            }
+        }
+        return mergedMap;
+    }
+
     public static List<EntityAccount> mergeAccounts(Map<String, Account> map, List<EntityAccount> db) {
         if (map == null || db == null) throw new IllegalArgumentException("map and db cannot be null");
 

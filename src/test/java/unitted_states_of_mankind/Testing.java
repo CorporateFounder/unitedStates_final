@@ -68,7 +68,29 @@ public class Testing {
 
 
 
+    @Test
+    public void test() throws JsonProcessingException {
+        Block previusblock = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.679999999999996,\"digitalStockBalance\":26.679999999999996,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIGJgO67IRfp9WRBqfyO32iwIma2rIxXUa0Ma96FvcILuAiEAx/z75ESJ6k8VZ5f/R60sfViBxKOeQB/KQb6c1HMjFfg=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az\",\"digitalDollar\":266.79999999999995,\"digitalStockBalance\":266.79999999999995,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICKmTeszZPOMuH7uEXTeN6RyfK8siKe7Y8v+pWao5jwwAiEAt8vUpDbUI6uYpeD1Rcuud0n8ji2hkRnkaOE9cEp601M=\"}],\"previousHash\":\"0c0004662e9240e6199c09640a04a8801830b22760a40a841005489458033512\",\"minerAddress\":\"28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":2702159777149640,\"minerRewards\":0.0,\"hashCompexity\":21,\"timestamp\":1718494423000,\"index\":268767,\"hashBlock\":\"901c41d0442d443530581010888680d049018174505004345041d2c92c61028a\"}");
+        Block thisBlock = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.68,\"digitalStockBalance\":26.68,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCgvClMkSz4HdvyMbVLrYKu1QDfA+g2ocl2xif57jxkbQIhAN02wvGyJzz8YLpYvDY8neK73Fa1kPdY1ZkLViVilgoN\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"zraD2LuUah83KXTtYP33pwbUuS62dmp21CxPYXDNGWqW\",\"digitalDollar\":266.8,\"digitalStockBalance\":266.8,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIE2jCPp6U7sXVeoUGUE9lZPjb6NznXByPRVRKT9AK2iWAiEA+1gAOZfwqBs0mJtDrEY9juuadtdqB7kFXXd+4CYpr+A=\"}],\"previousHash\":\"901c41d0442d443530581010888680d049018174505004345041d2c92c61028a\",\"minerAddress\":\"zraD2LuUah83KXTtYP33pwbUuS62dmp21CxPYXDNGWqW\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":14411518811790413,\"minerRewards\":0.0,\"hashCompexity\":21,\"timestamp\":1718494610000,\"index\":268768,\"hashBlock\":\"e880d0625192a181108048c0108c43004180498a6a2a42500248309270f29203\"}\n");
 
+        long money = (thisBlock.getIndex() - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
+                / (576 * Seting.YEAR);
+        money = (long) (Seting.MULTIPLIER - money);
+        money = money < 1 ? 1: money;
+        double minerReward = 0;
+        double minerPowerReward = 0;
+
+        double G = UtilsUse.blocksReward(thisBlock.getDtoTransactions(), previusblock.getDtoTransactions());
+        minerReward = (Seting.V28_REWARD + G + (thisBlock.getHashCompexity() * Seting.V34_MINING_REWARD)) * money;
+        minerPowerReward = (Seting.V28_REWARD + G + (thisBlock.getHashCompexity() * Seting.V34_MINING_REWARD))* money;
+
+        if(thisBlock.getIndex() > Seting.START_BLOCK_DECIMAL_PLACES){
+            minerReward = UtilsUse.round(minerReward, Seting.DECIMAL_PLACES);
+            minerPowerReward = UtilsUse.round(minerPowerReward, Seting.DECIMAL_PLACES);
+        }
+        System.out.println("minerReward: " + minerReward);
+        System.out.println("minerPowerReward: " + minerPowerReward);
+    }
     @Test
     public void testReadHost() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         String url = "E://resources/poolAddress/";

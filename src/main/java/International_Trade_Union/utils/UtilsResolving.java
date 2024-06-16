@@ -1376,7 +1376,7 @@ public class UtilsResolving {
           .collect(Collectors.toList());
     }
 
-    Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
+//    Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
 
     for (int i = deleteBlocks.size() - 1; i >= 0; i--) {
         Block block = deleteBlocks.get(i);
@@ -1385,19 +1385,19 @@ public class UtilsResolving {
         balances = rollbackCalculateBalance(balances, block);
     }
 
-    tempBalances = UtilsUse.differentAccount(tempBalances, balances);
-    List<EntityAccount> accountList = blockService.findByAccountIn(balances);
-    accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
+//    tempBalances = UtilsUse.differentAccount(tempBalances, balances);
+//    tempBalances = UtilsUse.merge(tempBalances, balances);
+//    List<EntityAccount> accountList = blockService.findByAccountIn(balances);
+//    accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
 
     try {
-        blockService.saveAccountAllF(accountList);
+        blockService.saveAccountAllF(UtilsAccountToEntityAccount.accountsToEntityAccounts(balances));
     }catch (Exception e){
 
         return false;
     }
 
-    System.out.println("UtilsResolving: rollBackAddBlock4: total different balance: " + tempBalances.size());
-    System.out.println("UtilsResolving: rollBackAddBlock4: total original balance: " + balances.size());
+
 
 
     blockService.deleteEntityBlocksAndRelatedData(threshold);
@@ -1467,8 +1467,10 @@ public class UtilsResolving {
             });
         }
 
-        Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
+//        Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
 
+        //TODO именно в даной части кода происхдоит прерывание и полчему то в логер не записывается ошибка.
+        //TODO но метод прекращается после этого участка.
         try {
             for (int i = deleteBlocks.size() - 1; i >= 0; i--) {
                 Block block = deleteBlocks.get(i);
@@ -1478,19 +1480,19 @@ public class UtilsResolving {
             return false;
         }
 
-        tempBalances = UtilsUse.differentAccount(tempBalances, balances);
+//        tempBalances = UtilsUse.differentAccount(tempBalances, balances);
+//        tempBalances = UtilsUse.merge(tempBalances, balances);
+
         List<EntityAccount> accountList = null;
         try {
-            accountList = blockService.findByAccountIn(balances);
-            accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
-            blockService.saveAccountAllF(accountList);
+//            accountList = blockService.findByAccountIn(balances);
+//            accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
+            blockService.saveAccountAllF(UtilsAccountToEntityAccount.accountsToEntityAccounts(balances));
 
         }catch (Exception e){
             return false;
         }
-
         blockService.deleteEntityBlocksAndRelatedData(threshold);
-
         allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
         Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
         UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);

@@ -9,6 +9,8 @@ import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Mining;
+import International_Trade_Union.setings.originalCorporateCharter.OriginalCHARTER;
+import International_Trade_Union.setings.originalCorporateCharter.OriginalCHARTER_ENG;
 import International_Trade_Union.setings.originalCorporateCharter.OriginalPreamble;
 import International_Trade_Union.setings.originalCorporateCharter.OriginalPreambleEng;
 
@@ -300,8 +302,8 @@ public class MainController {
     @GetMapping("about")
     public String aboutUs(Model model){
         model.addAttribute("title", "ABOUT US");
-        model.addAttribute("eng", OriginalPreambleEng.ARTICLE_0);
-        model.addAttribute("rus", OriginalPreamble.ARTICLE_0);
+        model.addAttribute("eng", OriginalCHARTER.LAW_1);
+        model.addAttribute("rus", OriginalCHARTER_ENG.LAW_1);
         return "about";
     }
     @GetMapping("result-sending")
