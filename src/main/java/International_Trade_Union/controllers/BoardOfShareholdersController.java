@@ -58,7 +58,7 @@ public class BoardOfShareholdersController {
         List<Account> boardOfShareholders = new ArrayList<>();
         boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blocksList, Seting.BOARDS_BLOCK);
 
-        model.addAttribute("title", "Board of shareholders quantity: " + boardOfShareholders.size());
+        model.addAttribute("title", "All stakers and their amounts:  quantity: " + boardOfShareholders.size());
         model.addAttribute("boardOfShareholders", boardOfShareholders);
         return "board-of-shareholders";
     }

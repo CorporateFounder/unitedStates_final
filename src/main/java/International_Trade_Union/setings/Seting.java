@@ -97,7 +97,8 @@ public interface Seting {
     int HASH_COMPLEXITY_GENESIS = 1;
 
     //совет акционеров
-    int BOARD_OF_SHAREHOLDERS = 1500;
+    int BOARD_OF_SHAREHOLDERS = 100000;
+
 
     //ПОПРАВКА В УСТАВЕ
     //требования к поправкам
@@ -126,8 +127,6 @@ public interface Seting {
     int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_AMENDMENT =
            75;
 
-    //Совет стэйкеров минимум 35% голосов
-    int ORIGINAL_LIMIT_MINT_VOTE_BOARD_OF_SHAREHOLDERS_AMENDMENT = BOARD_OF_SHAREHOLDERS * 35 / 100;
 
 
     //    адресс основателя: здесь будет мой адрес. Сейчас заглушка
@@ -260,10 +259,6 @@ public interface Seting {
     int NEW_START_DIFFICULT = 24281;
     int CHANGE_MEET_DIFFICULTY = 24858;
 
-
-    //for find cheater 53792
-    //after fork 24281
-    int NEW_START_ADJUSTMENT = 24281;
     int NEW_CHECK_UTILS_BLOCK = 0;
     int SPECIAL_BLOCK_FORK = 24281;
 

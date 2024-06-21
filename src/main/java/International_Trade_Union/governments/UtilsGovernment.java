@@ -78,10 +78,10 @@ public class UtilsGovernment {
                 .sorted(Comparator.comparing(Account::getDigitalStakingBalance).reversed())
                 .collect(Collectors.toList());
 
-        boardOfShareholders = boardOfShareholders
-                .stream()
-                .limit(Seting.BOARD_OF_SHAREHOLDERS)
-                .collect(Collectors.toList());
+//        boardOfShareholders = boardOfShareholders
+//                .stream()
+//                .limit(Seting.BOARD_OF_SHAREHOLDERS)
+//                .collect(Collectors.toList());
 
         return boardOfShareholders;
     }
