@@ -1,5 +1,8 @@
 # Монтаж
 Victor https://youtu.be/i7b-8lfIueI
+более подробно на сайте http://citucorp.com/how_to_install
+как установить сервер http://citucorp.com/how_to_install_server
+
 Если у вас windows, то вам нужно скачать из папки target UnitedStates-0.0.1-SHAPSHOT.jar
 в поиске windows введите cmd откройте командную строку и введите туда java -jar (там, где находится файл) /unitedStates-0.0.1-SNAPSHOT.jar
 пример: java -jar C:/unitedStates-0.0.1-SNAPSHOT.jar.

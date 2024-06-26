@@ -1,252 +1,69 @@
-# Активные url
+URL:
+use the host from which you want to receive data (official host http://194.87.236.238:82) All methods are contained in the BassisController class. 1. /winnerList returns a list of Blocks that should be included in the tournament. public String winnerList()
+2. /allwinners returns a listLiteVersionWinerwho participated in the last tournament (Means that this tournament is completed). public String allWinners()
+3. /bigRandomWiner shows the winner of the last tournamentLiteVersionWiner public String bigRandomWiner()
+4. /datashort returns meta data, {"size":265671,"hashCount":3489676,"staking":816578.0250480324,"transactions":617581,"bigRandomNumber":56872082,"validation":true} size: height of this node hashCount: the total amount of difficulty from the entire blockchain. staking: total staking amount for all blocks divided by 100000 bigRandomNumber: the total sum of all bigRandoms validation: if true, then the blockchain is intact and has the correct order of hashes and blocks (but this does not mean that the blockchain is completely correct and for detailed verification, you need to follow the instructions http://citucorp.com/how_to_install_server public DataShortBlockchainInformation dataShortBlockchainInformation()
+5. /status returns the status of the blockchain, blockFromDb and blockFromFile must match and have the same index and hash. If one of them is null or they are different, then there has been corruption either in the h2 database or in the file, then delete the corrupted version and use the fallback. public String status()
+6. /allAccounts returns the total number of accounts that are recorded in a given node and a given blockchain. public long accounts()
+7. /totalDollars returns the total dollar amount on a given node, taking into account onlydigitalDollarBalanceThus, money transferred to staking will not be taken into account, and therefore the total amount of dollars may decrease as they are transferred to staking. And similarly increase. public double getTotalDollars()
+8. /totalTransactionsDay returns the total number of transactions completed per day since the server was launched. Every 576 blocks, the number resets to zero. public int getTotalTransactionsDays()
+9. /totalTransactionsSum returns the total amount of transactions per day, since the server was launched. Every 576 blocks, the number resets to zero. public double getTotalTransactionsSumDllar()
+10. /multiplier this is a multiplier, described in more detail http://citucorp.com/how_to_mining public long multiplier()
+11. /dayReduce number of blocks left before reduction multiplierper unit. http://citucorp.com/how_to_mining public long daysReduce()
+12. /size returns the height of the block. public Integer sizeBlockchain()
+13. /sub-blocks returns a list of Blocks, fromstartup to finish, inclusive finish. That is, if you call start=0, finish=500. Then it will return as a list which includes block 0 and 500 too. public List<Block> subBlocks(@RequestBody SubBlockchainEntity entity)
+14. /version returns the version, if the version of the wallet and the server is different, then the server does not will accept its blocks (practically not used in version 201) public double version()
+15. /block returns the Block type by index. @Async("threadPoolTaskExecutor")public Block getBlock(@RequestBody Integer index)
+16. /isSaveFile used for the interior, blocks taking blocks, during dubbing. It returns the status of whether blocking is currently occurring or not. public boolean isSaveFile()
+17. /balance returns the balances of a given account public Account getBalance(@RequestParam String address) accepts pubkey as input public Account getBalance(@RequestParam String address)
+18. /prevBlock returns the last block that is in the blockchain, may also match the last winner of the tournament. public Block getPrevBlock()
+19. /nodes/resolve_from_to_block adds a block or blocks to the tournament after verification, and also distributes this block to other nodes. public synchronized ResponseEntity<String> resolve_conflict(@RequestBody SendBlocksEndInfo sendBlocksEndInfo)
+20. /difficultyBlockchain returns difficulty information, returns as total and final complexity. public InfoDificultyBlockchain dificultyBlockchain()
+21. /senderTransactions returns a list of transactions, from and to the sender. That is, all transactions where this address is sent to senders for a certain period. public List<DtoTransaction> senderTransactions
+22. /customerTransactions similar/senderTransactions, with that The only difference is where the address is already the recipient. public List<DtoTransaction> customerTransactions
+23. /senderCountDto returns the number of transactions sent, from this address. public long countSenderTransaction( @RequestParam String address)
+24. /customerCountDto similar/senderCountDtobut returns quantity transactions where this account was the recipient. public long countCustomerTransaction( @RequestParam String address)
+25. /addresses returns the entire list of addresses public Map<String, Account> addresses()
+    26./getNodes returns a list of nodes public Set<String> getAllNodes()
+    Controller from classConductorController 1./account Returns the balances of a given account public Account account(@RequestParam String address)
+    2./dollar Returns the dollar balance of a given account public Double dollar(@RequestParam String address)
+    3./stock Returns the stock balance of a given account public Double stock(@RequestParam String address)
+    4./isTransactionAdd Returns the result whether the given signature has been added to the blockchain or not public Boolean isTransactionGet(@RequestParam String sign)
+    5./blockHash Returns Block based on the hash of the block, thereby making it clear whether this block exists in this blockchain. public Block blockFromHash(@RequestParam String hash)
+    6./conductorBlock Returns a block by index, which is often used to understand whether a given block has been added to the blockchain. public Block block(@RequestParam Integer index)
+    7./conductorHashTran Returns the transaction by hash. public DtoTransaction transaction(@RequestParam String hash)
+    Controller in classNodesController 1./putNode adds a host and port to this server./putNode public void addNode(@RequestBody MyHost host)
+    Controller in classTransactionController 1./addTransaction Adds a transaction to the list of transactions waiting to be added to the blockchain. public void add(@RequestBody DtoTransaction data) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException
+    2./getTransactions Returns a list of transactions to be added to
+    Wallet controllers that are accessed through localhost:8082The methods below are in the BasisController class
+1. http://localhost:8082/getNodes returns a list of hosts that are stored on the wallet. public Set<String> getAllNodes()
+2. http://localhost:8082/chain returns the size of the blockchain all blocks. PS IT IS NOT RECOMMENDED TO USE AS THE SIZE OF THE BLOCKS CAN BE BIGGER THAN THE RAM MEMORY AND THIS CAN FAIL THE CHAIN. public EntityChain full_chain()
+3. http://localhost:8082/size returns the height of the local blockchain. public Integer sizeBlockchain()
+4. http://localhost:8082/sub-blocksreturns a list of blocks from start to finish, but no more than 500 blocks at a time. Also finish is included in the list. public List<Block> subBlocks(@RequestBody SubBlockchainEntity entity)
+5. http://localhost:8082/nodes/resolveconfigured for a specific server and either downloads missing blocks from there, or deletes only blocks to synchronize your blockchain with the server. public synchronized int resolve_conflicts()
+6. http://localhost:8082/resolvingcausespublic synchronized int resolve_conflicts() and similar to it. public String resolving()
+7. http://localhost:8082/addBlockOUTDATED AND NOT USED, STRICTLY DO NOT CALL SO AS NOT TO BREAK THE BLOCKCHAIN. Previously used to restore balance and other meta data from a blockchain file, but after implementing the h2 database, it does not work correctly. public ResponseEntity getBLock()
+8. http://localhost:8082/miningblock http://localhost:8082/process-mining Mines one block, calls a method that mines the block only once. public synchronized ResponseEntity minings() public synchronized String processMining(Model model, Integer number)
+9. http://localhost:8082/nodes/register registers the host in the wallet. public static synchronized void register_node(@RequestBody AddressUrl urlAddrress)
+10. http://localhost:8082/moreMiningcontinues mining for 2000 attempts. public void moreMining() mainly used for testing
+11. http://localhost:8082/constantMiningwhen you mine through the get a block tab, this is what is called. Mining continues until the stop button is pressed. public String alwaysMining() throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException PS All mining methods call this method inside their methods. public synchronized String mining()
+12. http://localhost:8082/stopMiningstops mining in the method http://localhost:8082/constantMining public String stopMining(RedirectAttributes model)
+13. http://localhost:8082/testCalculate used to check the integrity of the balance on the wallet and server. If everything is correct, then you should not see a list of Accounts in the console whose balance is different from the server. If this still appears, perhaps the server or wallet has a damaged file details are described herehttp://citucorp.com/how_to_install_server public String testResolving()
+14. http://localhost:8082/statuschecks the status of whether the blocks are written correctly; if the block recorded in the file and in the database are different or one of them is null, then perhaps you should replace it with a backup version or download it from scratch. public String status()
+    Class in the walletpublic class BlockchainCheckController controllers. 1.http://localhost:8082/checkValidation checks the integrity of the blockchain from files located in the blockchain folder public boolean checkValidation()
+    In a wallet in class public class ConductorControlle 1.http://localhost:8082HYPERLINK "http://localhost:8082/status"/keys Creates a new pair, public key, private key. public Map<String, String> keys()
+    2.http://localhost:8082/updating Updates the local blockchain on the wallet. public Integer updating()
+    3.http://localhost:8082/account Gets the full balance from a given wallet, for a given address. public Account account(@RequestParam String address)
+    4.http://localhost:8082/dollar Returns the dollar balance for a given address. public Double dollar(@RequestParam String address)
+    5.http://localhost:8082/stock Returns the stock balance for a given address. public Double stock(@RequestParam String address)
+    6.http://localhost:8082/sendCoin This method takes as input the address of the sender, the recipient, the amount that we want to transfer in dollars and shares, also the miner's reward (at the moment, the mechanism to reward the miner for the transaction and the password are disabled. The method locally signs and creates a transaction using this data and already then sends it to 7 random nodes, calling them/addTransaction public String send(@RequestParam String sender, @RequestParam String recipient, @RequestParam Double dollar, @RequestParam Double stock, @RequestParam Double reward, @RequestParam String password)
+    7.http://localhost:8082/isTransactionAdd Determines by signature whether a given transaction has been added to the local blockchain or not. public Boolean isTransactionGet(@RequestParam String sign)
+    8.http://localhost:8082/blockHash By block hash, returns a block if this block is in the local blockchain. public Block blockFromHash(@RequestParam String hash)
+    9.http://localhost:8082/conductorBlock Returns a block by its index if this index with the block is in the local blockchain. public Block block(@RequestParam Integer index)
+    10.http://localhost:8082/conductorHashTran Returns the transaction by hash (not the signature, but the hash) public DtoTransaction transaction(@RequestParam String hash)
+    Methods in classMineController 1.http://localhost:8082/staking Adds dollars to staking. at the entrance your address, the amount you want to transfer to staking and your password. It locally creates a transaction object and signs it, after which it already sends this object to 7 random nodes. public String staking(@RequestParam String miner, Double dollar, String password, RedirectAttributes redirectAttrs)
+    2.http://localhost:8082/unstaking Similar to the /staking method, only it removes your money from staking and returns it into the dollar balance. public String unstaking(@RequestParam String miner, Double dollar, String password, RedirectAttributes redirectAttrs)
+    More details about the transaction 1. A transaction object is created and initialized International_Trade_Union.entity.DtoTransaction 2. Then toSign is called on this object This is how we sign PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign()); 3. Your transaction is already initialized with a signature dtoTransaction.setSign(sign); After which this transaction can be sent. The choice of states for your transaction is like this public enum VoteEnum { YES, NO, REMOVE_YOUR_VOICE, STAKING, UNSTAKING}
+    Classpublic class ServerController 1.http://localhost:8082/server This is how you change on your wallet which server you want to tune into. public String server(@RequestParam String host)
 
-
-## Локальные url
-
-
-- http://localhost:8082/mine создает блок
-  - ***@GetMapping("/mine")
-    public synchronized ResponseEntity<String> mine()*** 
-- http://localhost:8082/chain 
-  - ***@GetMapping("/chain")
-      @ResponseBody
-      public EntityChain full_chain()*** возвращает блокчейн ввиду класса ***EntityChain***
-- http://localhost:8082/sub-blocks
-  - возвращает список блоков в диапазоне от start до finish
-  ***@PostMapping("/sub-blocks")
-    @ResponseBody
-    public List<Block> subBlocks(@RequestBody SubBlockchainEntity entity)***
-  - В качестве аргумента принимает json object class ***SubBlockchainEntity.java***
-  - class находится в ***src/main/java/International_Trade_Union/entity/SubBlockchainEntity.java***
-- http://localhost:8082/block
-  - возвращает блок по индексу  ***@PostMapping("/block")
-    @ResponseBody
-    public Block getBlock(@RequestBody Integer index)***
-- http://localhost:8082/nodes/resolve
-  - подключается к внешним хостам, 
-  и если находит более длинный блокчейн, чем в локальном, скачивает перезаписывает
-  все данные. 
-  ***@GetMapping("/nodes/resolve")
-    public synchronized void resolve_conflicts()***
-- http://localhost:8082/nodes/register
-  - Регистрирует новый внешний хост.
-  ***@RequestMapping(method = RequestMethod.POST, value = "/nodes/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public synchronized void register_node(@RequestBody AddressUrl urlAddrress)***
-  - В качестве Аргумента берет класс AddressUrl
-- http://localhost:8082/addBlock
-  - сохраняет заново сделав перерасчет весь список блоков, предварительно заново пересчитывав,
-  баланс, голоса и другие данные, так же все эти данные заново сохраняет
-  ***@GetMapping("/addBlock")
-    public boolean getBLock()***
-- http://localhost:8082/getNodes
-  Возвращает список хостов, сохраненных на локальном сервере
-  ***@GetMapping("/getNodes")
-  public Set<String> getAllNodes()***
-- http://localhost:8082/moreMining
-  - Запускает автоматический цикл майнинга, цикл будет идти 2000 шагов.
-    ***@GetMapping("/moreMining")
-  public void moreMining()***
-- http://localhost:8082/checkValidation
-  Проверяет целостность блокчейна
-  ***@GetMapping("/checkValidation")
-  public boolean checkValidation()***
-- http://localhost:8082/addTransaction
-  добавляет транзакцию в список не добавленных транзакций в блок,
-  сохраняется внутренний файловую систему.
-  *** @RequestMapping(method = RequestMethod.POST, value = "/addTransaction", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public  void add(@RequestBody DtoTransaction data)***
-
-
-## Внешние url
-внешние url аналогичны локальным, но начинаются 
-с http://194.87.236.238:80
-и там отсутствует http://194.87.236.238:80/mine
-так же там есть дополнительный метод
-http://194.87.236.238:80/getTransactions он возвращяет список
-***@GetMapping("/getTransactions")
-public List<DtoTransaction> getTransaction()***
-находиться DtoTransaction в
-***src/main/java/International_Trade_Union/entity/DtoTransaction/DtoTransaction.java***
-
-
-Отправляет с локального хоста во внешнее хранилище, весь блокчейн
-***@PostMapping("/nodes/resolve_all_blocks")
-public synchronized ResponseEntity<String>resolve_blocks_conflict(@RequestBody List<Block> blocks)***
-***http://194.87.236.238:80/nodes/resolve_all_blocks***
-
-Отправляет с локального хоста во внешнее хранилище от выбранного индекса, до выбранного индекса
-***@PostMapping("/nodes/resolve_from_to_block")
-public synchronized ResponseEntity<String> resolve_conflict(@RequestBody List<Block> blocks)***
-***http://194.87.236.238:80/nodes/resolve_from_to_block***
-
-
-получить pub end priv key
-http://localhost:8082/keys
-
-Обновить локальный блокчейн
-http://localhost:8082/updating
-
-Получить баланс адрес
-http://localhost:8082/account
-
-Получить баланс доллара
-http://localhost:8082/dollar
-
-Получить баланс акций
-http://localhost:8082/stock
-
-Отправить сумму 
-http://localhost:8082/sendCoin
-
-@GetMapping("/sendCoin")
-public String send(@RequestParam String sender,
-@RequestParam String recipient,
-@RequestParam Double dollar,
-@RequestParam Double stock,
-@RequestParam Double reward,
-@RequestParam String password)
-
-Получить блок по индексу
-@GetMapping("/conductorBlock")
-@ResponseBody
-public Block  block(@RequestParam Integer index)
-
-Получить транзакцию по ее хэш
-@GetMapping("/conductorHashTran")
-@ResponseBody
-public DtoTransaction transaction(@RequestParam String hash)
-
-````java
-
-@JsonAutoDetect
-@Data
-public class DtoTransaction {
-  private String sender;
-  private String customer;
-  private double digitalDollar;
-  private double digitalStockBalance;
-  private Laws laws;
-  private double bonusForMiner;
-  private VoteEnum voteEnum;
-  private byte[] sign;
-
-
-
-  public DtoTransaction(String sender, String customer, double digitalDollar, double digitalStockBalance, Laws laws, double bonusForMiner, VoteEnum voteEnum) {
-    this.sender = sender;
-    this.customer = customer;
-    this.digitalDollar = digitalDollar;
-    this.digitalStockBalance = digitalStockBalance;
-    this.laws = laws;
-    this.bonusForMiner = bonusForMiner;
-    this.voteEnum = voteEnum;
-  }
-
-  public DtoTransaction() {
-  }
-
-  //TODO возможно стоит перевести проверку подписи в отдельный utils, под вопросом!!
-  public boolean verify() throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
-    Base base = new Base58();
-    byte[] pub = base.decode(sender);
-    BCECPublicKey publicKey = (BCECPublicKey) UtilsSecurity.decodeKey(pub);
-//        PublicKey publicKey = UtilsSecurity.publicByteToPublicKey(pub);
-    String sha = sender + customer + digitalDollar + digitalStockBalance + laws + bonusForMiner;
-    sha = UtilsUse.sha256hash(sha);
-    if(sender.isBlank() || customer.isBlank() || digitalDollar < 0 || digitalStockBalance < 0 || bonusForMiner < 0 || laws == null){
-      System.out.println("wrong dto transaction sender or customer blank? or dollar, reputation or reward less then 0");
-      return false;
-    }
-    if(Seting.BASIS_ADDRESS.equals(publicKey))
-      return true;
-    return UtilsSecurity.verify(sha, sign, publicKey);
-  }
-
-  public String toSign(){
-    String sha = sender + customer + digitalDollar + digitalStockBalance + laws + bonusForMiner;
-    return UtilsUse.sha256hash(sha);
-  }
-
-//    public String hashForBlock() throws IOException {
-//        return UtilsUse.sha256hash(jsonString());
-//    }
-
-  public String jsonString() throws IOException {
-    return UtilsJson.objToStringJson(this);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof DtoTransaction)) return false;
-    DtoTransaction that = (DtoTransaction) o;
-    return Double.compare(that.getDigitalDollar(), getDigitalDollar()) == 0 && Double.compare(that.getDigitalStockBalance(), getDigitalStockBalance()) == 0 && Double.compare(that.getBonusForMiner(), getBonusForMiner()) == 0 && getSender().equals(that.getSender()) && getCustomer().equals(that.getCustomer()) && getLaws().equals(that.getLaws()) && getVoteEnum() == that.getVoteEnum() && Arrays.equals(getSign(), that.getSign());
-  }
-
-  @Override
-  public int hashCode() {
-    int result = Objects.hash(getSender(), getCustomer(), getDigitalDollar(), getDigitalStockBalance(), getLaws(), getBonusForMiner(), getVoteEnum());
-    result = 31 * result + Arrays.hashCode(getSign());
-    return result;
-  }
-}
-
-````
-  
-
-класс EntityChain 
-
-***src/main/java/International_Trade_Union/entity/EntityChain.java***
-````java
-
-    @Data
-    public class EntityChain {
-
-    private int size;
-    private List<Block> blocks;
-
-    public EntityChain() {
-    }
-
-    public EntityChain(int sizeBlockhain, List<Block> blockchainList) {
-    this.size = sizeBlockhain;
-    this.blocks = blockchainList;
-    }
-  }
-````
-
-***src/main/java/International_Trade_Union/entity/SubBlockchainEntity***
-
-````java
-
-@Data
-public class SubBlockchainEntity {
-    private int start;
-    private int finish;
-
-    public SubBlockchainEntity(int start, int finish) {
-        this.start = start;
-        this.finish = finish;
-    }
-
-    public SubBlockchainEntity() {
-    }
-}
-
-````
-
-***src/main/java/International_Trade_Union/entity/AddressUrl***
-````java
-  @Data
-public class AddressUrl {
-  private String address;
-
-  public AddressUrl() {
-  }
-
-  public AddressUrl(String address) {
-    this.address = address;
-  }
-}
-  ````
 [Возврат на главную](./documentationRus.md)

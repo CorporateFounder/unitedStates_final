@@ -4,7 +4,7 @@ Once the server has been properly started, go to http://localhost:8082/create-ac
 There you need to copy NEW ADDRESS this is your LOGIN and PUBLIC KEY.
 You also need to copy PASSWORD this is your PRIVATE KEY.
 Copy your username and password and keep it in a safe place.
-
+http://citucorp.com/how_to_open_an_account
 ![how to create an account](../screenshots/create-accountEng.png)
 
 After you need to change the address of the miner, enter the settings http://localhost:8082/seting
