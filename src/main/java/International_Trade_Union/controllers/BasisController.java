@@ -894,10 +894,10 @@ public class BasisController {
             Block prevBlock = tempBlockchain.get(tempBlockchain.size() - 1);
             long index = prevBlock.getIndex() + 1;
 //            Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-            Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+            Map<String, Account> balances = new HashMap<>();
 
 
-            Account miner = balances.get(User.getUserAddress());
+            Account miner =UtilsAccountToEntityAccount.entityAccountToAccount(blockService.findByAccount(User.getUserAddress()));
             minerShow = miner;
 
             String address = "http://194.87.236.238:80";
@@ -930,7 +930,7 @@ public class BasisController {
             //считывает все балансы из файла.
             //reads all balances from a file.
 //            balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+//
 
 
             String json = UtilsFileSaveRead.read(Seting.TEMPORARY_BLOCKCHAIN_FILE);
@@ -962,6 +962,7 @@ public class BasisController {
 
                 //получить список балансов из файла. get a list of balances from a file.
                 List<String> signs = new ArrayList<>();
+                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
                 balances = miningS.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain1, balances, signs);
                 //удалить старые файлы баланса. delete old balance files.
 //                Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
@@ -974,10 +975,10 @@ public class BasisController {
             //скачать список балансов из файла. download a list of balances from a file.
             System.out.println("BasisController: minining: read list balance");
 //            balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+//            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
             //получить счет майнера. get the miner's account.
-            miner = balances.get(User.getUserAddress());
+            miner = UtilsAccountToEntityAccount.entityAccountToAccount(blockService.findByAccount(User.getUserAddress()));;
             minerShow = miner;
             System.out.println("BasisController: mining: account miner: " + miner);
             if (miner == null) {
@@ -1027,6 +1028,7 @@ public class BasisController {
             //DIFFICULTY_ADJUSTMENT_INTERVAL how often the correction occurs
             //BLOCK_GENERATION_INTERVAL how often the block should be found
             //temporaryDtoList adds transactions to the block.
+            balances.putAll(UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(temporaryDtoList)));
             Block block = Mining.miningDay(
                     miner,
                     tempBlockchain,
