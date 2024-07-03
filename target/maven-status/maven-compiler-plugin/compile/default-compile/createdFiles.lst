@@ -78,6 +78,7 @@ International_Trade_Union\config\BLockchainFactory.class
 International_Trade_Union\model\comparator\HostEndDataShortBComparator.class
 International_Trade_Union\entity\services\BlockService.class
 International_Trade_Union\network\Transactions.class
+International_Trade_Union\entity\entities\SignRequest.class
 International_Trade_Union\CorporateCharterEngDraft\ArticleOneLegistratureEngDraft.class
 International_Trade_Union\governments\NamePOSITION.class
 International_Trade_Union\entity\AddressUrl.class

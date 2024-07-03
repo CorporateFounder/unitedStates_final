@@ -3,6 +3,7 @@ package International_Trade_Union.controllers;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.entities.EntityDtoTransaction;
+import International_Trade_Union.entity.entities.SignRequest;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
@@ -21,9 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -206,7 +205,38 @@ public class ConductorController {
 
 
     }
+    private final Base58 base58 = new Base58();
+    @PostMapping("/isTransactionAddBase64")
+    public Boolean isTransactionGetBase64(@RequestBody SignRequest request) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        try {
+            // Удаление всех пробелов из строки Base64
+            String sanitizedSign = request.getSign().replaceAll("\\s+", "");
+            // Декодирование строки Base64 в байты
+            byte[] decodedBytes = Base64.getDecoder().decode(sanitizedSign);
+            // Преобразование байтов в строку Base58
+            String base58Sign = base58.encode(decodedBytes);
+            // Проверка наличия в базе данных по строке Base58
+            return blockService.findBySign(base58Sign) != null;
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException("Invalid Base64 input", e);
+        }
+    }
 
+    @PostMapping("/TransactionAddBase64")
+    public DtoTransaction TransactionGetBase64(@RequestBody SignRequest request) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        try {
+            // Удаление всех пробелов из строки Base64
+            String sanitizedSign = request.getSign().replaceAll("\\s+", "");
+            // Декодирование строки Base64 в байты
+            byte[] decodedBytes = Base64.getDecoder().decode(sanitizedSign);
+            // Преобразование байтов в строку Base58
+            String base58Sign = base58.encode(decodedBytes);
+            // Проверка наличия в базе данных по строке Base58
+            return UtilsBlockToEntityBlock.entityToDto(blockService.findBySign(base58Sign));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException("Invalid Base64 input", e);
+        }
+    }
 
     /**find block from hash
      * (from local host)*/
@@ -261,6 +291,94 @@ public class ConductorController {
         }
 
         return UtilsBlockToEntityBlock.entityToDto(entityDtoTransaction);
+    }
+    /**
+     * Получить список транзакций для адреса отправителя, от определенного блока до определенного блока
+     */
+    @GetMapping("/senderTransactions")
+    @ResponseBody
+    public List<DtoTransaction> senderTransactions(
+            @RequestParam String address,
+            @RequestParam int from,
+            @RequestParam int to
+    ) {
+        try {
+            return blockService.findBySender(address, from, to);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Получить список транзакций для адреса получателя, от определенного блока до определенного блока
+     */
+
+    @GetMapping("/customerTransactions")
+    @ResponseBody
+    public List<DtoTransaction> customerTransactions(
+            @RequestParam String address,
+            @RequestParam int from,
+            @RequestParam int to
+    ) {
+        try {
+            return blockService.findByCustomer(address, from, to);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * количество отправленных транзакций от данного адреса
+     */
+    @GetMapping("/senderCountDto")
+    @ResponseBody
+    public long countSenderTransaction(
+            @RequestParam String address
+    ) {
+        try {
+            return blockService.countSenderTransaction(address);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    /**
+     * количество полученных транзакций от данного адреса
+     */
+
+    @GetMapping("/customerCountDto")
+    @ResponseBody
+    public long countCustomerTransaction(
+            @RequestParam String address
+    ) {
+        try {
+            return blockService.countCustomerTransaction(address);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+
+    /**
+     * Получить все балансы данного адреса
+     */
+    @GetMapping("/addresses")
+    @ResponseBody
+    public Map<String, Account> addresses() {
+        Map<String, Account> accountMap = new HashMap<>();
+        try {
+            accountMap = UtilsAccountToEntityAccount
+                    .entityAccountsToMapAccounts(blockService.findAllAccounts());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return accountMap;
     }
 
 }
