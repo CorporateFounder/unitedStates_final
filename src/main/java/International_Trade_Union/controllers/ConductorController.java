@@ -113,7 +113,7 @@ public class ConductorController {
                        @RequestParam Double reward,
                        @RequestParam String password) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         Base base = new Base58();
-        String result = "wrong";
+        String result = "false";
 
         dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
         stock = UtilsUse.round(stock, Seting.DECIMAL_PLACES);
