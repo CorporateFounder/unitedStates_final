@@ -9,6 +9,7 @@ import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.CreateAccount;
+import International_Trade_Union.model.HostEndDataShortB;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
@@ -24,6 +25,8 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static International_Trade_Union.controllers.BasisController.getNodes;
 
 
 @RestController
@@ -161,16 +164,19 @@ public class ConductorController {
                 System.out.println("sending" + "wrong transaction: Position to be equals whith send");
                 return result;
             }
-            result = dtoTransaction.toSign();
+            result = base.encode(dtoTransaction.getSign());
 
             String str = base.encode(dtoTransaction.getSign());
             System.out.println("sign: " + str);
             AllTransactions.addTransaction(dtoTransaction);
             String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
-            for (String s : Seting.ORIGINAL_ADDRESSES) {
+            Set<String> nodesAll = getNodes();
+            List<HostEndDataShortB> sortPriorityHost = utilsResolving.sortPriorityHost(nodesAll);
 
-                String original = s;
-                String url = s + "/addTransaction";
+            for (HostEndDataShortB hostEndDataShortB :sortPriorityHost) {
+
+                String original = hostEndDataShortB.getHost();
+                String url = hostEndDataShortB.getHost() + "/addTransaction";
                 //если адресс совпадает с внутреним хостом, то не отправляет самому себе
                 if (BasisController.getExcludedAddresses().contains(url)) {
                     System.out.println("MainController: its your address or excluded address: " + url);
@@ -205,6 +211,26 @@ public class ConductorController {
 
 
     }
+
+    @PostMapping("/TransactionAddBase")
+    public DtoTransaction TransactionGetBase(@RequestBody SignRequest request) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        try {
+            // Удаление всех пробелов из строки Base64
+            String sanitizedSign = request.getSign().replaceAll("\\s+", "");
+            // Декодирование строки Base64 в байты
+
+            // Преобразование байтов в строку Base58
+            String base58Sign =sanitizedSign;
+            // Проверка наличия в базе данных по строке Base58
+            EntityDtoTransaction entityDtoTransaction = blockService.findBySign(base58Sign);
+            if(entityDtoTransaction == null)
+                return null;
+            return UtilsBlockToEntityBlock.entityToDto(entityDtoTransaction);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException("Invalid Base64 input", e);
+        }
+    }
+
     private final Base58 base58 = new Base58();
     @PostMapping("/isTransactionAddBase64")
     public Boolean isTransactionGetBase64(@RequestBody SignRequest request) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -216,9 +242,11 @@ public class ConductorController {
             // Преобразование байтов в строку Base58
             String base58Sign = base58.encode(decodedBytes);
             // Проверка наличия в базе данных по строке Base58
+            if(base58Sign == null)
+                return false;
             return blockService.findBySign(base58Sign) != null;
         } catch (IllegalArgumentException e) {
-            throw new IllegalStateException("Invalid Base64 input", e);
+            return false;
         }
     }
 
@@ -232,9 +260,12 @@ public class ConductorController {
             // Преобразование байтов в строку Base58
             String base58Sign = base58.encode(decodedBytes);
             // Проверка наличия в базе данных по строке Base58
-            return UtilsBlockToEntityBlock.entityToDto(blockService.findBySign(base58Sign));
+            EntityDtoTransaction entityDtoTransaction = blockService.findBySign(base58Sign);
+            if(entityDtoTransaction == null)
+                return null;
+            return UtilsBlockToEntityBlock.entityToDto(entityDtoTransaction);
         } catch (IllegalArgumentException e) {
-            throw new IllegalStateException("Invalid Base64 input", e);
+            return null;
         }
     }
 

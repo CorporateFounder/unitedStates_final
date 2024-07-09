@@ -8,6 +8,7 @@ import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
+import International_Trade_Union.model.HostEndDataShortB;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.originalCorporateCharter.OriginalCHARTER;
 import International_Trade_Union.setings.originalCorporateCharter.OriginalCHARTER_ENG;
@@ -39,6 +40,8 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static International_Trade_Union.controllers.BasisController.getNodes;
 
 @Controller
 public class MainController {
@@ -385,10 +388,12 @@ public class MainController {
             System.out.println("sign: " + str);
             AllTransactions.addTransaction(dtoTransaction);
             String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
-            for (String s : Seting.ORIGINAL_ADDRESSES) {
+            Set<String> nodesAll = getNodes();
+            List<HostEndDataShortB> sortPriorityHost = utilsResolving.sortPriorityHost(nodesAll);
+            for (HostEndDataShortB hostEndDataShortB : sortPriorityHost) {
 
-                String original = s;
-                String url = s +"/addTransaction";
+                String original = hostEndDataShortB.getHost();
+                String url = hostEndDataShortB.getHost() +"/addTransaction";
                 //если адресс совпадает с внутреним хостом, то не отправляет самому себе
                 if(BasisController.getExcludedAddresses().contains(url)){
                     System.out.println("MainController: its your address or excluded address: " + url);
