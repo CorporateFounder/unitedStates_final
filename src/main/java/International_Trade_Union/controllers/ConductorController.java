@@ -108,9 +108,9 @@ public class ConductorController {
     @ResponseBody
     public String send(@RequestParam String sender,
                        @RequestParam String recipient,
-                       @RequestParam Double dollar,
-                       @RequestParam Double stock,
-                       @RequestParam Double reward,
+                       @RequestParam(defaultValue = "0.0") Double dollar,
+                       @RequestParam(defaultValue = "0.0") Double stock,
+                       @RequestParam(defaultValue = "0.0") Double reward,
                        @RequestParam String password) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         Base base = new Base58();
         String result = "false";
