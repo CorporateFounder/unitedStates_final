@@ -4,6 +4,8 @@ import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
+import International_Trade_Union.utils.base.Base;
+import International_Trade_Union.utils.base.Base58;
 import org.json.JSONException;
 
 import java.io.File;
@@ -96,7 +98,8 @@ public class AllTransactions {
         instance = getInstance();
         instance.add(transaction);
         Mining.deleteFiles(Seting.ORGINAL_ALL_TRANSACTION_FILE);
-        instance = instance.stream().filter(UtilsUse.distinctByKey(DtoTransaction::toSign)).collect(Collectors.toList());
+        Base base = new Base58();
+        instance = instance.stream().filter(UtilsUse.distinctByKey(t->base.encode(t.getSign()))).collect(Collectors.toList());
         for (DtoTransaction dtoTransaction : instance) {
             UtilsTransaction.saveAllTransaction(dtoTransaction, Seting.ORGINAL_ALL_TRANSACTION_FILE);
         }

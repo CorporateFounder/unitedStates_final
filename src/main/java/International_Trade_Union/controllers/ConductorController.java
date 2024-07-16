@@ -150,7 +150,7 @@ public class ConductorController {
         System.out.println("stock: " + stock + ": class: " + stock.getClass());
         System.out.println("reward: " + reward + ": class: " + reward.getClass());
         System.out.println("password: " + password);
-        System.out.println("sign: " + dtoTransaction.toSign());
+        System.out.println("sign: " + base58.encode(dtoTransaction.getSign()));
         System.out.println("verify: " + dtoTransaction.verify());
 
         if (dtoTransaction.verify()) {

@@ -209,7 +209,7 @@ public class TestAlgorithm {
 
         System.out.println(founderRew.verify());
         System.out.println(minerRew.verify());
-        System.out.println("sign: " + signGold.toString());
+        System.out.println("sign: " + base.encode(signGold));
 
     }
 

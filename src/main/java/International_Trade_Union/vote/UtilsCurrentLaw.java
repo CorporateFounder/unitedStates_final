@@ -39,7 +39,8 @@ public class UtilsCurrentLaw {
                         + transaction.getSender() + " customer: " + transaction.getCustomer());
                 continue;
             } else {
-                signs.add(transaction.toSign());
+
+                signs.add(base.encode(transaction.getSign()));
 //                System.out.println("we added new sign transaction");
             }
             if (transaction.getSender().startsWith(Seting.NAME_LAW_ADDRESS_START)) {
