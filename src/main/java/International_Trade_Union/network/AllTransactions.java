@@ -99,7 +99,9 @@ public class AllTransactions {
         instance.add(transaction);
         Mining.deleteFiles(Seting.ORGINAL_ALL_TRANSACTION_FILE);
         Base base = new Base58();
-        instance = instance.stream().filter(UtilsUse.distinctByKey(t->base.encode(t.getSign()))).collect(Collectors.toList());
+        instance = instance .stream()
+                .filter(UtilsUse.distinctByKeyString(t -> base.encode(t.getSign())))
+                .collect(Collectors.toList());
         for (DtoTransaction dtoTransaction : instance) {
             UtilsTransaction.saveAllTransaction(dtoTransaction, Seting.ORGINAL_ALL_TRANSACTION_FILE);
         }

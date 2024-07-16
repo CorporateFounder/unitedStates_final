@@ -273,7 +273,10 @@ public class UtilsUse {
         Set<Object> seen = ConcurrentHashMap.newKeySet();
         return t -> seen.add(keyExtractor.apply(t));
     }
-
+    public static <T> Predicate<T> distinctByKeyString(Function<? super T, String> keyExtractor) {
+        Set<String> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
+    }
     //подсчитать количество нулей идущих подряд в hash
     public static long hashCount(String hash, long index) {
         long count = 0;
