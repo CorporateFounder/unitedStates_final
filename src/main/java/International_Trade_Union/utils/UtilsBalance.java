@@ -125,7 +125,9 @@ public class UtilsBalance {
                 if (sendTrue) {
                     balances.put(sender.getAccount(), sender);
                     balances.put(customer.getAccount(), customer);
-                    balances.put(miner.getAccount(), miner);
+
+                    if (block.getIndex() > Seting.NEW_ALGO_MINING)
+                        balances.put(miner.getAccount(), miner);
                 }
 
             }
@@ -241,7 +243,8 @@ public class UtilsBalance {
                 if (sendTrue) {
                     balances.put(sender.getAccount(), sender);
                     balances.put(customer.getAccount(), customer);
-                    balances.put(miner.getAccount(), miner);
+                    if (block.getIndex() > Seting.NEW_ALGO_MINING)
+                        balances.put(miner.getAccount(), miner);
                 }
 
             }
@@ -294,7 +297,7 @@ public class UtilsBalance {
      */
     public static boolean sendMoney(Account senderAddress, Account recipientAddress, Account minerAddress, double digitalDollar, double digitalStock, double minerRewards, VoteEnum voteEnum, long indexBlock) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         double senderDigitalDollar = senderAddress.getDigitalDollarBalance();
-        double senderDigitalStock = senderAddress.getDigitalStockBalance();
+        double  senderDigitalStock = senderAddress.getDigitalStockBalance();
         double senderDigitalStaking = senderAddress.getDigitalStakingBalance();
         double recipientDigitalDollar = recipientAddress.getDigitalDollarBalance();
         double recipientDigitalStock = recipientAddress.getDigitalStockBalance();
@@ -306,7 +309,7 @@ public class UtilsBalance {
 
 
         if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-            minerDigitalDollar = UtilsUse.round(minerDigitalDollar, Seting.DECIMAL_PLACES);
+            senderDigitalDollar = UtilsUse.round(senderDigitalDollar, Seting.DECIMAL_PLACES);
             senderDigitalStock = UtilsUse.round(senderDigitalStock, Seting.DECIMAL_PLACES);
             senderDigitalStaking = UtilsUse.round(senderDigitalStaking, Seting.DECIMAL_PLACES);
 
@@ -368,17 +371,12 @@ public class UtilsBalance {
                     minerAddress.setDigitalDollarBalance(minerDigitalDollar + minerRewards);
             } else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
                 System.out.println("UNSTAKING");
-                if (indexBlock > Seting.NEW_ALGO_MINING && senderDigitalStaking < digitalDollar) {
+                if (senderDigitalStaking < digitalDollar) {
                     System.out.println("less staking");
                     sendTrue = false;
                     return sendTrue;
                 }
 
-                if (indexBlock > Seting.NEW_ALGO_MINING && senderDigitalDollar < minerRewards) {
-                    System.out.println("less dollar");
-                    sendTrue = false;
-                    return sendTrue;
-                }
                 senderAddress.setDigitalDollarBalance(senderDigitalDollar + digitalDollar);
                 senderAddress.setDigitalStakingBalance(senderDigitalStaking - digitalDollar);
                 if (indexBlock > Seting.NEW_ALGO_MINING)
@@ -425,9 +423,8 @@ public class UtilsBalance {
             recipientDigitalStaking = UtilsUse.round(recipientDigitalStaking, Seting.DECIMAL_PLACES);
 
             minerDigitalDollar = UtilsUse.round(minerDigitalDollar, Seting.DECIMAL_PLACES);
-            minerDigitalStock = UtilsUse.round(minerDigitalStock, Seting.DECIMAL_PLACES);
-            minerDigitalStaking = UtilsUse.round(minerDigitalStaking, Seting.DECIMAL_PLACES);
-            digitalDollar = UtilsUse.round(digitalDollar, Seting.DECIMAL_PLACES);
+
+             digitalDollar = UtilsUse.round(digitalDollar, Seting.DECIMAL_PLACES);
             digitalStock = UtilsUse.round(digitalStock, Seting.DECIMAL_PLACES);
             minerRewards = UtilsUse.round(minerRewards, Seting.DECIMAL_PLACES);
         }

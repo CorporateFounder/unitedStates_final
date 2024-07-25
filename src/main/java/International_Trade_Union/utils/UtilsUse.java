@@ -420,7 +420,7 @@ public class UtilsUse {
             result = (int) ((int) (result + (actual.getHashCompexity() * waight)) + calculateScore(miner.getDigitalStakingBalance(), number));
 
         }
-        //+ calculateScore(miner.getDigitalStakingBalance(), 1)
+
         return result;
 
     }
