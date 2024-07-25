@@ -98,21 +98,11 @@ public class UtilsTransaction {
      *      * those transactions that give a reward to the miner for paying for the transaction
      *      * if it is above a certain threshold.*/
     public static List<DtoTransaction> reward(List<DtoTransaction> transactions, double minRewards){
-
+       transactions = transactions.stream().sorted(Comparator.comparing(DtoTransaction::getBonusForMiner).reversed()).collect(Collectors.toList());
         if(transactions.size() > Seting.TRANSACTIONS_COUNT_MINIMUM){
-            List<DtoTransaction> transactions1 = new ArrayList<>();
-            for (DtoTransaction dtoTransaction : transactions) {
-                if(dtoTransaction.getBonusForMiner() >= minRewards){
-                    transactions1.add(dtoTransaction);
-                }
-            }
-            return transactions1;
-        }else {
-            return transactions;
+            transactions = transactions.stream().filter(t->t.getBonusForMiner()> minRewards).collect(Collectors.toList());
         }
-
-
-
+        return transactions;
     }
 
     public static void sendTransaction(DtoTransaction dtoTransaction){

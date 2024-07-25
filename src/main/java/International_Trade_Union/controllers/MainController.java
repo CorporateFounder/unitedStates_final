@@ -319,16 +319,16 @@ public class MainController {
      * Sends a transaction to the global node. */
     @PostMapping("/")
     public String new_transaction(
-            @RequestParam  String sender,
-            @RequestParam  String recipient,
-                                   Double dollar,
-                                   Double stock,
-
-                                  @RequestParam  String password,
-                                  RedirectAttributes redirectAttrs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+            @RequestParam String sender,
+            @RequestParam String recipient,
+            @RequestParam Double dollar,
+            @RequestParam Double stock,
+            @RequestParam(defaultValue = "0.0") Double reward,
+            @RequestParam String password,
+            RedirectAttributes redirectAttrs)  throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Base base = new Base58();
 
-        double reward = 0.0;
+
         dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
         stock = UtilsUse.round(stock, Seting.DECIMAL_PLACES);
         reward = UtilsUse.round(reward, Seting.DECIMAL_PLACES);

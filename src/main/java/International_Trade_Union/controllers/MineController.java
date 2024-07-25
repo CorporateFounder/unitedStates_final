@@ -51,23 +51,24 @@ public class MineController {
 
     @PostMapping("/staking")
     public String staking(@RequestParam
-                         String miner,
-                         Double dollar,
-                         String password,
-                         RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, SignatureException, IOException, InvalidKeyException {
+                          String miner,
+                          Double dollar,
+                          @RequestParam(defaultValue = "0.0") Double reward,
+                          String password,
+                          RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, SignatureException, IOException, InvalidKeyException {
         System.out.println("start staking controller");
 
         System.out.println("start post /miningTransaction");
         Base base = new Base58();
 
-        double reward = 0.0;
+
         dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
         reward = UtilsUse.round(reward, Seting.DECIMAL_PLACES);
-        if(dollar == null || dollar < 0.0)
+        if (dollar == null || dollar < 0.0)
             dollar = 0.0;
 
 
-        Laws laws =  new Laws();
+        Laws laws = new Laws();
         laws.setLaws(new ArrayList<>());
         laws.setHashLaw("");
         laws.setPacketLawName("");
@@ -97,30 +98,30 @@ public class MineController {
 //        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
         redirectAttrs.addFlashAttribute("sign", base.encode(dtoTransaction.getSign()));
         Directors directors = new Directors();
-        if(dtoTransaction.verify()){
+        if (dtoTransaction.verify()) {
 
             //если в названия закона совпадает с корпоративными должностями, то закон является действительным, только когда
             //отправитель совпадает с законом.
             //if the title of the law coincides with corporate positions, then the law is valid only when
             //sender matches the law.
             List<String> corporateSeniorPositions = directors.getDirectors().stream()
-                    .map(t->t.getName()).collect(Collectors.toList());
+                    .map(t -> t.getName()).collect(Collectors.toList());
             System.out.println("LawsController: create_law: " + laws.getPacketLawName() + "contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
-            if(corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(miner, laws)){
+            if (corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(miner, laws)) {
                 redirectAttrs.addFlashAttribute("sending", "wrong transaction: Position to be equals whith send");
                 return "redirect:/result-sending";
             }
             redirectAttrs.addFlashAttribute("sending", "success");
-            String str =  base.encode(dtoTransaction.getSign());
+            String str = base.encode(dtoTransaction.getSign());
             System.out.println("sign: " + str);
             AllTransactions.addTransaction(dtoTransaction);
             String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
             for (String s : Seting.ORIGINAL_ADDRESSES) {
 
                 String original = s;
-                String url = s +"/addTransaction";
+                String url = s + "/addTransaction";
                 //если адресс совпадает с внутреним хостом, то не отправляет самому себе
-                if(!Seting.IS_TEST && BasisController.getExcludedAddresses().contains(url)){
+                if (!Seting.IS_TEST && BasisController.getExcludedAddresses().contains(url)) {
                     System.out.println("MainController: its your address or excluded address: " + url);
                     continue;
                 }
@@ -128,41 +129,40 @@ public class MineController {
                     //отправка в сеть
                     UtilUrl.sendPost(jsonDto, url);
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     System.out.println("exception discover: " + original);
 
                 }
             }
 
 
-
-        }
-
-        else
+        } else
             redirectAttrs.addFlashAttribute("sending", "wrong transaction");
         return "redirect:/result-sending";
 
 
     }
+
     @PostMapping("/unstaking")
     public String unstaking(@RequestParam
-                         String miner,
-                         Double dollar,
-                         String password,
-                         RedirectAttributes redirectAttrs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+                            String miner,
+                            Double dollar,
+                            @RequestParam(defaultValue = "0.0") Double reward,
+                            String password,
+                            RedirectAttributes redirectAttrs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
         System.out.println("start staking controller");
 
         System.out.println("start post /miningTransaction");
         Base base = new Base58();
-        double reward = 0.0;
+
         dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
         reward = UtilsUse.round(reward, Seting.DECIMAL_PLACES);
-        if(dollar == null || dollar < 0.0)
+        if (dollar == null || dollar < 0.0)
             dollar = 0.0;
 
 
-        Laws laws =  new Laws();
+        Laws laws = new Laws();
         laws.setLaws(new ArrayList<>());
         laws.setHashLaw("");
         laws.setPacketLawName("");
@@ -190,30 +190,30 @@ public class MineController {
 //        String encoded = Base64.getEncoder().encodeToString(dtoTransaction.getSign());
         redirectAttrs.addFlashAttribute("sign", base.encode(dtoTransaction.getSign()));
         Directors directors = new Directors();
-        if(dtoTransaction.verify()){
+        if (dtoTransaction.verify()) {
 
             //если в названия закона совпадает с корпоративными должностями, то закон является действительным, только когда
             //отправитель совпадает с законом.
             //if the title of the law coincides with corporate positions, then the law is valid only when
             //sender matches the law.
             List<String> corporateSeniorPositions = directors.getDirectors().stream()
-                    .map(t->t.getName()).collect(Collectors.toList());
+                    .map(t -> t.getName()).collect(Collectors.toList());
             System.out.println("LawsController: create_law: " + laws.getPacketLawName() + "contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
-            if(corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(miner, laws)){
+            if (corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(miner, laws)) {
                 redirectAttrs.addFlashAttribute("sending", "wrong transaction: Position to be equals whith send");
                 return "redirect:/result-sending";
             }
             redirectAttrs.addFlashAttribute("sending", "success");
-            String str =  base.encode(dtoTransaction.getSign());
+            String str = base.encode(dtoTransaction.getSign());
             System.out.println("sign: " + str);
             AllTransactions.addTransaction(dtoTransaction);
             String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
             for (String s : Seting.ORIGINAL_ADDRESSES) {
 
                 String original = s;
-                String url = s +"/addTransaction";
+                String url = s + "/addTransaction";
                 //если адресс совпадает с внутреним хостом, то не отправляет самому себе
-                if(!Seting.IS_TEST && BasisController.getExcludedAddresses().contains(url)){
+                if (!Seting.IS_TEST && BasisController.getExcludedAddresses().contains(url)) {
                     System.out.println("MainController: its your address or excluded address: " + url);
                     continue;
                 }
@@ -221,15 +221,13 @@ public class MineController {
                     //отправка в сеть
                     UtilUrl.sendPost(jsonDto, url);
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     System.out.println("exception discover: " + original);
 
                 }
             }
 
-        }
-
-        else
+        } else
             redirectAttrs.addFlashAttribute("sending", "wrong transaction");
         return "redirect:/result-sending";
 

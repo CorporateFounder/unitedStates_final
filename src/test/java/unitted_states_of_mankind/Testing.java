@@ -4,6 +4,7 @@ import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
+import International_Trade_Union.entity.DtoTransaction.MerkleTree;
 import International_Trade_Union.entity.SubBlockchainEntity;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
@@ -29,6 +30,7 @@ import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,11 +64,61 @@ import static International_Trade_Union.utils.BlockchainDifficulty.*;
 import static International_Trade_Union.utils.UtilsBalance.rollbackCalculateBalance;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 @SpringBootTest
 public class Testing {
 
+    /**  if (this.index > Seting.NEW_ALGO_MINING) {
+     MerkleTree merkleTree = new MerkleTree(this.getDtoTransactions());
+     String hash = merkleTree.getRoot() + this.previousHash + this.minerAddress + this.founderAddress
+     + this.randomNumberProof + this.minerRewards + this.hashCompexity + this.timestamp +
+     this.index;
+     return UtilsUse.sha256hash(hash);
+     } else {
+     return UtilsUse.sha256hash(jsonString());
 
+     }*/
 
+    @Test
+    public void hash() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":15.08,\"digitalStockBalance\":15.08,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIAY4A4l9zf3rXYfBgiC03w/hBHK12NeYiCLmKdAixpetAiA2vgNu7ISp2pUXBV1CzpmaXVjWtnC1adP3RX1CLk83jQ==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"BUDGET\",\"digitalDollar\":150.8,\"digitalStockBalance\":150.8,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQC1n/T7dfrqiZeCwIPm7SFFkinuLGwb8X0mDtd3czg6vQIgW80E8Y2XGV4A+iIrnLpTQUvcZL/Y44R+5X8G6SVXzpU=\"}],\"previousHash\":\"8c80ca00407d817730148cc23231905db0214c2844a41944051910ef99955ed2\",\"minerAddress\":\"BUDGET\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":7205759403799190,\"minerRewards\":0.0,\"hashCompexity\":1,\"timestamp\":1721807561000,\"index\":284495,\"hashBlock\":\"08801a989a5d21028802c4a8ce841532b706482468b4810520977d59030842b3\"}\n");
+        System.out.println(block.getHashBlock().equals(block.hashForTransaction()));
+        System.out.println("index: " + block.getIndex());
+        System.out.println("hash1: " + block.getHashBlock());
+        System.out.println("hash2: " + block.hashForTransaction());
+        String firstPart = UtilsUse.firstPartHash(block);
+        String secondPart = UtilsUse.secondPartHash(block);
+        String hash3 = UtilsUse.finalHash(firstPart, secondPart, block.getRandomNumberProof());
+        String hash4 = UtilsUse.hashMining(block, block.getRandomNumberProof());
+        System.out.println("hash3: " + hash3);
+        System.out.println("hash4: " + hash4);
+        DtoTransaction dtoTransaction = block.getDtoTransactions().get(0);
+        String json = UtilsJson.objToStringJson(dtoTransaction);
+        System.out.println("json: " + json);
+
+    }
+
+    @Test
+    public  void calculateScore(){
+
+        double sumBalance = 1;
+        double count = 6;
+        int diff = 18;
+        int result = 4;
+        double transactionSumPoints = UtilsUse.calculateScore(sumBalance / count, 1);
+        double transactionCountPoints = count * 0.5;
+        long score = UtilsUse.calculateScore(4400000, 5);
+
+        double maxTransactionSumPoints = (diff - 17 + score) * 0.6;
+        if (transactionSumPoints > maxTransactionSumPoints) {
+            transactionSumPoints = maxTransactionSumPoints;
+        }
+
+        double sum = transactionCountPoints + transactionSumPoints;
+        System.out.println("score: " + score);
+        result = (int) ( (result + (diff * 30)) + score + sum);
+        System.out.println("result: " + result);
+    }
 
     @Test
     public void test() throws JsonProcessingException {
@@ -143,6 +195,7 @@ public class Testing {
         for (int i = 0; i < 1000; i++) {
             String json = "{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":14.5,\"digitalStockBalance\":14.5,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICJUELZJqVWgIOxaPc8gOJPf6Iq9WDX0QCdTDiHXTP92AiEAkUfXC5Eouj64J7WPXkjhxoWXTw+AY/yU/SQ05+R7VRk=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"25giJad2YEEJqecPsbLkiHBp3KgVpCipENzK1rNZuPbYg\",\"digitalDollar\":145.0,\"digitalStockBalance\":145.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCJSq59MSO/2B9w84dCVxmWRggxLFB1u2e1+m001mvTSAIhAMKnH3VGhgBO0mDdvr5eim6xX4J9E/jO3fvQWgSvzTwK\"}],\"previousHash\":\"a56a0e519e1630a1c0580481430aa00621001001020810200805830387440837\",\"minerAddress\":\"25giJad2YEEJqecPsbLkiHBp3KgVpCipENzK1rNZuPbYg\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":24319438452809543,\"minerRewards\":0.0,\"hashCompexity\":26,\"timestamp\":1704555268000,\"index\":167337,\"hashBlock\":\"48135472000c814010085824170a4a0f80520c62788310154480885018c1c803\"}";
             List<Block> blocks = new ArrayList<Block>();
+
             blocks.add(UtilsJson.jsonToBLock(json));
             blocks.get(0).setHashBlock("4111780951498215c031c98cc201b4690208828c3c844660104bacdc11040909");
             blocks.get(0).setPreviousHash("41c408c41718500200306b0200a10a040280e08f4d2844f30258a23eb9715490");

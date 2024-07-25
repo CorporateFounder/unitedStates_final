@@ -2,6 +2,7 @@ package International_Trade_Union.utils;
 
 
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
+import International_Trade_Union.entity.DtoTransaction.MerkleTree;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.services.BlockService;
@@ -273,10 +274,12 @@ public class UtilsUse {
         Set<Object> seen = ConcurrentHashMap.newKeySet();
         return t -> seen.add(keyExtractor.apply(t));
     }
+
     public static <T> Predicate<T> distinctByKeyString(Function<? super T, String> keyExtractor) {
         Set<String> seen = ConcurrentHashMap.newKeySet();
         return t -> seen.add(keyExtractor.apply(t));
     }
+
     //подсчитать количество нулей идущих подряд в hash
     public static long hashCount(String hash, long index) {
         long count = 0;
@@ -320,9 +323,9 @@ public class UtilsUse {
     public static Map<String, Account> balancesClone(Map<String, Account> balances) throws CloneNotSupportedException {
         Map<String, Account> temp = new HashMap<>();
         for (Map.Entry<String, Account> accountEntry : balances.entrySet()) {
-            if(accountEntry == null
+            if (accountEntry == null
                     || accountEntry.getKey().isBlank()
-                    || accountEntry.getValue() == null){
+                    || accountEntry.getValue() == null) {
                 continue;
             }
             temp.put(accountEntry.getKey(), accountEntry.getValue().clone());
@@ -361,22 +364,62 @@ public class UtilsUse {
         int number = 0;
         int limit = 135; // Предполагается, что limit это максимальное значение + 1
 
-        if (actual.getIndex() < Seting.WAIGHT_MINING_INDEX) {
+        if (actual.getIndex() < Seting.WAIGHT_MINING_INDEX ) {
             waight = Seting.WAIGHT_MINING;
             number = 1;
             limit = 55;
-        } else {
+        } else if (actual.getIndex() >= Seting.WAIGHT_MINING_INDEX && actual.getIndex() <= Seting.NEW_ALGO_MINING) {
             waight = Seting.WAIGHT_MINING_2;
             number = 10;
             limit = 135;
 
+        } else if(actual.getIndex() > Seting.NEW_ALGO_MINING) {
+            waight = Seting.WAIGHT_MINING_3;
+            number = 10;
+            limit = 150;
         }
-        // Генерация случайного числа в диапазоне от 0 до 135
+        // Генерация случайного числа в диапазоне от 0 до 150
         int result = deterministicRandom.nextInt(limit);
-        result = (int) ((int) (result + (actual.getHashCompexity() * waight)) + calculateScore(miner.getDigitalStakingBalance(), number)
-        );
+        if (actual.getIndex() > Seting.NEW_ALGO_MINING) {
+            // Получаем количество уникальных отправителей транзакций
+            long transactionCount = actual.getDtoTransactions().stream()
+                    .filter(UtilsUse.distinctByKey(DtoTransaction::getSender))
+                    .count();
 
+            // Подсчитываем сумму всех транзакций
+            double transactionSum = actual.getDtoTransactions().stream()
+                    .sorted(Comparator.comparing(DtoTransaction::getDigitalDollar).reversed())
+                    .filter(UtilsUse.distinctByKey(DtoTransaction::getSender))
+                    .mapToDouble(t -> t.getDigitalDollar() + t.getDigitalStockBalance() + t.getBonusForMiner() * 4)
+                    .sum();
 
+            // Рассчитываем очки за сумму транзакций
+            double transactionSumPoints = calculateScore(transactionSum / Math.max(actual.getDtoTransactions().size(), 1), 1) * 4;
+
+            // Очки за стейкинг
+            long mineScore = calculateScore(miner.getDigitalStakingBalance(), number);
+
+            int diffLimit = (int) (actual.getHashCompexity() - 19);
+            diffLimit = diffLimit >= 0? diffLimit: 0;
+            // Рассчитываем очки за количество транзакций
+            double transactionCountPoints = Math.min(transactionCount, mineScore * 2 + diffLimit * 3)  ;
+
+            // Новая формула для максимального количества баллов за транзакции
+            double maxTransactionPoints = (actual.getHashCompexity() - 19) * 3 + mineScore;
+
+            // Выбираем большее из количества и суммы транзакций
+            double transactionPoints = Math.max(transactionCountPoints, transactionSumPoints);
+
+            // Ограничиваем баллы за транзакции новым максимумом
+            transactionPoints = Math.min(transactionPoints, maxTransactionPoints);
+
+            // Финальный результат
+            result = (int) (result + (actual.getHashCompexity() * waight) + mineScore + transactionPoints);
+        }
+        else {
+            result = (int) ((int) (result + (actual.getHashCompexity() * waight)) + calculateScore(miner.getDigitalStakingBalance(), number));
+
+        }
         //+ calculateScore(miner.getDigitalStakingBalance(), 1)
         return result;
 
@@ -477,7 +520,7 @@ public class UtilsUse {
     }
 
 
-    public static List<EntityAccount> accounts (List<Block> blocks, BlockService blockService) throws IOException {
+    public static List<EntityAccount> accounts(List<Block> blocks, BlockService blockService) throws IOException {
         List<String> accounts = new ArrayList<>();
         for (Block block : blocks) {
             for (DtoTransaction transaction : block.getDtoTransactions()) {
@@ -490,6 +533,7 @@ public class UtilsUse {
         }
         return blockService.findBYAccountString(accounts);
     }
+
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
         long factor = (long) Math.pow(10, places);
@@ -497,4 +541,92 @@ public class UtilsUse {
         return (double) Math.round(value) / factor;
     }
 
+    public static String merkleHash(List<DtoTransaction> dtoTransactions){
+        return new MerkleTree(dtoTransactions).getRoot();
+    }
+
+    public static String hashMerkleBlock(Block block){
+        String hash =  "transactions"+merkleHash(block.getDtoTransactions())
+               +"previousHash" + block.getPreviousHash()
+               +"minerAddress" + block.getMinerAddress()
+               + "minerAddress" + block.getFounderAddress()
+                +"randomNumberProof" + block.getRandomNumberProof()
+               +"minerRewards" + block.getMinerRewards()
+                +"hashCompexity" + block.getHashCompexity()
+                +"timestamp" + block.getTimestamp()
+                +"index" + block.getIndex();
+        return UtilsUse.sha256hash(hash);
+    }
+    public static String hashMerkleBlock(Block.BlockForHash block){
+        String hash =  "transactions"+merkleHash(block.getTransactions())
+                +"previousHash" + block.getPreviousHash()
+                +"minerAddress" + block.getMinerAddress()
+                + "minerAddress" + block.getFounderAddress()
+                +"randomNumberProof" + block.getRandomNumberProof()
+                +"minerRewards" + block.getMinerRewards()
+                +"hashCompexity" + block.getHashCompexity()
+                +"timestamp" + block.getTimestamp()
+                +"index" + block.getIndex();
+        return UtilsUse.sha256hash(hash);
+    }
+
+    public static String hashMining(Block.BlockForHash block, long randomNumberProof){
+        String hash =  "transactions"+merkleHash(block.getTransactions())
+                +"previousHash" + block.getPreviousHash()
+                +"minerAddress" + block.getMinerAddress()
+                + "minerAddress" + block.getFounderAddress()
+                +"randomNumberProof" + randomNumberProof
+                +"minerRewards" + block.getMinerRewards()
+                +"hashCompexity" + block.getHashCompexity()
+                +"timestamp" + block.getTimestamp()
+                +"index" + block.getIndex();
+        return UtilsUse.sha256hash(hash);
+    }
+
+    public static String hashMining(Block block, long randomNumberProof){
+        String hash =  "transactions"+merkleHash(block.getDtoTransactions())
+                +"previousHash" + block.getPreviousHash()
+                +"minerAddress" + block.getMinerAddress()
+                + "minerAddress" + block.getFounderAddress()
+                +"randomNumberProof" + randomNumberProof
+                +"minerRewards" + block.getMinerRewards()
+                +"hashCompexity" + block.getHashCompexity()
+                +"timestamp" + block.getTimestamp()
+                +"index" + block.getIndex();
+        return UtilsUse.sha256hash(hash);
+    }
+    public static String firstPartHash(Block.BlockForHash block){
+       String firstPartHash =  "transactions"+merkleHash(block.getTransactions())
+                +"previousHash" + block.getPreviousHash()
+                +"minerAddress" + block.getMinerAddress()
+                + "minerAddress" + block.getFounderAddress();
+       return firstPartHash;
+    }
+
+    public static String firstPartHash(Block block){
+        String firstPartHash =  "transactions"+merkleHash(block.getDtoTransactions())
+                +"previousHash" + block.getPreviousHash()
+                +"minerAddress" + block.getMinerAddress()
+                + "minerAddress" + block.getFounderAddress();
+        return firstPartHash;
+    }
+    public static String secondPartHash(Block.BlockForHash block){
+        String secondPartHash = "minerRewards" + block.getMinerRewards()
+                +"hashCompexity" + block.getHashCompexity()
+                +"timestamp" + block.getTimestamp()
+                +"index" + block.getIndex();
+        return secondPartHash;
+    }
+
+    public static String secondPartHash(Block block){
+        String secondPartHash = "minerRewards" + block.getMinerRewards()
+                +"hashCompexity" + block.getHashCompexity()
+                +"timestamp" + block.getTimestamp()
+                +"index" + block.getIndex();
+        return secondPartHash;
+    }
+    public static String finalHash(String firstPartHash, String secondPartHash, long numberRandomProof){
+        String str = firstPartHash +"randomNumberProof" + numberRandomProof + secondPartHash;
+       return UtilsUse.sha256hash(str);
+    }
 }

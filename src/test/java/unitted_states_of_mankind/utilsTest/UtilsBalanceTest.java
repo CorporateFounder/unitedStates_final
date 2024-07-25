@@ -1,5 +1,6 @@
 package unitted_states_of_mankind.utilsTest;
 
+import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.utils.*;
 import org.junit.*;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -67,21 +68,31 @@ public class UtilsBalanceTest {
     public void SendTest() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidAlgorithmParameterException {
 
 
-        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":14.5,\"digitalStockBalance\":14.5,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCkBX4IBVOq/2mPsOTWIn2N8TPfS5FItHqrEqhuU/YgHAIgKmdMlLXLM4sfnWh0aO0ezTZeInUdc/dh7SDF1qOKPAI=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"2A8vxijdyY5ST1WhLQan3N1P6wSdzBDo9VmEFhck9bArG\",\"digitalDollar\":145.0,\"digitalStockBalance\":145.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQD8iQWqgDwsxDV3ew0yZeUDS+xnI2iNjuNHak4MccU1WgIhAOP1cKFcZfrJ6Oek4UH6cX9FcIBYaA3OwAItctWny1k7\"}],\"previousHash\":\"904045a20888b4581d08c9587242b740cb12603802c440104f10063236603202\",\"minerAddress\":\"2A8vxijdyY5ST1WhLQan3N1P6wSdzBDo9VmEFhck9bArG\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":947262,\"minerRewards\":0.0,\"hashCompexity\":16,\"timestamp\":1704736749000,\"index\":167479,\"hashBlock\":\"185ac49d8c2320b030d4ac8454000b2a21423a00816a042c5403470032439188\"}");
-
-
-        Account sender = new Account("faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ", 100, 0, 0);
-
-        Account recipient = new Account("2A8vxijdyY5ST1WhLQan3N1P6wSdzBDo9VmEFhck9bArG", 100, 0, 0);
+        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":14.5,\"digitalStockBalance\":14.5,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCkBX4IBVOq/2mPsOTWIn2N8TPfS5FItHqrEqhuU/YgHAIgKmdMlLXLM4sfnWh0aO0ezTZeInUdc/dh7SDF1qOKPAI=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"2A8vxijdyY5ST1WhLQan3N1P6wSdzBDo9VmEFhck9bArG\",\"digitalDollar\":145.0,\"digitalStockBalance\":145.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":3.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQD8iQWqgDwsxDV3ew0yZeUDS+xnI2iNjuNHak4MccU1WgIhAOP1cKFcZfrJ6Oek4UH6cX9FcIBYaA3OwAItctWny1k7\"}],\"previousHash\":\"904045a20888b4581d08c9587242b740cb12603802c440104f10063236603202\",\"minerAddress\":\"2A8vxijdyY5ST1WhLQan3N1P6wSdzBDo9VmEFhck9bArG\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":947262,\"minerRewards\":0.0,\"hashCompexity\":16,\"timestamp\":1704736749000,\"index\":167479,\"hashBlock\":\"185ac49d8c2320b030d4ac8454000b2a21423a00816a042c5403470032439188\"}");
+        DtoTransaction transaction = block.getDtoTransactions().get(1);
+        transaction.setBonusForMiner(3);
+        transaction.setSender("2A8vxijdyY5ST1WhLQan3N1P6wSdzBDo9VmEFhck9bArG");
+        transaction.setCustomer("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43");
+        System.out.println(transaction);
+        long index = 284984 + 5000;
+        System.out.println("index: " + index);
+        Account sender = new Account(transaction.getSender(), 1000, 1000, 0);
+        Account miner = new Account(block.getMinerAddress(), 0.0, 0.0, 0.0);
+        Account recipient = new Account(transaction.getCustomer(), 1000, 1000, 0);
         System.out.println("sender before: " + sender);
         System.out.println("recipient before: " + recipient);
-        UtilsBalance.sendMoney(sender, recipient, block.getDtoTransactions().get(1).getDigitalDollar(),block.getDtoTransactions().get(1).getDigitalStockBalance(),  block.getDtoTransactions().get(1).getBonusForMiner());
+        System.out.println("minier before: " + miner);
+        UtilsBalance.sendMoney(sender, recipient, miner, transaction.getDigitalDollar(),transaction.getDigitalStockBalance(),  transaction.getBonusForMiner(), index);
         System.out.println("sender after: " + sender);
         System.out.println("recipient after: " + recipient);
+        System.out.println("minier after: " + miner);
+        System.out.println("bonus for miner: " + block.getDtoTransactions().get(1).getBonusForMiner());
+
         System.out.println("roll back");
-        UtilsBalance.rollBackSendMoney(sender, recipient, block.getDtoTransactions().get(1).getDigitalDollar(), block.getDtoTransactions().get(1).getDigitalStockBalance(), block.getDtoTransactions().get(1).getBonusForMiner(), VoteEnum.YES );
+        UtilsBalance.rollBackSendMoney(sender, recipient, miner, transaction.getDigitalDollar(), transaction.getDigitalStockBalance(), transaction.getBonusForMiner(), VoteEnum.YES , index);
         System.out.println("sender after: " + sender);
         System.out.println("recipient after: " + recipient);
+        System.out.println("minier after: " + miner);
     }
 }
 

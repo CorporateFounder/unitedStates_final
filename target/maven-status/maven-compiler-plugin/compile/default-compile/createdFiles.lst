@@ -32,6 +32,7 @@ International_Trade_Union\entity\repository\EntityAccountRepository.class
 International_Trade_Union\utils\UtilsBlock.class
 International_Trade_Union\entity\blockchain\DataShortBlockchainInformation.class
 International_Trade_Union\entity\entities\EntityLaws.class
+International_Trade_Union\entity\entities\SendCoinResult.class
 International_Trade_Union\utils\UtilsBlock$4.class
 International_Trade_Union\statistics\UtilsStatistics.class
 International_Trade_Union\model\Keys.class
@@ -124,6 +125,7 @@ International_Trade_Union\controllers\BoardOfShareholdersController.class
 International_Trade_Union\network\AllTransactions.class
 International_Trade_Union\UnitedStatesApplication.class
 International_Trade_Union\controllers\TransactionsController.class
+International_Trade_Union\entity\DtoTransaction\MerkleTree.class
 International_Trade_Union\utils\UtilsBlock$3.class
 International_Trade_Union\controllers\CreateAccountController.class
 International_Trade_Union\entity\SendBlocksEndInfo.class

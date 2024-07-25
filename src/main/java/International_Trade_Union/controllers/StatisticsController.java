@@ -3,6 +3,7 @@ package International_Trade_Union.controllers;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.entities.EntityBlock;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.Mining;
@@ -19,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
@@ -100,4 +102,61 @@ public class StatisticsController {
         System.out.println("blockchain size: " + blockchain.getBlockchainList().size());
         return "statistics";
     }
+
+    @GetMapping("/percent")
+    @ResponseBody
+    public List<String> percent() throws IOException {
+        List<EntityBlock> entityBlocks = blockService.findBySpecialIndexBetween(BasisController.getBlockchainSize() - 576, BasisController.getBlockchainSize());
+
+        Map<String, Integer> addressCountMap = new HashMap<>();
+        Map<String, Long> addressComplexityMap = new HashMap<>();
+        Map<String, Map<Long, Integer>> complexityFrequencyMap = new HashMap<>();
+
+        for (EntityBlock block : entityBlocks) {
+            String minerAddress = block.getMinerAddress();
+            long blockComplexity = block.getHashCompexity();
+
+            addressCountMap.put(minerAddress, addressCountMap.getOrDefault(minerAddress, 0) + 1);
+            addressComplexityMap.put(minerAddress, addressComplexityMap.getOrDefault(minerAddress, 0L) + blockComplexity);
+
+            Map<Long, Integer> frequencyMap = complexityFrequencyMap.getOrDefault(minerAddress, new HashMap<>());
+            frequencyMap.put(blockComplexity, frequencyMap.getOrDefault(blockComplexity, 0) + 1);
+            complexityFrequencyMap.put(minerAddress, frequencyMap);
+        }
+
+        int totalBlocks = entityBlocks.size();
+        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(addressCountMap.entrySet());
+
+        entryList.sort((e1, e2) -> {
+            double percentage1 = (e1.getValue() * 100.0) / totalBlocks;
+            double percentage2 = (e2.getValue() * 100.0) / totalBlocks;
+            return Double.compare(percentage2, percentage1);
+        });
+
+        List<String> result = new ArrayList<>();
+
+        for (Map.Entry<String, Integer> entry : entryList) {
+            String address = entry.getKey();
+            int count = entry.getValue();
+            double percentage = (count * 100.0) / totalBlocks;
+            long totalComplexity = addressComplexityMap.get(address);
+
+            Map<Long, Integer> frequencyMap = complexityFrequencyMap.get(address);
+            long modeComplexity = -1;
+            int maxFrequency = 0;
+            for (Map.Entry<Long, Integer> freqEntry : frequencyMap.entrySet()) {
+                if (freqEntry.getValue() > maxFrequency) {
+                    maxFrequency = freqEntry.getValue();
+                    modeComplexity = freqEntry.getKey();
+                }
+            }
+
+            result.add(String.format("address: %s - blocks: %d - percent: %.2f%% - difficult: %d (moda: %d)", address, count, percentage, totalComplexity, modeComplexity));
+        }
+
+        return result;
+    }
+
+
+
 }

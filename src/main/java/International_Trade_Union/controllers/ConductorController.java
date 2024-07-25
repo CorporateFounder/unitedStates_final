@@ -3,6 +3,7 @@ package International_Trade_Union.controllers;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.entities.EntityDtoTransaction;
+import International_Trade_Union.entity.entities.SendCoinResult;
 import International_Trade_Union.entity.entities.SignRequest;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Directors;
@@ -106,98 +107,90 @@ public class ConductorController {
      */
     @GetMapping("/sendCoin")
     @ResponseBody
-    public String send(@RequestParam String sender,
-                       @RequestParam String recipient,
-                       @RequestParam(defaultValue = "0.0") Double dollar,
-                       @RequestParam(defaultValue = "0.0") Double stock,
-                       @RequestParam(defaultValue = "0.0") Double reward,
-                       @RequestParam String password) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
-        Base base = new Base58();
-        String result = "false";
+    public SendCoinResult send(@RequestParam String sender,
+                           @RequestParam String recipient,
+                           @RequestParam(defaultValue = "0.0") Double dollar,
+                           @RequestParam(defaultValue = "0.0") Double stock,
+                           @RequestParam(defaultValue = "0.0") Double reward,
+                           @RequestParam String password) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+    Base base = new Base58();
+    SendCoinResult result = new SendCoinResult(); // Initialize the result
 
-        dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
-        stock = UtilsUse.round(stock, Seting.DECIMAL_PLACES);
-        reward = UtilsUse.round(reward, Seting.DECIMAL_PLACES);
-        if (dollar == null || dollar < 0.0)
-            dollar = 0.0;
+    dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
+    stock = UtilsUse.round(stock, Seting.DECIMAL_PLACES);
+    reward = UtilsUse.round(reward, Seting.DECIMAL_PLACES);
+    if (dollar == null || dollar < 0.0) dollar = 0.0;
+    if (stock == null || stock < 0.0) stock = 0.0;
+    if (reward == null || reward < 0.0) reward = 0.0;
 
-        if (stock == null || stock < 0.0)
-            stock = 0.0;
+    Laws laws = new Laws();
+    laws.setLaws(new ArrayList<>());
+    laws.setHashLaw("");
+    laws.setPacketLawName("");
+    DtoTransaction dtoTransaction = new DtoTransaction(
+            sender,
+            recipient,
+            dollar,
+            stock,
+            laws,
+            reward,
+            VoteEnum.YES);
+    PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));
+    byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
+    System.out.println("Main Controller: new transaction: vote: " + VoteEnum.YES);
+    dtoTransaction.setSign(sign);
+    Directors directors = new Directors();
+    System.out.println("sender: " + sender);
+    System.out.println("recipient: " + recipient);
+    System.out.println("dollar: " + dollar + ": class: " + dollar.getClass());
+    System.out.println("stock: " + stock + ": class: " + stock.getClass());
+    System.out.println("reward: " + reward + ": class: " + reward.getClass());
+    System.out.println("password: " + password);
+    System.out.println("sign: " + base.encode(dtoTransaction.getSign()));
+    System.out.println("verify: " + dtoTransaction.verify());
 
-        if (reward == null || reward < 0.0)
-            reward = 0.0;
-
-        Laws laws = new Laws();
-        laws.setLaws(new ArrayList<>());
-        laws.setHashLaw("");
-        laws.setPacketLawName("");
-        DtoTransaction dtoTransaction = new DtoTransaction(
-                sender,
-                recipient,
-                dollar,
-                stock,
-                laws,
-                reward,
-                VoteEnum.YES);
-        PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));
-        byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
-        System.out.println("Main Controller: new transaction: vote: " + VoteEnum.YES);
-        dtoTransaction.setSign(sign);
-        Directors directors = new Directors();
-        System.out.println("sender: " + sender);
-        System.out.println("recipient: " + recipient);
-        System.out.println("dollar: " + dollar + ": class: " + dollar.getClass());
-        System.out.println("stock: " + stock + ": class: " + stock.getClass());
-        System.out.println("reward: " + reward + ": class: " + reward.getClass());
-        System.out.println("password: " + password);
-        System.out.println("sign: " + base58.encode(dtoTransaction.getSign()));
-        System.out.println("verify: " + dtoTransaction.verify());
-
-        if (dtoTransaction.verify()) {
-
-            //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
-            //отправитель совпадает с законом
-            List<String> corporateSeniorPositions = directors.getDirectors().stream()
-                    .map(t -> t.getName()).collect(Collectors.toList());
-            System.out.println("LawsController: create_law: " + laws.getPacketLawName() + "contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
-            if (corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(sender, laws)) {
-                System.out.println("sending" + "wrong transaction: Position to be equals whith send");
-                return result;
-            }
-            result = base.encode(dtoTransaction.getSign());
-
-            String str = base.encode(dtoTransaction.getSign());
-            System.out.println("sign: " + str);
-            AllTransactions.addTransaction(dtoTransaction);
-            String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
-            Set<String> nodesAll = getNodes();
-            List<HostEndDataShortB> sortPriorityHost = utilsResolving.sortPriorityHost(nodesAll);
-
-            for (HostEndDataShortB hostEndDataShortB :sortPriorityHost) {
-
-                String original = hostEndDataShortB.getHost();
-                String url = hostEndDataShortB.getHost() + "/addTransaction";
-                //если адресс совпадает с внутреним хостом, то не отправляет самому себе
-                if (BasisController.getExcludedAddresses().contains(url)) {
-                    System.out.println("MainController: its your address or excluded address: " + url);
-                    continue;
-                }
-                try {
-                    //отправка в сеть
-                    UtilUrl.sendPost(jsonDto, url);
-
-                } catch (Exception e) {
-                    System.out.println("exception discover: " + original);
-
-                }
-            }
-
-
-        } else
+    if (dtoTransaction.verify()) {
+        List<String> corporateSeniorPositions = directors.getDirectors().stream()
+                .map(t -> t.getName()).collect(Collectors.toList());
+        System.out.println("LawsController: create_law: " + laws.getPacketLawName() + " contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
+        if (corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(sender, laws)) {
+            System.out.println("sending wrong transaction: Position to be equals with send");
             return result;
-        return result;
+        }
 
+        result.setSign(base.encode(dtoTransaction.getSign()));
+        result.setDtoTransaction(dtoTransaction);
+
+        String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
+        Set<String> nodesAll = getNodes();
+        List<HostEndDataShortB> sortPriorityHost = utilsResolving.sortPriorityHost(nodesAll);
+
+        for (HostEndDataShortB hostEndDataShortB : sortPriorityHost) {
+            String original = hostEndDataShortB.getHost();
+            String url = hostEndDataShortB.getHost() + "/addTransaction";
+            if (BasisController.getExcludedAddresses().contains(url)) {
+                System.out.println("MainController: its your address or excluded address: " + url);
+                continue;
+            }
+            try {
+                // Send to network
+                int responseCode = UtilUrl.sendPost(jsonDto, url);
+                if (responseCode == 200) {
+                    result.put(hostEndDataShortB.getHost(), "SENDED");
+                } else {
+                    result.put(hostEndDataShortB.getHost(), "FAILED: " + responseCode);
+                }
+            } catch (Exception e) {
+                System.out.println("exception discover: " + original);
+                result.put(hostEndDataShortB.getHost(), "SERVER DID NOT RESPOND");
+            }
+        }
+    } else {
+        return result;
     }
+    return result;
+}
+
 
     /**
      * whether the transaction was added to the blockchain, find with sign
