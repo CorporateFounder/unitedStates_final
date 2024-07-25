@@ -405,7 +405,7 @@ public class UtilsUse {
             double transactionCountPoints = Math.min(transactionCount, mineScore * 2 + diffLimit * 3)  ;
 
             // Новая формула для максимального количества баллов за транзакции
-            double maxTransactionPoints = (actual.getHashCompexity() - 19) * 3 + mineScore;
+            double maxTransactionPoints = diffLimit* 3 + mineScore;
 
             // Выбираем большее из количества и суммы транзакций
             double transactionPoints = Math.max(transactionCountPoints, transactionSumPoints);
