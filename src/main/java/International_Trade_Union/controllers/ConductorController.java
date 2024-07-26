@@ -115,7 +115,11 @@ public class ConductorController {
                            @RequestParam String password) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
     Base base = new Base58();
     SendCoinResult result = new SendCoinResult(); // Initialize the result
-
+        // Check if the password contains only valid Base58 characters
+        if (!password.matches("[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+")) {
+            System.out.println("Password contains invalid Base58 characters");
+            return result;
+        }
     dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
     stock = UtilsUse.round(stock, Seting.DECIMAL_PLACES);
     reward = UtilsUse.round(reward, Seting.DECIMAL_PLACES);
@@ -135,8 +139,15 @@ public class ConductorController {
             laws,
             reward,
             VoteEnum.YES);
-    PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));
-    byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
+        PrivateKey privateKey;
+        byte[] sign ;
+    try {
+        privateKey= UtilsSecurity.privateBytToPrivateKey(base.decode(password));
+        sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
+    }catch (IOException e){
+        return result;
+    }
+
     System.out.println("Main Controller: new transaction: vote: " + VoteEnum.YES);
     dtoTransaction.setSign(sign);
     Directors directors = new Directors();
@@ -146,8 +157,13 @@ public class ConductorController {
     System.out.println("stock: " + stock + ": class: " + stock.getClass());
     System.out.println("reward: " + reward + ": class: " + reward.getClass());
     System.out.println("password: " + password);
-    System.out.println("sign: " + base.encode(dtoTransaction.getSign()));
-    System.out.println("verify: " + dtoTransaction.verify());
+    try {
+        System.out.println("sign: " + base.encode(dtoTransaction.getSign()));
+        System.out.println("verify: " + dtoTransaction.verify());
+
+    }catch (Exception e){
+        return result;
+    }
 
     if (dtoTransaction.verify()) {
         List<String> corporateSeniorPositions = directors.getDirectors().stream()
@@ -157,9 +173,13 @@ public class ConductorController {
             System.out.println("sending wrong transaction: Position to be equals with send");
             return result;
         }
+        try {
+            result.setSign(base.encode(dtoTransaction.getSign()));
+            result.setDtoTransaction(dtoTransaction);
 
-        result.setSign(base.encode(dtoTransaction.getSign()));
-        result.setDtoTransaction(dtoTransaction);
+        }catch (Exception e){
+            return new SendCoinResult();
+        }
 
         String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
         Set<String> nodesAll = getNodes();

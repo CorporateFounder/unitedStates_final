@@ -328,7 +328,11 @@ public class MainController {
             RedirectAttributes redirectAttrs)  throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Base base = new Base58();
 
-
+// Check if the password contains only valid Base58 characters
+        if (!password.matches("[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+")) {
+            System.out.println("Password contains invalid Base58 characters");
+            return "redirect:/result-sending";
+        }
         dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
         stock = UtilsUse.round(stock, Seting.DECIMAL_PLACES);
         reward = UtilsUse.round(reward, Seting.DECIMAL_PLACES);
