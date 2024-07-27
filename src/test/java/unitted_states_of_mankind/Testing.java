@@ -107,7 +107,7 @@ public class Testing {
         int result = 4;
         double transactionSumPoints = UtilsUse.calculateScore(sumBalance / count, 1);
         double transactionCountPoints = count * 0.5;
-        long score = UtilsUse.calculateScore(4400000, 5);
+        long score = UtilsUse.calculateScore(4400000, 1);
 
         double maxTransactionSumPoints = (diff - 17 + score) * 0.6;
         if (transactionSumPoints > maxTransactionSumPoints) {

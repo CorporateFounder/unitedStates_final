@@ -375,7 +375,7 @@ public class UtilsUse {
 
         } else if(actual.getIndex() > Seting.NEW_ALGO_MINING) {
             waight = Seting.WAIGHT_MINING_3;
-            number = 10;
+            number = 1;
             limit = 150;
         }
         // Генерация случайного числа в диапазоне от 0 до 150
