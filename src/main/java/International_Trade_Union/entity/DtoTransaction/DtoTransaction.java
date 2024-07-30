@@ -24,7 +24,7 @@ import java.util.Objects;
 
 @JsonAutoDetect
 @Data
-public class DtoTransaction {
+public class DtoTransaction implements Comparable<DtoTransaction>{
     private String sender;
     private String customer;
     private double digitalDollar;
@@ -92,5 +92,10 @@ public class DtoTransaction {
         int result = Objects.hash(getSender(), getCustomer(), getDigitalDollar(), getDigitalStockBalance(), getLaws(), getBonusForMiner(), getVoteEnum());
         result = 31 * result + Arrays.hashCode(getSign());
         return result;
+    }
+
+    @Override
+    public int compareTo(DtoTransaction o) {
+        return 0;
     }
 }

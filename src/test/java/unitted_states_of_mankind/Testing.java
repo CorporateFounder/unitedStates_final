@@ -1,66 +1,38 @@
 package unitted_states_of_mankind;
 
-import International_Trade_Union.config.BLockchainFactory;
-import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
-import International_Trade_Union.entity.DtoTransaction.MerkleTree;
 import International_Trade_Union.entity.SubBlockchainEntity;
-import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.entities.EntityBlock;
-import International_Trade_Union.entity.services.BlockService;
-import International_Trade_Union.exception.NotValidTransactionException;
-import International_Trade_Union.governments.Directors;
-import International_Trade_Union.governments.NamePOSITION;
-import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.HostEndDataShortB;
-import International_Trade_Union.model.LiteVersionWiner;
-import International_Trade_Union.model.Mining;
 import International_Trade_Union.model.comparator.HostEndDataShortBComparator;
-import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
-import International_Trade_Union.utils.base.Base;
-import International_Trade_Union.utils.base.Base58;
-import International_Trade_Union.vote.Laws;
-import International_Trade_Union.vote.VoteEnum;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONException;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.thymeleaf.spring5.processor.SpringTextareaFieldTagProcessor;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Timestamp;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static International_Trade_Union.setings.Seting.*;
-import static International_Trade_Union.utils.BlockchainDifficulty.*;
 import static International_Trade_Union.utils.UtilsBalance.rollbackCalculateBalance;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -81,20 +53,14 @@ public class Testing {
 
     @Test
     public void hash() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":15.08,\"digitalStockBalance\":15.08,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIAY4A4l9zf3rXYfBgiC03w/hBHK12NeYiCLmKdAixpetAiA2vgNu7ISp2pUXBV1CzpmaXVjWtnC1adP3RX1CLk83jQ==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"BUDGET\",\"digitalDollar\":150.8,\"digitalStockBalance\":150.8,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQC1n/T7dfrqiZeCwIPm7SFFkinuLGwb8X0mDtd3czg6vQIgW80E8Y2XGV4A+iIrnLpTQUvcZL/Y44R+5X8G6SVXzpU=\"}],\"previousHash\":\"8c80ca00407d817730148cc23231905db0214c2844a41944051910ef99955ed2\",\"minerAddress\":\"BUDGET\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":7205759403799190,\"minerRewards\":0.0,\"hashCompexity\":1,\"timestamp\":1721807561000,\"index\":284495,\"hashBlock\":\"08801a989a5d21028802c4a8ce841532b706482468b4810520977d59030842b3\"}\n");
-        System.out.println(block.getHashBlock().equals(block.hashForTransaction()));
-        System.out.println("index: " + block.getIndex());
-        System.out.println("hash1: " + block.getHashBlock());
-        System.out.println("hash2: " + block.hashForTransaction());
-        String firstPart = UtilsUse.firstPartHash(block);
-        String secondPart = UtilsUse.secondPartHash(block);
-        String hash3 = UtilsUse.finalHash(firstPart, secondPart, block.getRandomNumberProof());
-        String hash4 = UtilsUse.hashMining(block, block.getRandomNumberProof());
-        System.out.println("hash3: " + hash3);
-        System.out.println("hash4: " + hash4);
-        DtoTransaction dtoTransaction = block.getDtoTransactions().get(0);
-        String json = UtilsJson.objToStringJson(dtoTransaction);
-        System.out.println("json: " + json);
+        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.1818181818,\"digitalStockBalance\":0.1818181818,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIHWb5voJj8D5PgHAjhTbRR4NzjJ81e2qalfkIQRTSIeyAiEAsGRdj9UOcHP6AA769GxXbJzIAWxWCwRVzFb5hEhvO0M=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.375,\"digitalStockBalance\":0.375,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIB2Uk7VL0WbT3kIYmqpyY8TE/9+ttqt0yijMuxeLMSX7AiAAhdU9Ecd8i5PDDDb8BiBOL5MUaa7SwA1pPHLoMpjiow==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.3333333333,\"digitalStockBalance\":0.3333333333,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIBANj/gvJEXcib8mazHXHoabUPcJL2kYeIrLmvMCcteiAiBMSzYL5m1C5U1swKH8US3GzxSjplYz6c5hgxois5oBqg==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.2222222222,\"digitalStockBalance\":0.2222222222,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDmByNyAUmbslorqQHXxdaZ4uNIbGpISob9ZVZZWMFNGQIhAJ7x0fzEyY1TDYdk5yG5GfmLoEXchDqUljnzO34AgXx/\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.1428571429,\"digitalStockBalance\":0.1428571429,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQD7uAbvePL9AaxuO4CmmfY9uGkYQ5aS2YjHqOzMqjiqeQIhAMX/kaVP1UAOijyJZ59PlVwHH4+0S+ZbYXBhK+WoMh/U\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.125,\"digitalStockBalance\":0.125,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQD6oeNLSlXz5QKTsEamaIB/BAD1k/Iw6+NhsTdIKn0hJAIhALIrVxOfMS75gzYh13+UTR/HEyj16EuWCmjpN+ol7PVS\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.2,\"digitalStockBalance\":0.2,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDlnBFbOHXFGVRVT177ep4GdzmgImn4ZhYEHdlCDL+FqAIhAPbdWPk/V5tdaABDinqtgsgbvwRycfVvOluM0dEWobs9\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.3,\"digitalStockBalance\":0.3,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIF992QNkfmdQbbwpNtf5deRVrgnvdaU9g1CM36cYbNlyAiEAsmjZMotPwuHNyQE4oM66IXlVsxeUYA6mYXJBAZX8LiE=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.2857142857,\"digitalStockBalance\":0.2857142857,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCICO+dC/uAgKKAzG7yadYT8aVyD5XXGRemL687ESdZRetAiBa8jVuolOGAcIVKBSXxkm1gx1yueUxNqC2tVlbrC7YEQ==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.2222222222,\"digitalStockBalance\":0.2222222222,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQD27Am6Pj3oZjWomzgLXMHQatNpG7YJLRJmlJLG2n+Z2AIgGz/WzLT33FrkBDZutlnSCAB1mfXd1yrC8H1k07x46wI=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.125,\"digitalStockBalance\":0.125,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCngg4JsnXwYLvijt0mlQyuDLUuNsA4fhDDV+EIBVAURwIgfvO9LulhXjo4gyggCvWRxLQzAfnAoxrUV0jOBF7+w4o=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.2727272727,\"digitalStockBalance\":0.2727272727,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIB2Z6LKCQmV8eQXYsTzS6dDacJI+FP+AjgXRpZjRtgZdAiEAnuKAMdobl4AyKESR838WxmakXMiBNAWgJnXEDhMQxkE=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.2857142857,\"digitalStockBalance\":0.2857142857,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIAiDpHPK4+oTGbXO3aaeM0ShIRMVisJALU7aIxeCwA2aAiEAz0sBLWb/jLKJmTGnwM9zTuzVGLrfHpWekcZyV+jvx+c=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.1111111111,\"digitalStockBalance\":0.1111111111,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICT0CNS3u86jtyY8PwudsdMXludJrhqPEYVhfZyg1LfiAiEArCF+XBOSi0T/36BtHqS16KEWXNpZBerEkDod2puxwu4=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.3636363636,\"digitalStockBalance\":0.3636363636,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQC855htlhaOie87d3TEreB/pkrPfXkUyJwNik0K4VSRVgIhALpnoC8al0pzcghHYo83M8vPLQ3DjHNOFgvjqDfEJQw/\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":33.06,\"digitalStockBalance\":33.06,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICrSIQhI1qvxMRpRL/MTq8Ix0Fwfde6nlyWdB8oL0AZYAiEA3TMEaI5JzEDGpgiHaWnm98alpJOmJx4ewqGTrqlfOPc=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":330.6,\"digitalStockBalance\":330.6,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIA1b2EOkfwXqUa9WCb/IiCAMA3jtmRTwomvBab8WVP8RAiEAt65RTNPJeDEb9h5wb46L6zDmoBAxAfIioHDH5dqW550=\"}],\"previousHash\":\"a083d84224200809c12c94b8148cf3375008d110188811a9424a051129251302\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":5404319570533998,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1722276549000,\"index\":286893,\"hashBlock\":\"24cc51b8c8c4198102462741322100542800ee004c0165258918ee2190814106\"}");
+        String immutablePart = block.jsonString(); // Предположим, что jsonString() возвращает JSON без randomNumberProof
+        String partialHash = DigestUtils.sha256Hex(immutablePart);
+        String hash = DigestUtils.sha256Hex(partialHash + block.getRandomNumberProof());
+        System.out.println("Calculated hash: " + hash);
+        System.out.println("Expected hash: " + block.getHashBlock());
+        System.out.println("hashForTransaction: " + block.hashForTransaction());
+
 
     }
 

@@ -10,9 +10,13 @@ import International_Trade_Union.utils.*;
 import ch.qos.logback.core.pattern.FormatInfo;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -27,9 +31,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -90,7 +92,6 @@ public final class Block implements Cloneable {
     private String hashBlock;
 
     public String hashForTransaction() throws IOException {
-
         if (this != null) {
             BlockForHash block = new BlockForHash(this.getDtoTransactions(),
                     this.previousHash,
@@ -101,17 +102,21 @@ public final class Block implements Cloneable {
                     this.hashCompexity,
                     this.timestamp,
                     this.index);
-            if(index > Seting.NEW_ALGO_MINING){
-               return UtilsUse.hashMerkleBlock(block);
-            }{
-                return UtilsUse.sha256hash(block.jsonString());
+
+            if(this.getIndex() > Seting.NEW_ALGO_MINING){
+                // New hashing algorithm
+                String staticBlockHash = DigestUtils.sha256Hex(block.jsonStringWithoutProof());
+                String proofString = Long.toString(block.randomNumberProof);
+                return DigestUtils.sha256Hex(staticBlockHash + proofString);
+            }else {
+
+                    return UtilsUse.sha256hash(block.jsonString());
+                }
+
             }
-
-        }
-
-
-       return "";
+        return "";
     }
+
 
     public static long getRandomNumberProofStatic() {
         return randomNumberProofStatic;
@@ -188,12 +193,35 @@ public final class Block implements Cloneable {
         }
 
         public String hashForTransaction() throws IOException {
-            return UtilsUse.sha256hash(jsonString());
+
+                return UtilsUse.sha256hash(jsonString());
+
+
         }
 
         public String jsonString() throws IOException {
             return UtilsJson.objToStringJson(this);
         }
+        // New method to get JSON string without randomNumberProof
+        @JsonIgnore
+        public String jsonStringWithoutProof() throws IOException {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+            // Create a map of all fields except randomNumberProof
+            Map<String, Object> fieldMap = new HashMap<>();
+            fieldMap.put("transactions", this.transactions);
+            fieldMap.put("previousHash", this.previousHash);
+            fieldMap.put("minerAddress", this.minerAddress);
+            fieldMap.put("founderAddress", this.founderAddress);
+            fieldMap.put("minerRewards", this.minerRewards);
+            fieldMap.put("hashCompexity", this.hashCompexity);
+            fieldMap.put("timestamp", this.timestamp);
+            fieldMap.put("index", this.index);
+
+            return mapper.writeValueAsString(fieldMap);
+        }
+
     }
 
     public Block() {
@@ -371,9 +399,7 @@ public final class Block implements Cloneable {
             //Multi-thead mining.
             hash = findHash_MT2(hashCoplexity);
 
-        }
-        else
-        {
+        } else {
             //Однопоточный майнинг.
             hash = findHash_org(hashCoplexity);
         }
@@ -418,16 +444,22 @@ public final class Block implements Cloneable {
         String hashStr = block.jsonString();
 //     System.out.println("-------------------");
 //      System.out.println(">>HASHSTR  :"+hashStr);
-    this.randomNumberProof=0;
-    String firstPart = UtilsUse.firstPartHash(block);
-    String secondPart = UtilsUse.secondPartHash(block);
-    final String[] jsonParts = splitJson(hashStr);
+        this.randomNumberProof = 0;
+        // Hash the static part of the block once
+        String staticBlockHash = DigestUtils.sha256Hex(block.jsonStringWithoutProof());
+        final String[] jsonParts = splitJson(hashStr);
 
 
         final long range = Long.MAX_VALUE / 10240;
 
 
         System.out.println(">>numThreads: " + numThreads + " hashCoplexity:" + hashCoplexity + " Length: " + jsonString().length());
+
+        // Предполагается, что эти переменные уже определены
+        String staticFieldsHash;
+        String randomNumberProof;
+
+// Хешируем статические поля один раз (это можно сделать при инициализации или первом вызове)
 
 //       System.out.println(">>[0]:"+jsonParts[0]);
 //       System.out.println(">>[1]:"+jsonParts[1]);
@@ -474,11 +506,12 @@ public final class Block implements Cloneable {
                         }//if (k % 400000 == 0)
 
                     } //i==0
-
-
-                    if(index > Seting.NEW_ALGO_MINING){
-                        hash = UtilsUse.finalHash(firstPart, secondPart, k);
-                    }else {
+                    // В цикле:
+                    if (index > Seting.NEW_ALGO_MINING) {
+                        String proofString = Long.toString(k);
+                        hash = DigestUtils.sha256Hex(staticBlockHash + proofString);
+                    } else {
+                        // Используем старый алгоритм хеширования
                         hash = DigestUtils.sha256Hex(generateJsonWithProof(jsonParts, k));
                     }
 

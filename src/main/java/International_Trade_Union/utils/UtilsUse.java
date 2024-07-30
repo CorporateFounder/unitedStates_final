@@ -2,12 +2,12 @@ package International_Trade_Union.utils;
 
 
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
-import International_Trade_Union.entity.DtoTransaction.MerkleTree;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.setings.Seting;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -541,92 +541,4 @@ public class UtilsUse {
         return (double) Math.round(value) / factor;
     }
 
-    public static String merkleHash(List<DtoTransaction> dtoTransactions){
-        return new MerkleTree(dtoTransactions).getRoot();
-    }
-
-    public static String hashMerkleBlock(Block block){
-        String hash =  "transactions"+merkleHash(block.getDtoTransactions())
-               +"previousHash" + block.getPreviousHash()
-               +"minerAddress" + block.getMinerAddress()
-               + "minerAddress" + block.getFounderAddress()
-                +"randomNumberProof" + block.getRandomNumberProof()
-               +"minerRewards" + block.getMinerRewards()
-                +"hashCompexity" + block.getHashCompexity()
-                +"timestamp" + block.getTimestamp()
-                +"index" + block.getIndex();
-        return UtilsUse.sha256hash(hash);
-    }
-    public static String hashMerkleBlock(Block.BlockForHash block){
-        String hash =  "transactions"+merkleHash(block.getTransactions())
-                +"previousHash" + block.getPreviousHash()
-                +"minerAddress" + block.getMinerAddress()
-                + "minerAddress" + block.getFounderAddress()
-                +"randomNumberProof" + block.getRandomNumberProof()
-                +"minerRewards" + block.getMinerRewards()
-                +"hashCompexity" + block.getHashCompexity()
-                +"timestamp" + block.getTimestamp()
-                +"index" + block.getIndex();
-        return UtilsUse.sha256hash(hash);
-    }
-
-    public static String hashMining(Block.BlockForHash block, long randomNumberProof){
-        String hash =  "transactions"+merkleHash(block.getTransactions())
-                +"previousHash" + block.getPreviousHash()
-                +"minerAddress" + block.getMinerAddress()
-                + "minerAddress" + block.getFounderAddress()
-                +"randomNumberProof" + randomNumberProof
-                +"minerRewards" + block.getMinerRewards()
-                +"hashCompexity" + block.getHashCompexity()
-                +"timestamp" + block.getTimestamp()
-                +"index" + block.getIndex();
-        return UtilsUse.sha256hash(hash);
-    }
-
-    public static String hashMining(Block block, long randomNumberProof){
-        String hash =  "transactions"+merkleHash(block.getDtoTransactions())
-                +"previousHash" + block.getPreviousHash()
-                +"minerAddress" + block.getMinerAddress()
-                + "minerAddress" + block.getFounderAddress()
-                +"randomNumberProof" + randomNumberProof
-                +"minerRewards" + block.getMinerRewards()
-                +"hashCompexity" + block.getHashCompexity()
-                +"timestamp" + block.getTimestamp()
-                +"index" + block.getIndex();
-        return UtilsUse.sha256hash(hash);
-    }
-    public static String firstPartHash(Block.BlockForHash block){
-       String firstPartHash =  "transactions"+merkleHash(block.getTransactions())
-                +"previousHash" + block.getPreviousHash()
-                +"minerAddress" + block.getMinerAddress()
-                + "minerAddress" + block.getFounderAddress();
-       return firstPartHash;
-    }
-
-    public static String firstPartHash(Block block){
-        String firstPartHash =  "transactions"+merkleHash(block.getDtoTransactions())
-                +"previousHash" + block.getPreviousHash()
-                +"minerAddress" + block.getMinerAddress()
-                + "minerAddress" + block.getFounderAddress();
-        return firstPartHash;
-    }
-    public static String secondPartHash(Block.BlockForHash block){
-        String secondPartHash = "minerRewards" + block.getMinerRewards()
-                +"hashCompexity" + block.getHashCompexity()
-                +"timestamp" + block.getTimestamp()
-                +"index" + block.getIndex();
-        return secondPartHash;
-    }
-
-    public static String secondPartHash(Block block){
-        String secondPartHash = "minerRewards" + block.getMinerRewards()
-                +"hashCompexity" + block.getHashCompexity()
-                +"timestamp" + block.getTimestamp()
-                +"index" + block.getIndex();
-        return secondPartHash;
-    }
-    public static String finalHash(String firstPartHash, String secondPartHash, long numberRandomProof){
-        String str = firstPartHash +"randomNumberProof" + numberRandomProof + secondPartHash;
-       return UtilsUse.sha256hash(str);
-    }
 }
