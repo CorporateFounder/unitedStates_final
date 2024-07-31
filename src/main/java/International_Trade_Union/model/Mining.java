@@ -29,6 +29,7 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
 
@@ -321,14 +322,29 @@ public class Mining {
 
         forAdd.add(minerRew);
 
-        forAdd = forAdd.stream().filter(UtilsUse.distinctByKeyString(t -> {
-            try {
-                return base.encode(t.getSign());
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null; // или другое значение по умолчанию
-            }
-        })).collect(Collectors.toList());
+        forAdd = forAdd.stream()
+                .filter(t -> {
+                    try {
+                        String sign = base.encode(t.getSign());
+                        return sign != null ;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return false; // Пропустить транзакцию, если возникает исключение
+                    }
+                })
+                .filter(UtilsUse.distinctByKeyString(t -> {
+                    try {
+                        return base.encode(t.getSign());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return null; // Это не должно произойти, так как мы фильтруем исключения ранее
+                    }
+                }))
+                .filter(Objects::nonNull) // Дополнительная проверка на null
+                .collect(Collectors.toList());
+
+
+
         //подписывает
         byte[] signGold = UtilsSecurity.sign(privateKey, minerRew.toSign());
         minerRew.setSign(signGold);
