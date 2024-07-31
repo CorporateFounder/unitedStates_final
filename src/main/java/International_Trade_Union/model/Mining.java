@@ -322,28 +322,16 @@ public class Mining {
 
         forAdd.add(minerRew);
 
-        forAdd = forAdd.stream()
-                .filter(t -> {
-                    try {
-                        String sign = base.encode(t.getSign());
-                        return sign != null ;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return false; // Пропустить транзакцию, если возникает исключение
-                    }
-                })
-                .filter(UtilsUse.distinctByKeyString(t -> {
-                    try {
-                        return base.encode(t.getSign());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return null; // Это не должно произойти, так как мы фильтруем исключения ранее
-                    }
-                }))
-                .filter(Objects::nonNull) // Дополнительная проверка на null
-                .collect(Collectors.toList());
+        forAdd = forAdd.stream().filter(UtilsUse.distinctByKeyString(t -> {
+            try {
+                return t.getSign() != null ? base.encode(t.getSign()) : null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null; // или другое значение по умолчанию
+            }
+        })).collect(Collectors.toList());
 
-
+        forAdd = forAdd.stream().filter(t->t!= null).collect(Collectors.toList());
 
         //подписывает
         byte[] signGold = UtilsSecurity.sign(privateKey, minerRew.toSign());
