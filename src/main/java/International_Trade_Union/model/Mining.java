@@ -320,6 +320,15 @@ public class Mining {
 
 
         forAdd.add(minerRew);
+
+        forAdd = forAdd.stream().filter(UtilsUse.distinctByKeyString(t -> {
+            try {
+                return base.encode(t.getSign());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null; // или другое значение по умолчанию
+            }
+        })).collect(Collectors.toList());
         //подписывает
         byte[] signGold = UtilsSecurity.sign(privateKey, minerRew.toSign());
         minerRew.setSign(signGold);

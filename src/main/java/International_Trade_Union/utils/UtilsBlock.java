@@ -406,7 +406,6 @@ public class UtilsBlock {
         }
 
 
-
         String actualPrevHash = previusblock.hashForBlockchain();
         String recordedPrevHash = thisBlock.getPreviousHash();
 
@@ -414,6 +413,19 @@ public class UtilsBlock {
         boolean validated = true;
         int countBasisSendFounder = 0;
         int countBasisSendAll = 0;
+
+
+        if(thisBlock.getIndex() > Seting.DUBLICATE_IN_ONE_BLOCK_TRANSACTIONS && UtilsUse.getDuplicateTransactions(thisBlock).size() > 0){
+            System.out.println("the block contains transactions with duplicate signatures.");
+            List<DtoTransaction> dublicates = UtilsUse.getDuplicateTransactions(thisBlock);
+            for (int i = 0; i < dublicates.size(); i++) {
+                System.out.println("dublicate: " + dublicates.get(i));
+            }
+
+            validated = false;
+            return validated;
+        }
+
         finished:
         for (DtoTransaction transaction : thisBlock.getDtoTransactions()) {
             if (transaction.verify() && transaction.getSender().equals(Seting.BASIS_ADDRESS)) {

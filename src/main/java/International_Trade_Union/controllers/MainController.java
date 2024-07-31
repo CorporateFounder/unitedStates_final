@@ -231,7 +231,7 @@ public class MainController {
 
         Account account = UtilsBalance.getBalance(User.getUserAddress(), balances);
         model.addAttribute("account", account);
-        model.addAttribute("score", UtilsUse.calculateScore(account.getDigitalStakingBalance(), 10));
+        model.addAttribute("score", UtilsUse.calculateScore(account.getDigitalStakingBalance(), 1));
 
 
         return "home";

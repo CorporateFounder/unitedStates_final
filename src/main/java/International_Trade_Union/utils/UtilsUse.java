@@ -7,6 +7,8 @@ import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.base.Base;
+import International_Trade_Union.utils.base.Base58;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.IOException;
@@ -539,6 +541,23 @@ public class UtilsUse {
         long factor = (long) Math.pow(10, places);
         value *= factor;
         return (double) Math.round(value) / factor;
+    }
+
+    //find dublicate in transactions list
+    public static List<DtoTransaction> getDuplicateTransactions(Block block) {
+        Base base = new Base58();
+        Map<String, List<DtoTransaction>> groupedBySignature = block.getDtoTransactions().stream()
+                .collect(Collectors.groupingBy(t -> base.encode(t.getSign())));
+
+        List<DtoTransaction> duplicates = new ArrayList<>();
+
+        for (List<DtoTransaction> transactions : groupedBySignature.values()) {
+            if (transactions.size() > 1) {
+                duplicates.addAll(transactions.subList(1, transactions.size())); // Добавляем все кроме первого
+            }
+        }
+
+        return duplicates;
     }
 
 }
