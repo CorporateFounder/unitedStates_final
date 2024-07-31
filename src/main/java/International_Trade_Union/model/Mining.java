@@ -320,6 +320,13 @@ public class Mining {
                 minerRewards, digitalReputationForMiner, new Laws(), sumRewards, VoteEnum.YES );
 
 
+
+
+        //подписывает
+        byte[] signGold = UtilsSecurity.sign(privateKey, minerRew.toSign());
+        minerRew.setSign(signGold);
+
+
         forAdd.add(minerRew);
 
         forAdd = forAdd.stream().filter(UtilsUse.distinctByKeyString(t -> {
@@ -332,10 +339,6 @@ public class Mining {
         })).collect(Collectors.toList());
 
         forAdd = forAdd.stream().filter(t->t!= null).collect(Collectors.toList());
-
-        //подписывает
-        byte[] signGold = UtilsSecurity.sign(privateKey, minerRew.toSign());
-        minerRew.setSign(signGold);
         //blockchain.getHashBlock(blockchain.sizeBlockhain() - 1)
         Block block = new Block(
                 forAdd,
