@@ -1,5 +1,6 @@
 package International_Trade_Union.utils;
 
+import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
 
 import java.io.File;

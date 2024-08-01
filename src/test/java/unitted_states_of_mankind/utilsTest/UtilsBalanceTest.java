@@ -82,7 +82,7 @@ public class UtilsBalanceTest {
         System.out.println("sender before: " + sender);
         System.out.println("recipient before: " + recipient);
         System.out.println("minier before: " + miner);
-        UtilsBalance.sendMoney(sender, recipient, miner, transaction.getDigitalDollar(),transaction.getDigitalStockBalance(),  transaction.getBonusForMiner(), index);
+        UtilsBalance.sendMoney(sender, recipient, miner, transaction.getDigitalDollar(),transaction.getDigitalStockBalance(),  transaction.getBonusForMiner(), VoteEnum.YES,  index);
         System.out.println("sender after: " + sender);
         System.out.println("recipient after: " + recipient);
         System.out.println("minier after: " + miner);
