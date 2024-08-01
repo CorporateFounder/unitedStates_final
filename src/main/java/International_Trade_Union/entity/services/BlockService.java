@@ -546,4 +546,19 @@ public class BlockService {
 
     }
 
+
+    @Transactional(readOnly = true)
+    public List<EntityBlock> findBlocksByTransactionSign(String sign) throws IOException {
+        List<EntityBlock> entityBlocks =  new ArrayList<>();
+        try {
+            entityBlocks = entityBlockRepository.findBlocksByTransactionSign(sign);
+        } catch (Exception e) {
+            e.printStackTrace();
+            entityBlocks = new ArrayList<>();
+            throw new IOException("findBlocksByTransactionSign: error: save: ", e);
+        } finally {
+            return entityBlocks;
+        }
+
+    }
 }

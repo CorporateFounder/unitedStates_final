@@ -4,7 +4,6 @@ import International_Trade_Union.entity.entities.EntityBlock;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,5 +25,8 @@ public interface EntityBlockRepository extends JpaRepository<EntityBlock, Long> 
         @Modifying
         void deleteAllBySpecialIndexGreaterThanEqual(Long threshold);
 
+
+        @Query("SELECT b FROM EntityBlock b JOIN b.dtoTransactions t WHERE t.sign = :sign")
+        List<EntityBlock> findBlocksByTransactionSign(String sign);
 
 }

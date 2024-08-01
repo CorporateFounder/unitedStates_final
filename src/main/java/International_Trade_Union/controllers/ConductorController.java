@@ -2,6 +2,7 @@ package International_Trade_Union.controllers;
 
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.entities.EntityBlock;
 import International_Trade_Union.entity.entities.EntityDtoTransaction;
 import International_Trade_Union.entity.entities.SendCoinResult;
 import International_Trade_Union.entity.entities.SignRequest;
@@ -210,7 +211,34 @@ public class ConductorController {
     }
     return result;
 }
+    @GetMapping ("/findBlocksFromSign58")
+    public List<Block> findBlocksFromSign58(@RequestParam String sign){
+        try {
+            List<EntityBlock> blocks = blockService.findBlocksByTransactionSign(sign);
+            List<Block> blocks1 = UtilsBlockToEntityBlock.entityBlocksToBlocks(blocks);
+            return blocks1;
+        }catch (Exception e){
 
+            return new ArrayList<>();
+        }
+
+    }
+
+    @GetMapping ("/findBlocksFromSign64")
+    public List<Block> findBlocksFromSign64(@RequestParam String sign){
+        try {
+
+            byte[] bytes = Base64.getDecoder().decode(sign);
+            sign = base58.encode(bytes);
+            List<EntityBlock> blocks = blockService.findBlocksByTransactionSign(sign);
+            List<Block> blocks1 = UtilsBlockToEntityBlock.entityBlocksToBlocks(blocks);
+            return blocks1;
+        }catch (Exception e){
+
+            return new ArrayList<>();
+        }
+
+    }
 
     /**
      * whether the transaction was added to the blockchain, find with sign
