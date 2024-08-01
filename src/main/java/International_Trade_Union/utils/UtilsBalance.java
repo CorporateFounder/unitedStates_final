@@ -251,6 +251,15 @@ public class UtilsBalance {
         return account != null ? account : new Account(address, 0.0, 0.0, 0.0);
     }
 
+    public static boolean sendMoney(Account senderAddress, Account recipientAddress, Account minerAddress, double digitalDollar, double digitalStock, double minerRewards,  long indexBlock ){
+        try{
+            return sendMoney(senderAddress, recipientAddress, minerAddress, digitalDollar, digitalStock, minerRewards, VoteEnum.YES, indexBlock);
+        }catch (Exception e){
+
+            return false;
+        }
+
+    }
     public static boolean sendMoney(Account senderAddress, Account recipientAddress, Account minerAddress, double digitalDollar, double digitalStock, double minerRewards, VoteEnum voteEnum, long indexBlock) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         double senderDigitalDollar = senderAddress.getDigitalDollarBalance();
         double senderDigitalStock = senderAddress.getDigitalStockBalance();
@@ -398,7 +407,7 @@ public class UtilsBalance {
                     }
                 }
                 if (indexBlock > Seting.NEW_ALGO_MINING) {
-                    updateMinerBalance(minerAddress, senderAddress, recipientAddress, minerRewards);
+                    rolBackupdateMinerBalance(minerAddress, senderAddress, recipientAddress, minerRewards);
                 }
 
             } else if (voteEnum.equals(VoteEnum.STAKING)) {
@@ -410,7 +419,7 @@ public class UtilsBalance {
                     senderAddress.setDigitalStakingBalance(senderDigitalStaking - digitalDollar);
                 }
                 if (indexBlock > Seting.NEW_ALGO_MINING) {
-                    updateMinerBalance(minerAddress, senderAddress, recipientAddress, minerRewards);
+                    rolBackupdateMinerBalance(minerAddress, senderAddress, recipientAddress, minerRewards);
                 }
 
             } else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
@@ -422,7 +431,7 @@ public class UtilsBalance {
                     senderAddress.setDigitalStakingBalance(senderDigitalStaking + digitalDollar);
                 }
                 if (indexBlock > Seting.NEW_ALGO_MINING) {
-                    updateMinerBalance(minerAddress, senderAddress, recipientAddress, minerRewards);
+                    rolBackupdateMinerBalance(minerAddress, senderAddress, recipientAddress, minerRewards);
                 }
             }
 
@@ -453,6 +462,24 @@ public class UtilsBalance {
             recipientAddress.setDigitalDollarBalance(updatedBalance);
         } else {
             double updatedBalance = UtilsUse.round(minerDigitalDollar + minerRewards, Seting.DECIMAL_PLACES);
+            minerAddress.setDigitalDollarBalance(updatedBalance);
+        }
+    }
+    private static void rolBackupdateMinerBalance(Account minerAddress, Account senderAddress, Account recipientAddress, double minerRewards) {
+        double minerDigitalDollar = minerAddress.getDigitalDollarBalance();
+        if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
+            minerDigitalDollar = UtilsUse.round(minerDigitalDollar, Seting.DECIMAL_PLACES);
+            minerRewards = UtilsUse.round(minerRewards, Seting.DECIMAL_PLACES);
+        }
+
+        if (senderAddress.getAccount().equals(minerAddress.getAccount())) {
+            double updatedBalance = UtilsUse.round(senderAddress.getDigitalDollarBalance() - minerRewards, Seting.DECIMAL_PLACES);
+            senderAddress.setDigitalDollarBalance(updatedBalance);
+        } else if (recipientAddress.getAccount().equals(minerAddress.getAccount())) {
+            double updatedBalance = UtilsUse.round(recipientAddress.getDigitalDollarBalance() - minerRewards, Seting.DECIMAL_PLACES);
+            recipientAddress.setDigitalDollarBalance(updatedBalance);
+        } else {
+            double updatedBalance = UtilsUse.round(minerDigitalDollar - minerRewards, Seting.DECIMAL_PLACES);
             minerAddress.setDigitalDollarBalance(updatedBalance);
         }
     }
