@@ -123,7 +123,7 @@ public class ConductorController {
         }
     dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
     stock = UtilsUse.round(stock, Seting.DECIMAL_PLACES);
-    reward = UtilsUse.round(reward, Seting.DECIMAL_PLACES);
+    reward = 0.0;
     if (dollar == null || dollar < 0.0) dollar = 0.0;
     if (stock == null || stock < 0.0) stock = 0.0;
     if (reward == null || reward < 0.0) reward = 0.0;

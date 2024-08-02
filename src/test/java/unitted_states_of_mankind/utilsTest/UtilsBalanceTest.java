@@ -82,14 +82,14 @@ public class UtilsBalanceTest {
         System.out.println("sender before: " + sender);
         System.out.println("recipient before: " + recipient);
         System.out.println("minier before: " + miner);
-        UtilsBalance.sendMoney(sender, recipient, miner, transaction.getDigitalDollar(),transaction.getDigitalStockBalance(),  transaction.getBonusForMiner(), VoteEnum.YES,  index);
+        UtilsBalance.sendMoney(sender, recipient,  transaction.getDigitalDollar(),transaction.getDigitalStockBalance(),  transaction.getBonusForMiner(), VoteEnum.YES);
         System.out.println("sender after: " + sender);
         System.out.println("recipient after: " + recipient);
         System.out.println("minier after: " + miner);
         System.out.println("bonus for miner: " + block.getDtoTransactions().get(1).getBonusForMiner());
 
         System.out.println("roll back");
-        UtilsBalance.rollBackSendMoney(sender, recipient, miner, transaction.getDigitalDollar(), transaction.getDigitalStockBalance(), transaction.getBonusForMiner(), VoteEnum.YES , index);
+        UtilsBalance.rollBackSendMoney(sender, recipient,  transaction.getDigitalDollar(), transaction.getDigitalStockBalance(), transaction.getBonusForMiner(), VoteEnum.YES );
         System.out.println("sender after: " + sender);
         System.out.println("recipient after: " + recipient);
         System.out.println("minier after: " + miner);

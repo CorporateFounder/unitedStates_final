@@ -63,7 +63,7 @@ public class MineController {
 
 
         dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
-        reward = UtilsUse.round(reward, Seting.DECIMAL_PLACES);
+        reward = 0.0;
         if (dollar == null || dollar < 0.0)
             dollar = 0.0;
 
@@ -157,7 +157,7 @@ public class MineController {
         Base base = new Base58();
 
         dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
-        reward = UtilsUse.round(reward, Seting.DECIMAL_PLACES);
+        reward = 0.0;
         if (dollar == null || dollar < 0.0)
             dollar = 0.0;
 

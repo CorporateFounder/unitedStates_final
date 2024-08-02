@@ -1,5 +1,6 @@
 package International_Trade_Union.utils;
 
+
 import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
@@ -13,7 +14,7 @@ import International_Trade_Union.vote.LawEligibleForParliamentaryApproval;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
 
-import java.io.IOException;
+import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
+//wallet
 
 public class UtilsBalance {
     private static BlockService blockService;
@@ -37,6 +39,7 @@ public class UtilsBalance {
         UtilsBalance.blockService = blockService;
     }
 
+    /**Возвращает баланс обратно, нужно когда есть множество веток.*/
     public static Map<String, Account> rollbackCalculateBalance(
             Map<String, Account> balances,
             Block block
@@ -47,6 +50,7 @@ public class UtilsBalance {
 
         int BasisSendCount = 0;
         for (int j = 0; j < block.getDtoTransactions().size(); j++) {
+
             DtoTransaction transaction = block.getDtoTransactions().get(j);
             if (transaction.getSender().startsWith(Seting.NAME_LAW_ADDRESS_START)) {
                 System.out.println("law balance cannot be sender");
@@ -56,9 +60,9 @@ public class UtilsBalance {
                 if (transaction.getSender().equals(Seting.BASIS_ADDRESS))
                     BasisSendCount++;
 
+
                 Account sender = getBalance(transaction.getSender(), balances);
                 Account customer = getBalance(transaction.getCustomer(), balances);
-                Account miner = getBalance(block.getMinerAddress(), balances);
 
                 boolean sendTrue = true;
                 if (sender.getAccount().equals(Seting.BASIS_ADDRESS) && BasisSendCount > 2) {
@@ -89,6 +93,7 @@ public class UtilsBalance {
                     digitalReputationForMiner = SPECIAL_FORK_BALANCE;
                 }
 
+
                 if (sender.getAccount().equals(Seting.BASIS_ADDRESS)) {
                     if (i > 1 && (transaction.getDigitalDollar() > minerRewards || transaction.getDigitalStockBalance() > digitalReputationForMiner)) {
                         System.out.println("rewards cannot be upper than " + minerRewards);
@@ -105,26 +110,28 @@ public class UtilsBalance {
                 sendTrue = UtilsBalance.rollBackSendMoney(
                         sender,
                         customer,
-                        miner,
                         transaction.getDigitalDollar(),
                         transaction.getDigitalStockBalance(),
                         transaction.getBonusForMiner(),
-                        transaction.getVoteEnum(),
-                        block.getIndex());
+                        transaction.getVoteEnum());
 
+
+                //если транзация валидная то записать данн иыезменения в баланс
                 if (sendTrue) {
                     balances.put(sender.getAccount(), sender);
                     balances.put(customer.getAccount(), customer);
-                    if (block.getIndex() > Seting.NEW_ALGO_MINING)
-                        balances.put(miner.getAccount(), miner);
                 }
+
             }
+
         }
+
 
         System.out.println("finish calculateBalance");
         return balances;
-    }
 
+    }
+    /**Подсчитывает баланс счетов*/
     public static Map<String, Account> calculateBalance(
             Map<String, Account> balances,
             Block block,
@@ -136,9 +143,12 @@ public class UtilsBalance {
 
         int BasisSendCount = 0;
         for (int j = 0; j < block.getDtoTransactions().size(); j++) {
+
+
+
             DtoTransaction transaction = block.getDtoTransactions().get(j);
-            if (blockService != null) {
-                if (blockService.existsBySign(transaction.getSign())) {
+            if(blockService != null){
+                if(blockService.existsBySign(transaction.getSign())){
                     System.out.println("this transaction signature has already been used and is not valid from db");
                     continue;
                 }
@@ -147,6 +157,7 @@ public class UtilsBalance {
                 System.out.println("this transaction signature has already been used and is not valid");
                 continue;
             } else {
+//                    System.out.println("we added new sign transaction");
                 sign.add(base.encode(transaction.getSign()));
             }
 
@@ -156,9 +167,8 @@ public class UtilsBalance {
             }
             Account sender = getBalance(transaction.getSender(), balances);
             Account customer = getBalance(transaction.getCustomer(), balances);
-            Account miner = getBalance(block.getMinerAddress(), balances);
             if (transaction.verify()) {
-                if (transaction.getSender().equals(Seting.BASIS_ADDRESS)) {
+                if (transaction.getSender().equals(Seting.BASIS_ADDRESS)){
                     BasisSendCount++;
                     if (sender.getAccount().equals(Seting.BASIS_ADDRESS) && BasisSendCount > 2) {
                         System.out.println("Basis address can send only two the base address can send no more than two times per block:" + Seting.BASIS_ADDRESS);
@@ -166,7 +176,10 @@ public class UtilsBalance {
                     }
                 }
 
+
+
                 boolean sendTrue = true;
+
 
                 double minerRewards = Seting.DIGITAL_DOLLAR_REWARDS_BEFORE;
                 double digitalReputationForMiner = Seting.DIGITAL_STOCK_REWARDS_BEFORE;
@@ -191,6 +204,7 @@ public class UtilsBalance {
                     digitalReputationForMiner = SPECIAL_FORK_BALANCE;
                 }
 
+
                 if (sender.getAccount().equals(Seting.BASIS_ADDRESS)) {
                     if (i > 1 && (transaction.getDigitalDollar() > minerRewards || transaction.getDigitalStockBalance() > digitalReputationForMiner)) {
                         System.out.println("rewards cannot be upper than " + minerRewards);
@@ -207,24 +221,29 @@ public class UtilsBalance {
                 sendTrue = UtilsBalance.sendMoney(
                         sender,
                         customer,
-                        miner,
                         transaction.getDigitalDollar(),
                         transaction.getDigitalStockBalance(),
                         transaction.getBonusForMiner(),
-                        transaction.getVoteEnum(),
-                        block.getIndex());
+                        transaction.getVoteEnum());
 
+
+                //если транзация валидная то записать данн иыезменения в баланс
                 if (sendTrue) {
                     balances.put(sender.getAccount(), sender);
                     balances.put(customer.getAccount(), customer);
-                    if (block.getIndex() > Seting.NEW_ALGO_MINING)
-                        balances.put(miner.getAccount(), miner);
                 }
+
             }
+
         }
+
+
+//        System.out.println("finish calculateBalance");
         return balances;
+
     }
 
+    //подсчет целиком баланса
     public static Map<String, Account> calculateBalances(List<Block> blocks) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balances = new HashMap<>();
         List<String> signs = new ArrayList<>();
@@ -233,8 +252,11 @@ public class UtilsBalance {
         for (Block block : blocks) {
             calculateBalance(balances, block, signs);
         }
+
         return balances;
+
     }
+
 
     public static Account getBalance(String address, Map<String, Account> balances) {
         if (balances.containsKey(address)) {
@@ -245,39 +267,49 @@ public class UtilsBalance {
         }
     }
 
+
     public static Account findAccount(Blockchain blockList, String address) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> accountMap = calculateBalances(blockList.getBlockchainList());
         Account account = accountMap.get(address);
         return account != null ? account : new Account(address, 0.0, 0.0, 0.0);
     }
 
-    public static boolean sendMoney(Account senderAddress, Account recipientAddress, Account minerAddress, double digitalDollar, double digitalStock, double minerRewards,  long indexBlock ){
-        try{
-            return sendMoney(senderAddress, recipientAddress, minerAddress, digitalDollar, digitalStock, minerRewards, VoteEnum.YES, indexBlock);
-        }catch (Exception e){
-
-            return false;
-        }
-
+    public static boolean sendMoney(Account senderAddress, Account recipientAddress, double digitalDollar, double digitalReputation, double minerRewards) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        return sendMoney(senderAddress, recipientAddress, digitalDollar, digitalReputation, minerRewards, VoteEnum.YES);
     }
-    public static boolean sendMoney(Account senderAddress, Account recipientAddress, Account minerAddress, double digitalDollar, double digitalStock, double minerRewards, VoteEnum voteEnum, long indexBlock) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+
+    /**Переписывает баланс, от отправителя к получателю*/
+    public static boolean sendMoney(Account senderAddress, Account recipientAddress, double digitalDollar, double digitalStock, double minerRewards, VoteEnum voteEnum) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         double senderDigitalDollar = senderAddress.getDigitalDollarBalance();
-        double senderDigitalStock = senderAddress.getDigitalStockBalance();
+        double  senderDigitalStock = senderAddress.getDigitalStockBalance();
         double senderDigitalStaking = senderAddress.getDigitalStakingBalance();
         double recipientDigitalDollar = recipientAddress.getDigitalDollarBalance();
         double recipientDigitalStock = recipientAddress.getDigitalStockBalance();
-
+        double recipientDigitalStaking = recipientAddress.getDigitalStakingBalance();
         boolean sendTrue = true;
 
+
+        if(BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES){
+            senderDigitalDollar = UtilsUse.round(senderDigitalDollar,  Seting.DECIMAL_PLACES);
+            senderDigitalStock = UtilsUse.round(senderDigitalStock,  Seting.DECIMAL_PLACES);
+            senderDigitalStaking = UtilsUse.round(senderDigitalStaking,  Seting.DECIMAL_PLACES);
+
+            recipientDigitalDollar = UtilsUse.round(recipientDigitalDollar,  Seting.DECIMAL_PLACES);
+            recipientDigitalStock = UtilsUse.round(recipientDigitalStock,  Seting.DECIMAL_PLACES);
+            recipientDigitalStaking = UtilsUse.round(recipientDigitalStaking,  Seting.DECIMAL_PLACES);
+            digitalDollar = UtilsUse.round(digitalDollar,  Seting.DECIMAL_PLACES);
+            digitalStock = UtilsUse.round(digitalStock,  Seting.DECIMAL_PLACES);
+            minerRewards = UtilsUse.round(minerRewards,  Seting.DECIMAL_PLACES);
+        }
         if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
             if (senderDigitalStock < digitalStock) {
                 System.out.println("less stock");
                 sendTrue = false;
 
             } else if (recipientAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
-                System.out.println("Basis cannot be recipient;");
+                System.out.println("Basis canot to be recipient;");
                 sendTrue = false;
-            } else if ((voteEnum.equals(VoteEnum.YES) || voteEnum.equals(VoteEnum.NO))) {
+            } else if((voteEnum.equals(VoteEnum.YES)  || voteEnum.equals(VoteEnum.NO))){
                 if (senderAddress.getAccount().equals(recipientAddress.getAccount())) {
                     System.out.println("sender %s, recipient %s cannot be equals! Error!".format(senderAddress.getAccount(), recipientAddress.getAccount()));
                     sendTrue = false;
@@ -289,214 +321,123 @@ public class UtilsBalance {
                     return sendTrue;
                 }
 
-                if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-                    senderAddress.setDigitalDollarBalance(UtilsUse.round(senderDigitalDollar - digitalDollar, Seting.DECIMAL_PLACES));
-                    senderAddress.setDigitalStockBalance(UtilsUse.round(senderDigitalStock - digitalStock, Seting.DECIMAL_PLACES));
-                    recipientAddress.setDigitalDollarBalance(UtilsUse.round(recipientDigitalDollar + digitalDollar, Seting.DECIMAL_PLACES));
-                } else {
-                    senderAddress.setDigitalDollarBalance(senderDigitalDollar - digitalDollar);
-                    senderAddress.setDigitalStockBalance(senderDigitalStock - digitalStock);
-                    recipientAddress.setDigitalDollarBalance(recipientDigitalDollar + digitalDollar);
-                }
-                // сделано чтобы можно было увеличить или отнять власть
+                senderAddress.setDigitalDollarBalance(senderDigitalDollar - digitalDollar);
+                senderAddress.setDigitalStockBalance(senderDigitalStock - digitalStock);
+                recipientAddress.setDigitalDollarBalance(recipientDigitalDollar + digitalDollar);
+                //сделано чтобы можно было увеличить или отнять власть
                 if (voteEnum.equals(VoteEnum.YES)) {
-                    if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-                        recipientAddress.setDigitalStockBalance(UtilsUse.round(recipientDigitalStock + digitalStock, Seting.DECIMAL_PLACES));
-                    } else {
-                        recipientAddress.setDigitalStockBalance(recipientDigitalStock + digitalStock);
-                    }
+                    recipientAddress.setDigitalStockBalance(recipientDigitalStock + digitalStock);
                 } else if (voteEnum.equals(VoteEnum.NO)) {
-                    // политика сдерживания.
-                    if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-                        recipientAddress.setDigitalStockBalance(UtilsUse.round(recipientDigitalStock - digitalStock, Seting.DECIMAL_PLACES));
-                    } else {
-                        recipientAddress.setDigitalStockBalance(recipientDigitalStock - digitalStock);
-                    }
+                    //политика сдерживания.
+                    recipientAddress.setDigitalStockBalance(recipientDigitalStock - digitalStock);
                 }
 
-                if (indexBlock > Seting.NEW_ALGO_MINING) {
-                    updateMinerBalance(minerAddress, senderAddress, recipientAddress, minerRewards);
-                }
 
-            } else if (voteEnum.equals(VoteEnum.STAKING)) {
+            }
+            else if (voteEnum.equals(VoteEnum.STAKING)) {
                 System.out.println("STAKING: ");
                 if (senderDigitalDollar < digitalDollar + minerRewards) {
                     System.out.println("less dollar");
                     sendTrue = false;
                     return sendTrue;
                 }
-                if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-                    senderAddress.setDigitalDollarBalance(UtilsUse.round(senderDigitalDollar - digitalDollar, Seting.DECIMAL_PLACES));
-                    senderAddress.setDigitalStakingBalance(UtilsUse.round(senderDigitalStaking + digitalDollar, Seting.DECIMAL_PLACES));
-                } else {
-                    senderAddress.setDigitalDollarBalance(senderDigitalDollar - digitalDollar);
-                    senderAddress.setDigitalStakingBalance(senderDigitalStaking + digitalDollar);
-                }
-
-                if (indexBlock > Seting.NEW_ALGO_MINING) {
-                    updateMinerBalance(minerAddress, senderAddress, recipientAddress, minerRewards);
-                }
-
-            } else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
+                senderAddress.setDigitalDollarBalance(senderDigitalDollar - digitalDollar);
+                senderAddress.setDigitalStakingBalance(senderDigitalStaking + digitalDollar);
+            }
+            else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
                 System.out.println("UNSTAKING");
                 if (senderDigitalStaking < digitalDollar) {
                     System.out.println("less staking");
                     sendTrue = false;
                     return sendTrue;
                 }
-
-                if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-                    senderAddress.setDigitalDollarBalance(UtilsUse.round(senderDigitalDollar + digitalDollar, Seting.DECIMAL_PLACES));
-                    senderAddress.setDigitalStakingBalance(UtilsUse.round(senderDigitalStaking - digitalDollar, Seting.DECIMAL_PLACES));
-                } else {
-                    senderAddress.setDigitalDollarBalance(senderDigitalDollar + digitalDollar);
-                    senderAddress.setDigitalStakingBalance(senderDigitalStaking - digitalDollar);
-                }
-                if (indexBlock > Seting.NEW_ALGO_MINING) {
-                    updateMinerBalance(minerAddress, senderAddress, recipientAddress, minerRewards);
-                }
-
+                senderAddress.setDigitalDollarBalance(senderDigitalDollar + digitalDollar);
+                senderAddress.setDigitalStakingBalance(senderDigitalStaking - digitalDollar);
             }
+
 
         } else if (senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
-            if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-                recipientAddress.setDigitalDollarBalance(UtilsUse.round(recipientDigitalDollar + digitalDollar, Seting.DECIMAL_PLACES));
-                recipientAddress.setDigitalStockBalance(UtilsUse.round(recipientDigitalStock + digitalStock, Seting.DECIMAL_PLACES));
-            } else {
-                recipientAddress.setDigitalDollarBalance(recipientDigitalDollar + digitalDollar);
-                recipientAddress.setDigitalStockBalance(recipientDigitalStock + digitalStock);
-            }
+
+            recipientAddress.setDigitalDollarBalance(recipientDigitalDollar + digitalDollar);
+            recipientAddress.setDigitalStockBalance(recipientDigitalStock + digitalStock);
+
         }
         return sendTrue;
     }
 
+    /**Откатывает транзакции, чтобы мы могли переключиться в новую ветку.*/
     public static boolean rollBackSendMoney(
             Account senderAddress,
             Account recipientAddress,
-            Account minerAddress,
-            double digitalDollar, double digitalStock, double minerRewards, VoteEnum voteEnum, long indexBlock) {
+            double digitalDollar, double digitalStock, double minerRewards, VoteEnum voteEnum){
         double senderDigitalDollar = senderAddress.getDigitalDollarBalance();
-        double senderDigitalStock = senderAddress.getDigitalStockBalance();
+        double  senderDigitalStock = senderAddress.getDigitalStockBalance();
         double senderDigitalStaking = senderAddress.getDigitalStakingBalance();
         double recipientDigitalDollar = recipientAddress.getDigitalDollarBalance();
         double recipientDigitalStock = recipientAddress.getDigitalStockBalance();
+        double recipientDigitalStaking = recipientAddress.getDigitalStakingBalance();
 
         boolean sendTrue = true;
+        if(BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES){
+            senderDigitalDollar = UtilsUse.round(senderDigitalDollar,  Seting.DECIMAL_PLACES);
+            senderDigitalStock = UtilsUse.round(senderDigitalStock,  Seting.DECIMAL_PLACES);
+            senderDigitalStaking = UtilsUse.round(senderDigitalStaking,  Seting.DECIMAL_PLACES);
+
+            recipientDigitalDollar = UtilsUse.round(recipientDigitalDollar,  Seting.DECIMAL_PLACES);
+            recipientDigitalStock = UtilsUse.round(recipientDigitalStock,  Seting.DECIMAL_PLACES);
+            recipientDigitalStaking = UtilsUse.round(recipientDigitalStaking,  Seting.DECIMAL_PLACES);
+            digitalDollar = UtilsUse.round(digitalDollar,  Seting.DECIMAL_PLACES);
+            digitalStock = UtilsUse.round(digitalStock,  Seting.DECIMAL_PLACES);
+            minerRewards = UtilsUse.round(minerRewards,  Seting.DECIMAL_PLACES);
+        }
+
         if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
-            if ((voteEnum.equals(VoteEnum.YES) || voteEnum.equals(VoteEnum.NO))) {
-                if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-                    senderAddress.setDigitalDollarBalance(UtilsUse.round(senderDigitalDollar + digitalDollar, Seting.DECIMAL_PLACES));
-                    senderAddress.setDigitalStockBalance(UtilsUse.round(senderDigitalStock + digitalStock, Seting.DECIMAL_PLACES));
-                    recipientAddress.setDigitalDollarBalance(UtilsUse.round(recipientDigitalDollar - digitalDollar, Seting.DECIMAL_PLACES));
-                } else {
-                    senderAddress.setDigitalDollarBalance(senderDigitalDollar + digitalDollar);
-                    senderAddress.setDigitalStockBalance(senderDigitalStock + digitalStock);
-                    recipientAddress.setDigitalDollarBalance(recipientDigitalDollar - digitalDollar);
-                }
+                if((voteEnum.equals(VoteEnum.YES)  || voteEnum.equals(VoteEnum.NO))){
+//
+
+                senderAddress.setDigitalDollarBalance(senderDigitalDollar + digitalDollar);
+                senderAddress.setDigitalStockBalance(senderDigitalStock + digitalStock);
+                recipientAddress.setDigitalDollarBalance(recipientDigitalDollar - digitalDollar);
+                //сделано чтобы можно было увеличить или отнять власть
                 if (voteEnum.equals(VoteEnum.YES)) {
-                    if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-                        recipientAddress.setDigitalStockBalance(UtilsUse.round(recipientDigitalStock - digitalStock, Seting.DECIMAL_PLACES));
-                    } else {
-                        recipientAddress.setDigitalStockBalance(recipientDigitalStock - digitalStock);
-                    }
+                    System.out.println("YES");
+                    recipientAddress.setDigitalStockBalance(recipientDigitalStock - digitalStock);
                 } else if (voteEnum.equals(VoteEnum.NO)) {
-                    if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-                        recipientAddress.setDigitalStockBalance(UtilsUse.round(recipientDigitalStock + digitalStock, Seting.DECIMAL_PLACES));
-                    } else {
-                        recipientAddress.setDigitalStockBalance(recipientDigitalStock + digitalStock);
-                    }
-                }
-                if (indexBlock > Seting.NEW_ALGO_MINING) {
-                    rolBackupdateMinerBalance(minerAddress, senderAddress, recipientAddress, minerRewards);
+                    System.out.println("NO");
+                    //политика сдерживания.
+                    recipientAddress.setDigitalStockBalance(recipientDigitalStock + digitalStock);
                 }
 
-            } else if (voteEnum.equals(VoteEnum.STAKING)) {
-                if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-                    senderAddress.setDigitalDollarBalance(UtilsUse.round(senderDigitalDollar + digitalDollar, Seting.DECIMAL_PLACES));
-                    senderAddress.setDigitalStakingBalance(UtilsUse.round(senderDigitalStaking - digitalDollar, Seting.DECIMAL_PLACES));
-                } else {
-                    senderAddress.setDigitalDollarBalance(senderDigitalDollar + digitalDollar);
-                    senderAddress.setDigitalStakingBalance(senderDigitalStaking - digitalDollar);
-                }
-                if (indexBlock > Seting.NEW_ALGO_MINING) {
-                    rolBackupdateMinerBalance(minerAddress, senderAddress, recipientAddress, minerRewards);
-                }
 
-            } else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
-                if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-                    senderAddress.setDigitalDollarBalance(UtilsUse.round(senderDigitalDollar - digitalDollar, Seting.DECIMAL_PLACES));
-                    senderAddress.setDigitalStakingBalance(UtilsUse.round(senderDigitalStaking + digitalDollar, Seting.DECIMAL_PLACES));
-                } else {
-                    senderAddress.setDigitalDollarBalance(senderDigitalDollar - digitalDollar);
-                    senderAddress.setDigitalStakingBalance(senderDigitalStaking + digitalDollar);
-                }
-                if (indexBlock > Seting.NEW_ALGO_MINING) {
-                    rolBackupdateMinerBalance(minerAddress, senderAddress, recipientAddress, minerRewards);
-                }
             }
+            else if (voteEnum.equals(VoteEnum.STAKING)) {
+                System.out.println("STAKING: ");
+
+                senderAddress.setDigitalDollarBalance(senderDigitalDollar + digitalDollar);
+                senderAddress.setDigitalStakingBalance(senderDigitalStaking - digitalDollar);
+            }
+            else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
+                System.out.println("UNSTAKING");
+
+                senderAddress.setDigitalDollarBalance(senderDigitalDollar - digitalDollar);
+                senderAddress.setDigitalStakingBalance(senderDigitalStaking + digitalDollar);
+            }
+
 
         } else if (senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
-            if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-                recipientAddress.setDigitalDollarBalance(UtilsUse.round(recipientDigitalDollar - digitalDollar, Seting.DECIMAL_PLACES));
-                recipientAddress.setDigitalStockBalance(UtilsUse.round(recipientDigitalStock - digitalStock, Seting.DECIMAL_PLACES));
-            } else {
-                recipientAddress.setDigitalDollarBalance(recipientDigitalDollar - digitalDollar);
-                recipientAddress.setDigitalStockBalance(recipientDigitalStock - digitalStock);
-            }
+            System.out.println("BASIS_ADDRESS");
+            System.out.println(" recipientAddress: before " + recipientAddress);
+            recipientAddress.setDigitalDollarBalance(recipientDigitalDollar - digitalDollar);
+            recipientAddress.setDigitalStockBalance(recipientDigitalStock - digitalStock);
+            System.out.println(" recipientAddress: after " + recipientAddress);
+
         }
+        System.out.println("sendTrue: " + sendTrue);
         return sendTrue;
     }
 
-    private static void updateMinerBalance(Account minerAddress, Account senderAddress, Account recipientAddress, double minerRewards) {
-        double minerDigitalDollar = minerAddress.getDigitalDollarBalance();
-        if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-            minerDigitalDollar = UtilsUse.round(minerDigitalDollar, Seting.DECIMAL_PLACES);
-            minerRewards = UtilsUse.round(minerRewards, Seting.DECIMAL_PLACES);
-        }
 
-        if (senderAddress.getAccount().equals(minerAddress.getAccount())) {
-            double updatedBalance = UtilsUse.round(senderAddress.getDigitalDollarBalance() + minerRewards, Seting.DECIMAL_PLACES);
-            senderAddress.setDigitalDollarBalance(updatedBalance);
 
-            minerAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance());
-            minerAddress.setDigitalStockBalance(senderAddress.getDigitalStockBalance());
-            minerAddress.setDigitalStakingBalance(senderAddress.getDigitalStakingBalance());
-        } else if (recipientAddress.getAccount().equals(minerAddress.getAccount())) {
-            double updatedBalance = UtilsUse.round(recipientAddress.getDigitalDollarBalance() + minerRewards, Seting.DECIMAL_PLACES);
-            recipientAddress.setDigitalDollarBalance(updatedBalance);
 
-            minerAddress.setDigitalDollarBalance(recipientAddress.getDigitalDollarBalance());
-            minerAddress.setDigitalStockBalance(recipientAddress.getDigitalStockBalance());
-            minerAddress.setDigitalStakingBalance(recipientAddress.getDigitalStakingBalance());
-        } else {
-            double updatedBalance = UtilsUse.round(minerDigitalDollar + minerRewards, Seting.DECIMAL_PLACES);
-            minerAddress.setDigitalDollarBalance(updatedBalance);
-        }
-    }
-    private static void rolBackupdateMinerBalance(Account minerAddress, Account senderAddress, Account recipientAddress, double minerRewards) {
-        double minerDigitalDollar = minerAddress.getDigitalDollarBalance();
-        if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-            minerDigitalDollar = UtilsUse.round(minerDigitalDollar, Seting.DECIMAL_PLACES);
-            minerRewards = UtilsUse.round(minerRewards, Seting.DECIMAL_PLACES);
-        }
 
-        if (senderAddress.getAccount().equals(minerAddress.getAccount())) {
-            double updatedBalance = UtilsUse.round(senderAddress.getDigitalDollarBalance() - minerRewards, Seting.DECIMAL_PLACES);
-            senderAddress.setDigitalDollarBalance(updatedBalance);
-
-            minerAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance());
-            minerAddress.setDigitalStockBalance(senderAddress.getDigitalStockBalance());
-            minerAddress.setDigitalStakingBalance(senderAddress.getDigitalStakingBalance());
-        } else if (recipientAddress.getAccount().equals(minerAddress.getAccount())) {
-            double updatedBalance = UtilsUse.round(recipientAddress.getDigitalDollarBalance() - minerRewards, Seting.DECIMAL_PLACES);
-            recipientAddress.setDigitalDollarBalance(updatedBalance);
-
-            minerAddress.setDigitalDollarBalance(recipientAddress.getDigitalDollarBalance());
-            minerAddress.setDigitalStockBalance(recipientAddress.getDigitalStockBalance());
-            minerAddress.setDigitalStakingBalance(recipientAddress.getDigitalStakingBalance());
-        } else {
-            double updatedBalance = UtilsUse.round(minerDigitalDollar - minerRewards, Seting.DECIMAL_PLACES);
-            minerAddress.setDigitalDollarBalance(updatedBalance);
-        }
-    }
 }

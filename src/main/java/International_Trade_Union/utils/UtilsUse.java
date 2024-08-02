@@ -392,7 +392,7 @@ public class UtilsUse {
             double transactionSum = actual.getDtoTransactions().stream()
                     .sorted(Comparator.comparing(DtoTransaction::getDigitalDollar).reversed())
                     .filter(UtilsUse.distinctByKey(DtoTransaction::getSender))
-                    .mapToDouble(t -> t.getDigitalDollar() + t.getDigitalStockBalance() + t.getBonusForMiner() * 4)
+                    .mapToDouble(t -> t.getDigitalDollar() + t.getDigitalStockBalance())
                     .sum();
 
             // Рассчитываем очки за сумму транзакций
