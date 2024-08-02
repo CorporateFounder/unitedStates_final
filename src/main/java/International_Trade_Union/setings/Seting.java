@@ -20,7 +20,6 @@ public interface Seting {
 
     int FIFTEEN_DAYS =  15;
 
-
     Directors directors = new Directors();
 
 
