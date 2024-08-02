@@ -457,9 +457,17 @@ public class UtilsBalance {
         if (senderAddress.getAccount().equals(minerAddress.getAccount())) {
             double updatedBalance = UtilsUse.round(senderAddress.getDigitalDollarBalance() + minerRewards, Seting.DECIMAL_PLACES);
             senderAddress.setDigitalDollarBalance(updatedBalance);
+
+            minerAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance());
+            minerAddress.setDigitalStockBalance(senderAddress.getDigitalStockBalance());
+            minerAddress.setDigitalStakingBalance(senderAddress.getDigitalStakingBalance());
         } else if (recipientAddress.getAccount().equals(minerAddress.getAccount())) {
             double updatedBalance = UtilsUse.round(recipientAddress.getDigitalDollarBalance() + minerRewards, Seting.DECIMAL_PLACES);
             recipientAddress.setDigitalDollarBalance(updatedBalance);
+
+            minerAddress.setDigitalDollarBalance(recipientAddress.getDigitalDollarBalance());
+            minerAddress.setDigitalStockBalance(recipientAddress.getDigitalStockBalance());
+            minerAddress.setDigitalStakingBalance(recipientAddress.getDigitalStakingBalance());
         } else {
             double updatedBalance = UtilsUse.round(minerDigitalDollar + minerRewards, Seting.DECIMAL_PLACES);
             minerAddress.setDigitalDollarBalance(updatedBalance);
@@ -475,9 +483,17 @@ public class UtilsBalance {
         if (senderAddress.getAccount().equals(minerAddress.getAccount())) {
             double updatedBalance = UtilsUse.round(senderAddress.getDigitalDollarBalance() - minerRewards, Seting.DECIMAL_PLACES);
             senderAddress.setDigitalDollarBalance(updatedBalance);
+
+            minerAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance());
+            minerAddress.setDigitalStockBalance(senderAddress.getDigitalStockBalance());
+            minerAddress.setDigitalStakingBalance(senderAddress.getDigitalStakingBalance());
         } else if (recipientAddress.getAccount().equals(minerAddress.getAccount())) {
             double updatedBalance = UtilsUse.round(recipientAddress.getDigitalDollarBalance() - minerRewards, Seting.DECIMAL_PLACES);
             recipientAddress.setDigitalDollarBalance(updatedBalance);
+
+            minerAddress.setDigitalDollarBalance(recipientAddress.getDigitalDollarBalance());
+            minerAddress.setDigitalStockBalance(recipientAddress.getDigitalStockBalance());
+            minerAddress.setDigitalStakingBalance(recipientAddress.getDigitalStakingBalance());
         } else {
             double updatedBalance = UtilsUse.round(minerDigitalDollar - minerRewards, Seting.DECIMAL_PLACES);
             minerAddress.setDigitalDollarBalance(updatedBalance);
