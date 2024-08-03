@@ -896,8 +896,11 @@ public class BasisController {
 //            Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
             Map<String, Account> balances = new HashMap<>();
 
-
-            Account miner =UtilsAccountToEntityAccount.entityAccountToAccount(blockService.findByAccount(User.getUserAddress()));
+            EntityAccount entityAccount = blockService.findByAccount(User.getUserAddress());
+            if(entityAccount == null){
+                entityAccount = new EntityAccount(User.getUserAddress(), 0, 0, 0);
+            }
+            Account miner =UtilsAccountToEntityAccount.entityAccountToAccount(entityAccount);
             minerShow = miner;
 
             String address = "http://194.87.236.238:80";
@@ -978,7 +981,12 @@ public class BasisController {
 //            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
             //получить счет майнера. get the miner's account.
-            miner = UtilsAccountToEntityAccount.entityAccountToAccount(blockService.findByAccount(User.getUserAddress()));;
+
+            EntityAccount tempAccount = blockService.findByAccount(User.getUserAddress());
+            if(tempAccount == null){
+                tempAccount = new EntityAccount(User.getUserAddress(), 0, 0, 0);
+            }
+            miner = UtilsAccountToEntityAccount.entityAccountToAccount(tempAccount);
             minerShow = miner;
             System.out.println("BasisController: mining: account miner: " + miner);
             if (miner == null) {

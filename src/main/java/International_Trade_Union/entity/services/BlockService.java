@@ -133,10 +133,12 @@ public class BlockService {
         EntityAccount entityAccounts = null;
         try {
             entityAccounts = entityAccountRepository.findByAccount(account);
-        } catch (Exception e) {
+            if (entityAccounts == null) {
+                return new EntityAccount(account, 0, 0, 0);
+            }
+        } catch (Throwable e) {
             e.printStackTrace();
             return new EntityAccount(account, 0, 0, 0);
-
         }
         return entityAccounts;
     }
