@@ -135,7 +135,7 @@ public class BlockService {
             entityAccounts = entityAccountRepository.findByAccount(account);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IOException("findByAccount: error: save: ", e);
+            return new EntityAccount(account, 0, 0, 0);
 
         }
         return entityAccounts;
