@@ -53,8 +53,6 @@ import static International_Trade_Union.utils.UtilsBalance.rollbackCalculateBala
 @Component
 public class UtilsResolving {
     @Autowired
-    NodeChecker nodeChecker;
-    @Autowired
     BlockService blockService;
 
 
@@ -1961,6 +1959,7 @@ public class UtilsResolving {
     }
 
     public List<HostEndDataShortB> sortPriorityHost(Set<String> hosts) {
+
         // Добавляем ORIGINAL_ADDRESSES к входящему набору хостов
         Set<String> modifiedHosts = new HashSet<>(hosts);
         modifiedHosts.addAll(Seting.ORIGINAL_ADDRESSES);
@@ -1975,10 +1974,8 @@ public class UtilsResolving {
                         }
                 ));
 
-        List<CompletableFuture<HostEndDataShortB>> futures = new ArrayList<>(); // Список для хранения CompletableFuture
 
-        // Потокобезопасное множество для недоступных узлов
-        Set<String> unresponsiveAddresses = Collections.synchronizedSet(new HashSet<>());
+        List<CompletableFuture<HostEndDataShortB>> futures = new ArrayList<>(); // Список для хранения CompletableFuture
 
         // Вывод информации о начале метода
         System.out.println("start: sortPriorityHost: " + selectedHosts);
@@ -1997,9 +1994,7 @@ public class UtilsResolving {
                 } catch (IOException | JSONException e) {
                     // Перехват и логирование ошибки
                     logError("Error while retrieving data for host: " + host, e);
-                    synchronized (unresponsiveAddresses) {
-                        unresponsiveAddresses.add(nodeChecker.extractHostPort(host));
-                    }
+
                 }
                 return null;
             });
@@ -2029,8 +2024,6 @@ public class UtilsResolving {
         // Вывод информации о завершении метода
         System.out.println("finish: sortPriorityHost: " + resultList);
 
-        // Удаляем недоступные узлы из исходного набора хостов
-        hosts.removeAll(unresponsiveAddresses);
 
         // Возвращение итогового списка
         return resultList;
@@ -2038,11 +2031,6 @@ public class UtilsResolving {
 
     // Метод для получения данных из источника
     private DataShortBlockchainInformation fetchDataShortBlockchainInformation(String host) throws IOException, JSONException {
-        // Проверка и добавление протокола, если необходимо
-        if (!host.startsWith("http://") && !host.startsWith("https://")) {
-            host = "http://" + host;
-        }
-
         // Загрузка JSON данных с URL
         String jsonGlobalData = UtilUrl.readJsonFromUrl(host + "/datashort");
         // Вывод загруженных данных
@@ -2050,7 +2038,6 @@ public class UtilsResolving {
         // Преобразование JSON данных в объект
         return UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
     }
-
 
     //скачивает хосты из других узлов
     public Set<String> newHosts(String host) throws JSONException, IOException {

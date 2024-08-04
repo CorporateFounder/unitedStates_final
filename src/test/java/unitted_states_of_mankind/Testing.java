@@ -27,6 +27,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.ConnectException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -62,7 +64,14 @@ public class Testing {
     public void DeleteAddress() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         List<HostEndDataShortB> hosts = new ArrayList<>();
         hosts.add(new HostEndDataShortB("http://0.0.0.0:82", null));
+        hosts.add(new HostEndDataShortB("http://37.27.60.116:55", null));
+        hosts.add(new HostEndDataShortB("http://194.87.236.238:82", null));
+        Set<String> nodes = new HashSet<>();
         initiateProcess(hosts);
+
+//        initiateProcess(hosts);
+
+
 //        Mining.deleteFiles("C://"+ORIGINAL_POOL_URL_ADDRESS_FILE);
     }
     public void initiateProcess(List<HostEndDataShortB> sortPriorityHost) {
@@ -187,21 +196,15 @@ public class Testing {
 
 
     private DataShortBlockchainInformation fetchDataShortBlockchainInformation(String host) throws IOException, JSONException {
-        // Загрузка JSON данных с URL
         String jsonGlobalData = UtilUrl.readJsonFromUrl(host + "/datashort");
-        // Вывод загруженных данных
-        System.out.println("jsonGlobalData: " + jsonGlobalData);
-        // Преобразование JSON данных в объект
+        System.out.println("jsonGlobalData: " + jsonGlobalData + " host: " + host);
         return UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
     }
 
     public List<HostEndDataShortB> sortPriorityHost(Set<String> hosts) {
-
-        // Добавляем ORIGINAL_ADDRESSES к входящему набору хостов
         Set<String> modifiedHosts = new HashSet<>(hosts);
         modifiedHosts.addAll(Seting.ORIGINAL_ADDRESSES);
 
-        // Отбираем случайные 10 хостов
         Set<String> selectedHosts = modifiedHosts.stream()
                 .collect(Collectors.collectingAndThen(
                         Collectors.toList(),
@@ -211,69 +214,64 @@ public class Testing {
                         }
                 ));
 
+        List<CompletableFuture<HostEndDataShortB>> futures = new ArrayList<>();
+        Set<String> unresponsiveAddresses = Collections.synchronizedSet(new HashSet<>());
 
-        List<CompletableFuture<HostEndDataShortB>> futures = new ArrayList<>(); // Список для хранения CompletableFuture
-
-        // Вывод информации о начале метода
         System.out.println("start: sortPriorityHost: " + selectedHosts);
 
-        // Перебираем все хосты
         for (String host : selectedHosts) {
-            // Создаем CompletableFuture для каждого хоста
             CompletableFuture<HostEndDataShortB> future = CompletableFuture.supplyAsync(() -> {
                 try {
-                    // Вызов метода для получения данных из источника
                     DataShortBlockchainInformation global = fetchDataShortBlockchainInformation(host);
-                    // Если данные действительны, создаем объект HostEndDataShortB
                     if (global != null && global.isValidation()) {
                         return new HostEndDataShortB(host, global);
                     }
                 } catch (IOException | JSONException e) {
-                    // Перехват и логирование ошибки
-
-
+                    System.err.println("Error fetching data from host: " + host + " Error: " + e.getMessage());
+                    System.err.println("Marking as unresponsive: " + host);
+                    unresponsiveAddresses.add(host);
                 }
                 return null;
             });
 
-            // Добавление CompletableFuture в список
             futures.add(future);
         }
 
-        // Получение CompletableFuture, которые будут завершены
         CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 
-        // Создание CompletableFuture для обработки завершенных результатов
-        CompletableFuture<List<HostEndDataShortB>> allComplete = allFutures.thenApplyAsync(result -> {
-            // Получение результатов из CompletableFuture, фильтрация недействительных результатов и сборка в список
-            return futures.stream()
-                    .map(CompletableFuture::join)
-                    .filter(result1 -> result1 != null)
-                    .collect(Collectors.toList());
-        });
+        CompletableFuture<List<HostEndDataShortB>> allComplete = allFutures.thenApplyAsync(result ->
+                futures.stream()
+                        .map(CompletableFuture::join)
+                        .filter(result1 -> result1 != null)
+                        .collect(Collectors.toList())
+        );
 
-        // Получение итогового списка
         List<HostEndDataShortB> resultList = allComplete.join();
-
-        // Сортировка списка по приоритету
         Collections.sort(resultList, new HostEndDataShortBComparator());
 
-        // Вывод информации о завершении метода
         System.out.println("finish: sortPriorityHost: " + resultList);
 
+        System.out.println("---------------------------------------");
+        System.out.println("hosts before: " + hosts);
+        hosts.removeAll(unresponsiveAddresses);
+        System.out.println("hosts after removing unresponsive: " + hosts);
+        System.out.println("unresponsiveAddresses: " + unresponsiveAddresses);
+        System.out.println("---------------------------------------");
 
-        // Возвращение итогового списка
         return resultList;
     }
 
-    private String extractHostPort(String url) {
+    private String extractHostPort(String host) {
+        // Assuming the format of host is "http://<ip>:<port>", we extract the host and port part
         try {
-            java.net.URL netUrl = new java.net.URL(url);
-            return netUrl.getHost() + ":" + netUrl.getPort();
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid URL: " + url, e);
+            URL url = new URL(host);
+            return url.getHost() + ":" + url.getPort();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return host;  // Return the original host if URL parsing fails
         }
     }
+
 
     public List<DtoTransaction> getDuplicateTransactions(Block block) {
         Base base = new Base58();
