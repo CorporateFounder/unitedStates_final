@@ -121,12 +121,12 @@ public class ConductorController {
             System.out.println("Password contains invalid Base58 characters");
             return result;
         }
-    dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
-    stock = UtilsUse.round(stock, Seting.DECIMAL_PLACES);
+    dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
+    stock = UtilsUse.round(stock, Seting.SENDING_DECIMAL_PLACES);
     reward = 0.0;
-    if (dollar == null || dollar < 0.0) dollar = 0.0;
-    if (stock == null || stock < 0.0) stock = 0.0;
-    if (reward == null || reward < 0.0) reward = 0.0;
+    if (dollar == null || dollar < 0.000001) dollar = 0.0;
+    if (stock == null || stock < 0.000001) stock = 0.0;
+    if (reward == null || reward < 0.000001) reward = 0.0;
 
     Laws laws = new Laws();
     laws.setLaws(new ArrayList<>());

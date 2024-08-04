@@ -333,13 +333,13 @@ public class MainController {
             System.out.println("Password contains invalid Base58 characters");
             return "redirect:/result-sending";
         }
-        dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
-        stock = UtilsUse.round(stock, Seting.DECIMAL_PLACES);
+        dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
+        stock = UtilsUse.round(stock, Seting.SENDING_DECIMAL_PLACES);
         reward = 0.0;
-        if(dollar == null || dollar < 0.0)
+        if(dollar == null || dollar < 0.000001)
             dollar = 0.0;
 
-        if(stock == null || stock < 0.0)
+        if(stock == null || stock < 0.000001)
             stock = 0.0;
 
 

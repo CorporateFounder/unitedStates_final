@@ -15,6 +15,8 @@ import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
 
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -39,7 +41,9 @@ public class UtilsBalance {
         UtilsBalance.blockService = blockService;
     }
 
-    /**Возвращает баланс обратно, нужно когда есть множество веток.*/
+    /**
+     * Возвращает баланс обратно, нужно когда есть множество веток.
+     */
     public static Map<String, Account> rollbackCalculateBalance(
             Map<String, Account> balances,
             Block block
@@ -107,7 +111,7 @@ public class UtilsBalance {
                         continue;
                     }
                 }
-                sendTrue = UtilsBalance.rollBackSendMoney(
+                sendTrue = UtilsBalance.rollBackSendMoneyWithBigDecimal(
                         sender,
                         customer,
                         transaction.getDigitalDollar(),
@@ -131,7 +135,10 @@ public class UtilsBalance {
         return balances;
 
     }
-    /**Подсчитывает баланс счетов*/
+
+    /**
+     * Подсчитывает баланс счетов
+     */
     public static Map<String, Account> calculateBalance(
             Map<String, Account> balances,
             Block block,
@@ -145,10 +152,9 @@ public class UtilsBalance {
         for (int j = 0; j < block.getDtoTransactions().size(); j++) {
 
 
-
             DtoTransaction transaction = block.getDtoTransactions().get(j);
-            if(blockService != null){
-                if(blockService.existsBySign(transaction.getSign())){
+            if (blockService != null) {
+                if (blockService.existsBySign(transaction.getSign())) {
                     System.out.println("this transaction signature has already been used and is not valid from db");
                     continue;
                 }
@@ -168,14 +174,13 @@ public class UtilsBalance {
             Account sender = getBalance(transaction.getSender(), balances);
             Account customer = getBalance(transaction.getCustomer(), balances);
             if (transaction.verify()) {
-                if (transaction.getSender().equals(Seting.BASIS_ADDRESS)){
+                if (transaction.getSender().equals(Seting.BASIS_ADDRESS)) {
                     BasisSendCount++;
                     if (sender.getAccount().equals(Seting.BASIS_ADDRESS) && BasisSendCount > 2) {
                         System.out.println("Basis address can send only two the base address can send no more than two times per block:" + Seting.BASIS_ADDRESS);
                         continue;
                     }
                 }
-
 
 
                 boolean sendTrue = true;
@@ -218,7 +223,8 @@ public class UtilsBalance {
                         continue;
                     }
                 }
-                sendTrue = UtilsBalance.sendMoney(
+
+                sendTrue = UtilsBalance.sendMoneyWithBigDecimal(
                         sender,
                         customer,
                         transaction.getDigitalDollar(),
@@ -275,13 +281,18 @@ public class UtilsBalance {
     }
 
     public static boolean sendMoney(Account senderAddress, Account recipientAddress, double digitalDollar, double digitalReputation, double minerRewards) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        return sendMoney(senderAddress, recipientAddress, digitalDollar, digitalReputation, minerRewards, VoteEnum.YES);
+
+        return sendMoneyWithBigDecimal(senderAddress, recipientAddress, digitalDollar, digitalReputation, minerRewards, VoteEnum.YES);
+
+
     }
 
-    /**Переписывает баланс, от отправителя к получателю*/
+    /**
+     * Переписывает баланс, от отправителя к получателю
+     */
     public static boolean sendMoney(Account senderAddress, Account recipientAddress, double digitalDollar, double digitalStock, double minerRewards, VoteEnum voteEnum) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
         double senderDigitalDollar = senderAddress.getDigitalDollarBalance();
-        double  senderDigitalStock = senderAddress.getDigitalStockBalance();
+        double senderDigitalStock = senderAddress.getDigitalStockBalance();
         double senderDigitalStaking = senderAddress.getDigitalStakingBalance();
         double recipientDigitalDollar = recipientAddress.getDigitalDollarBalance();
         double recipientDigitalStock = recipientAddress.getDigitalStockBalance();
@@ -289,17 +300,17 @@ public class UtilsBalance {
         boolean sendTrue = true;
 
 
-        if(BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES){
-            senderDigitalDollar = UtilsUse.round(senderDigitalDollar,  Seting.DECIMAL_PLACES);
-            senderDigitalStock = UtilsUse.round(senderDigitalStock,  Seting.DECIMAL_PLACES);
-            senderDigitalStaking = UtilsUse.round(senderDigitalStaking,  Seting.DECIMAL_PLACES);
+        if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
+            senderDigitalDollar = UtilsUse.round(senderDigitalDollar, Seting.DECIMAL_PLACES);
+            senderDigitalStock = UtilsUse.round(senderDigitalStock, Seting.DECIMAL_PLACES);
+            senderDigitalStaking = UtilsUse.round(senderDigitalStaking, Seting.DECIMAL_PLACES);
 
-            recipientDigitalDollar = UtilsUse.round(recipientDigitalDollar,  Seting.DECIMAL_PLACES);
-            recipientDigitalStock = UtilsUse.round(recipientDigitalStock,  Seting.DECIMAL_PLACES);
-            recipientDigitalStaking = UtilsUse.round(recipientDigitalStaking,  Seting.DECIMAL_PLACES);
-            digitalDollar = UtilsUse.round(digitalDollar,  Seting.DECIMAL_PLACES);
-            digitalStock = UtilsUse.round(digitalStock,  Seting.DECIMAL_PLACES);
-            minerRewards = UtilsUse.round(minerRewards,  Seting.DECIMAL_PLACES);
+            recipientDigitalDollar = UtilsUse.round(recipientDigitalDollar, Seting.DECIMAL_PLACES);
+            recipientDigitalStock = UtilsUse.round(recipientDigitalStock, Seting.DECIMAL_PLACES);
+            recipientDigitalStaking = UtilsUse.round(recipientDigitalStaking, Seting.DECIMAL_PLACES);
+            digitalDollar = UtilsUse.round(digitalDollar, Seting.DECIMAL_PLACES);
+            digitalStock = UtilsUse.round(digitalStock, Seting.DECIMAL_PLACES);
+            minerRewards = UtilsUse.round(minerRewards, Seting.DECIMAL_PLACES);
         }
         if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
             if (senderDigitalStock < digitalStock) {
@@ -309,7 +320,7 @@ public class UtilsBalance {
             } else if (recipientAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
                 System.out.println("Basis canot to be recipient;");
                 sendTrue = false;
-            } else if((voteEnum.equals(VoteEnum.YES)  || voteEnum.equals(VoteEnum.NO))){
+            } else if ((voteEnum.equals(VoteEnum.YES) || voteEnum.equals(VoteEnum.NO))) {
                 if (senderAddress.getAccount().equals(recipientAddress.getAccount())) {
                     System.out.println("sender %s, recipient %s cannot be equals! Error!".format(senderAddress.getAccount(), recipientAddress.getAccount()));
                     sendTrue = false;
@@ -333,8 +344,7 @@ public class UtilsBalance {
                 }
 
 
-            }
-            else if (voteEnum.equals(VoteEnum.STAKING)) {
+            } else if (voteEnum.equals(VoteEnum.STAKING)) {
                 System.out.println("STAKING: ");
                 if (senderDigitalDollar < digitalDollar + minerRewards) {
                     System.out.println("less dollar");
@@ -343,8 +353,7 @@ public class UtilsBalance {
                 }
                 senderAddress.setDigitalDollarBalance(senderDigitalDollar - digitalDollar);
                 senderAddress.setDigitalStakingBalance(senderDigitalStaking + digitalDollar);
-            }
-            else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
+            } else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
                 System.out.println("UNSTAKING");
                 if (senderDigitalStaking < digitalDollar) {
                     System.out.println("less staking");
@@ -365,34 +374,36 @@ public class UtilsBalance {
         return sendTrue;
     }
 
-    /**Откатывает транзакции, чтобы мы могли переключиться в новую ветку.*/
+    /**
+     * Откатывает транзакции, чтобы мы могли переключиться в новую ветку.
+     */
     public static boolean rollBackSendMoney(
             Account senderAddress,
             Account recipientAddress,
-            double digitalDollar, double digitalStock, double minerRewards, VoteEnum voteEnum){
+            double digitalDollar, double digitalStock, double minerRewards, VoteEnum voteEnum) {
         double senderDigitalDollar = senderAddress.getDigitalDollarBalance();
-        double  senderDigitalStock = senderAddress.getDigitalStockBalance();
+        double senderDigitalStock = senderAddress.getDigitalStockBalance();
         double senderDigitalStaking = senderAddress.getDigitalStakingBalance();
         double recipientDigitalDollar = recipientAddress.getDigitalDollarBalance();
         double recipientDigitalStock = recipientAddress.getDigitalStockBalance();
         double recipientDigitalStaking = recipientAddress.getDigitalStakingBalance();
 
         boolean sendTrue = true;
-        if(BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES){
-            senderDigitalDollar = UtilsUse.round(senderDigitalDollar,  Seting.DECIMAL_PLACES);
-            senderDigitalStock = UtilsUse.round(senderDigitalStock,  Seting.DECIMAL_PLACES);
-            senderDigitalStaking = UtilsUse.round(senderDigitalStaking,  Seting.DECIMAL_PLACES);
+        if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
+            senderDigitalDollar = UtilsUse.round(senderDigitalDollar, Seting.DECIMAL_PLACES);
+            senderDigitalStock = UtilsUse.round(senderDigitalStock, Seting.DECIMAL_PLACES);
+            senderDigitalStaking = UtilsUse.round(senderDigitalStaking, Seting.DECIMAL_PLACES);
 
-            recipientDigitalDollar = UtilsUse.round(recipientDigitalDollar,  Seting.DECIMAL_PLACES);
-            recipientDigitalStock = UtilsUse.round(recipientDigitalStock,  Seting.DECIMAL_PLACES);
-            recipientDigitalStaking = UtilsUse.round(recipientDigitalStaking,  Seting.DECIMAL_PLACES);
-            digitalDollar = UtilsUse.round(digitalDollar,  Seting.DECIMAL_PLACES);
-            digitalStock = UtilsUse.round(digitalStock,  Seting.DECIMAL_PLACES);
-            minerRewards = UtilsUse.round(minerRewards,  Seting.DECIMAL_PLACES);
+            recipientDigitalDollar = UtilsUse.round(recipientDigitalDollar, Seting.DECIMAL_PLACES);
+            recipientDigitalStock = UtilsUse.round(recipientDigitalStock, Seting.DECIMAL_PLACES);
+            recipientDigitalStaking = UtilsUse.round(recipientDigitalStaking, Seting.DECIMAL_PLACES);
+            digitalDollar = UtilsUse.round(digitalDollar, Seting.DECIMAL_PLACES);
+            digitalStock = UtilsUse.round(digitalStock, Seting.DECIMAL_PLACES);
+            minerRewards = UtilsUse.round(minerRewards, Seting.DECIMAL_PLACES);
         }
 
         if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
-                if((voteEnum.equals(VoteEnum.YES)  || voteEnum.equals(VoteEnum.NO))){
+            if ((voteEnum.equals(VoteEnum.YES) || voteEnum.equals(VoteEnum.NO))) {
 //
 
                 senderAddress.setDigitalDollarBalance(senderDigitalDollar + digitalDollar);
@@ -409,14 +420,12 @@ public class UtilsBalance {
                 }
 
 
-            }
-            else if (voteEnum.equals(VoteEnum.STAKING)) {
+            } else if (voteEnum.equals(VoteEnum.STAKING)) {
                 System.out.println("STAKING: ");
 
                 senderAddress.setDigitalDollarBalance(senderDigitalDollar + digitalDollar);
                 senderAddress.setDigitalStakingBalance(senderDigitalStaking - digitalDollar);
-            }
-            else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
+            } else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
                 System.out.println("UNSTAKING");
 
                 senderAddress.setDigitalDollarBalance(senderDigitalDollar - digitalDollar);
@@ -437,7 +446,142 @@ public class UtilsBalance {
     }
 
 
+    public static boolean sendMoneyWithBigDecimal(Account senderAddress, Account recipientAddress, double digitalDollar, double digitalStock, double minerRewards, VoteEnum voteEnum) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+        double senderDigitalDollar = senderAddress.getDigitalDollarBalance();
+        double senderDigitalStock = senderAddress.getDigitalStockBalance();
+        double senderDigitalStaking = senderAddress.getDigitalStakingBalance();
+        double recipientDigitalDollar = recipientAddress.getDigitalDollarBalance();
+        double recipientDigitalStock = recipientAddress.getDigitalStockBalance();
+        double recipientDigitalStaking = recipientAddress.getDigitalStakingBalance();
+        boolean sendTrue = true;
 
+        if (BasisController.getBlockchainSize() > Seting.BIG_DECIMAL_CALCULATE) {
+            BigDecimal bdSenderDigitalDollar = BigDecimal.valueOf(senderDigitalDollar);
+            BigDecimal bdSenderDigitalStock = BigDecimal.valueOf(senderDigitalStock);
+            BigDecimal bdSenderDigitalStaking = BigDecimal.valueOf(senderDigitalStaking);
+            BigDecimal bdRecipientDigitalDollar = BigDecimal.valueOf(recipientDigitalDollar);
+            BigDecimal bdRecipientDigitalStock = BigDecimal.valueOf(recipientDigitalStock);
+            BigDecimal bdRecipientDigitalStaking = BigDecimal.valueOf(recipientDigitalStaking);
+            BigDecimal bdDigitalDollar = BigDecimal.valueOf(digitalDollar);
+            BigDecimal bdDigitalStock = BigDecimal.valueOf(digitalStock);
+            BigDecimal bdMinerRewards = BigDecimal.valueOf(minerRewards);
+
+            if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
+                if (bdSenderDigitalStock.compareTo(bdDigitalStock) < 0) {
+                    System.out.println("less stock");
+                    sendTrue = false;
+                } else if (recipientAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
+                    System.out.println("Basis cannot be recipient");
+                    sendTrue = false;
+                } else if ((voteEnum.equals(VoteEnum.YES) || voteEnum.equals(VoteEnum.NO))) {
+                    if (senderAddress.getAccount().equals(recipientAddress.getAccount())) {
+                        System.out.println("sender %s, recipient %s cannot be equals! Error!".format(senderAddress.getAccount(), recipientAddress.getAccount()));
+                        sendTrue = false;
+                        return sendTrue;
+                    }
+                    if (bdSenderDigitalDollar.compareTo(bdDigitalDollar.add(bdMinerRewards)) < 0) {
+                        System.out.println("less dollar");
+                        sendTrue = false;
+                        return sendTrue;
+                    }
+
+                    senderAddress.setDigitalDollarBalance(bdSenderDigitalDollar.subtract(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                    senderAddress.setDigitalStockBalance(bdSenderDigitalStock.subtract(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                    recipientAddress.setDigitalDollarBalance(bdRecipientDigitalDollar.add(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+
+                    if (voteEnum.equals(VoteEnum.YES)) {
+                        recipientAddress.setDigitalStockBalance(bdRecipientDigitalStock.add(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                    } else if (voteEnum.equals(VoteEnum.NO)) {
+                        recipientAddress.setDigitalStockBalance(bdRecipientDigitalStock.subtract(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                    }
+
+                } else if (voteEnum.equals(VoteEnum.STAKING)) {
+                    System.out.println("STAKING: ");
+                    if (bdSenderDigitalDollar.compareTo(bdDigitalDollar.add(bdMinerRewards)) < 0) {
+                        System.out.println("less dollar");
+                        sendTrue = false;
+                        return sendTrue;
+                    }
+                    senderAddress.setDigitalDollarBalance(bdSenderDigitalDollar.subtract(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                    senderAddress.setDigitalStakingBalance(bdSenderDigitalStaking.add(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                } else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
+                    System.out.println("UNSTAKING");
+                    if (bdSenderDigitalStaking.compareTo(bdDigitalDollar) < 0) {
+                        System.out.println("less staking");
+                        sendTrue = false;
+                        return sendTrue;
+                    }
+                    senderAddress.setDigitalDollarBalance(bdSenderDigitalDollar.add(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                    senderAddress.setDigitalStakingBalance(bdSenderDigitalStaking.subtract(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                }
+
+            } else if (senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
+                recipientAddress.setDigitalDollarBalance(bdRecipientDigitalDollar.add(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                recipientAddress.setDigitalStockBalance(bdRecipientDigitalStock.add(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+            }
+
+        } else {
+            return sendMoney(senderAddress, recipientAddress, digitalDollar, digitalStock, minerRewards, voteEnum);
+        }
+
+        return sendTrue;
+    }
+
+    public static boolean rollBackSendMoneyWithBigDecimal(Account senderAddress, Account recipientAddress, double digitalDollar, double digitalStock, double minerRewards, VoteEnum voteEnum) {
+        double senderDigitalDollar = senderAddress.getDigitalDollarBalance();
+        double senderDigitalStock = senderAddress.getDigitalStockBalance();
+        double senderDigitalStaking = senderAddress.getDigitalStakingBalance();
+        double recipientDigitalDollar = recipientAddress.getDigitalDollarBalance();
+        double recipientDigitalStock = recipientAddress.getDigitalStockBalance();
+        double recipientDigitalStaking = recipientAddress.getDigitalStakingBalance();
+
+        boolean sendTrue = true;
+
+        if (BasisController.getBlockchainSize() > Seting.BIG_DECIMAL_CALCULATE) {
+            BigDecimal bdSenderDigitalDollar = BigDecimal.valueOf(senderDigitalDollar);
+            BigDecimal bdSenderDigitalStock = BigDecimal.valueOf(senderDigitalStock);
+            BigDecimal bdSenderDigitalStaking = BigDecimal.valueOf(senderDigitalStaking);
+            BigDecimal bdRecipientDigitalDollar = BigDecimal.valueOf(recipientDigitalDollar);
+            BigDecimal bdRecipientDigitalStock = BigDecimal.valueOf(recipientDigitalStock);
+            BigDecimal bdRecipientDigitalStaking = BigDecimal.valueOf(recipientDigitalStaking);
+            BigDecimal bdDigitalDollar = BigDecimal.valueOf(digitalDollar);
+            BigDecimal bdDigitalStock = BigDecimal.valueOf(digitalStock);
+            BigDecimal bdMinerRewards = BigDecimal.valueOf(minerRewards);
+
+            if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
+                if ((voteEnum.equals(VoteEnum.YES) || voteEnum.equals(VoteEnum.NO))) {
+                    senderAddress.setDigitalDollarBalance(bdSenderDigitalDollar.add(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                    senderAddress.setDigitalStockBalance(bdSenderDigitalStock.add(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                    recipientAddress.setDigitalDollarBalance(bdRecipientDigitalDollar.subtract(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+
+                    if (voteEnum.equals(VoteEnum.YES)) {
+                        recipientAddress.setDigitalStockBalance(bdRecipientDigitalStock.subtract(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                    } else if (voteEnum.equals(VoteEnum.NO)) {
+                        recipientAddress.setDigitalStockBalance(bdRecipientDigitalStock.add(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                    }
+
+                } else if (voteEnum.equals(VoteEnum.STAKING)) {
+                    System.out.println("STAKING: ");
+                    senderAddress.setDigitalDollarBalance(bdSenderDigitalDollar.add(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                    senderAddress.setDigitalStakingBalance(bdSenderDigitalStaking.subtract(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                } else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
+                    System.out.println("UNSTAKING");
+                    senderAddress.setDigitalDollarBalance(bdSenderDigitalDollar.subtract(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                    senderAddress.setDigitalStakingBalance(bdSenderDigitalStaking.add(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                }
+
+            } else if (senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
+                System.out.println("BASIS_ADDRESS");
+                recipientAddress.setDigitalDollarBalance(bdRecipientDigitalDollar.subtract(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+                recipientAddress.setDigitalStockBalance(bdRecipientDigitalStock.subtract(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP).doubleValue());
+            }
+
+        } else {
+            return rollBackSendMoney(senderAddress, recipientAddress, digitalDollar, digitalStock, minerRewards, voteEnum);
+        }
+
+        return sendTrue;
+    }
 
 
 }

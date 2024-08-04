@@ -73,7 +73,7 @@ public class UtilsBalanceTest {
         transaction.setBonusForMiner(3);
         transaction.setSender("2A8vxijdyY5ST1WhLQan3N1P6wSdzBDo9VmEFhck9bArG");
         transaction.setCustomer("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43");
-        System.out.println(transaction);
+
         long index = 284984 + 5000;
         System.out.println("index: " + index);
         Account sender = new Account(transaction.getSender(), 1000, 1000, 0);
@@ -82,14 +82,14 @@ public class UtilsBalanceTest {
         System.out.println("sender before: " + sender);
         System.out.println("recipient before: " + recipient);
         System.out.println("minier before: " + miner);
-        UtilsBalance.sendMoney(sender, recipient,  transaction.getDigitalDollar(),transaction.getDigitalStockBalance(),  transaction.getBonusForMiner(), VoteEnum.YES);
+        UtilsBalance.sendMoneyWithBigDecimal(sender, recipient,  transaction.getDigitalDollar(),transaction.getDigitalStockBalance(),  transaction.getBonusForMiner(), VoteEnum.YES);
         System.out.println("sender after: " + sender);
         System.out.println("recipient after: " + recipient);
         System.out.println("minier after: " + miner);
         System.out.println("bonus for miner: " + block.getDtoTransactions().get(1).getBonusForMiner());
 
         System.out.println("roll back");
-        UtilsBalance.rollBackSendMoney(sender, recipient,  transaction.getDigitalDollar(), transaction.getDigitalStockBalance(), transaction.getBonusForMiner(), VoteEnum.YES );
+        UtilsBalance.rollBackSendMoneyWithBigDecimal(sender, recipient,  transaction.getDigitalDollar(), transaction.getDigitalStockBalance(), transaction.getBonusForMiner(), VoteEnum.YES );
         System.out.println("sender after: " + sender);
         System.out.println("recipient after: " + recipient);
         System.out.println("minier after: " + miner);

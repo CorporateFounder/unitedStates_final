@@ -9,6 +9,7 @@ import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.entities.EntityBlock;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.HostEndDataShortB;
+import International_Trade_Union.model.Mining;
 import International_Trade_Union.model.comparator.HostEndDataShortBComparator;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
@@ -25,6 +26,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.ConnectException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -32,6 +34,9 @@ import java.sql.Timestamp;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static International_Trade_Union.setings.Seting.*;
@@ -52,6 +57,223 @@ public class Testing {
      return UtilsUse.sha256hash(jsonString());
 
      }*/
+
+    @Test
+    public void DeleteAddress() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        List<HostEndDataShortB> hosts = new ArrayList<>();
+        hosts.add(new HostEndDataShortB("http://0.0.0.0:82", null));
+        initiateProcess(hosts);
+//        Mining.deleteFiles("C://"+ORIGINAL_POOL_URL_ADDRESS_FILE);
+    }
+    public void initiateProcess(List<HostEndDataShortB> sortPriorityHost) {
+
+        Set<String> allAddresses = new HashSet<>();
+        try {
+            // Считать все адреса из файла
+            allAddresses = UtilsAllAddresses.readLineObject("C://"+Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | SignatureException |
+                 NoSuchProviderException | InvalidKeyException e) {
+            return;
+        }
+
+        // Потокобезопасный список для доступных узлов
+        List<HostEndDataShortB> availableHosts = Collections.synchronizedList(new ArrayList<>());
+
+        // Потокобезопасное множество для недоступных узлов
+        Set<String> unresponsiveAddresses = Collections.synchronizedSet(new HashSet<>());
+
+        // Проверяем состояние всех узлов
+        List<CompletableFuture<Void>> checkFutures = sortPriorityHost.stream()
+                .map(host -> CompletableFuture.runAsync(() -> {
+                    boolean isResponding = false;
+                    for (int attempt = 0; attempt < 3; attempt++) {
+                        try {
+                            String response = UtilUrl.readJsonFromUrl(host.getHost() + "/confirmReadiness", 7000);
+                            isResponding = true;
+                            System.out.println("conecting: " + host.getHost());
+                            if ("ready".equals(response)) {
+                                synchronized (availableHosts) {
+                                    availableHosts.add(host);
+                                }
+                                break;
+                            }
+                        } catch (ConnectException e) {
+                            synchronized (unresponsiveAddresses) {
+                                String hostPort = extractHostPort(host.getHost());
+                                System.out.println("host: " + hostPort);
+                                unresponsiveAddresses.add(hostPort);
+                            }
+                            break; // Не нужно повторять попытки, если соединение отказано
+                        } catch (Exception e) {
+                            System.out.println("host: error" + host.getHost());
+                        }
+                    }
+                    if (!isResponding) {
+                        synchronized (unresponsiveAddresses) {
+                            String hostPort = extractHostPort(host.getHost());
+                            System.out.println("host: " + hostPort);
+                            unresponsiveAddresses.add(hostPort);
+                        }
+                    }
+                }))
+                .collect(Collectors.toList());
+
+        // Ждем завершения всех проверок
+        CompletableFuture.allOf(checkFutures.toArray(new CompletableFuture[0])).join();
+
+        // Логируем недоступные узлы
+        System.out.println("before: " + allAddresses);
+        System.out.println("for delete: " + unresponsiveAddresses);
+
+        // Нормализуем адреса для удаления
+        Set<String> normalizedAllAddresses = allAddresses.stream()
+                .map(this::extractHostPort)
+                .collect(Collectors.toSet());
+
+        // Удаляем неответившие узлы из общего списка
+        normalizedAllAddresses.removeAll(unresponsiveAddresses);
+        System.out.println("after: " + normalizedAllAddresses);
+
+        // Удаляем файл с адресами
+        Mining.deleteFiles("C://"+Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
+
+        // Перезаписываем оставшиеся адреса в файл
+        normalizedAllAddresses.forEach(address -> {
+            try {
+                UtilsAllAddresses.saveAllAddresses(address, "C://"+Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
+            } catch (IOException | NoSuchAlgorithmException | SignatureException | InvalidKeySpecException |
+                     NoSuchProviderException | InvalidKeyException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        // Ограничиваем количество ожидаемых узлов до 7
+        int nodesToWait = Math.min(availableHosts.size(), 7);
+
+        if (nodesToWait == 0) {
+            return;
+        }
+
+        CountDownLatch latch = new CountDownLatch(nodesToWait);
+
+        // Теперь ждем, пока неготовые узлы станут готовыми
+        List<CompletableFuture<Void>> waitFutures = availableHosts.stream()
+                .map(host -> CompletableFuture.runAsync(() -> {
+                    while (true) {
+                        try {
+                            String response = UtilUrl.readJsonFromUrl(host.getHost() + "/confirmReadiness", 2000);
+                            if ("ready".equals(response)) {
+                                latch.countDown();
+                                break;
+                            }
+                            Thread.sleep(1000); // Пауза перед следующей проверкой
+                        } catch (Exception e) {
+                            latch.countDown(); // Уменьшаем счетчик, если узел стал недоступен
+                            break;
+                        }
+                    }
+                }))
+                .collect(Collectors.toList());
+
+        try {
+            // Ждем максимум 25 секунд
+            boolean completed = latch.await(25, TimeUnit.SECONDS);
+            if (!completed) {
+            }
+        } catch (InterruptedException e) {
+        }
+
+    }
+
+
+    private DataShortBlockchainInformation fetchDataShortBlockchainInformation(String host) throws IOException, JSONException {
+        // Загрузка JSON данных с URL
+        String jsonGlobalData = UtilUrl.readJsonFromUrl(host + "/datashort");
+        // Вывод загруженных данных
+        System.out.println("jsonGlobalData: " + jsonGlobalData);
+        // Преобразование JSON данных в объект
+        return UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
+    }
+
+    public List<HostEndDataShortB> sortPriorityHost(Set<String> hosts) {
+
+        // Добавляем ORIGINAL_ADDRESSES к входящему набору хостов
+        Set<String> modifiedHosts = new HashSet<>(hosts);
+        modifiedHosts.addAll(Seting.ORIGINAL_ADDRESSES);
+
+        // Отбираем случайные 10 хостов
+        Set<String> selectedHosts = modifiedHosts.stream()
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        listHost -> {
+                            Collections.shuffle(listHost);
+                            return listHost.stream().limit(RANDOM_HOSTS).collect(Collectors.toSet());
+                        }
+                ));
+
+
+        List<CompletableFuture<HostEndDataShortB>> futures = new ArrayList<>(); // Список для хранения CompletableFuture
+
+        // Вывод информации о начале метода
+        System.out.println("start: sortPriorityHost: " + selectedHosts);
+
+        // Перебираем все хосты
+        for (String host : selectedHosts) {
+            // Создаем CompletableFuture для каждого хоста
+            CompletableFuture<HostEndDataShortB> future = CompletableFuture.supplyAsync(() -> {
+                try {
+                    // Вызов метода для получения данных из источника
+                    DataShortBlockchainInformation global = fetchDataShortBlockchainInformation(host);
+                    // Если данные действительны, создаем объект HostEndDataShortB
+                    if (global != null && global.isValidation()) {
+                        return new HostEndDataShortB(host, global);
+                    }
+                } catch (IOException | JSONException e) {
+                    // Перехват и логирование ошибки
+
+
+                }
+                return null;
+            });
+
+            // Добавление CompletableFuture в список
+            futures.add(future);
+        }
+
+        // Получение CompletableFuture, которые будут завершены
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+
+        // Создание CompletableFuture для обработки завершенных результатов
+        CompletableFuture<List<HostEndDataShortB>> allComplete = allFutures.thenApplyAsync(result -> {
+            // Получение результатов из CompletableFuture, фильтрация недействительных результатов и сборка в список
+            return futures.stream()
+                    .map(CompletableFuture::join)
+                    .filter(result1 -> result1 != null)
+                    .collect(Collectors.toList());
+        });
+
+        // Получение итогового списка
+        List<HostEndDataShortB> resultList = allComplete.join();
+
+        // Сортировка списка по приоритету
+        Collections.sort(resultList, new HostEndDataShortBComparator());
+
+        // Вывод информации о завершении метода
+        System.out.println("finish: sortPriorityHost: " + resultList);
+
+
+        // Возвращение итогового списка
+        return resultList;
+    }
+
+    private String extractHostPort(String url) {
+        try {
+            java.net.URL netUrl = new java.net.URL(url);
+            return netUrl.getHost() + ":" + netUrl.getPort();
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid URL: " + url, e);
+        }
+    }
 
     public List<DtoTransaction> getDuplicateTransactions(Block block) {
         Base base = new Base58();

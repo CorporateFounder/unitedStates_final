@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public interface Seting {
-    boolean IS_TEST = false;
+    boolean IS_TEST = true;
     boolean IS_SECURITY = true;
 
     int HUNDRED_PERCENT = 100;
@@ -336,4 +336,8 @@ public interface Seting {
     int START_BLOCK_DECIMAL_PLACES = 268765;
     int NEW_ALGO_MINING = 286892;
     int DUBLICATE_IN_ONE_BLOCK_TRANSACTIONS = 287971;
+
+    int BIG_DECIMAL_CALCULATE = 289381;
+
+    int SENDING_DECIMAL_PLACES = 6;
 }

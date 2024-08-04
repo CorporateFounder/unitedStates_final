@@ -62,9 +62,9 @@ public class MineController {
         Base base = new Base58();
 
 
-        dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
+        dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
         reward = 0.0;
-        if (dollar == null || dollar < 0.0)
+        if (dollar == null || dollar < 0.000001)
             dollar = 0.0;
 
 
@@ -156,9 +156,9 @@ public class MineController {
         System.out.println("start post /miningTransaction");
         Base base = new Base58();
 
-        dollar = UtilsUse.round(dollar, Seting.DECIMAL_PLACES);
+        dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
         reward = 0.0;
-        if (dollar == null || dollar < 0.0)
+        if (dollar == null || dollar <0.000001)
             dollar = 0.0;
 
 

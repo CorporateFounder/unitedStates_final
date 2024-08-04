@@ -28,6 +28,38 @@ public class UtilUrl {
             is.close();
         }
     }
+
+    public static String readJsonFromUrl(String url, int timeoutMillis) throws IOException, JSONException {
+        URL url1 = new URL(url);
+        URLConnection conn = url1.openConnection();
+        conn.setConnectTimeout(timeoutMillis); // Устанавливаем таймаут соединения
+        conn.setReadTimeout(timeoutMillis); // Устанавливаем таймаут чтения
+        InputStream is = conn.getInputStream();
+        BufferedReader rd = null;
+        try {
+            rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+            String jsonText = readAll(rd);
+            return jsonText;
+        } finally {
+            if (rd != null) {
+                try {
+                    rd.close();
+                } catch (IOException e) {
+                    e.printStackTrace(); // Логируем исключение
+                }
+            }
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace(); // Логируем исключение
+                }
+            }
+            if (conn instanceof HttpURLConnection) {
+                ((HttpURLConnection) conn).disconnect();
+            }
+        }
+    }
     public static String readJsonFromUrl(String url) throws IOException, JSONException {
         URL url1 = new URL(url);
         URLConnection conn = url1.openConnection();
