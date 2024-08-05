@@ -463,11 +463,9 @@ public class UtilsUse {
     }
 
     public static boolean areAccountsDifferent(Account account1, Account account2) {
-        // Здесь определите логику сравнения объектов Account по балансам или адресам
-        // Например:
-        return account1.getDigitalDollarBalance() != account2.getDigitalDollarBalance() ||
-                account1.getDigitalStockBalance() != account2.getDigitalStockBalance() ||
-                account1.getDigitalStakingBalance() != account2.getDigitalStakingBalance();
+        return account1.getDigitalDollarBalance().compareTo(account2.getDigitalDollarBalance()) != 0 ||
+                account1.getDigitalStockBalance().compareTo(account2.getDigitalStockBalance()) != 0 ||
+                account1.getDigitalStakingBalance().compareTo(account2.getDigitalStakingBalance()) != 0;
     }
 
 
