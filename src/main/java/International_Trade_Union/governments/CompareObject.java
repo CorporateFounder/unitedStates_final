@@ -6,13 +6,13 @@ import International_Trade_Union.model.Account;
 public class CompareObject {
 
     public int compare(Account o1, Account o2) {
-        double x1 = o1.getDigitalStockBalance();
-        double x2 = o2.getDigitalStockBalance();
+        double x1 = o1.getDigitalStockBalance().doubleValue();
+        double x2 = o2.getDigitalStockBalance().doubleValue();
         int power = Double.compare(x1, x2);
         if (power != 0)
             return power;
-        double gold1 = o1.getDigitalDollarBalance();
-        double gold2 = o2.getDigitalDollarBalance();
+        double gold1 = o1.getDigitalDollarBalance().doubleValue();
+        double gold2 = o2.getDigitalDollarBalance().doubleValue();
         int gold = Double.compare(gold1, gold2);
         if(gold != 0)
             return gold;

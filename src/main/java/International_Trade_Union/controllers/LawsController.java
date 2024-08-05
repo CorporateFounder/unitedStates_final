@@ -22,6 +22,7 @@ import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
@@ -790,7 +791,7 @@ public class LawsController {
 
         Account Budget = balances.get(Seting.BUDGET);
         if (Budget == null)
-            Budget = new Account(Seting.BUDGET, 0, 0, 0);
+            Budget = new Account(Seting.BUDGET, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         model.addAttribute("dollar", Budget.getDigitalDollarBalance());
         model.addAttribute("stock", Budget.getDigitalStockBalance());
         model.addAttribute("emission", Seting.EMISSION_BUDGET);

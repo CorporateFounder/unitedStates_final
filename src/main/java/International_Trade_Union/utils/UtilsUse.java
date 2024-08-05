@@ -14,6 +14,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -399,7 +400,7 @@ public class UtilsUse {
             double transactionSumPoints = calculateScore(transactionSum / Math.max(actual.getDtoTransactions().size(), 1), 1) * 4;
 
             // Очки за стейкинг
-            long mineScore = calculateScore(miner.getDigitalStakingBalance(), number);
+            long mineScore = calculateScore(miner.getDigitalStakingBalance().doubleValue(), number);
 
             int diffLimit = (int) (actual.getHashCompexity() - 19);
             diffLimit = diffLimit >= 0? diffLimit: 0;
@@ -419,7 +420,7 @@ public class UtilsUse {
             result = (int) (result + (actual.getHashCompexity() * waight) + mineScore + transactionPoints);
         }
         else {
-            result = (int) ((int) (result + (actual.getHashCompexity() * waight)) + calculateScore(miner.getDigitalStakingBalance(), number));
+            result = (int) ((int) (result + (actual.getHashCompexity() * waight)) + calculateScore(miner.getDigitalStakingBalance().doubleValue(), number));
 
         }
 
@@ -434,7 +435,14 @@ public class UtilsUse {
         double score = Math.ceil(Math.log(x / x0) / Math.log(2));
         return Math.min(400, (long) score);
     }
-
+    public static long calculateScore(BigDecimal x, BigDecimal x0) {
+        if (x.compareTo(BigDecimal.ZERO) <= 0) {
+            return 0;
+        }
+        BigDecimal log2 = new BigDecimal(Math.log(2));
+        BigDecimal score = BigDecimal.valueOf(Math.ceil(Math.log(x.divide(x0, RoundingMode.HALF_UP).doubleValue()) / log2.doubleValue()));
+        return Math.min(400, score.longValue());
+    }
     //позволяет получить список балансов, если баланс до калькуляции в addBlock отличается от
     //баланса после изменения. Что позволяет добавлятьв h2 только те балансы которые изменились
     public static Map<String, Account> differentAccount(Map<String, Account> first, Map<String, Account> second) {
@@ -543,6 +551,10 @@ public class UtilsUse {
         return (double) Math.round(value) / factor;
     }
 
+    public static BigDecimal round(BigDecimal value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+        return value.setScale(places, RoundingMode.HALF_UP);
+    }
     //find dublicate in transactions list
     public static List<DtoTransaction> getDuplicateTransactions(Block block) {
         Base base = new Base58();

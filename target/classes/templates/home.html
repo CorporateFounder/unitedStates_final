@@ -4,6 +4,20 @@
     <title th:text="${title}"/>
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+    <script>
+        function setDefaultValues() {
+            var dollarField = document.querySelector('input[name="dollar"]');
+            var stockField = document.querySelector('input[name="stock"]');
+
+            if (dollarField.value === "") {
+                dollarField.value = "0";
+            }
+
+            if (stockField.value === "") {
+                stockField.value = "0";
+            }
+        }
+    </script>
 </head>
 <body>
 
@@ -35,15 +49,15 @@
 </div>
 
 <div class="container mt-5 mb-5">
-    <form action="/" method="post">
+    <form action="/" method="post" onsubmit="setDefaultValues()">
         <input type="text" name="sender" placeholder="enter the sender's address" class="form-control"><br>
         <input type="text" name="recipient" placeholder="enter the recipient's address" class="form-control"><br>
-        <input type="text" name="dollar" placeholder="enter the number of digital dollars to send (not les 0.000001)" class="form-control"><br>
-        <input type="text" name="stock" placeholder="enter the number of digital shares to send (not les 0.000001) " class="form-control"><br>
-
-        <textarea name="password" placeholder="enter private key" th:rows="8" th:cols="120"></textarea><br>
+        <input type="text" name="dollar" placeholder="enter the number of digital dollars to send (not less 0.00000001)" class="form-control"><br>
+        <input type="text" name="stock" placeholder="enter the number of digital shares to send (not less 0.00000001)" class="form-control"><br>
+        <textarea name="password" placeholder="enter private key" rows="8" cols="120" class="form-control"></textarea><br>
         <button type="submit" class="btn btn-success">Send money</button><br>
     </form>
+</div>
 
 
 </div>

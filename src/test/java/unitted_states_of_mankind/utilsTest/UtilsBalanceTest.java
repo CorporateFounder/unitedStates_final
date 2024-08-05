@@ -9,6 +9,7 @@ import International_Trade_Union.model.Account;
 import International_Trade_Union.vote.VoteEnum;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
@@ -25,8 +26,8 @@ public class UtilsBalanceTest {
     @Test
     public void rollbackBalance() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balance = new HashMap<>();
-        Account customer = new Account("rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM", 100, 50, 50);
-        Account founder = new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", 100, 50, 50);
+        Account customer = new Account("rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM", BigDecimal.valueOf(100),  BigDecimal.valueOf(50), BigDecimal.valueOf(50));
+        Account founder = new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", BigDecimal.valueOf(100),  BigDecimal.valueOf(50), BigDecimal.valueOf(50));
         System.out.println("start:");
         System.out.println( "customer: "+customer);
         System.out.println( "founder: "+founder);
@@ -76,20 +77,20 @@ public class UtilsBalanceTest {
 
         long index = 284984 + 5000;
         System.out.println("index: " + index);
-        Account sender = new Account(transaction.getSender(), 1000, 1000, 0);
-        Account miner = new Account(block.getMinerAddress(), 0.0, 0.0, 0.0);
-        Account recipient = new Account(transaction.getCustomer(), 1000, 1000, 0);
+        Account sender = new Account(transaction.getSender(), BigDecimal.valueOf(1000), BigDecimal.valueOf(1000), BigDecimal.ZERO);
+        Account miner = new Account(block.getMinerAddress(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+        Account recipient = new Account(transaction.getCustomer(), BigDecimal.valueOf(1000, 0));
         System.out.println("sender before: " + sender);
         System.out.println("recipient before: " + recipient);
         System.out.println("minier before: " + miner);
-        UtilsBalance.sendMoneyWithBigDecimal(sender, recipient,  transaction.getDigitalDollar(),transaction.getDigitalStockBalance(),  transaction.getBonusForMiner(), VoteEnum.YES);
+        UtilsBalance.sendMoney(sender, recipient,  BigDecimal.valueOf(transaction.getDigitalDollar()),BigDecimal.valueOf(transaction.getDigitalStockBalance()),  BigDecimal.valueOf(transaction.getBonusForMiner()), VoteEnum.YES);
         System.out.println("sender after: " + sender);
         System.out.println("recipient after: " + recipient);
         System.out.println("minier after: " + miner);
         System.out.println("bonus for miner: " + block.getDtoTransactions().get(1).getBonusForMiner());
 
         System.out.println("roll back");
-        UtilsBalance.rollBackSendMoneyWithBigDecimal(sender, recipient,  transaction.getDigitalDollar(), transaction.getDigitalStockBalance(), transaction.getBonusForMiner(), VoteEnum.YES );
+        UtilsBalance.rollBackSendMoney(sender, recipient,  BigDecimal.valueOf(transaction.getDigitalDollar()),BigDecimal.valueOf(transaction.getDigitalStockBalance()),  BigDecimal.valueOf(transaction.getBonusForMiner()), VoteEnum.YES);
         System.out.println("sender after: " + sender);
         System.out.println("recipient after: " + recipient);
         System.out.println("minier after: " + miner);

@@ -85,7 +85,7 @@ public class ConductorController {
         Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
         Account account = UtilsBalance.getBalance(address, balances);
-        return UtilsUse.round(account.getDigitalDollarBalance(), Seting.DECIMAL_PLACES);
+        return UtilsUse.round(account.getDigitalDollarBalance(), Seting.DECIMAL_PLACES).doubleValue();
     }
 
     /**
@@ -99,7 +99,7 @@ public class ConductorController {
         Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
         Account account = UtilsBalance.getBalance(address, balances);
-        return UtilsUse.round(account.getDigitalStockBalance(), Seting.DECIMAL_PLACES);
+        return UtilsUse.round(account.getDigitalStockBalance(), Seting.DECIMAL_PLACES).doubleValue();
     }
 
     /**
@@ -124,9 +124,9 @@ public class ConductorController {
     dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
     stock = UtilsUse.round(stock, Seting.SENDING_DECIMAL_PLACES);
     reward = 0.0;
-    if (dollar == null || dollar < 0.000001) dollar = 0.0;
-    if (stock == null || stock < 0.000001) stock = 0.0;
-    if (reward == null || reward < 0.000001) reward = 0.0;
+    if (dollar == null || dollar <  Seting.MINIMUM) dollar = 0.0;
+    if (stock == null || stock <  Seting.MINIMUM) stock = 0.0;
+    if (reward == null || reward <  Seting.MINIMUM) reward = 0.0;
 
     Laws laws = new Laws();
     laws.setLaws(new ArrayList<>());
@@ -212,34 +212,6 @@ public class ConductorController {
     return result;
 }
 
-    @GetMapping ("/findBlocksFromSign58")
-    public List<Block> findBlocksFromSign58(@RequestBody SignRequest reques){
-        try {
-            List<EntityBlock> blocks = blockService.findBlocksByTransactionSign(reques.getSign());
-            List<Block> blocks1 = UtilsBlockToEntityBlock.entityBlocksToBlocks(blocks);
-            return blocks1;
-        }catch (Exception e){
-
-            return new ArrayList<>();
-        }
-
-    }
-
-    @GetMapping ("/findBlocksFromSign64")
-    public List<Block> findBlocksFromSign64(@RequestBody SignRequest reques){
-        try {
-
-            byte[] bytes = Base64.getDecoder().decode(reques.getSign());
-            String sign = base58.encode(bytes);
-            List<EntityBlock> blocks = blockService.findBlocksByTransactionSign(sign);
-            List<Block> blocks1 = UtilsBlockToEntityBlock.entityBlocksToBlocks(blocks);
-            return blocks1;
-        }catch (Exception e){
-
-            return new ArrayList<>();
-        }
-
-    }
 
     /**
      * whether the transaction was added to the blockchain, find with sign
@@ -323,8 +295,34 @@ public class ConductorController {
         return block;
     }
 
+    @GetMapping ("/findBlocksFromSign58")
+    public List<Block> findBlocksFromSign58(@RequestBody SignRequest reques){
+        try {
+            List<EntityBlock> blocks = blockService.findBlocksByTransactionSign(reques.getSign());
+            List<Block> blocks1 = UtilsBlockToEntityBlock.entityBlocksToBlocks(blocks);
+            return blocks1;
+        }catch (Exception e){
 
+            return new ArrayList<>();
+        }
 
+    }
+
+    @GetMapping ("/findBlocksFromSign64")
+    public List<Block> findBlocksFromSign64(@RequestBody SignRequest reques){
+        try {
+
+            byte[] bytes = Base64.getDecoder().decode(reques.getSign());
+            String sign = base58.encode(bytes);
+            List<EntityBlock> blocks = blockService.findBlocksByTransactionSign(sign);
+            List<Block> blocks1 = UtilsBlockToEntityBlock.entityBlocksToBlocks(blocks);
+            return blocks1;
+        }catch (Exception e){
+
+            return new ArrayList<>();
+        }
+
+    }
     /**найти блок по индексу.
      * find a block by index.
      * (from local host)*/

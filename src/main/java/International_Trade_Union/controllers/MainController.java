@@ -36,6 +36,7 @@ import International_Trade_Union.vote.VoteEnum;
 
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
@@ -231,7 +232,7 @@ public class MainController {
 
         Account account = UtilsBalance.getBalance(User.getUserAddress(), balances);
         model.addAttribute("account", account);
-        model.addAttribute("score", UtilsUse.calculateScore(account.getDigitalStakingBalance(), 1));
+        model.addAttribute("score", UtilsUse.calculateScore(account.getDigitalStakingBalance(), BigDecimal.valueOf(1)));
 
 
         return "home";
@@ -336,10 +337,10 @@ public class MainController {
         dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
         stock = UtilsUse.round(stock, Seting.SENDING_DECIMAL_PLACES);
         reward = 0.0;
-        if(dollar == null || dollar < 0.000001)
+        if(dollar == null || dollar < Seting.MINIMUM)
             dollar = 0.0;
 
-        if(stock == null || stock < 0.000001)
+        if(stock == null || stock <  Seting.MINIMUM)
             stock = 0.0;
 
 

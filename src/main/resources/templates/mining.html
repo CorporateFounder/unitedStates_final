@@ -4,6 +4,17 @@
     <title th:text="${title}"/>
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+    <script>
+        function setDefaultValues() {
+            var dollarField = document.querySelector('input[name="dollar"]');
+
+            if (dollarField.value === "") {
+                dollarField.value = "0";
+            }
+
+        }
+    </script>
+
 </head>
 <body>
 
@@ -23,16 +34,16 @@
         <button type="submit" class="btn btn-success">change custom diff</button>
     </form>
 
-    <form action="/staking" class="container mt-1" method="post">
+    <form action="/staking" class="container mt-1" method="post" onsubmit="setDefaultValues()">
         <input type="text" name="miner" placeholder="enter the your address:" class="form-control"><br>
-        <input type="text" name="dollar" placeholder="enter the dollar (not les 0.000001):" class="form-control"><br>
+        <input type="text" name="dollar" placeholder="enter the dollar (not les 0.00000001):" class="form-control"><br>
         <textarea name="password" placeholder="enter private key" th:rows="8" th:cols="120"></textarea><br>
         <button type="submit" class="btn btn-success">send transaction staking</button>
     </form>
 
-    <form action="/unstaking" class="container mt-1" method="post">
+    <form action="/unstaking" class="container mt-1" method="post" onsubmit="setDefaultValues()">
         <input type="text" name="miner" placeholder="enter the your address:" class="form-control"><br>
-        <input type="text" name="dollar" placeholder="enter the dollar (not les 0.000001): " class="form-control"><br>
+        <input type="text" name="dollar" placeholder="enter the dollar (not les 0.00000001): " class="form-control"><br>
         <textarea name="password" placeholder="enter private key" th:rows="8" th:cols="120"></textarea><br>
         <button type="submit" class="btn btn-success">send transaction unstaking</button>
     </form>

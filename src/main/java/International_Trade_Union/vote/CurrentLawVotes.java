@@ -78,13 +78,13 @@ public class CurrentLawVotes {
         //
         for (String s : YES) {
 
-            yes += balances.get(s).getDigitalStakingBalance();
+            yes += balances.get(s).getDigitalStakingBalance().doubleValue();
 
         }
         //
         for (String s : NO) {
 
-            no += balances.get(s).getDigitalStakingBalance();
+            no += balances.get(s).getDigitalStakingBalance().doubleValue();
 
         }
 
@@ -98,12 +98,12 @@ public class CurrentLawVotes {
         double yes = 0.0;
         double no = 0.0;
         for (String s : YES) {
-            yes += balances.get(s).getDigitalStakingBalance() ;
+            yes += balances.get(s).getDigitalStakingBalance().doubleValue() ;
 
         }
         for (String s : NO) {
 
-            no += balances.get(s).getDigitalStakingBalance() ;
+            no += balances.get(s).getDigitalStakingBalance().doubleValue() ;
 
         }
 

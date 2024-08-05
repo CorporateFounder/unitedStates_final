@@ -25,6 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.ConnectException;
 import java.net.MalformedURLException;
@@ -361,8 +362,8 @@ public class Testing {
     public void test() throws JsonProcessingException {
         Block previusblock = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.679999999999996,\"digitalStockBalance\":26.679999999999996,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIGJgO67IRfp9WRBqfyO32iwIma2rIxXUa0Ma96FvcILuAiEAx/z75ESJ6k8VZ5f/R60sfViBxKOeQB/KQb6c1HMjFfg=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az\",\"digitalDollar\":266.79999999999995,\"digitalStockBalance\":266.79999999999995,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICKmTeszZPOMuH7uEXTeN6RyfK8siKe7Y8v+pWao5jwwAiEAt8vUpDbUI6uYpeD1Rcuud0n8ji2hkRnkaOE9cEp601M=\"}],\"previousHash\":\"0c0004662e9240e6199c09640a04a8801830b22760a40a841005489458033512\",\"minerAddress\":\"28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":2702159777149640,\"minerRewards\":0.0,\"hashCompexity\":21,\"timestamp\":1718494423000,\"index\":268767,\"hashBlock\":\"901c41d0442d443530581010888680d049018174505004345041d2c92c61028a\"}");
         Block thisBlock = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.68,\"digitalStockBalance\":26.68,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCgvClMkSz4HdvyMbVLrYKu1QDfA+g2ocl2xif57jxkbQIhAN02wvGyJzz8YLpYvDY8neK73Fa1kPdY1ZkLViVilgoN\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"zraD2LuUah83KXTtYP33pwbUuS62dmp21CxPYXDNGWqW\",\"digitalDollar\":266.8,\"digitalStockBalance\":266.8,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIE2jCPp6U7sXVeoUGUE9lZPjb6NznXByPRVRKT9AK2iWAiEA+1gAOZfwqBs0mJtDrEY9juuadtdqB7kFXXd+4CYpr+A=\"}],\"previousHash\":\"901c41d0442d443530581010888680d049018174505004345041d2c92c61028a\",\"minerAddress\":\"zraD2LuUah83KXTtYP33pwbUuS62dmp21CxPYXDNGWqW\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":14411518811790413,\"minerRewards\":0.0,\"hashCompexity\":21,\"timestamp\":1718494610000,\"index\":268768,\"hashBlock\":\"e880d0625192a181108048c0108c43004180498a6a2a42500248309270f29203\"}\n");
-        Account account = new Account("28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az", 266.79999999999995, 266.79999999999995, 0);
-        Account account1 = new Account("zraD2LuUah83KXTtYP33pwbUuS62dmp21CxPYXDNGWqW", 266.8, 266.8, 0);
+        Account account = new Account("28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az", BigDecimal.valueOf(266.79999999999995),  BigDecimal.valueOf(266.79999999999995), BigDecimal.ZERO);
+        Account account1 = new Account("zraD2LuUah83KXTtYP33pwbUuS62dmp21CxPYXDNGWqW", BigDecimal.valueOf(266.8), BigDecimal.valueOf(266.8), BigDecimal.ZERO);
 
     }
     @Test
@@ -401,23 +402,23 @@ public class Testing {
     }
 
     @Test
-    public void TestHostComparator(){
+    public void TestHostComparator() {
         List<HostEndDataShortB> hostEndDataShortBS = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < 10; i++) {
             int size = random.nextInt(10);
             int hashCount = random.nextInt(10);
-            double staking = random.nextDouble(10);
-            int trancaction = random.nextInt(10);
+            BigDecimal staking = BigDecimal.valueOf(random.nextDouble() * 10);
+            int transaction = random.nextInt(10);
             int big = i;
-            if(i >=7){
+            if (i >= 7) {
                 big = 7;
             }
-            DataShortBlockchainInformation temp = new DataShortBlockchainInformation(size, true, hashCount, staking, trancaction, big);
+            DataShortBlockchainInformation temp = new DataShortBlockchainInformation(size, true, hashCount, staking, transaction, big);
             HostEndDataShortB tempHost = new HostEndDataShortB("host: " + i, temp);
             hostEndDataShortBS.add(tempHost);
         }
-        System.out.println("before list: " );
+        System.out.println("before list: ");
         hostEndDataShortBS.forEach(System.out::println);
         System.out.println("____________________________________");
         Collections.sort(hostEndDataShortBS, new HostEndDataShortBComparator());
@@ -436,7 +437,7 @@ public class Testing {
             blocks.add(UtilsJson.jsonToBLock(json));
             blocks.get(0).setHashBlock("4111780951498215c031c98cc201b4690208828c3c844660104bacdc11040909");
             blocks.get(0).setPreviousHash("41c408c41718500200306b0200a10a040280e08f4d2844f30258a23eb9715490");
-            Account miner = new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", 0, 0, 1000);
+            Account miner = new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(1000));
              number = UtilsUse.bigRandomWinner(blocks.get(0),  miner);
              score = UtilsUse.calculateScore(5242881, 10);
         }
@@ -897,13 +898,15 @@ public class Testing {
         deleteBlocks.add(block3);
 
         Map<String, Account> balances = new HashMap<>();
-        double founderBalance = 26.679999999999996 * 4;
-        double minerBalance = 266.79999999999995;
-        balances.put("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", founderBalance, founderBalance , 0.0));
-        balances.put("2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL", new Account("2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL", minerBalance, minerBalance , 0.0));
-        balances.put("28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az", new Account("28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az", minerBalance, minerBalance , 0.0));
-        balances.put("s66m816Dakw1zs1MBXjJr5UuVABnAgA8ahPxvXNyAWyq", new Account("s66m816Dakw1zs1MBXjJr5UuVABnAgA8ahPxvXNyAWyq", minerBalance, minerBalance , 0.0));
-        balances.put("hK6XwB7LxM5wkqbHV3WTpjhZG1TstggsxqEWMw8FnbGf", new Account("hK6XwB7LxM5wkqbHV3WTpjhZG1TstggsxqEWMw8FnbGf", minerBalance, minerBalance , 0.0));
+
+        BigDecimal minerBalance = new BigDecimal("266.79999999999995");
+        BigDecimal founderBalance = BigDecimal.valueOf(26.679999999999996 * 4); // Replace this with the actual value if needed
+
+        balances.put("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", founderBalance, founderBalance, BigDecimal.ZERO));
+        balances.put("2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL", new Account("2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL", minerBalance, minerBalance, BigDecimal.ZERO));
+        balances.put("28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az", new Account("28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az", minerBalance, minerBalance, BigDecimal.ZERO));
+        balances.put("s66m816Dakw1zs1MBXjJr5UuVABnAgA8ahPxvXNyAWyq", new Account("s66m816Dakw1zs1MBXjJr5UuVABnAgA8ahPxvXNyAWyq", minerBalance, minerBalance, BigDecimal.ZERO));
+        balances.put("hK6XwB7LxM5wkqbHV3WTpjhZG1TstggsxqEWMw8FnbGf", new Account("hK6XwB7LxM5wkqbHV3WTpjhZG1TstggsxqEWMw8FnbGf", minerBalance, minerBalance, BigDecimal.ZERO));
 
 
         for (int i = deleteBlocks.size() - 1; i >= 0; i--) {
@@ -915,7 +918,7 @@ public class Testing {
         System.out.println("===========================================");
         balances.entrySet().stream().forEach(System.out::println);
         System.out.println("===========================================");
-        double balance = balances.get("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43").getDigitalDollarBalance();
+        double balance = balances.get("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43").getDigitalDollarBalance().doubleValue();
 
         System.out.printf("balance: %.16f", balance);
         System.out.printf("round: %.16f" , round(balance, 10));
@@ -1098,103 +1101,77 @@ public class Testing {
 
 
     @Test
-    public void testBalance() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public  void testBalance() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> originals = SaveBalances.readLineObject("C://strategy1/balance/");
         Map<String, Account> forks = SaveBalances.readLineObject("C://strategy2/balance/");
         Map<String, Account> balance = SaveBalances.readLineObject("C://resources/balance/");
         Map<String, Account> differents = new HashMap<>();
 
-
         Map<String, Account> cheaterAccount = new HashMap<>();
         Map<String, Integer> countAddressCheater = new HashMap<>();
         BufferedReader reader = null;
         try {
-            // Открываем файл для чтения
             reader = new BufferedReader(new FileReader("C://cheater miner/1.txt"));
 
             String line;
-            // Читаем файл построчно, пока не достигнем конца файла (null)
             while ((line = reader.readLine()) != null) {
-                // Обрабатываем текущую строку
                 String[] arr = line.split(":");
                 if (cheaterAccount.containsKey(arr[0])) {
-                    double dollar = Double.valueOf(arr[1]) + cheaterAccount.get(arr[0]).getDigitalDollarBalance();
-                    double stock = Double.valueOf(arr[2]) + cheaterAccount.get(arr[0]).getDigitalStockBalance();
-                    ;
-                    Account account = new Account(arr[0], dollar, stock, 0);
+                    BigDecimal dollar = new BigDecimal(arr[1]).add(cheaterAccount.get(arr[0]).getDigitalDollarBalance());
+                    BigDecimal stock = new BigDecimal(arr[2]).add(cheaterAccount.get(arr[0]).getDigitalStockBalance());
+                    Account account = new Account(arr[0], dollar, stock, BigDecimal.ZERO);
                     cheaterAccount.put(arr[0], account);
                 } else {
                     String address = arr[0];
-
                     try {
-                        double dollar = Double.valueOf(arr[1]);
-                        double stock = Double.valueOf(arr[2]);
-//                        System.out.println("dollar: " + dollar + " stock: " + stock + " index: " + arr[3]);
-                        Account account = new Account(address, dollar, stock, 0);
+                        BigDecimal dollar = new BigDecimal(arr[1]);
+                        BigDecimal stock = new BigDecimal(arr[2]);
+                        Account account = new Account(address, dollar, stock, BigDecimal.ZERO);
                         cheaterAccount.put(address, account);
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        continue;
-                    } catch (NumberFormatException e) {
+                    } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                         continue;
                     }
                 }
 
-                if (countAddressCheater.containsKey(arr[0])) {
-                    int count = countAddressCheater.get(arr[0]) + 1;
-                    countAddressCheater.put(arr[0], count);
-                } else {
-                    countAddressCheater.put(arr[0], 1);
-                }
+                countAddressCheater.merge(arr[0], 1, Integer::sum);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                // Закрываем BufferedReader после использования
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (reader != null) {
+                reader.close();
             }
         }
 
+        cheaterAccount.forEach((k, v) -> System.out.println("cheater: " + k + " " + v));
+        countAddressCheater.forEach((k, v) -> System.out.println("cheater count: " + k + " " + v));
 
-        for (Map.Entry<String, Account> cheater : cheaterAccount.entrySet()) {
-            System.out.println("cheater: " + cheater);
-        }
-        for (Map.Entry<String, Integer> countAccount : countAddressCheater.entrySet()) {
-            System.out.println("chear how much: " + countAccount);
-        }
-
-
-        //----------------------------------------------------------------------
         for (Map.Entry<String, Account> original : originals.entrySet()) {
             String address = original.getKey();
             if (forks.containsKey(address)) {
-                double originalDollar = original.getValue().getDigitalDollarBalance();
-                double originalStock = original.getValue().getDigitalStockBalance();
-                double forkDollar = forks.get(address).getDigitalDollarBalance();
-                double forkStock = forks.get(address).getDigitalStockBalance();
-                double resultDollar = originalDollar - forkDollar;
-                double resultStock = originalStock - forkStock;
-                if (resultDollar < 0) {
-                    resultDollar = 0;
+                BigDecimal originalDollar = original.getValue().getDigitalDollarBalance();
+                BigDecimal originalStock = original.getValue().getDigitalStockBalance();
+                BigDecimal forkDollar = forks.get(address).getDigitalDollarBalance();
+                BigDecimal forkStock = forks.get(address).getDigitalStockBalance();
+                BigDecimal resultDollar = originalDollar.subtract(forkDollar).max(BigDecimal.ZERO);
+                BigDecimal resultStock = originalStock.subtract(forkStock).max(BigDecimal.ZERO);
+
+                if (resultDollar.compareTo(BigDecimal.ZERO) < 0) {
+                    resultDollar = BigDecimal.ZERO;
                     System.out.println("dollar original: " + originalDollar + " fork: " + forkDollar);
                 }
 
-
-                if (resultStock < 0) {
-                    resultStock = 0;
+                if (resultStock.compareTo(BigDecimal.ZERO) < 0) {
+                    resultStock = BigDecimal.ZERO;
                     System.out.println("stock original: " + originalStock + " fork: " + forkStock);
                 }
 
-                Account account = new Account(address, resultDollar, resultStock, 0);
+                Account account = new Account(address, resultDollar, resultStock, BigDecimal.ZERO);
                 differents.put(address, account);
             } else {
-                double originalDollar = original.getValue().getDigitalDollarBalance();
-                double originalStock = original.getValue().getDigitalStockBalance();
-                Account account = new Account(address, originalDollar, originalStock, 0);
+                BigDecimal originalDollar = original.getValue().getDigitalDollarBalance();
+                BigDecimal originalStock = original.getValue().getDigitalStockBalance();
+                Account account = new Account(address, originalDollar, originalStock, BigDecimal.ZERO);
                 differents.put(address, account);
             }
         }
@@ -1203,89 +1180,66 @@ public class Testing {
         for (Map.Entry<String, Account> different : differents.entrySet()) {
             String address = different.getKey();
             if (forks.containsKey(address)) {
-                double originalDollar = different.getValue().getDigitalDollarBalance();
-                double originalStock = different.getValue().getDigitalStockBalance();
-                double forkDollar = forks.get(address).getDigitalDollarBalance();
-                double forkStock = forks.get(address).getDigitalStockBalance();
+                BigDecimal originalDollar = different.getValue().getDigitalDollarBalance();
+                BigDecimal originalStock = different.getValue().getDigitalStockBalance();
+                BigDecimal forkDollar = forks.get(address).getDigitalDollarBalance();
+                BigDecimal forkStock = forks.get(address).getDigitalStockBalance();
 
-                double resultDollar = forkDollar + originalDollar;
-                double resultStock = forkStock + originalStock;
-                Account account = new Account(address, resultDollar, resultStock, 0);
+                BigDecimal resultDollar = forkDollar.add(originalDollar);
+                BigDecimal resultStock = forkStock.add(originalStock);
+                Account account = new Account(address, resultDollar, resultStock, BigDecimal.ZERO);
                 afterFork.put(address, account);
             } else {
-                double originalDollar = different.getValue().getDigitalDollarBalance();
-                double originalStock = different.getValue().getDigitalStockBalance();
-                Account account = new Account(address, originalDollar, originalStock,0 );
+                BigDecimal originalDollar = different.getValue().getDigitalDollarBalance();
+                BigDecimal originalStock = different.getValue().getDigitalStockBalance();
+                Account account = new Account(address, originalDollar, originalStock, BigDecimal.ZERO);
                 afterFork.put(address, account);
             }
         }
+
         for (Map.Entry<String, Account> different : differents.entrySet()) {
             String address = different.getKey();
             if (cheaterAccount.containsKey(address)) {
-                double dollar = different.getValue().getDigitalDollarBalance();
-                double stock = different.getValue().getDigitalStockBalance();
-                dollar = dollar - cheaterAccount.get(address).getDigitalDollarBalance();
-                System.out.println("====================");
-                System.out.println("cheter: " + cheaterAccount.get(address).getDigitalDollarBalance());
-                stock = stock - cheaterAccount.get(address).getDigitalStockBalance();
-                if (dollar < 0)
-                    dollar = 0;
-                if (stock < 0)
-                    stock = 0;
+                BigDecimal dollar = different.getValue().getDigitalDollarBalance().subtract(cheaterAccount.get(address).getDigitalDollarBalance()).max(BigDecimal.ZERO);
+                BigDecimal stock = different.getValue().getDigitalStockBalance().subtract(cheaterAccount.get(address).getDigitalStockBalance()).max(BigDecimal.ZERO);
 
-//                different.getValue().setDigitalStockBalance(dollar);
-//                different.getValue().setDigitalStockBalance(stock);
                 differents.get(address).setDigitalDollarBalance(dollar);
-                differents.get(address).setDigitalDollarBalance(stock);
+                differents.get(address).setDigitalStockBalance(stock);
             }
         }
 
+        List<Account> originalAccounts = originals.values().stream().collect(Collectors.toList());
+        List<Account> afterForkAccounts = afterFork.values().stream().collect(Collectors.toList());
+        List<Account> differentAccounts = differents.values().stream().collect(Collectors.toList());
 
-        List<Account> originalAccounts = originals.entrySet().stream()
-                .map(t -> t.getValue()).collect(Collectors.toList());
-        List<Account> afterForkAccounts = afterFork.entrySet().stream()
-                .map(t -> t.getValue())
-                .collect(Collectors.toList());
-        List<Account> differentAcount = differents.entrySet().stream()
-                .map(t -> t.getValue()).collect(Collectors.toList());
+        BigDecimal originalSumDollar = originalAccounts.stream().map(Account::getDigitalDollarBalance).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal originalSumStock = originalAccounts.stream().map(Account::getDigitalStockBalance).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal afterForkSumDollar = afterForkAccounts.stream().map(Account::getDigitalDollarBalance).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal afterForkSumStock = afterForkAccounts.stream().map(Account::getDigitalStockBalance).reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        List<Account> forkAccounts = forks.values().stream().collect(Collectors.toList());
 
-        double originalSumDollar = originalAccounts.stream().mapToDouble(t -> t.getDigitalDollarBalance()).sum();
-        double originalSumStock = originalAccounts.stream().mapToDouble(t -> t.getDigitalStockBalance()).sum();
-        double afterForkSumDollar = afterForkAccounts.stream().mapToDouble(t -> t.getDigitalDollarBalance()).sum();
-        double afterForkSumsStock = afterForkAccounts.stream().mapToDouble(t -> t.getDigitalStockBalance()).sum();
+        BigDecimal forkSumDollar = forkAccounts.stream().map(Account::getDigitalDollarBalance).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal forkSumStock = forkAccounts.stream().map(Account::getDigitalStockBalance).reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        List<Account> forkAccount = forks.entrySet().stream().map(t -> t.getValue())
-                .collect(Collectors.toList());
-
-        double forkSumDollar = forkAccount.stream().mapToDouble(t -> t.getDigitalDollarBalance()).sum();
-        double forkSumStock = forkAccount.stream().mapToDouble(t -> t.getDigitalStockBalance()).sum();
-
-        System.out.printf("dollar: original: %f after fork: %f: \n", originalSumDollar, afterForkSumDollar);
-        System.out.printf("stock: original: %f after fork: %f: \n", originalSumStock, afterForkSumsStock);
-        System.out.printf(" different dollar: %f: \n", (originalSumDollar - afterForkSumDollar));
-        System.out.printf(" different stock: %f: \n", (originalSumStock - afterForkSumsStock));
-        System.out.printf("different fork dollar: %f: \n ", (originalSumDollar - forkSumDollar));
-        System.out.printf("different fork stock: %f: \n ", (originalSumStock - forkSumStock));
-        System.out.printf("dollar: %f: stock %f: \n ", forkSumDollar, forkSumStock);
+        System.out.printf("dollar: original: %f after fork: %f%n", originalSumDollar, afterForkSumDollar);
+        System.out.printf("stock: original: %f after fork: %f%n", originalSumStock, afterForkSumStock);
+        System.out.printf("different dollar: %f%n", originalSumDollar.subtract(afterForkSumDollar));
+        System.out.printf("different stock: %f%n", originalSumStock.subtract(afterForkSumStock));
+        System.out.printf("different fork dollar: %f%n", originalSumDollar.subtract(forkSumDollar));
+        System.out.printf("different fork stock: %f%n", originalSumStock.subtract(forkSumStock));
+        System.out.printf("dollar: %f stock %f%n", forkSumDollar, forkSumStock);
 
         String address = "tjghGks15LdppYYvZKwb79w6wU2NwgpEeq5Rktj7smHH";
         System.out.println("****************************");
         System.out.println(address + ":" + cheaterAccount.containsKey(address));
         System.out.println("different balance: " + differents.get(address));
-        System.out.println("orginal: " + originals.get(address));
+        System.out.println("original: " + originals.get(address));
         System.out.println("balance: " + balance.get(address));
         if (forks != null) {
             System.out.println("fork: " + forks.get(address));
-            System.out.println("chetaer Account: " + cheaterAccount.get(address));
-//        Account fork = forks.get(address);
-//        Account different = differents.get(address);
-//        double dollar = fork.getDigitalDollarBalance() - different.getDigitalDollarBalance();
-//        double stock = fork.getDigitalStockBalance() - different.getDigitalStockBalance();
-//        System.out.println("dollar: " + dollar);
-//        System.out.println("stock: " + stock);
+            System.out.println("cheater account: " + cheaterAccount.get(address));
         }
-
     }
 
 

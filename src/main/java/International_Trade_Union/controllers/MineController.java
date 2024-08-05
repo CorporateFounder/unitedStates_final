@@ -64,7 +64,7 @@ public class MineController {
 
         dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
         reward = 0.0;
-        if (dollar == null || dollar < 0.000001)
+        if (dollar == null || dollar <  Seting.MINIMUM)
             dollar = 0.0;
 
 
@@ -158,7 +158,7 @@ public class MineController {
 
         dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
         reward = 0.0;
-        if (dollar == null || dollar <0.000001)
+        if (dollar == null || dollar < Seting.MINIMUM)
             dollar = 0.0;
 
 

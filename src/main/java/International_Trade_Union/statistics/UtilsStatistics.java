@@ -47,8 +47,8 @@ public class UtilsStatistics {
 
                 System.out.println("calculate all digital dollars end stocks");
         for (Map.Entry<String, Account> accountEntry : balances.entrySet()) {
-            allDigitalDollar += accountEntry.getValue().getDigitalDollarBalance();
-            allDigitalStock += accountEntry.getValue().getDigitalStockBalance();
+            allDigitalDollar += accountEntry.getValue().getDigitalDollarBalance().doubleValue();
+            allDigitalStock += accountEntry.getValue().getDigitalStockBalance().doubleValue();
         }
 
         List<DtoTransaction> allTransactions = new ArrayList<>();
@@ -71,13 +71,13 @@ public class UtilsStatistics {
                   if(dtoTransaction.getDigitalDollar() > 0){
                       dollarsList.add(dtoTransaction.getDigitalDollar());
                       sumDollarSender += balances.get(dtoTransaction.getSender())
-                              .getDigitalDollarBalance();
+                              .getDigitalDollarBalance().doubleValue();
                   }
 
                   if(dtoTransaction.getDigitalStockBalance() > 0){
                       stocksList.add(dtoTransaction.getDigitalStockBalance());
                       sumStockSender += balances.get(dtoTransaction.getSender())
-                              .getDigitalStockBalance();
+                              .getDigitalStockBalance().doubleValue();
                   }
 
                 }
@@ -121,21 +121,21 @@ public class UtilsStatistics {
 
         List<Double> medianBalanceDollarList = balances.entrySet()
                 .stream()
-                .filter(t->t.getValue().getDigitalDollarBalance()>0)
-                .map(t->t.getValue().getDigitalDollarBalance())
+                .filter(t->t.getValue().getDigitalDollarBalance().doubleValue()>0)
+                .map(t->t.getValue().getDigitalDollarBalance().doubleValue())
                 .collect(Collectors.toList());
 
         List<Double>medinBalanceStockList = balances.entrySet()
                 .stream()
-                .filter(t->t.getValue().getDigitalStockBalance() >0)
-                .map(t->t.getValue().getDigitalStockBalance())
+                .filter(t->t.getValue().getDigitalStockBalance().doubleValue() >0)
+                .map(t->t.getValue().getDigitalStockBalance().doubleValue())
                 .collect(Collectors.toList());
 
             medianBalanceDollar = UtilsUse.median(medianBalanceDollarList);
             medianBalanceStock = UtilsUse.median(medinBalanceStockList);
 
         int accountsSize = (int) balances.entrySet().stream()
-                .map(t->t.getValue().getDigitalDollarBalance() > 0 || t.getValue().getDigitalStockBalance() > 0)
+                .map(t->t.getValue().getDigitalDollarBalance().doubleValue() > 0 || t.getValue().getDigitalStockBalance().doubleValue() > 0)
                 .count();
 
         int difficultMod = mode(listDifficult);

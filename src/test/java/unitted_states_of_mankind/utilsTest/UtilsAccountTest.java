@@ -8,6 +8,7 @@ import International_Trade_Union.model.Account;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.UtilAccounts;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +23,8 @@ public class UtilsAccountTest {
         List<Account> accounts = new ArrayList<>();
         double balance = 50;
 
-        accounts.add(new Account("first", balance));
-        accounts.add(new Account("second",balance));
+        accounts.add(new Account("first", BigDecimal.valueOf(balance)));
+        accounts.add(new Account("second",BigDecimal.valueOf(balance)));
 
         double expected = balance *2.0;
         double result = UtilAccounts.getAllBalance( accounts);
@@ -37,9 +38,9 @@ public class UtilsAccountTest {
         List<Account> accounts = new ArrayList<>();
         double balance = 50;
         double limit = 49.0;
-        accounts.add(new Account("first", balance));
-        accounts.add(new Account("second", balance));
-        accounts.add(new Account("third",25.0));
+        accounts.add(new Account("first", BigDecimal.valueOf(balance)));
+        accounts.add(new Account("second", BigDecimal.valueOf(balance)));
+        accounts.add(new Account("third",BigDecimal.valueOf(25)));
 
         int expected = 2;
         //акаунты которые больше лимита
@@ -51,9 +52,9 @@ public class UtilsAccountTest {
     public void serchAccount(){
         List<Account> accounts = new ArrayList<>();
         double balance = 50;
-        accounts.add(new Account("first", balance));
-        accounts.add(new Account("second", balance));
-        accounts.add(new Account("third", 25.0));
+        accounts.add(new Account("first", BigDecimal.valueOf(balance)));
+        accounts.add(new Account("second", BigDecimal.valueOf(balance)));
+        accounts.add(new Account("third", BigDecimal.valueOf(25)));
         Account account = UtilAccounts.serchAccountByAddress(accounts,"second");
         Assert.assertEquals("second", account.getAccount());
     }

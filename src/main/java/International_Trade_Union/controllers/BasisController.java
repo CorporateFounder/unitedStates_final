@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 
+import java.math.BigDecimal;
 import java.net.NoRouteToHostException;
 import java.net.SocketException;
 import java.security.*;
@@ -898,7 +899,7 @@ public class BasisController {
 
             EntityAccount entityAccount = blockService.findByAccount(User.getUserAddress());
             if(entityAccount == null){
-                entityAccount = new EntityAccount(User.getUserAddress(), 0, 0, 0);
+                entityAccount = new EntityAccount(User.getUserAddress(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
             }
             Account miner =UtilsAccountToEntityAccount.entityAccountToAccount(entityAccount);
             minerShow = miner;
@@ -984,7 +985,7 @@ public class BasisController {
 
             EntityAccount tempAccount = blockService.findByAccount(User.getUserAddress());
             if(tempAccount == null){
-                tempAccount = new EntityAccount(User.getUserAddress(), 0, 0, 0);
+                tempAccount = new EntityAccount(User.getUserAddress(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
             }
             miner = UtilsAccountToEntityAccount.entityAccountToAccount(tempAccount);
             minerShow = miner;
@@ -992,7 +993,7 @@ public class BasisController {
             if (miner == null) {
                 //если в блокчейне не было баланса майнера, то баланс равен нулю.
                 //if there was no miner balance in the blockchain, then the balance is zero.
-                miner = new Account(User.getUserAddress(), 0, 0, 0);
+                miner = new Account(User.getUserAddress(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
             }
 
             //транзакции которые мы добавили в блок и теперь нужно удалить из файла, в папке resources/transactions.

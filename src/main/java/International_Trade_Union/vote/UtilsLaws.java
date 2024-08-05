@@ -300,7 +300,7 @@ public class UtilsLaws {
                 .filter(t->Objects.nonNull(t.getLaws().getPacketLawName()))
                 .filter(t->Objects.nonNull(t.getName()))
                 .filter(t->Objects.nonNull(t.getLaws().getHashLaw()))
-                .sorted((f1, f2) -> Double.compare(f2.getAccount().getDigitalStockBalance(), f1.getAccount().getDigitalStockBalance()))
+                .sorted((f1, f2) -> Double.compare(f2.getAccount().getDigitalStockBalance().doubleValue(), f1.getAccount().getDigitalStockBalance().doubleValue()))
                 .filter(t-> t.getLaws().getPacketLawName().equals(higherSpecialPositions.getName()))
                 .limit(higherSpecialPositions.getCount())
                 .collect(Collectors.toList());

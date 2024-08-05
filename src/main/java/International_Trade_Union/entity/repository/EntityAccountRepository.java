@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -17,7 +18,10 @@ public interface EntityAccountRepository extends JpaRepository<EntityAccount, Lo
     // Добавьте этот метод для пакетной записи списка объектов EntityAccount
     @Modifying
     @Query(value = "insert into EntityAccount (account, digitalDollarBalance, digitalStockBalance, digitalStakingBalance) values (:account, :digitalDollarBalance, :digitalStockBalance, :digitalStakingBalance)", nativeQuery = true)
-    void batchInsert(@Param("account") List<String> accounts, @Param("digitalDollarBalance") List<Double> digitalDollarBalances, @Param("digitalStockBalance") List<Double> digitalStockBalances, @Param("digitalStakingBalance") List<Double> digitalStakingBalances);
+    void batchInsert(@Param("account") List<String> accounts,
+                     @Param("digitalDollarBalance") List<BigDecimal> digitalDollarBalances,
+                     @Param("digitalStockBalance") List<BigDecimal> digitalStockBalances,
+                     @Param("digitalStakingBalance") List<BigDecimal> digitalStakingBalances);
 
     @Query("SELECT SUM(e.digitalDollarBalance) FROM EntityAccount e")
     Double getTotalDigitalDollarBalance();

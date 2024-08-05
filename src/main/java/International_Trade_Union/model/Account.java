@@ -1,6 +1,5 @@
 package International_Trade_Union.model;
 
-
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.utils.UtilsSecurity;
 import International_Trade_Union.utils.base.Base;
@@ -10,11 +9,13 @@ import International_Trade_Union.vote.VoteEnum;
 import lombok.Data;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Objects;
 
-/**Класс Аккаунт, хранит данные такие данные.
+/**
+ * Класс Аккаунт, хранит данные такие данные.
  * account - public key ECDSA
  * digitalDollarBalance - цифровой доллар (деньги).
  * digitalStockBalance - акции, используется для голосования.
@@ -23,25 +24,19 @@ import java.util.Objects;
 @Data
 public class Account implements Cloneable {
     private String account;
-    private double digitalDollarBalance;
-    private double digitalStockBalance;
-    private double digitalStakingBalance;
+    private BigDecimal digitalDollarBalance;
+    private BigDecimal digitalStockBalance;
+    private BigDecimal digitalStakingBalance;
 
-    //TODO test count
-
-
-
-    public Account(String account, double digitalDollarBalance) {
-        this(account, digitalDollarBalance, 0.0, 0);
-
+    public Account(String account, BigDecimal digitalDollarBalance) {
+        this(account, digitalDollarBalance, BigDecimal.ZERO, BigDecimal.ZERO);
     }
 
-    public Account(String account, double digitalDollarBalance, double digitalStockBalance, double digitalStakingBalance) {
+    public Account(String account, BigDecimal digitalDollarBalance, BigDecimal digitalStockBalance, BigDecimal digitalStakingBalance) {
         this.account = account;
         this.digitalDollarBalance = digitalDollarBalance;
         this.digitalStockBalance = digitalStockBalance;
         this.digitalStakingBalance = digitalStakingBalance;
-
     }
 
     public Account() {
@@ -60,41 +55,37 @@ public class Account implements Cloneable {
         return Objects.hash(getAccount());
     }
 
-    private DtoTransaction sendMoney(String recipient, String privatekey, double digitalDollar, double digitalStock, Laws laws, double minerRewards, VoteEnum voteEnum) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, SignatureException, IOException, InvalidKeyException {
-
+    private DtoTransaction sendMoney(String recipient, String privatekey, BigDecimal digitalDollar, BigDecimal digitalStock, Laws laws, BigDecimal minerRewards, VoteEnum voteEnum) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, SignatureException, IOException, InvalidKeyException {
         DtoTransaction transaction = null;
-        if (account.equals(recipient)){
-            System.out.println("sender %s, recipient %s cannot be equals! Error!".format(account,recipient));
+        if (account.equals(recipient)) {
+            System.out.printf("sender %s, recipient %s cannot be equals! Error!%n", account, recipient);
             return transaction;
         }
 
-            if(digitalDollarBalance < digitalDollar + minerRewards  ){
-                System.out.println("sender don't have dollar");
-                return transaction;
-            }
-            if(digitalStockBalance < digitalStock){
-                System.out.println("sender don't have stock");
-                return transaction;
-            }
-            if(digitalStakingBalance < digitalDollar){
-                System.out.println("sender don't have staking");
-                return transaction;
-            }
-            else{
-                Base base = new Base58();
-                PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(privatekey));
-                 transaction = new DtoTransaction(this.getAccount(), recipient, digitalDollar, digitalStock, laws, minerRewards, voteEnum);
-                byte[] signGold = UtilsSecurity.sign(privateKey, transaction.toSign());
-                transaction.setSign(signGold);
-            }
+        if (digitalDollarBalance.compareTo(digitalDollar.add(minerRewards)) < 0) {
+            System.out.println("sender don't have dollar");
+            return transaction;
+        }
+        if (digitalStockBalance.compareTo(digitalStock) < 0) {
+            System.out.println("sender don't have stock");
+            return transaction;
+        }
+        if (digitalStakingBalance.compareTo(digitalDollar) < 0) {
+            System.out.println("sender don't have staking");
+            return transaction;
+        } else {
+            Base base = new Base58();
+            PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(privatekey));
+            transaction = new DtoTransaction(this.getAccount(), recipient, digitalDollar.doubleValue(), digitalStock.doubleValue(), laws, minerRewards.doubleValue(), voteEnum);
+            byte[] signGold = UtilsSecurity.sign(privateKey, transaction.toSign());
+            transaction.setSign(signGold);
+        }
 
-       return transaction;
+        return transaction;
     }
 
-//      recipient - получатель
-//      gold сумма отправки, last Block - это послдний блок.
-    public DtoTransaction send(String recipient, String privateKey, double digitalDollar, double digitalReputation, Laws laws,  double minerRewards, VoteEnum voteEnum) throws NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, NoSuchProviderException, InvalidKeyException {
-         return sendMoney(recipient,privateKey, digitalDollar, digitalReputation, laws, minerRewards, voteEnum);
+    public DtoTransaction send(String recipient, String privateKey, BigDecimal digitalDollar, BigDecimal digitalReputation, Laws laws, BigDecimal minerRewards, VoteEnum voteEnum) throws NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, NoSuchProviderException, InvalidKeyException {
+        return sendMoney(recipient, privateKey, digitalDollar, digitalReputation, laws, minerRewards, voteEnum);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class UtilAccounts {
 
                 for (Account account : accountList) {
 
-                    if(account.getDigitalDollarBalance()>bottomLineMoney)
+                    if(account.getDigitalDollarBalance().doubleValue()>bottomLineMoney)
                         accounts.add(account);
                 }
 
@@ -43,7 +43,7 @@ public class UtilAccounts {
 
             for (Account account : accountList) {
                 if(!account.getAccount().equals(Seting.BASIS_ADDRESS))
-                    allBalance+=account.getDigitalDollarBalance();
+                    allBalance+=account.getDigitalDollarBalance().doubleValue();
             }
 
 

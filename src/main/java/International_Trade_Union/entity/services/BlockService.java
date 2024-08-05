@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -134,11 +135,11 @@ public class BlockService {
         try {
             entityAccounts = entityAccountRepository.findByAccount(account);
             if (entityAccounts == null) {
-                return new EntityAccount(account, 0, 0, 0);
+                return new EntityAccount(account, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
             }
         } catch (Throwable e) {
             e.printStackTrace();
-            return new EntityAccount(account, 0, 0, 0);
+            return new EntityAccount(account, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         }
         return entityAccounts;
     }
@@ -331,9 +332,9 @@ public class BlockService {
 
             // Списки для пакетного обновления
             List<String> accounts = new ArrayList<>();
-            List<Double> digitalDollarBalances = new ArrayList<>();
-            List<Double> digitalStockBalances = new ArrayList<>();
-            List<Double> digitalStakingBalances = new ArrayList<>();
+            List<BigDecimal> digitalDollarBalances = new ArrayList<>();
+            List<BigDecimal> digitalStockBalances = new ArrayList<>();
+            List<BigDecimal> digitalStakingBalances = new ArrayList<>();
 
             for (EntityAccount entityAccount : entityAccounts) {
                 EntityAccount cachedAccount = cache.get(entityAccount.getAccount());

@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Data
@@ -27,25 +28,22 @@ public class EntityAccount {
         return id;
     }
 
-
     private String account;
-    private double digitalDollarBalance;
-    private double digitalStockBalance;
-    private double digitalStakingBalance;
+    private BigDecimal digitalDollarBalance;
+    private BigDecimal digitalStockBalance;
+    private BigDecimal digitalStakingBalance;
 
     public EntityAccount() {
     }
 
     public EntityAccount(String account,
-                         double digitalDollarBalance,
-                         double digitalStockBalance,
-                         double digitalStakingBalance) {
+                         BigDecimal digitalDollarBalance,
+                         BigDecimal digitalStockBalance,
+                         BigDecimal digitalStakingBalance) {
         this.account = account;
         this.digitalDollarBalance = digitalDollarBalance;
         this.digitalStockBalance = digitalStockBalance;
         this.digitalStakingBalance = digitalStakingBalance;
-
-
     }
 
     @Override
@@ -60,6 +58,4 @@ public class EntityAccount {
     public int hashCode() {
         return Objects.hash(getAccount());
     }
-
-
 }

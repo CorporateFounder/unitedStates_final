@@ -8,6 +8,7 @@ import International_Trade_Union.setings.Seting;
 import International_Trade_Union.vote.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -54,13 +55,13 @@ public class UtilsGovernment {
             minersHaveMoreStock = blocks;
         }
         List<Account> boardAccounts = minersHaveMoreStock.stream().map(
-                        t -> new Account(t.getMinerAddress(), 0, 0, 0))
+                        t -> new Account(t.getMinerAddress(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO))
                 .collect(Collectors.toList());
 
         for (Block block : minersHaveMoreStock) {
             System.out.println("calculating board of shareholder: index:  " + block.getIndex());
             for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
-                boardAccounts.add(new Account(dtoTransaction.getSender(), 0, 0, 0));
+                boardAccounts.add(new Account(dtoTransaction.getSender(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO));
             }
 
         }
@@ -74,7 +75,7 @@ public class UtilsGovernment {
         boardOfShareholders = boardOfShareholders
                 .stream()
                 .filter(t -> !t.getAccount().startsWith(Seting.NAME_LAW_ADDRESS_START))
-                .filter(t -> t.getDigitalStakingBalance() > 0)
+                .filter(t -> t.getDigitalStakingBalance().doubleValue() > 0)
                 .sorted(Comparator.comparing(Account::getDigitalStakingBalance).reversed())
                 .collect(Collectors.toList());
 

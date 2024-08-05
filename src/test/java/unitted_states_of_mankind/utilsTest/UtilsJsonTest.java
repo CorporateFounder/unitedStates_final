@@ -13,12 +13,13 @@ import International_Trade_Union.utils.UtilsJson;
 import International_Trade_Union.vote.VoteEnum;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 @SpringBootTest
 public class UtilsJsonTest {
-    private Account sender = new Account("germes",10000.0);
-    private Account customer = new Account("mercury",10000.0);
+    private Account sender = new Account("germes", BigDecimal.valueOf(10000.0));
+    private Account customer = new Account("mercury",BigDecimal.valueOf(10000.0));
 
     @Test
     public void objToStringJson() throws IOException {

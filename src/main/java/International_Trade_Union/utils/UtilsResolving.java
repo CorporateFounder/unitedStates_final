@@ -651,8 +651,7 @@ public class UtilsResolving {
                 actual.getSize() < expected.getSize()
                         || actual.getBigRandomNumber() < expected.getBigRandomNumber()
                         || actual.getTransactions() < expected.getTransactions()
-                        || actual.getStaking() < expected.getTransactions()
-
+                        || actual.getStaking().compareTo(expected.getStaking()) < 0
         ) {
             return true;
         }
@@ -1950,13 +1949,14 @@ public class UtilsResolving {
         if (actual.isValidation() != expected.isValidation()
                 || actual.getSize() < expected.getSize()
                 || actual.getTransactions() < expected.getTransactions()
-                || actual.getStaking() < expected.getStaking()
+                || actual.getStaking().compareTo(expected.getStaking()) < 0
                 || actual.getBigRandomNumber() < expected.getBigRandomNumber()
                 || actual.getHashCount() < expected.getHashCount()) {
             result = false;
         }
         return result;
     }
+
 
     public List<HostEndDataShortB> sortPriorityHost(Set<String> hosts) {
 
