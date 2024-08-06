@@ -111,12 +111,12 @@ public class UtilsBalance {
                         continue;
                     }
                 }
-                sendTrue = UtilsBalance.rollBackSendMoneyWithBigDecimal(
+                sendTrue = UtilsBalance.rollBackSendMoney(
                         sender,
                         customer,
-                        transaction.getDigitalDollar(),
-                        transaction.getDigitalStockBalance(),
-                        transaction.getBonusForMiner(),
+                        BigDecimal.valueOf(transaction.getDigitalDollar()),
+                        BigDecimal.valueOf(transaction.getDigitalStockBalance()),
+                        BigDecimal.valueOf(transaction.getBonusForMiner()),
                         transaction.getVoteEnum());
 
 
@@ -425,134 +425,6 @@ public class UtilsBalance {
         }
 
         System.out.println("sendTrue: " + sendTrue);
-        return sendTrue;
-    }
-
-
-    public static boolean sendMoneyWithBigDecimal(Account senderAddress, Account recipientAddress, double digitalDollar, double digitalStock, double minerRewards, VoteEnum voteEnum) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
-
-        boolean sendTrue = true;
-
-        if (BasisController.getBlockchainSize() > Seting.BIG_DECIMAL_CALCULATE) {
-            BigDecimal bdSenderDigitalDollar =senderAddress.getDigitalDollarBalance();
-            BigDecimal bdSenderDigitalStock =senderAddress.getDigitalStockBalance();
-            BigDecimal bdSenderDigitalStaking = senderAddress.getDigitalStakingBalance();
-            BigDecimal bdRecipientDigitalDollar = recipientAddress.getDigitalDollarBalance();
-            BigDecimal bdRecipientDigitalStock = recipientAddress.getDigitalStockBalance();
-            BigDecimal bdRecipientDigitalStaking = recipientAddress.getDigitalStakingBalance();
-            BigDecimal bdDigitalDollar = BigDecimal.valueOf(digitalDollar);
-            BigDecimal bdDigitalStock = BigDecimal.valueOf(digitalStock);
-            BigDecimal bdMinerRewards = BigDecimal.valueOf(minerRewards);
-
-            if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
-                if (bdSenderDigitalStock.compareTo(bdDigitalStock) < 0) {
-                    System.out.println("less stock");
-                    sendTrue = false;
-                } else if (recipientAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
-                    System.out.println("Basis cannot be recipient");
-                    sendTrue = false;
-                } else if ((voteEnum.equals(VoteEnum.YES) || voteEnum.equals(VoteEnum.NO))) {
-                    if (senderAddress.getAccount().equals(recipientAddress.getAccount())) {
-                        System.out.println("sender %s, recipient %s cannot be equals! Error!".format(senderAddress.getAccount(), recipientAddress.getAccount()));
-                        sendTrue = false;
-                        return sendTrue;
-                    }
-                    if (bdSenderDigitalDollar.compareTo(bdDigitalDollar.add(bdMinerRewards)) < 0) {
-                        System.out.println("less dollar");
-                        sendTrue = false;
-                        return sendTrue;
-                    }
-
-                    senderAddress.setDigitalDollarBalance(bdSenderDigitalDollar.subtract(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                    senderAddress.setDigitalStockBalance(bdSenderDigitalStock.subtract(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                    recipientAddress.setDigitalDollarBalance(bdRecipientDigitalDollar.add(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-
-                    if (voteEnum.equals(VoteEnum.YES)) {
-                        recipientAddress.setDigitalStockBalance(bdRecipientDigitalStock.add(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                    } else if (voteEnum.equals(VoteEnum.NO)) {
-                        recipientAddress.setDigitalStockBalance(bdRecipientDigitalStock.subtract(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                    }
-
-                } else if (voteEnum.equals(VoteEnum.STAKING)) {
-                    System.out.println("STAKING: ");
-                    if (bdSenderDigitalDollar.compareTo(bdDigitalDollar.add(bdMinerRewards)) < 0) {
-                        System.out.println("less dollar");
-                        sendTrue = false;
-                        return sendTrue;
-                    }
-                    senderAddress.setDigitalDollarBalance(bdSenderDigitalDollar.subtract(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                    senderAddress.setDigitalStakingBalance(bdSenderDigitalStaking.add(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                } else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
-                    System.out.println("UNSTAKING");
-                    if (bdSenderDigitalStaking.compareTo(bdDigitalDollar) < 0) {
-                        System.out.println("less staking");
-                        sendTrue = false;
-                        return sendTrue;
-                    }
-                    senderAddress.setDigitalDollarBalance(bdSenderDigitalDollar.add(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                    senderAddress.setDigitalStakingBalance(bdSenderDigitalStaking.subtract(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                }
-
-            } else if (senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
-                recipientAddress.setDigitalDollarBalance(bdRecipientDigitalDollar.add(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                recipientAddress.setDigitalStockBalance(bdRecipientDigitalStock.add(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-            }
-
-        } else {
-            return sendMoney(senderAddress, recipientAddress, BigDecimal.valueOf(digitalDollar), BigDecimal.valueOf(digitalStock), BigDecimal.valueOf(minerRewards), voteEnum);
-        }
-
-        return sendTrue;
-    }
-
-    public static boolean rollBackSendMoneyWithBigDecimal(Account senderAddress, Account recipientAddress, double digitalDollar, double digitalStock, double minerRewards, VoteEnum voteEnum) {
-
-
-        boolean sendTrue = true;
-
-        if (BasisController.getBlockchainSize() > Seting.BIG_DECIMAL_CALCULATE) {
-            BigDecimal bdSenderDigitalDollar =  senderAddress.getDigitalDollarBalance();
-            BigDecimal bdSenderDigitalStock = senderAddress.getDigitalStockBalance();
-            BigDecimal bdSenderDigitalStaking = senderAddress.getDigitalStakingBalance();
-            BigDecimal bdRecipientDigitalDollar =recipientAddress.getDigitalDollarBalance();
-            BigDecimal bdRecipientDigitalStock = recipientAddress.getDigitalStockBalance();
-            BigDecimal bdRecipientDigitalStaking = recipientAddress.getDigitalStakingBalance();
-            BigDecimal bdDigitalDollar = BigDecimal.valueOf(digitalDollar);
-            BigDecimal bdDigitalStock = BigDecimal.valueOf(digitalStock);
-            BigDecimal bdMinerRewards = BigDecimal.valueOf(minerRewards);
-
-            if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
-                if ((voteEnum.equals(VoteEnum.YES) || voteEnum.equals(VoteEnum.NO))) {
-                    senderAddress.setDigitalDollarBalance(bdSenderDigitalDollar.add(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                    senderAddress.setDigitalStockBalance(bdSenderDigitalStock.add(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                    recipientAddress.setDigitalDollarBalance(bdRecipientDigitalDollar.subtract(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-
-                    if (voteEnum.equals(VoteEnum.YES)) {
-                        recipientAddress.setDigitalStockBalance(bdRecipientDigitalStock.subtract(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                    } else if (voteEnum.equals(VoteEnum.NO)) {
-                        recipientAddress.setDigitalStockBalance(bdRecipientDigitalStock.add(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                    }
-
-                } else if (voteEnum.equals(VoteEnum.STAKING)) {
-                    System.out.println("STAKING: ");
-                    senderAddress.setDigitalDollarBalance(bdSenderDigitalDollar.add(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                    senderAddress.setDigitalStakingBalance(bdSenderDigitalStaking.subtract(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                } else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
-                    System.out.println("UNSTAKING");
-                    senderAddress.setDigitalDollarBalance(bdSenderDigitalDollar.subtract(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                    senderAddress.setDigitalStakingBalance(bdSenderDigitalStaking.add(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                }
-
-            } else if (senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
-                System.out.println("BASIS_ADDRESS");
-                recipientAddress.setDigitalDollarBalance(bdRecipientDigitalDollar.subtract(bdDigitalDollar).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-                recipientAddress.setDigitalStockBalance(bdRecipientDigitalStock.subtract(bdDigitalStock).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP));
-            }
-
-        } else {
-            return rollBackSendMoney(senderAddress, recipientAddress, BigDecimal.valueOf(digitalDollar), BigDecimal.valueOf(digitalStock), BigDecimal.valueOf(minerRewards), voteEnum);
-        }
-
         return sendTrue;
     }
 
