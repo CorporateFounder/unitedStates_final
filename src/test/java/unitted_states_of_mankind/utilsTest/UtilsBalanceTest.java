@@ -221,7 +221,7 @@ public class UtilsBalanceTest {
         System.out.println("after");
        Map<String, Account> result = UtilsUse.differentAccount(clone, balance);
         System.out.println("result size: " + result.size());
-//        Assert.assertTrue(result.size() == 0);
+        Assert.assertTrue(result.size() == 0);
 
         System.out.println(result);
         System.out.println("=========================================");

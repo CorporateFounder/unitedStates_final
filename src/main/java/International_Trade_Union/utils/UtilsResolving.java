@@ -652,7 +652,7 @@ public class UtilsResolving {
                 actual.getSize() < expected.getSize()
                         || actual.getBigRandomNumber() < expected.getBigRandomNumber()
                         || actual.getTransactions() < expected.getTransactions()
-//                        || actual.getStaking().compareTo(expected.getStaking()) < 0
+                        || actual.getStaking().compareTo(expected.getStaking()) < 0
         ) {
             return true;
         }
