@@ -474,6 +474,7 @@ public class UtilsResolving {
                                         System.out.println("Blocked host: ");
                                         System.out.println("expected host: " + hostEndDataShortB.getDataShortBlockchainInformation());
                                         System.out.println("host: " + hostEndDataShortB.getHost());
+
                                         System.out.println("-------------------------------------------------");
                                         UtilsAllAddresses.saveAllAddresses(hostEndDataShortB.getHost(), Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
                                         continue;
@@ -651,7 +652,7 @@ public class UtilsResolving {
                 actual.getSize() < expected.getSize()
                         || actual.getBigRandomNumber() < expected.getBigRandomNumber()
                         || actual.getTransactions() < expected.getTransactions()
-                        || actual.getStaking().compareTo(expected.getStaking()) < 0
+//                        || actual.getStaking().compareTo(expected.getStaking()) < 0
         ) {
             return true;
         }
@@ -946,6 +947,9 @@ public class UtilsResolving {
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
             if (Seting.IS_SECURITY == true && checking && isSmall(global, temp)) {
                 System.out.println("host: " + s);
+                String expectedJson ="global: "+ UtilsJson.objToStringJson(global);
+                String actualJson ="actual: "+ UtilsJson.objToStringJson(temp);
+                UtilsFileSaveRead.save(expectedJson + "\n " + actualJson, Seting.ERROR_FILE, true);
                 UtilsAllAddresses.saveAllAddresses(s, Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
                 temp.setValidation(false);
                 return temp;
@@ -1007,6 +1011,10 @@ public class UtilsResolving {
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
             if (Seting.IS_SECURITY == true && checking && isSmall(global, temp)) {
                 System.out.println("host: " + s);
+                String expectedJson ="global: "+ UtilsJson.objToStringJson(global);
+                String actualJson ="actual: "+ UtilsJson.objToStringJson(temp);
+                UtilsFileSaveRead.save(expectedJson + "\n " + actualJson, Seting.ERROR_FILE, true);
+
                 UtilsAllAddresses.saveAllAddresses(s, Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
                 temp.setValidation(false);
                 return temp;
@@ -1138,7 +1146,11 @@ public class UtilsResolving {
 
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
             if (Seting.IS_SECURITY == true && checking && isSmall(global, temp)){
-                                UtilsAllAddresses.saveAllAddresses(s, Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
+                String expectedJson ="global: "+ UtilsJson.objToStringJson(global);
+                String actualJson ="actual: "+ UtilsJson.objToStringJson(temp);
+                UtilsFileSaveRead.save(expectedJson + "\n " + actualJson, Seting.ERROR_FILE, true);
+
+                UtilsAllAddresses.saveAllAddresses(s, Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
 
                 temp.setValidation(false);
                 return temp;
@@ -1201,6 +1213,10 @@ public class UtilsResolving {
             //TODO проверка теперь будет происходит уже сразу и при скачивании.
             if (Seting.IS_SECURITY == true && checking && isSmall(global, temp)) {
                 System.out.println("host: " + s);
+                String expectedJson ="global: "+ UtilsJson.objToStringJson(global);
+                String actualJson ="actual: "+ UtilsJson.objToStringJson(temp);
+                UtilsFileSaveRead.save(expectedJson + "\n " + actualJson, Seting.ERROR_FILE, true);
+
                 UtilsAllAddresses.saveAllAddresses(s, Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
                 temp.setValidation(false);
                 return temp;

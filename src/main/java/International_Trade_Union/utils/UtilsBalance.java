@@ -347,6 +347,9 @@ public class UtilsBalance {
                 System.out.println("STAKING: ");
                 if (senderDigitalDollar.compareTo(digitalDollar.add(minerRewards)) < 0) {
                     System.out.println("less dollar");
+                    System.out.println("sender: " + senderAddress);
+                    System.out.println("minerRewards: " + minerRewards);
+
                     sendTrue = false;
                     return sendTrue;
                 }
@@ -396,9 +399,17 @@ public class UtilsBalance {
 
         if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
             if (voteEnum.equals(VoteEnum.YES) || voteEnum.equals(VoteEnum.NO)) {
+
+                if (senderAddress.getAccount().equals(recipientAddress.getAccount())) {
+                    System.out.printf("sender %s, recipient %s cannot be equals! Error!%n", senderAddress.getAccount(), recipientAddress.getAccount());
+                    sendTrue = false;
+                    return sendTrue;
+                }
                 senderAddress.setDigitalDollarBalance(senderDigitalDollar.add(digitalDollar));
                 senderAddress.setDigitalStockBalance(senderDigitalStock.add(digitalStock));
                 recipientAddress.setDigitalDollarBalance(recipientDigitalDollar.subtract(digitalDollar));
+
+
 
                 if (voteEnum.equals(VoteEnum.YES)) {
                     recipientAddress.setDigitalStockBalance(recipientDigitalStock.subtract(digitalStock));
