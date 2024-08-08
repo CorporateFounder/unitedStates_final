@@ -570,4 +570,23 @@ public class UtilsUse {
         return duplicates;
     }
 
+    public static boolean isTransaction(DtoTransaction transaction){
+        boolean result = true;
+        List<String> laws = transaction.getLaws().getLaws();
+        String name = transaction.getLaws().getPacketLawName();
+        boolean money = transaction.getDigitalDollar() < Seting.MINIMUM &&
+                transaction.getDigitalStockBalance() < Seting.MINIMUM &&
+                transaction.getBonusForMiner() < Seting.MINIMUM;
+
+        if((name == null || name.isEmpty()) && money){
+            System.out.println("package name null: " + transaction.getLaws().getPacketLawName());
+            result = false;
+        }
+        if((laws == null || laws.isEmpty()) && money){
+            System.out.println("laws list null: " + transaction.getLaws().getPacketLawName());
+            result = false;
+        }
+        return result;
+    }
+
 }

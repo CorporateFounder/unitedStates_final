@@ -128,7 +128,12 @@ public class ConductorController {
     if (stock == null || stock <  Seting.MINIMUM) stock = 0.0;
     if (reward == null || reward <  Seting.MINIMUM) reward = 0.0;
 
-    Laws laws = new Laws();
+
+        dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
+        stock = UtilsUse.round(stock, Seting.SENDING_DECIMAL_PLACES);
+        reward = UtilsUse.round(reward, Seting.SENDING_DECIMAL_PLACES);
+
+        Laws laws = new Laws();
     laws.setLaws(new ArrayList<>());
     laws.setHashLaw("");
     laws.setPacketLawName("");

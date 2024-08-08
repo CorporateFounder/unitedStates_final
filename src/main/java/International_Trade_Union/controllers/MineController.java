@@ -67,6 +67,8 @@ public class MineController {
         if (dollar == null || dollar <  Seting.MINIMUM)
             dollar = 0.0;
 
+        dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
+        reward = UtilsUse.round(reward, Seting.SENDING_DECIMAL_PLACES);
 
         Laws laws = new Laws();
         laws.setLaws(new ArrayList<>());
@@ -161,6 +163,8 @@ public class MineController {
         if (dollar == null || dollar < Seting.MINIMUM)
             dollar = 0.0;
 
+        dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
+        reward = UtilsUse.round(reward, Seting.SENDING_DECIMAL_PLACES);
 
         Laws laws = new Laws();
         laws.setLaws(new ArrayList<>());

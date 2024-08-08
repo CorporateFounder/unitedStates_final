@@ -16,6 +16,7 @@ import International_Trade_Union.vote.VoteEnum;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -305,18 +306,12 @@ public class UtilsBalance {
         BigDecimal recipientDigitalStock = recipientAddress.getDigitalStockBalance();
         BigDecimal recipientDigitalStaking = recipientAddress.getDigitalStakingBalance();
         boolean sendTrue = true;
-
+        MathContext mc = new MathContext(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP);
         if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-            senderDigitalDollar = UtilsUse.round(senderDigitalDollar, Seting.DECIMAL_PLACES);
-            senderDigitalStock = UtilsUse.round(senderDigitalStock, Seting.DECIMAL_PLACES);
-            senderDigitalStaking = UtilsUse.round(senderDigitalStaking, Seting.DECIMAL_PLACES);
 
-            recipientDigitalDollar = UtilsUse.round(recipientDigitalDollar, Seting.DECIMAL_PLACES);
-            recipientDigitalStock = UtilsUse.round(recipientDigitalStock, Seting.DECIMAL_PLACES);
-            recipientDigitalStaking = UtilsUse.round(recipientDigitalStaking, Seting.DECIMAL_PLACES);
-            digitalDollar = UtilsUse.round(digitalDollar, Seting.DECIMAL_PLACES);
-            digitalStock = UtilsUse.round(digitalStock, Seting.DECIMAL_PLACES);
-            minerRewards = UtilsUse.round(minerRewards, Seting.DECIMAL_PLACES);
+            digitalDollar = digitalDollar.round(mc);
+            digitalStock = digitalStock.round(mc);
+            minerRewards = minerRewards.round(mc);
         }
 
         if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
@@ -388,18 +383,12 @@ public class UtilsBalance {
         BigDecimal recipientDigitalStaking = recipientAddress.getDigitalStakingBalance();
 
         boolean sendTrue = true;
-
+        MathContext mc = new MathContext(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP);
         if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-            senderDigitalDollar = UtilsUse.round(senderDigitalDollar, Seting.DECIMAL_PLACES);
-            senderDigitalStock = UtilsUse.round(senderDigitalStock, Seting.DECIMAL_PLACES);
-            senderDigitalStaking = UtilsUse.round(senderDigitalStaking, Seting.DECIMAL_PLACES);
 
-            recipientDigitalDollar = UtilsUse.round(recipientDigitalDollar, Seting.DECIMAL_PLACES);
-            recipientDigitalStock = UtilsUse.round(recipientDigitalStock, Seting.DECIMAL_PLACES);
-            recipientDigitalStaking = UtilsUse.round(recipientDigitalStaking, Seting.DECIMAL_PLACES);
-            digitalDollar = UtilsUse.round(digitalDollar, Seting.DECIMAL_PLACES);
-            digitalStock = UtilsUse.round(digitalStock, Seting.DECIMAL_PLACES);
-            minerRewards = UtilsUse.round(minerRewards, Seting.DECIMAL_PLACES);
+            digitalDollar = digitalDollar.round(mc);
+            digitalStock = digitalStock.round(mc);
+            minerRewards = minerRewards.round(mc);
         }
 
         if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
@@ -413,7 +402,6 @@ public class UtilsBalance {
                 senderAddress.setDigitalDollarBalance(senderDigitalDollar.add(digitalDollar));
                 senderAddress.setDigitalStockBalance(senderDigitalStock.add(digitalStock));
                 recipientAddress.setDigitalDollarBalance(recipientDigitalDollar.subtract(digitalDollar));
-
 
 
                 if (voteEnum.equals(VoteEnum.YES)) {
