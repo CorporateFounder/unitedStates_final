@@ -463,11 +463,21 @@ public class UtilsUse {
     }
 
     public static boolean areAccountsDifferent(Account account1, Account account2) {
-        return account1.getDigitalDollarBalance().compareTo(account2.getDigitalDollarBalance()) != 0 ||
-                account1.getDigitalStockBalance().compareTo(account2.getDigitalStockBalance()) != 0 ||
-                account1.getDigitalStakingBalance().compareTo(account2.getDigitalStakingBalance()) != 0;
-    }
+        BigDecimal divisor = BigDecimal.TEN.pow(10);
 
+        BigDecimal account1DollarLast10 = account1.getDigitalDollarBalance().remainder(divisor);
+        BigDecimal account2DollarLast10 = account2.getDigitalDollarBalance().remainder(divisor);
+
+        BigDecimal account1StockLast10 = account1.getDigitalStockBalance().remainder(divisor);
+        BigDecimal account2StockLast10 = account2.getDigitalStockBalance().remainder(divisor);
+
+        BigDecimal account1StakingLast10 = account1.getDigitalStakingBalance().remainder(divisor);
+        BigDecimal account2StakingLast10 = account2.getDigitalStakingBalance().remainder(divisor);
+
+        return account1DollarLast10.compareTo(account2DollarLast10) != 0 ||
+                account1StockLast10.compareTo(account2StockLast10) != 0 ||
+                account1StakingLast10.compareTo(account2StakingLast10) != 0;
+    }
 
     public static Map<String, Account> getEqualsKeyBalance(
             Map<String, Account> tempBalance,
