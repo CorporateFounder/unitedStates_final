@@ -90,6 +90,7 @@ public class UtilsCreatedDirectory {
         files.add(Seting.ORIGINAL_ALL_CLASSIC_LAWS);
         files.add(Seting.ERROR_FILE);
         files.add(Seting.YOUR_SERVER);
+        files.add(Seting.SLIDING_WINDOWS_BALANCE);
 
         //временные файлы
         files.add(Seting.ORIGINAL_TEMP_SHORT);

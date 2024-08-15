@@ -199,6 +199,7 @@ public interface Seting {
 
     String ERROR_FILE = testPath +"/resources/error/error.txt";
     String YOUR_SERVER =testPath + "/resources/server/server.txt";
+    String SLIDING_WINDOWS_BALANCE = "/resources/sWindow/sWindows.txt";
 
 
 
@@ -341,4 +342,7 @@ public interface Seting {
     int SENDING_DECIMAL_PLACES = 8;
 
     double MINIMUM = 0.00000001;
+
+    int FROM_STRING_DOUBLE = 295285;
+    int SLIDING_WINDOW_BALANCE = 30;
 }

@@ -1264,27 +1264,51 @@ public class BasisController {
 
 
         System.out.println("=========================================");
-        System.out.println(balances.size());
+        System.out.println("all balance in server "+balances.size());
         System.out.println("=========================================");
-        System.out.println(accounts.size());
+        System.out.println("all balance in local "+accounts.size());
 
         System.out.println("=========================================");
         System.out.println("=========================================");
         Map<String, Account> result = UtilsUse.differentAccount(balances, accounts);
-
+        result = result.entrySet().stream()
+                .filter(t -> t.getValue().getDigitalStakingBalance() != null
+                        && t.getValue().getDigitalStockBalance() != null
+                        && t.getValue().getDigitalDollarBalance() != null
+                        && (t.getValue().getDigitalStakingBalance().compareTo(BigDecimal.ZERO) != 0
+                        || t.getValue().getDigitalStockBalance().compareTo(BigDecimal.ZERO) != 0
+                        || t.getValue().getDigitalDollarBalance().compareTo(BigDecimal.ZERO) != 0))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        System.out.println("wrong account: " + result.size());
         System.out.println(result);
         System.out.println("=========================================");
+        balances =  balances.entrySet().stream()
+                .filter(t -> t.getValue().getDigitalStakingBalance() != null
+                        && t.getValue().getDigitalStockBalance() != null
+                        && t.getValue().getDigitalDollarBalance() != null
+                        && (t.getValue().getDigitalStakingBalance().compareTo(BigDecimal.ZERO) != 0
+                        || t.getValue().getDigitalStockBalance().compareTo(BigDecimal.ZERO) != 0
+                        || t.getValue().getDigitalDollarBalance().compareTo(BigDecimal.ZERO) != 0))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         for (Map.Entry<String, Account> accountEntry : result.entrySet()) {
             System.out.println(balances.get(accountEntry.getKey()));
         }
 
         System.out.println("=========================================");
+        accounts = accounts.entrySet().stream().filter(t -> t.getValue().getDigitalStakingBalance() != null
+                        && t.getValue().getDigitalStockBalance() != null
+                        && t.getValue().getDigitalDollarBalance() != null
+                        && (t.getValue().getDigitalStakingBalance().compareTo(BigDecimal.ZERO) != 0
+                        || t.getValue().getDigitalStockBalance().compareTo(BigDecimal.ZERO) != 0
+                        || t.getValue().getDigitalDollarBalance().compareTo(BigDecimal.ZERO) != 0))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
         for (Map.Entry<String, Account> accountEntry : result.entrySet()) {
             System.out.println(accounts.get(accountEntry.getKey()));
         }
 
 
-        return "result: " + (balances.equals(accounts));
+        return "result: " + (balances.equals(accounts) && result.size() == 0);
 
     }
 

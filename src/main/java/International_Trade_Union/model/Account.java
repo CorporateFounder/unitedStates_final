@@ -90,6 +90,12 @@ public class Account implements Cloneable {
 
     @Override
     public Account clone() throws CloneNotSupportedException {
-        return new Account(account, digitalDollarBalance, digitalStockBalance, digitalStakingBalance);
+        return new Account(
+                this.account,
+                this.digitalDollarBalance != null ? new BigDecimal(this.digitalDollarBalance.toString()) : null,
+                this.digitalStockBalance != null ? new BigDecimal(this.digitalStockBalance.toString()) : null,
+                this.digitalStakingBalance != null ? new BigDecimal(this.digitalStakingBalance.toString()) : null
+        );
     }
+
 }

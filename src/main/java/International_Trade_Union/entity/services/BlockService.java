@@ -147,13 +147,33 @@ public class BlockService {
     public List<EntityAccount> findBYAccountString(List<String> accounts) throws IOException {
         List<EntityAccount> entityAccounts = new ArrayList<>();
         try {
-            accounts = accounts.stream().filter(t->t != null).collect(Collectors.toList());
+            // Фильтруем null значения
+            accounts = accounts.stream().filter(t -> t != null).collect(Collectors.toList());
+
+            // Ищем существующие аккаунты в базе данных
             entityAccounts = entityAccountRepository.findByAccountIn(accounts);
+
+            // Определяем существующие аккаунты
+            List<String> existingAccounts = entityAccounts.stream()
+                    .map(EntityAccount::getAccount)
+                    .collect(Collectors.toList());
+
+            // Определяем отсутствующие аккаунты
+            List<String> missingAccounts = accounts.stream()
+                    .filter(account -> !existingAccounts.contains(account))
+                    .collect(Collectors.toList());
+
+            // Создаем новые EntityAccount для отсутствующих аккаунтов с нулевыми балансами
+            List<EntityAccount> newAccounts = missingAccounts.stream()
+                    .map(account -> new EntityAccount(account, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO))
+                    .collect(Collectors.toList());
+
+            // Добавляем новые аккаунты к результату
+            entityAccounts.addAll(newAccounts);
 
         } catch (Exception e) {
             e.printStackTrace();
             throw new IOException("findBYAccountString: error: save: ", e);
-
         }
 
         return entityAccounts;

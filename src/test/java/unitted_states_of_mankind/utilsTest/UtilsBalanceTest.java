@@ -4,6 +4,7 @@ import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
+import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
@@ -26,171 +27,309 @@ import java.util.stream.Collectors;
 @SpringBootTest
 public class UtilsBalanceTest {
 
-//    @Test
-//    public void testSendFromFile() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-//        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"24ED8T8aJ9FXGP4fG7ru72bwWYVK5d4iT3LAknponv91P\",\"customer\":\"jcqrb3nW1kYLAEYcuzfKFrCeoX2WCTnXq4sH2Rr3fQrE\",\"digitalDollar\":2.12121212,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCVKkJvDTNbLrY1kO7ifnMYtTE8flcQtPuvDWF8dbhfXAIhAPcPfc6p9ndTFKxabc8VuilJCqFJuWF0yEY0OyDI8O4o\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":37.12,\"digitalStockBalance\":37.12,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDhsV/G30Cf2m1G65xwdGzZHPvvC6TOR7cBHc5pJmwdjgIhALjhQ+PGzzuXcjRAMJB6hC90AWrbVcCmQykadicnjfN7\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"pRUbAvZouvUMCBrvjJK8yLWysUg4Fui6xsvuNfuVKH37\",\"digitalDollar\":371.2,\"digitalStockBalance\":371.2,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQC/q0uAHVtvb8XBUQNZl9gGGMQ7nQHftCMFkpF2nvQPoAIhALjYSBx2BK9IV/3xoC60QjlLpPaHLaS9hiBEVLHWtflM\"}],\"previousHash\":\"1801831c443a8260509a62534b721f2404102c501021190c150b004009215040\",\"minerAddress\":\"pRUbAvZouvUMCBrvjJK8yLWysUg4Fui6xsvuNfuVKH37\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":66666702298206244,\"minerRewards\":0.0,\"hashCompexity\":24,\"timestamp\":1722863748000,\"index\":289360,\"hashBlock\":\"b834080e46398110ca0101c5001cc0122200bd682c420e00534252a004311c40\"}");
-//        for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
-//            System.out.println("sender: " + dtoTransaction.getSender());
-//            System.out.println("custome: " + dtoTransaction.getCustomer());
-//        }
-//    }
-//
-//    @Test
-//    public void rollbackBalanceFromFile1() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
-//        Map<String, Account> balance = new HashMap<>();
-//        List<Block> blocks = UtilsBlock.readLineObject("C:\\strategy3\\blockchain\\");
-//        BigDecimal dollar = BigDecimal.valueOf(20000000);
-//        BigDecimal stock = BigDecimal.valueOf(20000000);
-//        BigDecimal staking = BigDecimal.valueOf(20000000);
-//
-//        blocks = blocks.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
-//
-//        for (Block block: blocks ) {
-//            Account miner = new Account(block.getMinerAddress(), dollar, stock, staking);
-//            Account founder = new Account(block.getFounderAddress(), dollar, stock, staking);
-//            for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
-//                Account sender = new Account(dtoTransaction.getSender(), dollar, stock, staking);
-//                Account customer = new Account(dtoTransaction.getCustomer(), dollar, stock, staking);
-//                balance.put(sender.getAccount(), sender);
-//                balance.put(customer.getAccount(), customer);
-//            }
-//
-//            balance.put(miner.getAccount(), miner);
-//            balance.put(founder.getAccount(), founder);
-//        }
-//
-//
-//        List<String> sign = new ArrayList<>();
-//        System.out.println("index first: " + blocks.get(0).getIndex() + " index last: " + blocks.get(blocks.size()-1).getIndex());
-//        for (Block block : blocks) {
-//
-//            Map<String, Account> cloneBalance = UtilsUse.balancesClone(balance);
-//            balance =  UtilsBalance.calculateBalance(balance, block, sign);
-//            balance = UtilsBalance.rollbackCalculateBalance(balance, block );
-//
-//            Map<String, Account> result = UtilsUse.differentAccount(cloneBalance, balance);
-//            if(result.size() > 0){
-//                System.out.println("==============================");
-//                System.out.println("block: " + block.getIndex());
-//                System.out.println("result: " + result);
-//
-//
-//                System.out.println("-------------------------");
-//                System.out.println("block: " + block);
-//                System.out.println("==============================");
-//
-//                System.out.println("=========================================");
-//                for (Map.Entry<String, Account> accountEntry : result.entrySet()) {
-//                    Account temp = balance.get(accountEntry.getKey());
-//                    if(temp == null){
-//                        System.out.println("balance: null: " + accountEntry.getKey());
-//                    }
-//                    System.out.println(temp);
-//                }
-//
-//                System.out.println("=========================================");
-//                for (Map.Entry<String, Account> accountEntry : result.entrySet()) {
-//                    Account temp = cloneBalance.get(accountEntry.getKey());
-//                    if(temp == null){
-//                        System.out.println("cloneBalance: null: " + accountEntry.getKey());
-//                    }
-//                    System.out.println(temp);
-//                }
-//            }
-//        }
-//
-//        System.out.println("index first: " + blocks.get(0).getIndex() + " index last: " + blocks.get(blocks.size()-1).getIndex());
-//
-//    }
-//    @Test
-//    public void rollbackBalanceFromFile() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
-//        Map<String, Account> balance = new HashMap<>();
-//         List<Block> blocks = UtilsBlock.readLineObject("C:\\strategy3\\blockchain\\");
-//         BigDecimal dollar = BigDecimal.valueOf(20000000);
-//         BigDecimal stock = BigDecimal.valueOf(20000000);
-//         BigDecimal staking = BigDecimal.valueOf(20000000);
-//        String test = "2A5gxBWfuYzaTM9f2FhVBFYDPRYY4N1PZSc2v8AT8AE37";
-//        blocks = blocks.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
-//
-//        for (Block block: blocks ) {
-//
-//            for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
-//                Account sender = new Account(dtoTransaction.getSender(), dollar, stock, staking);
-//                Account customer = new Account(dtoTransaction.getCustomer(), dollar, stock, staking);
-//                balance.put(sender.getAccount(), sender);
-//                balance.put(customer.getAccount(), customer);
-//                if(sender.equals(test) || customer.equals(test)){
-//                    System.out.println("index: " + block.getIndex());
-//                    System.out.println("dto: " + dtoTransaction);
-//                }
-//
-//            }
-//
-//        }
-//
-////        balance.put(test,new Account(test, dollar, stock, staking));
-//        Map<String, Account> cloneBalance = UtilsUse.balancesClone(balance);
-//
-//        for (Block block : blocks) {
-//            List<String> sign = new ArrayList<>();
-//          balance =  UtilsBalance.calculateBalance(balance, block, sign);
-//        }
-//
-//        System.out.println("---------------------------------------------------------------------");
-//        System.out.println("before");
-//        System.out.println("---------------------------------------------------------------------");
-//        blocks = blocks.stream().sorted(Comparator.comparing(Block::getIndex).reversed()).collect(Collectors.toList());
-//        for (Block block : blocks) {
-//            balance = UtilsBalance.rollbackCalculateBalance(balance, block );
-//        }
-//        Map<String, Account> result = UtilsUse.differentAccount(cloneBalance, balance);
-//
-//        System.out.println("size: balance: " + balance.size());
-//        System.out.println("size: cloneBalance: " + cloneBalance.size());
-//        System.out.println("=========================================");
-//        for (Map.Entry<String, Account> accountEntry : result.entrySet()) {
-//            Account temp = balance.get(accountEntry.getKey());
-//            if(temp == null){
-//                System.out.println("balance: null: " + accountEntry.getKey());
-//            }
-//            System.out.println(temp);
-//        }
-//
-//        System.out.println("=========================================");
-//        for (Map.Entry<String, Account> accountEntry : result.entrySet()) {
-//            Account temp = cloneBalance.get(accountEntry.getKey());
-//            if(temp == null){
-//                System.out.println("cloneBalance: null: " + accountEntry.getKey());
-//            }
-//            System.out.println(temp);
-//        }
-//        System.out.println("size: balance: " + balance.size());
-//        System.out.println("size: cloneBalance: " + cloneBalance.size());
-//
-//
-//    }
+    @Test
+    public void testActualBalance() throws IOException {
+        Map<String, Account> basis = new HashMap<>();
+        String account = "oi4M59ViufpL1QnQK1XQ8LyTEraLZrCZ2VKHvwUTFCxt";
+
+        double balance = 50;
+        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":27.84,\"digitalStockBalance\":27.84,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCcZyLbrnsa87hJqaU3OUZQjSE8RMFxwLygASeoSWFVbwIhAMkAUoVO6eA1W0XCNbenWG1QNDhHbDbAemXbihdR6LP1\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\"digitalDollar\":278.4,\"digitalStockBalance\":278.4,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCID14260/Ua87OO04+XdkgvQgB47uwiX6lvh6w4OeYmCpAiBYs/0Tr4AKrtuxd12KcGZFbuPinZI3z1yhy1qpsxDhTw==\"}],\"previousHash\":\"b2940121c2044812023a8410960472dca940416842000cb0d02e4cf180001010\",\"minerAddress\":\"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":280000736430912,\"minerRewards\":0.0,\"hashCompexity\":23,\"timestamp\":1722808037000,\"index\":289095,\"hashBlock\":\"2634cb92441012208a0c42c44499008820b0084030d5840450d1200132e46a99\"}");
+        List<DtoTransaction> dtoTransactions = block.getDtoTransactions();
+        System.out.println("size: " + block.getDtoTransactions().size());
+        String resipient = dtoTransactions.get(0).getCustomer();
+        String resipient2 = dtoTransactions.get(1).getCustomer();
+        dtoTransactions.get(0).setSender("oi4M59ViufpL1QnQK1XQ8LyTEraLZrCZ2VKHvwUTFCxt");
+        dtoTransactions.get(1).setSender("oi4M59ViufpL1QnQK1XQ8LyTEraLZrCZ2VKHvwUTFCxt");
+
+        basis.put(account, new Account(account, BigDecimal.valueOf(balance),BigDecimal.valueOf(balance), BigDecimal.valueOf(balance)));
+        basis.put(resipient, new Account(account, BigDecimal.valueOf(balance),BigDecimal.valueOf(balance), BigDecimal.valueOf(balance)));
+        basis.put(resipient2, new Account(account, BigDecimal.valueOf(balance),BigDecimal.valueOf(balance), BigDecimal.valueOf(balance)));
+
+
+        List<DtoTransaction> result = balanceTransaction(dtoTransactions, basis);
+        System.out.println("result: " + result.size());
+    }
+    public List<DtoTransaction> balanceTransaction(List<DtoTransaction> transactions, Map<String, Account> basis) throws IOException {
+        List<DtoTransaction> dtoTransactions = new ArrayList<>();
+        Map<String, Account> balances = basis;
+
+        for (DtoTransaction transaction : transactions) {
+
+            // Check if both digital dollar and digital stock are below the minimum
+            boolean result = false;
+            if (balances.containsKey(transaction.getSender())) {
+                Account sender = balances.get(transaction.getSender());
+                Account customer = balances.get(transaction.getCustomer());
+                BigDecimal transactionDigitalDollar = BigDecimal.valueOf(transaction.getDigitalDollar());
+                BigDecimal transactionDigitalStock = BigDecimal.valueOf(transaction.getDigitalStockBalance());
+
+                BigDecimal transactionBonusForMiner = BigDecimal.valueOf(transaction.getBonusForMiner());
+
+                if (sender.getDigitalDollarBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0) {
+                    dtoTransactions.add(transaction);
+                    result = true;
+                }
+                else if (sender.getDigitalStockBalance().compareTo(transactionDigitalStock.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.YES)) {
+                    dtoTransactions.add(transaction);
+                    result = true;
+                }
+                else if (sender.getDigitalStockBalance().compareTo(transactionDigitalStock.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.NO)) {
+                    dtoTransactions.add(transaction);
+                    result = true;
+                }
+                else if (sender.getDigitalDollarBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.STAKING)) {
+                    dtoTransactions.add(transaction);
+                    result = true;
+                }
+                else if (sender.getDigitalStakingBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.UNSTAKING)) {
+                    dtoTransactions.add(transaction);
+                    result = true;
+                }
+                try {
+                    if(result == true){
+                        boolean sendtrue = UtilsBalance.sendMoney(
+                                sender,
+                                customer,
+                                BigDecimal.valueOf(transaction.getDigitalDollar()),
+                                BigDecimal.valueOf(transaction.getDigitalStockBalance()),
+                                BigDecimal.valueOf(transaction.getBonusForMiner()),
+                                transaction.getVoteEnum());
+                        if(sendtrue){
+                            balances.put(sender.getAccount(), sender);
+                            balances.put(customer.getAccount(), customer);
+                        }
+                    }
+
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        return dtoTransactions;
+    }
 
     @Test
-    public void rollbackBalance() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+    public void wrongTransaction() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        List<Block> blocks = UtilsBlock.readLineObject("C:\\strategy3\\blockchain\\");
+        for (Block block : blocks) {
+            for (DtoTransaction dtoTransaction :block.getDtoTransactions()) {
+                if(dtoTransaction.getVoteEnum().equals(VoteEnum.STAKING)
+                        || dtoTransaction.getVoteEnum().equals(VoteEnum.UNSTAKING)){
+                    if(!dtoTransaction.getSender().equals(dtoTransaction.getCustomer())){
+                        System.out.println("dto: " + dtoTransaction);
+                        Assert.assertTrue(false);
+                    }
+                    if(dtoTransaction.getDigitalDollar() < 0 || dtoTransaction.getDigitalStockBalance() < 0
+                    || dtoTransaction.getBonusForMiner() < 0){
+                        System.out.println("wrong: dto");
+                    }
+                }
+            }
+
+        }
+
+    }
+    @Test
+   public void testSignFromFile() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+       List<String> signs = new ArrayList<>();
+       List<Block> blocks = UtilsBlock.readLineObject("C:\\strategy3\\blockchain\\");
+       Base base = new Base58();
+       Set<String> uniqueSigns = new HashSet<>();
+       List<String> duplicateSigns = new ArrayList<>();
+
+       for (Block block : blocks) {
+           for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
+               String encodedSign = base.encode(dtoTransaction.getSign());
+               if (!uniqueSigns.add(encodedSign)) {
+                   // If the sign is already in the set, it's a duplicate.
+                   duplicateSigns.add(encodedSign);
+               }
+               signs.add(encodedSign);
+           }
+       }
+
+       // Print out duplicate signatures
+       if (!duplicateSigns.isEmpty()) {
+           System.out.println("Duplicate signatures found:");
+           for (String sign : duplicateSigns) {
+               System.out.println(sign);
+           }
+       } else {
+           System.out.println("No duplicate signatures found.");
+       }
+
+       // Optionally, you can assert that no duplicates were found
+       Assert.assertTrue("Duplicate signatures detected!", duplicateSigns.isEmpty());
+
+
+   }
+
+    @Test
+    public void rollbackBalanceFromFile1() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+        Map<String, Account> balance = new HashMap<>();
+        List<Block> blocks = UtilsBlock.readLineObject("C:\\strategy3\\blockchain\\");
+        BigDecimal dollar = BigDecimal.valueOf(20000000);
+        BigDecimal stock = BigDecimal.valueOf(20000000);
+        BigDecimal staking = BigDecimal.valueOf(20000000);
+
+        blocks = blocks.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+
+        for (Block block: blocks ) {
+            Account miner = new Account(block.getMinerAddress(), dollar, stock, staking);
+            Account founder = new Account(block.getFounderAddress(), dollar, stock, staking);
+            for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
+                Account sender = new Account(dtoTransaction.getSender(), dollar, stock, staking);
+                Account customer = new Account(dtoTransaction.getCustomer(), dollar, stock, staking);
+                balance.put(sender.getAccount(), sender);
+                balance.put(customer.getAccount(), customer);
+            }
+
+            balance.put(miner.getAccount(), miner);
+            balance.put(founder.getAccount(), founder);
+        }
+
+
+        List<String> sign = new ArrayList<>();
+        System.out.println("index first: " + blocks.get(0).getIndex() + " index last: " + blocks.get(blocks.size()-1).getIndex());
+        for (Block block : blocks) {
+
+            Map<String, Account> cloneBalance = UtilsUse.balancesClone(balance);
+            balance =  UtilsBalance.calculateBalance(balance, block, sign);
+            balance = UtilsBalance.rollbackCalculateBalance(balance, block );
+
+            Map<String, Account> result = UtilsUse.differentAccount(cloneBalance, balance);
+            Assert.assertTrue(result.size() == 0);
+            if(result.size() > 0){
+                System.out.println("==============================");
+                System.out.println("block: " + block.getIndex());
+                System.out.println("result: " + result);
+
+
+                System.out.println("-------------------------");
+                System.out.println("block: " + block);
+                System.out.println("==============================");
+
+                System.out.println("=========================================");
+                for (Map.Entry<String, Account> accountEntry : result.entrySet()) {
+                    Account temp = balance.get(accountEntry.getKey());
+                    if(temp == null){
+                        System.out.println("balance: null: " + accountEntry.getKey());
+                    }
+                    System.out.println(temp);
+                }
+
+                System.out.println("=========================================");
+                for (Map.Entry<String, Account> accountEntry : result.entrySet()) {
+                    Account temp = cloneBalance.get(accountEntry.getKey());
+                    if(temp == null){
+                        System.out.println("cloneBalance: null: " + accountEntry.getKey());
+                    }
+                    System.out.println(temp);
+                }
+            }
+        }
+
+        System.out.println("index first: " + blocks.get(0).getIndex() + " index last: " + blocks.get(blocks.size()-1).getIndex());
+
+    }
+    @Test
+    public void rollbackBalanceFromFile() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+        Map<String, Account> balance = new HashMap<>();
+         List<Block> blocks = UtilsBlock.readLineObject("C:\\strategy3\\blockchain\\");
+         BigDecimal dollar = BigDecimal.valueOf(20000000);
+         BigDecimal stock = BigDecimal.valueOf(20000000);
+         BigDecimal staking = BigDecimal.valueOf(20000000);
+        blocks = blocks.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+
+        for (Block block: blocks ) {
+
+            for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
+                Account sender = new Account(dtoTransaction.getSender(), dollar, stock, staking);
+                Account customer = new Account(dtoTransaction.getCustomer(), dollar, stock, staking);
+                balance.put(sender.getAccount(), sender);
+                balance.put(customer.getAccount(), customer);
+
+            }
+
+        }
+
+//        balance.put(test,new Account(test, dollar, stock, staking));
+        Map<String, Account> cloneBalance = UtilsUse.balancesClone(balance);
+
+        List<String> sign = new ArrayList<>();
+        for (Block block : blocks) {
+          balance =  UtilsBalance.calculateBalance(balance, block, sign);
+        }
+
+        //повторный подсчет
+        Map<String, Account> cloneReapete = UtilsUse.balancesClone(balance);
+
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("before");
+        System.out.println("---------------------------------------------------------------------");
+        blocks = blocks.stream().sorted(Comparator.comparing(Block::getIndex).reversed()).collect(Collectors.toList());
+        for (Block block : blocks) {
+            balance = UtilsBalance.rollbackCalculateBalance(balance, block );
+        }
+
+        Map<String, Account> result = UtilsUse.differentAccount(cloneBalance, balance);
+
+        sign = new ArrayList<>();
+        for (Block block : blocks) {
+            balance =  UtilsBalance.calculateBalance(balance, block, sign);
+        }
+
+        Map<String, Account> result2 = UtilsUse.differentAccount(cloneReapete, balance);
+
+        //true test completed
+        Assert.assertTrue(result.size() == 0);
+        Assert.assertTrue(result2.size() == 0);
+        System.out.println("result:  " + result.size());
+        System.out.println("result2:  " + result2.size());
+
+        System.out.println("size: balance: " + balance.size());
+        System.out.println("size: cloneBalance: " + cloneBalance.size());
+        System.out.println("=========================================");
+        for (Map.Entry<String, Account> accountEntry : result.entrySet()) {
+            Account temp = balance.get(accountEntry.getKey());
+            if(temp == null){
+                System.out.println("balance: null: " + accountEntry.getKey());
+            }
+            System.out.println(temp);
+        }
+
+        System.out.println("=========================================");
+        for (Map.Entry<String, Account> accountEntry : result.entrySet()) {
+            Account temp = cloneBalance.get(accountEntry.getKey());
+            if(temp == null){
+                System.out.println("cloneBalance: null: " + accountEntry.getKey());
+            }
+            System.out.println(temp);
+        }
+        System.out.println("size: balance: " + balance.size());
+        System.out.println("size: cloneBalance: " + cloneBalance.size());
+
+        System.out.println("==============================================");
+        System.out.println("size: result: " + result.size());
+
+    }
+
+
+    @Test
+    public void rollbackBalanceFr() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         Map<String, Account> balance = new HashMap<>();
          System.out.println("start:");
 
 
 
-        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":27.84,\"digitalStockBalance\":27.84,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCcZyLbrnsa87hJqaU3OUZQjSE8RMFxwLygASeoSWFVbwIhAMkAUoVO6eA1W0XCNbenWG1QNDhHbDbAemXbihdR6LP1\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\"digitalDollar\":278.4,\"digitalStockBalance\":278.4,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCID14260/Ua87OO04+XdkgvQgB47uwiX6lvh6w4OeYmCpAiBYs/0Tr4AKrtuxd12KcGZFbuPinZI3z1yhy1qpsxDhTw==\"}],\"previousHash\":\"b2940121c2044812023a8410960472dca940416842000cb0d02e4cf180001010\",\"minerAddress\":\"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":280000736430912,\"minerRewards\":0.0,\"hashCompexity\":23,\"timestamp\":1722808037000,\"index\":289095,\"hashBlock\":\"2634cb92441012208a0c42c44499008820b0084030d5840450d1200132e46a99\"}");
-        Block block1 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":28.42,\"digitalStockBalance\":28.42,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIAglYv20BF/UOMrBYRzorJ6r/WVyxo0Nv+4IgYNfechUAiAsObVSgbuE2JfhxHYfntmPdhELCIgm7pC3QFdvTEkm3Q==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"2AGJkhkndQ5xpu2WNbHUvkqMFWzH8T4oM8BBDv4Z1atBG\",\"digitalDollar\":284.2,\"digitalStockBalance\":284.2,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIGH2iaoX091VvkZILL1fjkCLpHUSZLO863p+YKQt6RZ9AiEA/kaxW3J8vKUv2A+Z/pZOc0dTvbrL68dDau+bxrdq3Ng=\"}],\"previousHash\":\"580d3002b8360c64079c4b4010014238c18128400a0234807121101415f28402\",\"minerAddress\":\"2AGJkhkndQ5xpu2WNbHUvkqMFWzH8T4oM8BBDv4Z1atBG\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":66666686231897366,\"minerRewards\":0.0,\"hashCompexity\":24,\"timestamp\":1722807915000,\"index\":289094,\"hashBlock\":\"b2940121c2044812023a8410960472dca940416842000cb0d02e4cf180001010\"}");
-        Block block2 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":28.42,\"digitalStockBalance\":28.42,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDpMs8D5bVwdNc06FBUIMiQZipPlKpKyqm+EZDKjaDeagIhAJ7Q04q3Is/Mww47GHOzXq5q8tPcx2kRqYqhZIOz4gbb\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"dk6rTxZvBg3viTdLKJxYoJLY9vphi2Y9jyktRd957Brr\",\"digitalDollar\":284.2,\"digitalStockBalance\":284.2,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCjuda8qAhoixBN4uCtXQsyJpy/+J7UstFVgTqTURlNhQIgbJjiMWYumqooI5qwkiNehgXPkH5DDDpsYgI5P4eHKmQ=\"}],\"previousHash\":\"1c290d0358040032000100030d05134d3406c58042b355036001e39ce8808440\",\"minerAddress\":\"dk6rTxZvBg3viTdLKJxYoJLY9vphi2Y9jyktRd957Brr\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":66666709669985331,\"minerRewards\":0.0,\"hashCompexity\":24,\"timestamp\":1722807669000,\"index\":289093,\"hashBlock\":\"580d3002b8360c64079c4b4010014238c18128400a0234807121101415f28402\"}");
-        Block block3 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":28.42,\"digitalStockBalance\":28.42,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIGu7WS/ESw2n+vm/gnonxAwKA6ZkYlMrpeQHwAOJHvcSAiEAlQkzyr3ZIl4now4z1nJ3a/d/0H5d294/E/yfzk83Yqk=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"2AGJkhkndQ5xpu2WNbHUvkqMFWzH8T4oM8BBDv4Z1atBG\",\"digitalDollar\":284.2,\"digitalStockBalance\":284.2,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIHceH2nPVLQDexy3WFXkhRArf0BpbF8DvWaV7ei4u0u/AiBA5kTj/BodFpaxn25Gfmym6fH3MU76OuvZBlqYGNjyWA==\"}],\"previousHash\":\"149011107915000e15005200218c0c04c746846880232110ad3d4c0905812709\",\"minerAddress\":\"2AGJkhkndQ5xpu2WNbHUvkqMFWzH8T4oM8BBDv4Z1atBG\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":66666723790448917,\"minerRewards\":0.0,\"hashCompexity\":24,\"timestamp\":1722807516000,\"index\":289092,\"hashBlock\":\"1c290d0358040032000100030d05134d3406c58042b355036001e39ce8808440\"}");
-        Block block4 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"qDWgdtEBzbSGs7AdUVLYEiBP5Bs7nb3m3L8GaBGgbSEP\",\"customer\":\"qDWgdtEBzbSGs7AdUVLYEiBP5Bs7nb3m3L8GaBGgbSEP\",\"digitalDollar\":20.0,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"STAKING\",\"sign\":\"MEUCIQD7Ip1+zcWX/M9mQ4ZZ1fPJJs+hYDrf0+Mgis4iutGnCAIgMHJNSubTpEqZfQY+ItLEqgIWgM99dDbYmDKiRMVV9cw=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":36.54,\"digitalStockBalance\":36.54,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIHmSqX84NymL9PBWGxEU6xoqRdVZSvyBkbUsAGGauYDfAiAwA8OyCzGAL8bZBaxBtFEJH+XuRY9Fr/RGay4snLb1kQ==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\"digitalDollar\":365.4,\"digitalStockBalance\":365.4,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDlKDBERZvJtlfOCGh/bQDpZKq6zJnSd0RraGKwCdKpZQIgHl6KVqIeyEfqGIjovBbl1kLZ2YEcFR7VmQvTYcchqSU=\"}],\"previousHash\":\"0bc0600403e87340502d218246051c1120030310228478a0992c019100b76040\",\"minerAddress\":\"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":40000239573575,\"minerRewards\":0.0,\"hashCompexity\":23,\"timestamp\":1722807285000,\"index\":289091,\"hashBlock\":\"149011107915000e15005200218c0c04c746846880232110ad3d4c0905812709\"}");
-        List<Block> list = new ArrayList<>();
-        list.add(block4);
-        list.add(block3);
-        list.add(block2);
-        list.add(block1);
-        list.add(block);
-        BigDecimal dollar = BigDecimal.valueOf(10);
-        BigDecimal stock = BigDecimal.valueOf(10);
-        BigDecimal staking = BigDecimal.valueOf(10);
+        List<Block> list = UtilsBlock.readLineObject("C:\\strategy3\\blockchain\\");
+
+        list = list.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+        BigDecimal dollar = BigDecimal.valueOf(100000);
+        BigDecimal stock = BigDecimal.valueOf(100000);
+        BigDecimal staking = BigDecimal.valueOf(100000);
         for (Block temp : list) {
             for (DtoTransaction dtoTransaction : temp.getDtoTransactions()) {
                 Account sender = new Account(dtoTransaction.getSender(), dollar, stock, staking);
@@ -201,28 +340,43 @@ public class UtilsBalanceTest {
 
         }
 
+        // Replace the HashMap with a LinkedHashMap that has a size limit for the sliding window
+        Map<Long, Map<String, Account>> windows = UtilsUse.slideWindow();
         Map<String, Account> clone = UtilsUse.balancesClone(balance);
+        for (Block temp : list) {
+            windows.put(temp.getIndex(), UtilsUse.balancesClone(balance));
+            UtilsBalance.calculateBalance(balance, temp, new ArrayList<>());
+        }
 
-        UtilsBalance.calculateBalance(balance, block4, new ArrayList<>());
-        UtilsBalance.calculateBalance(balance, block3, new ArrayList<>());
-        UtilsBalance.calculateBalance(balance, block2, new ArrayList<>());
-        UtilsBalance.calculateBalance(balance, block1, new ArrayList<>());
-        UtilsBalance.calculateBalance(balance, block, new ArrayList<>());
+        UtilsJson.saveWindowsToFile(windows, "C://strategy3/" + Seting.SLIDING_WINDOWS_BALANCE);
+
         System.out.println("---------------------------------------------------------------------");
         System.out.println("before");
 
         System.out.println("---------------------------------------------------------------------");
-        UtilsBalance.rollbackCalculateBalance(balance, block );
-        UtilsBalance.rollbackCalculateBalance(balance, block1);
-        UtilsBalance.rollbackCalculateBalance(balance, block2);
-        UtilsBalance.rollbackCalculateBalance(balance, block3);
-        UtilsBalance.rollbackCalculateBalance(balance, block4);
+
+        list = list.stream().sorted(Comparator.comparing(Block::getIndex).reversed()).collect(Collectors.toList());
+
+        windows = UtilsJson.loadWindowsFromFile( "C://strategy3/"+Seting.SLIDING_WINDOWS_BALANCE);
+        Map<String, Account> cloneWindow = UtilsUse.balancesClone(balance);
+        for (Block temp : list) {
+            cloneWindow.putAll(windows.get(temp.getIndex()));
+
+            UtilsBalance.rollbackCalculateBalance(balance, temp );
+        }
+
         System.out.println("---------------------------------------------------------------------");
         System.out.println("after");
        Map<String, Account> result = UtilsUse.differentAccount(clone, balance);
+       Map<String, Account> result2 = UtilsUse.differentAccount(clone, cloneWindow);
         System.out.println("result size: " + result.size());
+        System.out.println("result2 size: " + result2.size());
+        Long index = list.get(list.size() - 5).getIndex();
+        System.out.println("windows: " + windows.get(index));
+        //true test completed
         Assert.assertTrue(result.size() == 0);
-
+        Assert.assertTrue(result.size() == 0);
+        Assert.assertTrue(windows.get(index) != null);
         System.out.println(result);
         System.out.println("=========================================");
         for (Map.Entry<String, Account> accountEntry : result.entrySet()) {
@@ -234,7 +388,6 @@ public class UtilsBalanceTest {
             System.out.println(clone.get(accountEntry.getKey()));
         }
     }
-
     @Test
     public void testRollBackShort() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":28.42,\"digitalStockBalance\":28.42,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIC8rnPDb8ltwajdu4nY1BvyJboPn2fc/9uQC1XWom1mxAiEAiq9tDEUDlV+lEngDuJmpCnKHbt5aEbjIkFccktn6P0A=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nugMm4zpoQdfgBGuXrk57EPFAe4EPSg1MQ44YTLdjKfg\",\"digitalDollar\":284.2,\"digitalStockBalance\":284.2,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIFKIFafSxvF0B3cAoAhfX4vtPXmWwGajaGGaHfUL11pWAiEA4thPgp8MtgJ3IwQm2xsA+/JxY5nCus6j38tFwfayBGQ=\"}],\"previousHash\":\"4aa09101b5164c401482da008285070428020011141087600204014132aa0ac2\",\"minerAddress\":\"nugMm4zpoQdfgBGuXrk57EPFAe4EPSg1MQ44YTLdjKfg\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":12345686317122146,\"minerRewards\":0.0,\"hashCompexity\":24,\"timestamp\":1722857830000,\"index\":289335,\"hashBlock\":\"8aa912e6301406109a489e80064105ccaa040b9005100044222094380e218441\"}\n");
@@ -278,6 +431,8 @@ public class UtilsBalanceTest {
             prev = blocks.get(i);
         }
         System.out.println("dataL " + dataShortBlockchainInformation);
+
+        //true test completed
         Assert.assertTrue(original.equals(dataShortBlockchainInformation));
         System.out.println("equals: " + original.equals(dataShortBlockchainInformation));
     }
@@ -317,10 +472,249 @@ public class UtilsBalanceTest {
         System.out.println("recipient after: " + recipient);
         System.out.println("minier after: " + miner);
 
+
+        //true test completed
         Assert.assertTrue(testMiner.equals(miner) && testSender.equals(sender) && testRecipietnt.equals(recipient));
         System.out.println("equals: " + (testMiner.equals(miner) && testSender.equals(sender) && testRecipietnt.equals(recipient)));
     }
 
+    @Test
+    public void testBalanceDiscrepancy() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+
+        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":0.00000001,\"digitalStockBalance\":0.00000001,\"laws\":{\"packetLawName\":null,\"laws\":null},\"bonusForMiner\":0.00000001,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCkBX4IBVOq/2mPsOTWIn2N8TPfS5FItHqrEqhuU/YgHAIgKmdMlLXLM4sfnWh0aO0ezTZeInUdc/dh7SDF1qOKPAI=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"2A8vxijdyY5ST1WhLQan3N1P6wSdzBDo9VmEFhck9bArG\",\"digitalDollar\":0.00000001,\"digitalStockBalance\":0.00000001,\"laws\":{\"packetLawName\":null,\"laws\":null},\"bonusForMiner\":0.00000001,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQD8iQWqgDwsxDV3ew0yZeUDS+xnI2iNjuNHak4MccU1WgIhAOP1cKFcZfrJ6Oek4UH6cX9FcIBYaA3OwAItctWny1k7\"}],\"previousHash\":\"904045a20888b4581d08c9587242b740cb12603802c440104f10063236603202\",\"minerAddress\":\"2A8vxijdyY5ST1WhLQan3N1P6wSdzBDo9VmEFhck9bArG\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":947262,\"minerRewards\":0.0,\"hashCompexity\":16,\"timestamp\":1704736749000,\"index\":167479,\"hashBlock\":\"185ac49d8c2320b030d4ac8454000b2a21423a00816a042c5403470032439188\"}");
+
+        DtoTransaction transaction = block.getDtoTransactions().get(1);
+
+        // Setup initial accounts
+        Account sender = new Account(transaction.getSender(), BigDecimal.valueOf(1000.00000001), BigDecimal.valueOf(1000.00000001), BigDecimal.ZERO);
+        Account recipient = new Account(transaction.getCustomer(), BigDecimal.valueOf(1000.00000001), BigDecimal.valueOf(1000.00000001), BigDecimal.ZERO);
+        Account miner = new Account(block.getMinerAddress(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+
+        // Clone initial states for comparison after rollback
+        Account originalSender = sender.clone();
+        Account originalRecipient = recipient.clone();
+        Account originalMiner = miner.clone();
+
+        // Perform the money transfer
+        UtilsBalance.sendMoney(sender, recipient, BigDecimal.valueOf(transaction.getDigitalDollar()), BigDecimal.valueOf(transaction.getDigitalStockBalance()), BigDecimal.valueOf(transaction.getBonusForMiner()), VoteEnum.YES);
+
+        // Rollback the transaction
+        UtilsBalance.rollBackSendMoney(sender, recipient, BigDecimal.valueOf(transaction.getDigitalDollar()), BigDecimal.valueOf(transaction.getDigitalStockBalance()), BigDecimal.valueOf(transaction.getBonusForMiner()), VoteEnum.YES);
+
+        // Compare the states after rollback
+        boolean senderEqual = originalSender.equals(sender);
+        boolean recipientEqual = originalRecipient.equals(recipient);
+        boolean minerEqual = originalMiner.equals(miner);
+
+        System.out.println("Sender before and after rollback match: " + senderEqual);
+        System.out.println("Recipient before and after rollback match: " + recipientEqual);
+        System.out.println("Miner before and after rollback match: " + minerEqual);
+
+        // Assert that balances should match the original state
+        Assert.assertTrue("Discrepancy detected in sender balance!", senderEqual);
+        Assert.assertTrue("Discrepancy detected in recipient balance!", recipientEqual);
+        Assert.assertTrue("Discrepancy detected in miner balance!", minerEqual);
+    }
+    @Test
+    public void testMultipleTransactionsAndRollbacks() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        BigDecimal digitalDollar = new BigDecimal(Double.toString(1000000000.00000000));
+        Account sender = new Account("sender", digitalDollar, digitalDollar, BigDecimal.ZERO);
+        Account recipient = new Account("recipient", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+
+        BigDecimal transactionAmount = BigDecimal.valueOf(0.10001111);
+        BigDecimal minerRewards = BigDecimal.valueOf(0.00000111);
+        int round = 1000000;
+        // Perform multiple transactions
+        for (int i = 0; i < round; i++) {
+            boolean success = UtilsBalance.sendMoney(sender, recipient, transactionAmount, transactionAmount, minerRewards, VoteEnum.YES);
+            Assert.assertTrue("Transaction failed", success);
+        }
+
+        // Store intermediate balances
+        BigDecimal senderBalanceAfterSend = sender.getDigitalDollarBalance();
+        BigDecimal recipientBalanceAfterSend = recipient.getDigitalDollarBalance();
+
+        // Perform rollbacks
+        for (int i = 0; i < round; i++) {
+            boolean success = UtilsBalance.rollBackSendMoney(sender, recipient, transactionAmount, transactionAmount, minerRewards, VoteEnum.YES);
+            Assert.assertTrue("Rollback failed", success);
+        }
+
+        System.out.println("sender: " + sender.getDigitalDollarBalance());
+        System.out.println("digital: " + digitalDollar);
+        System.out.println("recipient: " + recipient);
+        // Check final balances using compareTo to ignore scale differences
+        Assert.assertTrue("Sender balance incorrect after rollbacks",
+                digitalDollar.compareTo(sender.getDigitalDollarBalance()) == 0);
+        Assert.assertTrue("Recipient balance incorrect after rollbacks",
+                BigDecimal.ZERO.compareTo(recipient.getDigitalDollarBalance()) == 0);
+
+        // Print intermediate and final balances for analysis
+        System.out.println("Sender balance after sends: " + senderBalanceAfterSend);
+        System.out.println("Recipient balance after sends: " + recipientBalanceAfterSend);
+        System.out.println("Sender final balance: " + sender.getDigitalDollarBalance());
+        System.out.println("Recipient final balance: " + recipient.getDigitalDollarBalance());
+    }
+    @Test
+    public void testMultipleTransactionsAndRollbacksStaking() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        BigDecimal digitalDollar = new BigDecimal(Double.toString(1000000000.00000000));
+        Account sender = new Account("sender", digitalDollar, digitalDollar, digitalDollar);
+        Account recipient = new Account("recipient", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+
+        BigDecimal transactionAmount = BigDecimal.valueOf(0.10001111);
+        BigDecimal minerRewards = BigDecimal.valueOf(0.00000111);
+        int round = 1000000;
+        // Perform multiple transactions
+        for (int i = 0; i < round; i++) {
+            boolean success = UtilsBalance.sendMoney(sender, sender, transactionAmount, transactionAmount, minerRewards, VoteEnum.YES);
+//            Assert.assertTrue("Transaction failed", success);
+        }
+
+        // Store intermediate balances
+        BigDecimal senderBalanceAfterSend = sender.getDigitalDollarBalance();
+        BigDecimal recipientBalanceAfterSend = sender.getDigitalDollarBalance();
+
+        // Perform rollbacks
+        for (int i = 0; i < round; i++) {
+            boolean success = UtilsBalance.rollBackSendMoney(sender, sender, transactionAmount, transactionAmount, minerRewards, VoteEnum.YES);
+//            Assert.assertTrue("Rollback failed", success);
+        }
+
+        System.out.println("sender: " + sender);
+        System.out.println("digital: " + digitalDollar);
+
+        // Check final balances using compareTo to ignore scale differences
+        Assert.assertTrue("Sender balance incorrect after rollbacks",
+                digitalDollar.compareTo(sender.getDigitalDollarBalance()) == 0);
+        Assert.assertTrue("Sender staking balance incorrect after rollbacks",
+                digitalDollar.compareTo(sender.getDigitalStakingBalance()) == 0);
+
+        // Print intermediate and final balances for analysis
+        System.out.println("Sender balance after sends: " + senderBalanceAfterSend);
+        System.out.println("Recipient balance after sends: " + recipientBalanceAfterSend);
+        System.out.println("Sender final balance: " + sender.getDigitalDollarBalance());
+        System.out.println("Recipient final balance: " + recipient.getDigitalDollarBalance());
+
+    }
+
+
+    @Test
+    public void testMultipleTransactionsAndRollbacksUnstaking() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        BigDecimal digitalDollar = new BigDecimal(Double.toString(1000000000.00000000));
+        Account sender = new Account("sender", digitalDollar, digitalDollar, digitalDollar);
+        Account recipient = new Account("recipient", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+
+        BigDecimal transactionAmount = BigDecimal.valueOf(0.10001111);
+        BigDecimal minerRewards = BigDecimal.valueOf(0.00000111);
+        int round = 1000000;
+        // Perform multiple transactions
+        for (int i = 0; i < round; i++) {
+            boolean success = UtilsBalance.sendMoney(sender, sender, transactionAmount, transactionAmount, minerRewards, VoteEnum.YES);
+//            Assert.assertTrue("Transaction failed", success);
+        }
+
+        // Store intermediate balances
+        BigDecimal senderBalanceAfterSend = sender.getDigitalDollarBalance();
+        BigDecimal recipientBalanceAfterSend = sender.getDigitalDollarBalance();
+
+        // Perform rollbacks
+        for (int i = 0; i < round; i++) {
+            boolean success = UtilsBalance.rollBackSendMoney(sender, sender, transactionAmount, transactionAmount, minerRewards, VoteEnum.YES);
+//            Assert.assertTrue("Rollback failed", success);
+        }
+
+        System.out.println("sender: " + sender);
+        System.out.println("digital: " + digitalDollar);
+
+        // Check final balances using compareTo to ignore scale differences
+        Assert.assertTrue("Sender balance incorrect after rollbacks",
+                digitalDollar.compareTo(sender.getDigitalDollarBalance()) == 0);
+        Assert.assertTrue("Sender staking balance incorrect after rollbacks",
+                digitalDollar.compareTo(sender.getDigitalStakingBalance()) == 0);
+
+        // Print intermediate and final balances for analysis
+        System.out.println("Sender balance after sends: " + senderBalanceAfterSend);
+        System.out.println("Recipient balance after sends: " + recipientBalanceAfterSend);
+        System.out.println("Sender final balance: " + sender.getDigitalDollarBalance());
+        System.out.println("Recipient final balance: " + recipient.getDigitalDollarBalance());
+
+    }
+
+    @Test
+    public void testMultipleTransactionsAndRollbacksMining() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        BigDecimal digitalDollar = new BigDecimal(Double.toString(0));
+        Account sender = new Account("faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ", digitalDollar, digitalDollar, digitalDollar);
+        Account recipient = new Account("recipient", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+
+        BigDecimal transactionAmount = BigDecimal.valueOf(0.10001111);
+        BigDecimal minerRewards = BigDecimal.valueOf(0.00000111);
+        int round = 1000000;
+        // Perform multiple transactions
+        for (int i = 0; i < round; i++) {
+            boolean success = UtilsBalance.sendMoney(sender, recipient, transactionAmount, transactionAmount, minerRewards, VoteEnum.YES);
+//            Assert.assertTrue("Transaction failed", success);
+        }
+
+        // Store intermediate balances
+        BigDecimal senderBalanceAfterSend = sender.getDigitalDollarBalance();
+        BigDecimal recipientBalanceAfterSend = recipient.getDigitalDollarBalance();
+
+        // Perform rollbacks
+        for (int i = 0; i < round; i++) {
+            boolean success = UtilsBalance.rollBackSendMoney(sender, recipient, transactionAmount, transactionAmount, minerRewards, VoteEnum.YES);
+//            Assert.assertTrue("Rollback failed", success);
+        }
+
+        System.out.println("sender: " + sender);
+        System.out.println("recipient: " + recipient);
+        System.out.println("digital: " + digitalDollar);
+
+        // Check final balances using compareTo to ignore scale differences
+        Assert.assertTrue("Sender balance incorrect after rollbacks",
+                digitalDollar.compareTo(sender.getDigitalDollarBalance()) == 0);
+        Assert.assertTrue("Sender staking balance incorrect after rollbacks",
+                BigDecimal.ZERO.compareTo(recipient.getDigitalStakingBalance()) == 0);
+
+        // Print intermediate and final balances for analysis
+        System.out.println("Sender balance after sends: " + senderBalanceAfterSend);
+        System.out.println("Recipient balance after sends: " + recipientBalanceAfterSend);
+        System.out.println("Sender final balance: " + sender.getDigitalDollarBalance());
+        System.out.println("Recipient final balance: " + recipient.getDigitalDollarBalance());
+
+    }
+
+    @Test
+    public void testSizeWindows() throws CloneNotSupportedException, IOException {
+        Map<Long, Map<String, Account>> windows = UtilsUse.slideWindow();
+//        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile("C://strategy3" + Seting.SLIDING_WINDOWS_BALANCE);
+        Map<String, Account> balance = new HashMap<>();
+        Account account = new Account("sender", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+        balance.put(account.getAccount(), account);
+        for (long i = 0; i < 120; i++) {
+            balance.get("sender").setDigitalStakingBalance(BigDecimal.valueOf(i));
+            balance.get("sender").setDigitalStockBalance(BigDecimal.valueOf(i));
+            balance.get("sender").setDigitalDollarBalance(BigDecimal.valueOf(i));
+            windows.put(Long.valueOf(i), UtilsUse.balancesClone(balance));
+            System.out.println("windows: "+windows.get(i));
+        }
+//        UtilsJson.saveWindowsToFile(windows, "C://strategy3" + Seting.SLIDING_WINDOWS_BALANCE);
+//
+//        windows = UtilsJson.loadWindowsFromFile("C://strategy3" + Seting.SLIDING_WINDOWS_BALANCE);
+        System.out.println("windows: " + windows.size());
+        Assert.assertTrue(windows.size() == 30);
+        for (Map.Entry<Long, Map<String, Account>> longMapEntry : windows.entrySet()) {
+            System.out.println(longMapEntry.getKey());
+        }
+        System.out.println("contains: " + windows.containsKey(Long.valueOf(110)));
+        System.out.println(windows.get(Long.valueOf(110)));
+        Assert.assertTrue(windows.get(Long.valueOf(110))!= null);
+        for (int i = 30; i < 60; i++) {
+            if (windows.containsKey(Long.valueOf(i))) {
+                System.out.println("has: " + i);
+            }
+        }
+
+    }
 
 }
 
