@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.File;
 import java.io.IOException;
@@ -55,12 +56,15 @@ public class UtilsResolving {
     @Autowired
     BlockService blockService;
 
-
+    @PostConstruct
+    public void init() {
+        Blockchain.setBlockService(blockService);
+        UtilsBalance.setBlockService(blockService);
+        UtilsBlock.setBlockService(blockService);
+    }
     public int resolve3() {
         BasisController.setUpdating(true);
-        UtilsBalance.setBlockService(blockService);
-        Blockchain.setBlockService(blockService);
-        UtilsBlock.setBlockService(blockService);
+
 
         //удаляет файлы которые хранять заблокированные хосты
         if (BasisController.getBlockchainSize() % Seting.DELETED_FILE_BLOCKED_HOST == 0) {

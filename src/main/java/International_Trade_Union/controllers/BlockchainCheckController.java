@@ -3,12 +3,15 @@ package International_Trade_Union.controllers;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
+import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.UtilsBlock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -19,6 +22,13 @@ import java.security.spec.InvalidKeySpecException;
 @RestController
 public class BlockchainCheckController {
 
+    @Autowired
+    BlockService blockService;
+    @PostConstruct
+    public void init() {
+        Blockchain.setBlockService(blockService);
+
+    }
     /**Проверяет целостность блокчейна из файла.
      * Verifies the integrity of the blockchain from a file.*/
     @GetMapping("/checkValidation")

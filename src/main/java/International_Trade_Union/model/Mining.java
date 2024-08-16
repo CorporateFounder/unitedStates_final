@@ -1,7 +1,6 @@
 package International_Trade_Union.model;
 
 
-
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 
@@ -23,6 +22,7 @@ import International_Trade_Union.vote.VoteEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -38,9 +38,17 @@ import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
 public class Mining {
     @Autowired
     BlockService blockService;
+
+    @PostConstruct
+    public void init() {
+        Blockchain.setBlockService(blockService);
+
+    }
+
     private static int customDiff = Seting.V34_MIN_DIFF;
     public static boolean miningIsObsolete = false;
     private static volatile boolean isMiningStop = false;
+
     public static Blockchain getBlockchain(String filename, BlockchainFactoryEnum factoryEnum) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
         List<Block> blocks = UtilsBlock.readLineObject(filename);
@@ -49,7 +57,7 @@ public class Mining {
 
         if (blocks.size() != 0) {
             blocks = blocks.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
-           blockchain.setBlockchainList(blocks);
+            blockchain.setBlockchainList(blocks);
         }
         return blockchain;
     }
@@ -59,7 +67,7 @@ public class Mining {
     }
 
     public static void setCustomDiff(int customDiff) {
-        customDiff = customDiff < Seting.V34_MIN_DIFF? Seting.V34_MIN_DIFF: customDiff;
+        customDiff = customDiff < Seting.V34_MIN_DIFF ? Seting.V34_MIN_DIFF : customDiff;
         Mining.customDiff = customDiff;
     }
 
@@ -72,7 +80,7 @@ public class Mining {
         Mining.isMiningStop = isMiningStop;
     }
 
-    public  Map<String, Account> getBalances(String filename, Blockchain blockchain, Map<String, Account> balances, List<String> signs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+    public Map<String, Account> getBalances(String filename, Blockchain blockchain, Map<String, Account> balances, List<String> signs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         //start test
 
 
@@ -185,7 +193,7 @@ public class Mining {
                         }
 
 
-                        if(transaction.getVoteEnum().equals(VoteEnum.STAKING)
+                        if (transaction.getVoteEnum().equals(VoteEnum.STAKING)
                                 || transaction.getVoteEnum().equals(VoteEnum.YES)
                                 || transaction.getVoteEnum().equals(VoteEnum.NO)) {
                             BigDecimal transactionDigitalDollar = BigDecimal.valueOf(transaction.getDigitalDollar());
@@ -209,18 +217,18 @@ public class Mining {
                     }
 
                 }
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
                 continue;
             }
         }
 
         long difficulty = UtilsBlock.difficulty(blockchain, blockGenerationInterval, DIFFICULTY_ADJUSTMENT_INTERVAL);
-        if(index >= Seting.V34_NEW_ALGO){
+        if (index >= Seting.V34_NEW_ALGO) {
             difficulty = Mining.customDiff;
         }
 
-        Block prevBlock = blockchain.get(blockchain.size()-1);
+        Block prevBlock = blockchain.get(blockchain.size() - 1);
 
 
         //доход майнера
@@ -230,51 +238,50 @@ public class Mining {
         //доход основателя
         double founderReward = Seting.DIGITAL_DOLLAR_FOUNDER_REWARDS_BEFORE;
         double founderDigigtalReputationReward = Seting.DIGITAL_REPUTATION_FOUNDER_REWARDS_BEFORE;
-        if(index > Seting.CHECK_UPDATING_VERSION){
-            if(difficulty >= 8){
+        if (index > Seting.CHECK_UPDATING_VERSION) {
+            if (difficulty >= 8) {
                 founderReward = difficulty;
                 founderDigigtalReputationReward = difficulty;
-            }
-            else {
+            } else {
                 founderReward = 8;
                 founderDigigtalReputationReward = 8;
             }
 
         }
-        if(index > Seting.CHECK_UPDATING_VERSION) {
+        if (index > Seting.CHECK_UPDATING_VERSION) {
             minerRewards = difficulty * Seting.MONEY;
-            digitalReputationForMiner= difficulty * Seting.MONEY;
-            minerRewards += index%2 == 0 ? 0 : 1;
-            digitalReputationForMiner += index%2 == 0 ? 0 : 1;
+            digitalReputationForMiner = difficulty * Seting.MONEY;
+            minerRewards += index % 2 == 0 ? 0 : 1;
+            digitalReputationForMiner += index % 2 == 0 ? 0 : 1;
         }
 
-        if(index > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX && index < Seting.V34_NEW_ALGO){
+        if (index > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX && index < Seting.V34_NEW_ALGO) {
             long money = (index - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
                     / (576 * Seting.YEAR);
             money = (long) (Seting.MULTIPLIER - money);
-            money = money < 1 ? 1: money;
+            money = money < 1 ? 1 : money;
 
 
             double G = UtilsUse.blocksReward(forAdd, prevBlock.getDtoTransactions());
             minerRewards = (Seting.V28_REWARD + G) * money;
             digitalReputationForMiner = (Seting.V28_REWARD + G) * money;
-            founderReward = minerRewards/Seting.DOLLAR;
-            founderDigigtalReputationReward = digitalReputationForMiner/Seting.STOCK;
+            founderReward = minerRewards / Seting.DOLLAR;
+            founderDigigtalReputationReward = digitalReputationForMiner / Seting.STOCK;
         }
-        if( index >= Seting.V34_NEW_ALGO){
+        if (index >= Seting.V34_NEW_ALGO) {
             long money = (index - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
                     / (576 * Seting.YEAR);
             money = (long) (Seting.MULTIPLIER - money);
-            money = money < 1 ? 1: money;
+            money = money < 1 ? 1 : money;
 
 
             double G = UtilsUse.blocksReward(forAdd, prevBlock.getDtoTransactions());
             minerRewards = (Seting.V28_REWARD + G + (difficulty * Seting.V34_MINING_REWARD)) * money;
-            digitalReputationForMiner = (Seting.V28_REWARD + G + (difficulty * Seting.V34_MINING_REWARD))* money;
-            founderReward = minerRewards/Seting.DOLLAR;
-            founderDigigtalReputationReward = digitalReputationForMiner/Seting.STOCK;
+            digitalReputationForMiner = (Seting.V28_REWARD + G + (difficulty * Seting.V34_MINING_REWARD)) * money;
+            founderReward = minerRewards / Seting.DOLLAR;
+            founderDigigtalReputationReward = digitalReputationForMiner / Seting.STOCK;
 
-            if(BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES){
+            if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
                 minerRewards = UtilsUse.round(minerRewards, Seting.DECIMAL_PLACES);
                 digitalReputationForMiner = UtilsUse.round(digitalReputationForMiner, Seting.DECIMAL_PLACES);
                 founderReward = UtilsUse.round(founderReward, Seting.DECIMAL_PLACES);
@@ -289,14 +296,14 @@ public class Mining {
 
         try {
             forAdd = UtilsUse.balanceTransaction(forAdd, balances);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
 
         String addressFounrder = Blockchain.indexFromFile(0, Seting.ORIGINAL_BLOCKCHAIN_FILE).getFounderAddress();
-        if(!addressFounrder.equals(prevBlock.getFounderAddress())) {
-            System.out.println("wrong founder address: " );
+        if (!addressFounrder.equals(prevBlock.getFounderAddress())) {
+            System.out.println("wrong founder address: ");
             return null;
         }
         //вознаграждение основателя
@@ -307,7 +314,6 @@ public class Mining {
         founderRew.setSign(signFounder);
 
 
-
         forAdd.add(founderRew);
 
 
@@ -315,21 +321,17 @@ public class Mining {
         //определение сложности и создание блока
 
 
-
         System.out.println("Mining: miningBlock: difficulty: " + difficulty + " index: " + index);
 
 
-
-        if(index == Seting.SPECIAL_BLOCK_FORK && minner.getAccount().equals(Seting.FORK_ADDRESS_SPECIAL)){
+        if (index == Seting.SPECIAL_BLOCK_FORK && minner.getAccount().equals(Seting.FORK_ADDRESS_SPECIAL)) {
             minerRewards = SPECIAL_FORK_BALANCE;
             digitalReputationForMiner = SPECIAL_FORK_BALANCE;
         }
 
         //вознаграждения майнера
         DtoTransaction minerRew = new DtoTransaction(Seting.BASIS_ADDRESS, minner.getAccount(),
-                minerRewards, digitalReputationForMiner, new Laws(), sumRewards, VoteEnum.YES );
-
-
+                minerRewards, digitalReputationForMiner, new Laws(), sumRewards, VoteEnum.YES);
 
 
         //подписывает
@@ -348,7 +350,7 @@ public class Mining {
             }
         })).collect(Collectors.toList());
 
-        forAdd = forAdd.stream().filter(t->t!= null).collect(Collectors.toList());
+        forAdd = forAdd.stream().filter(t -> t != null).collect(Collectors.toList());
         Block block = new Block(
                 forAdd,
                 prevBlock.getHashBlock(),
@@ -358,6 +360,6 @@ public class Mining {
                 index);
 
 
-       return block;
+        return block;
     }
 }

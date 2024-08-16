@@ -35,6 +35,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
@@ -54,8 +55,15 @@ import static International_Trade_Union.utils.UtilsBalance.*;
 
 @Controller
 public class BasisController {
+
+    private BlockService blockService;
     @Autowired
-    BlockService blockService;
+    public BasisController(BlockService blockService) {
+        this.blockService = blockService;
+        Blockchain.setBlockService(blockService);
+        initializeBlockchain();
+    }
+
 
 
     @Autowired
@@ -263,22 +271,21 @@ public class BasisController {
      */
 
 
-    static {
+    @PostConstruct
+    public void init() {
+        Blockchain.setBlockService(blockService);
+        initializeBlockchain();
+    }
+
+    private void initializeBlockchain() {
         try {
-            //creates all resource folders to work with
-            //создает все папки ресурсов для работы
+            // Инициализация ресурсов
             UtilsCreatedDirectory.createPackages();
 
-            //downloads from a blockchain file
-            //загрузки из файла бло
-
-            //a shorthand object that stores information about the blockchain
-            //сокращенный объект, который хранит информацию о блокчейне
-
+            // Загрузка блокчейна из файла
             String json = UtilsFileSaveRead.read(Seting.TEMPORARY_BLOCKCHAIN_FILE);
             if (!json.isEmpty() || !json.isBlank()) {
                 shortDataBlockchain = UtilsJson.jsonToDataShortBlockchainInformation(json);
-
             } else {
                 shortDataBlockchain = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
                 json = UtilsJson.objToStringJson(shortDataBlockchain);
@@ -288,18 +295,8 @@ public class BasisController {
             blockchainValid = shortDataBlockchain.isValidation();
             prevBlock = Blockchain.indexFromFile(blockchainSize - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
-
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SignatureException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchProviderException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException |
+                 SignatureException | NoSuchProviderException | InvalidKeyException e) {
             throw new RuntimeException(e);
         }
     }
@@ -1096,7 +1093,8 @@ public class BasisController {
                         block,
                         Seting.BLOCK_GENERATION_INTERVAL,
                         diff,
-                        testingValidationsBlock);
+                        testingValidationsBlock,
+                        blockService);
 
                 if (validationTesting == false) {
                     System.out.println("wrong validation block: " + validationTesting);
@@ -1312,6 +1310,43 @@ public class BasisController {
 
     }
 
+    @GetMapping("/showAccounts")
+    @ResponseBody
+    public List<Map<String, Account>> showAccounts() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
+        List<Map<String, Account>> maps = new ArrayList<>();
+        utilsResolving.resolve3();
+        String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
+        String s = "http://194.87.236.238:82";
+
+        for (String s1 : Seting.ORIGINAL_ADDRESSES) {
+            s = s1;
+        }
+        if (!server.isBlank() || !server.isEmpty()) {
+            Seting.ORIGINAL_ADDRESSES.removeAll(Seting.ORIGINAL_ADDRESSES);
+            Seting.ORIGINAL_ADDRESSES.add(server);
+            s = server;
+
+        }
+
+
+        long beforeMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+        long afterMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        System.out.println("Memory, used object remains balances: " + (afterMemory - beforeMemory) + "bytes");
+        Map<String, Account> accounts = UtilsJson.balances(UtilUrl.readJsonFromUrl(s + "/addresses"));
+
+
+        System.out.println("=========================================");
+        System.out.println("all balance in server "+balances.size());
+        balances.entrySet().stream().forEach(t-> System.out.println(t.getValue()));
+        System.out.println("=========================================");
+        System.out.println("all balance in local "+accounts.size());
+        accounts.entrySet().stream().forEach(t-> System.out.println(t.getValue()));
+        maps.add(balances);
+        maps.add(accounts);
+
+        return maps;
+    }
     @GetMapping("/status")
     @ResponseBody
     public String status() {

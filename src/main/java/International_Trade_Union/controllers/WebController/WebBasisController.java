@@ -3,15 +3,18 @@ package International_Trade_Union.controllers.WebController;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.blockchain.Blockchain;
+import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
 
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -22,6 +25,13 @@ import java.security.spec.InvalidKeySpecException;
 @RestController
 public class WebBasisController {
 
+    @Autowired
+    BlockService blockService;
+    @PostConstruct
+    public void init() {
+        Blockchain.setBlockService(blockService);
+
+    }
     /**If it returns true, then the file system is currently being updated.
      *If true, the buttons should be disabled.
      * localhost:8082/isUpdating

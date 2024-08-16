@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -37,6 +38,12 @@ import java.util.stream.Collectors;
 public class StatisticsController {
     @Autowired
     BlockService blockService;
+
+    @PostConstruct
+    public void init() {
+        Blockchain.setBlockService(blockService);
+
+    }
     private static Periud periud = International_Trade_Union.statistics.Periud.DAY;
 
     @PostMapping("/statistics")

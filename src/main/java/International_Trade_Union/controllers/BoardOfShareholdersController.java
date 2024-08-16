@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.setings.Seting;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -32,7 +33,11 @@ import java.util.stream.Collectors;
 public class BoardOfShareholdersController {
     @Autowired
     BlockService blockService;
+    @PostConstruct
+    public void init() {
+        Blockchain.setBlockService(blockService);
 
+    }
     /**отображает список Совета Акционеров, отображается в браузере.
      * displays a list of the Board of Shareholders, displayed in the browser.*/
     @GetMapping("board-of-shareholders")

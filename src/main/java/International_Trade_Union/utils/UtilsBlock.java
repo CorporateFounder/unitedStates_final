@@ -374,7 +374,8 @@ public class UtilsBlock {
             Block thisBlock,
             long blockGenerationInterval,
             int difficultyAdjustmentInterval,
-            List<Block> lastBlock) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+            List<Block> lastBlock,
+            BlockService blockService) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
         Base base = new Base58();
         if (!addressFounder.equals(thisBlock.getFounderAddress())) {
@@ -426,6 +427,18 @@ public class UtilsBlock {
             return validated;
         }
 
+        if(thisBlock.getIndex() > FROM_STRING_DOUBLE ){
+            Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(thisBlock.getDtoTransactions()));
+            int transactionsCount = thisBlock.getDtoTransactions().stream().filter(t->!BASIS_ADDRESS.equals(t.getSender())).collect(Collectors.toList()).size();
+            int after = UtilsUse.balanceTransaction(thisBlock.getDtoTransactions(), balances).size();
+            if(after != transactionsCount){
+                System.out.println("*************************************");
+                System.out.println("The block contains transactions where the user's balance is insufficient.");
+                System.out.println("*************************************");
+                validated = false;
+                return validated;
+            }
+        }
         finished:
         for (DtoTransaction transaction : thisBlock.getDtoTransactions()) {
             if (transaction.verify() && transaction.getSender().equals(Seting.BASIS_ADDRESS)) {
@@ -718,7 +731,7 @@ public class UtilsBlock {
 
     }
 
-    public static boolean validation(List<Block> blocks, int checkIndex, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public static boolean validation(List<Block> blocks, int checkIndex, long BLOCK_GENERATION_INTERVAL, int DIFFICULTY_ADJUSTMENT_INTERVAL, BlockService blockService) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         boolean validated = true;
         int index = 0;
 
@@ -763,7 +776,8 @@ public class UtilsBlock {
                     block,
                     BLOCK_GENERATION_INTERVAL,
                     DIFFICULTY_ADJUSTMENT_INTERVAL,
-                    tempList);
+                    tempList,
+                    blockService);
 
 //            SaveBalances.saveBalances(cheater, "C://testing/cheaters/");
             if (validated == false) {

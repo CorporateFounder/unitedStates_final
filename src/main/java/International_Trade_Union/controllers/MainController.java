@@ -35,6 +35,7 @@ import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
 
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.*;
@@ -51,7 +52,11 @@ public class MainController {
 
     @Autowired
     BlockService blockService;
+    @PostConstruct
+    public void init() {
+        Blockchain.setBlockService(blockService);
 
+    }
     @Autowired
     UtilsResolving utilsResolving;
     private static DataShortBlockchainInformation shortBlockchainInformation;

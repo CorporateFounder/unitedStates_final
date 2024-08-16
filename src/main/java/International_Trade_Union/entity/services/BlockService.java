@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -111,18 +112,40 @@ public class BlockService {
     public List<EntityAccount> findByAccountIn(Map<String, Account> map) throws IOException {
         List<EntityAccount> entityAccounts = new ArrayList<>();
         try {
-            List<String> accounts = map.entrySet().stream().map(t -> t.getValue().getAccount()).collect(Collectors.toList());
+            // Извлекаем список аккаунтов из карты
+            List<String> accounts = map.entrySet().stream()
+                    .map(t -> t.getValue().getAccount())
+                    .collect(Collectors.toList());
+
+            // Ищем существующие аккаунты в базе данных
             entityAccounts = entityAccountRepository.findByAccountIn(accounts);
+
+            // Определяем существующие аккаунты
+            List<String> existingAccounts = entityAccounts.stream()
+                    .map(EntityAccount::getAccount)
+                    .collect(Collectors.toList());
+
+            // Определяем отсутствующие аккаунты
+            List<String> missingAccounts = accounts.stream()
+                    .filter(account -> !existingAccounts.contains(account))
+                    .collect(Collectors.toList());
+
+            // Создаем новые EntityAccount для отсутствующих аккаунтов с нулевыми балансами
+            List<EntityAccount> newAccounts = missingAccounts.stream()
+                    .map(account -> new EntityAccount(account, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO))
+                    .collect(Collectors.toList());
+
+            // Добавляем новые аккаунты к результату
+            entityAccounts.addAll(newAccounts);
 
         } catch (Exception e) {
             e.printStackTrace();
             throw new IOException("findByAccountIn: error: save: ", e);
-
         }
 
         return entityAccounts;
-
     }
+
 
     @Transactional(readOnly = true)
     public double getTotalDigitalDollarBalance() {
@@ -195,13 +218,25 @@ public class BlockService {
             accounts.add(transaction.getSender());
             accounts.add(transaction.getCustomer());
         }
-        List<EntityAccount> entityAccounts = new ArrayList<>();
+
+        List<EntityAccount> entityAccounts;
         try {
             entityAccounts = entityAccountRepository.findByAccountIn(accounts);
         } catch (Exception e) {
             e.printStackTrace();
             throw new IOException("findByDtoAccounts: error: save: ", e);
+        }
 
+        // Создаем карту для быстрого поиска существующих аккаунтов по их идентификатору
+        Map<String, EntityAccount> accountMap = entityAccounts.stream()
+                .collect(Collectors.toMap(EntityAccount::getAccount, Function.identity()));
+
+        // Проходим по списку аккаунтов и добавляем недостающие
+        for (String account : accounts) {
+            if (!accountMap.containsKey(account)) {
+                EntityAccount newAccount = new EntityAccount(account, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+                entityAccounts.add(newAccount);
+            }
         }
 
         return entityAccounts;
@@ -298,9 +333,19 @@ public class BlockService {
 
     }
     private boolean accountsAreEqual(EntityAccount existingAccount, EntityAccount newAccount) {
-        return existingAccount.getDigitalDollarBalance() == newAccount.getDigitalDollarBalance()
-                && existingAccount.getDigitalStockBalance() == newAccount.getDigitalStockBalance()
-                && existingAccount.getDigitalStakingBalance() == newAccount.getDigitalStakingBalance();
+        if (existingAccount == null || newAccount == null) {
+            return false;
+        }
+
+        if (existingAccount.getDigitalDollarBalance() == null || newAccount.getDigitalDollarBalance() == null
+                || existingAccount.getDigitalStockBalance() == null || newAccount.getDigitalStockBalance() == null
+                || existingAccount.getDigitalStakingBalance() == null || newAccount.getDigitalStakingBalance() == null) {
+            return false;
+        }
+
+        return existingAccount.getDigitalDollarBalance().compareTo(newAccount.getDigitalDollarBalance()) == 0
+                && existingAccount.getDigitalStockBalance().compareTo(newAccount.getDigitalStockBalance()) == 0
+                && existingAccount.getDigitalStakingBalance().compareTo(newAccount.getDigitalStakingBalance()) == 0;
     }
 
     @Transactional

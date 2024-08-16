@@ -602,74 +602,85 @@ public class UtilsUse {
         return result;
     }
     public static List<DtoTransaction> balanceTransaction(List<DtoTransaction> transactions, Map<String, Account> basis) throws IOException {
+
         List<DtoTransaction> dtoTransactions = new ArrayList<>();
         Map<String, Account> balances = new HashMap<>();
         try {
             balances = UtilsUse.balancesClone(basis);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
 
         for (DtoTransaction transaction : transactions) {
-
-            // Check if both digital dollar and digital stock are below the minimum
             boolean result = false;
+
             if (balances.containsKey(transaction.getSender())) {
                 Account sender = balances.get(transaction.getSender());
                 Account customer = balances.get(transaction.getCustomer());
-                BigDecimal transactionDigitalDollar = BigDecimal.valueOf(transaction.getDigitalDollar());
-                BigDecimal transactionDigitalStock = BigDecimal.valueOf(transaction.getDigitalStockBalance());
 
-                BigDecimal transactionBonusForMiner = BigDecimal.valueOf(transaction.getBonusForMiner());
+                if (sender == null || customer == null) {
+                    continue;
+                }
+
+                BigDecimal transactionDigitalDollar =  new BigDecimal(Double.toString(transaction.getDigitalDollar()));
+                BigDecimal transactionDigitalStock = new BigDecimal(Double.toString(transaction.getDigitalStockBalance()));
+                BigDecimal transactionBonusForMiner = new BigDecimal(Double.toString(transaction.getBonusForMiner()));
+
+                // Check for null or negative values in transaction amounts and sender's balances
+                if (transactionDigitalDollar == null || transactionDigitalStock == null || transactionBonusForMiner == null ||
+                        sender.getDigitalDollarBalance() == null || sender.getDigitalStockBalance() == null ||
+                        transactionDigitalDollar.compareTo(BigDecimal.ZERO) < 0 ||
+                        transactionDigitalStock.compareTo(BigDecimal.ZERO) < 0 ||
+                        transactionBonusForMiner.compareTo(BigDecimal.ZERO) < 0 ||
+                        sender.getDigitalDollarBalance().compareTo(BigDecimal.ZERO) < 0 ||
+                        sender.getDigitalStockBalance().compareTo(BigDecimal.ZERO) < 0) {
+                    continue;
+                }
 
                 if (sender.getDigitalDollarBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0) {
                     dtoTransactions.add(transaction);
                     result = true;
-                }
-                else if (sender.getDigitalStockBalance().compareTo(transactionDigitalStock.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.YES)) {
+                } else if (sender.getDigitalStockBalance().compareTo(transactionDigitalStock.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.YES)) {
+                    dtoTransactions.add(transaction);
+                    result = true;
+                } else if (sender.getDigitalStockBalance().compareTo(transactionDigitalStock.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.NO)) {
+                    dtoTransactions.add(transaction);
+                    result = true;
+                } else if (sender.getDigitalDollarBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.STAKING)) {
+                    dtoTransactions.add(transaction);
+                    result = true;
+                } else if (sender.getDigitalStakingBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.UNSTAKING)) {
                     dtoTransactions.add(transaction);
                     result = true;
                 }
-                else if (sender.getDigitalStockBalance().compareTo(transactionDigitalStock.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.NO)) {
-                    dtoTransactions.add(transaction);
-                    result = true;
-                }
-                else if (sender.getDigitalDollarBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.STAKING)) {
-                    dtoTransactions.add(transaction);
-                    result = true;
-                }
-                else if (sender.getDigitalStakingBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.UNSTAKING)) {
-                    dtoTransactions.add(transaction);
-                    result = true;
-                }
+
                 try {
-                    if(result == true){
-                        boolean sendtrue = UtilsBalance.sendMoney(
+                    if (result) {
+
+
+
+                        boolean sendtrue = UtilsBalance.sendMoneyNew(
                                 sender,
                                 customer,
-                                BigDecimal.valueOf(transaction.getDigitalDollar()),
-                                BigDecimal.valueOf(transaction.getDigitalStockBalance()),
-                                BigDecimal.valueOf(transaction.getBonusForMiner()),
+                                transactionDigitalDollar,
+                                transactionDigitalStock,
+                                transactionBonusForMiner,
                                 transaction.getVoteEnum());
-                        if(sendtrue){
+                        if (sendtrue) {
                             balances.put(sender.getAccount(), sender);
                             balances.put(customer.getAccount(), customer);
                         }
                     }
-
-
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
         }
         return dtoTransactions;
     }
 
-
-    //возвращает скользящее окно для хранения последних 30 слепков балана
+        //возвращает скользящее окно для хранения последних 30 слепков балана
     public static Map<Long, Map<String, Account>> slideWindow(){
         // Replace the HashMap with a LinkedHashMap that has a size limit for the sliding window
         Map<Long, Map<String, Account>> windows = new LinkedHashMap<Long, Map<String, Account>>(30, 0.75f, true) {
