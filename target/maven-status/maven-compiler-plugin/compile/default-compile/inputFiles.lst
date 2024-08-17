@@ -16,6 +16,7 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\vote
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\StatisticsController.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterDraft\CorporateCharter.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterDraft\ArticleThreeJudiciaryDraft.java
+D:\unitedStates duplicates original\src\main\java\International_Trade_Union\config\JacksonConfig.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\entities\SendCoinResult.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\blockchain\Blockchain.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\governments\CompareObject.java
@@ -48,6 +49,7 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\util
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\repository\EntityDtoTransactionRepository.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\SendBlocksEndInfo.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\services\BlockService.java
+D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsJsonNew.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsStorage.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsUse.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterEngDraft\ArticleFiveCharterSupremacyEngDraft.java
@@ -97,7 +99,6 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\mode
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\model\comparator\HostEndDataShortBComparator.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\base\Base.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\network\AllTransactions.java
-D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsDemerage.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterEngDraft\ArticleThreeJudiciaryEngDraft.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\vote\UtilsCurrentLaw.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\blockchain\block\Block.java
@@ -118,6 +119,7 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\node
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\WebController\StorageController.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsAccountToEntityAccount.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\TransactionController.java
+D:\unitedStates duplicates original\src\main\java\International_Trade_Union\config\NumberFormattingAspect.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterEngDraft\ArticleTwoSpecialPositionEngDraft.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\CorporateCharterEngDraft\ArticleOneLegistratureEngDraft.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\controllers\TransactionsController.java

@@ -16,7 +16,6 @@ import International_Trade_Union.utils.*;
 
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
-import International_Trade_Union.vote.Laws;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONException;
@@ -489,7 +488,7 @@ public class Testing {
     public void sub() throws IOException {
         String str = "{\"start\":167337,\"finish\":167338}";
         String s = " http://194.87.236.238:82";
-        SubBlockchainEntity subBlockchainEntity = (SubBlockchainEntity) UtilsJson.jsonToListBLock(str, SubBlockchainEntity.class);
+        SubBlockchainEntity subBlockchainEntity = (SubBlockchainEntity) UtilsJson.jsonToObject(str, SubBlockchainEntity.class);
         List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(str, s + "/sub-blocks"));
         System.out.println(subBlocks.size());
     }
