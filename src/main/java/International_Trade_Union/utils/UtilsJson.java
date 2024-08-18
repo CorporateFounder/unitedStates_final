@@ -1,215 +1,156 @@
 package International_Trade_Union.utils;
 
+import International_Trade_Union.config.ConditionalBigDecimalDeserializer;
+import International_Trade_Union.config.ConditionalBigDecimalSerializer;
+import International_Trade_Union.config.ConditionalDoubleDeserializer;
+import International_Trade_Union.config.ConditionalDoubleSerializer;
 import International_Trade_Union.controllers.BasisController;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
+import International_Trade_Union.entity.EntityChain;
 import International_Trade_Union.entity.InfoDemerageMoney;
 import International_Trade_Union.entity.InfoDificultyBlockchain;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.setings.Seting;
+import International_Trade_Union.vote.CurrentLawVotes;
 import International_Trade_Union.vote.CurrentLawVotesEndBalance;
 import International_Trade_Union.vote.LawEligibleForParliamentaryApproval;
 import International_Trade_Union.vote.Laws;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class UtilsJson {
-    private static ObjectMapper mapper = new ObjectMapper();
-    private static ObjectMapper newMapper;
+    private static final ObjectMapper oldMapper = new ObjectMapper();
+    private static final ObjectMapper newMapper;
 
     static {
+        // Настроить новый ObjectMapper
         newMapper = new ObjectMapper();
-        newMapper.configure(SerializationFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
-        newMapper.setNodeFactory(JsonNodeFactory.withExactBigDecimals(true));
 
+        // Включить настройку для записи BigDecimal как plain
+        newMapper.enable(SerializationFeature.WRITE_BIGDECIMAL_AS_PLAIN);
+
+        // Создать новый модуль для кастомных сериализаторов и десериализаторов
         SimpleModule module = new SimpleModule();
-        module.addSerializer(BigDecimal.class, new BigDecimalSerializer());
-        module.addSerializer(Double.class, new DoubleSerializer());
-        module.addSerializer(double.class, new DoubleSerializer());
-        module.addDeserializer(BigDecimal.class, new BigDecimalDeserializer());
-        module.addDeserializer(Double.class, new DoubleDeserializer());
-        module.addDeserializer(double.class, new DoubleDeserializer());
+
+        // Добавить сериализатор и десериализатор для BigDecimal
+        module.addSerializer(BigDecimal.class, new ConditionalBigDecimalSerializer());
+        module.addDeserializer(BigDecimal.class, new ConditionalBigDecimalDeserializer());
+
+        // Добавить сериализатор и десериализатор для Double
+        module.addSerializer(Double.class, new ConditionalDoubleSerializer());
+        module.addDeserializer(Double.class, new ConditionalDoubleDeserializer());
+
+        // Добавить сериализатор и десериализатор для double (примитивного типа)
+        module.addSerializer(double.class, new ConditionalDoubleSerializer());
+        module.addDeserializer(double.class, new ConditionalDoubleDeserializer());
+
+        // Зарегистрировать модуль в ObjectMapper
         newMapper.registerModule(module);
     }
-
-    private static class BigDecimalSerializer extends JsonSerializer<BigDecimal> {
-        @Override
-        public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-            gen.writeString(value.setScale(10, RoundingMode.HALF_UP).toPlainString());
-        }
-    }
-
-    private static class DoubleSerializer extends JsonSerializer<Double> {
-        @Override
-        public void serialize(Double value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-            gen.writeString(BigDecimal.valueOf(value).setScale(10, RoundingMode.HALF_UP).toPlainString());
-        }
-    }
-
-    private static class BigDecimalDeserializer extends JsonDeserializer<BigDecimal> {
-        @Override
-        public BigDecimal deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-            return new BigDecimal(p.getText()).setScale(10, RoundingMode.HALF_UP);
-        }
-    }
-
-    private static class DoubleDeserializer extends JsonDeserializer<Double> {
-        @Override
-        public Double deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-            return BigDecimal.valueOf(Double.parseDouble(p.getText())).setScale(10, RoundingMode.HALF_UP).doubleValue();
-        }
-    }
-
-    public static BigDecimal formatBigDecimal(BigDecimal value) {
-        return BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ?
-               value.setScale(10, RoundingMode.HALF_UP) : value;
-    }
-
-    public static double formatDouble(double value) {
-        return BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? 
-               BigDecimal.valueOf(value).setScale(10, RoundingMode.HALF_UP).doubleValue() : value;
+    private static ObjectMapper getMapper() {
+        return BasisController.getBlockchainSize() > Seting.JSON_VERSION_DECIMAL ? newMapper : oldMapper;
     }
 
     public static String objToStringJson(Object object) throws IOException {
         StringWriter writer = new StringWriter();
-        (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).writeValue(writer, object);
+        getMapper().writeValue(writer, object);
         return writer.toString();
     }
 
     public static Object jsonToObject(String json, Class cls) throws JsonProcessingException {
-        return (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).readValue(json, cls);
+        return getMapper().readValue(json, cls);
     }
 
-    public static List<Block> jsonToListBLock(String json) throws JsonProcessingException {
-        return (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).readValue(json, new TypeReference<List<Block>>(){});
+    public static List<Block> jsonToObject(String json) throws JsonProcessingException {
+        return getMapper().readValue(json, new TypeReference<List<Block>>(){});
     }
 
     public static List<Account> jsonToListAccounts(String json) throws JsonProcessingException {
-        List<Account> accounts = (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).readValue(json, new TypeReference<List<Account>>(){});
-        if (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL) {
-            for (Account account : accounts) {
-                account.setDigitalDollarBalance(formatBigDecimal(account.getDigitalDollarBalance()));
-                account.setDigitalStockBalance(formatBigDecimal(account.getDigitalStockBalance()));
-                account.setDigitalStakingBalance(formatBigDecimal(account.getDigitalStakingBalance()));
-            }
-        }
-        return accounts;
+        return getMapper().readValue(json, new TypeReference<List<Account>>(){});
     }
 
     public static Set<String> jsonToSetAddresses(String json) throws JsonProcessingException {
-        return (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).readValue(json, new TypeReference<Set<String>>(){});
+        return getMapper().readValue(json, new TypeReference<Set<String>>(){});
     }
 
     public static Block jsonToBLock(String json) throws JsonProcessingException {
-        return (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).readValue(json, Block.class);
+        return getMapper().readValue(json, Block.class);
     }
 
     public static InfoDificultyBlockchain jsonToInfoDifficulty(String json) throws JsonProcessingException {
-        return (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).readValue(json, InfoDificultyBlockchain.class);
+        return getMapper().readValue(json, InfoDificultyBlockchain.class);
     }
 
     public static Laws jsonToLaw(String json) throws JsonProcessingException {
-        return (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).readValue(json, Laws.class);
+        return getMapper().readValue(json, Laws.class);
     }
-    public static InfoDemerageMoney jsonInfoDemerageMoney(String json) throws JsonProcessingException {
-        if(BasisController.getBlockchainSize() -1 > Seting.JSON_VERSION_DECIMAL){
-           return newMapper.readValue(json, InfoDemerageMoney.class);
-        }else {
-            return mapper.readValue(json, InfoDemerageMoney.class);
-        }
 
+    public static InfoDemerageMoney jsonInfoDemerageMoney(String json) throws JsonProcessingException {
+        return getMapper().readValue(json, InfoDemerageMoney.class);
     }
+
+    public static CurrentLawVotes jsonToVote(String json) throws JsonProcessingException {
+        return getMapper().readValue(json, CurrentLawVotes.class);
+    }
+
     public static LawEligibleForParliamentaryApproval jsonToCurrentLaw(String json) throws JsonProcessingException {
-        return (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).readValue(json, LawEligibleForParliamentaryApproval.class);
+        return getMapper().readValue(json, LawEligibleForParliamentaryApproval.class);
     }
 
     public static Account jsonToAccount(String json) throws JsonProcessingException {
-        Account account = (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).readValue(json, Account.class);
-        if (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL) {
-            account.setDigitalDollarBalance(formatBigDecimal(account.getDigitalDollarBalance()));
-            account.setDigitalStockBalance(formatBigDecimal(account.getDigitalStockBalance()));
-            account.setDigitalStakingBalance(formatBigDecimal(account.getDigitalStakingBalance()));
-        }
-        return account;
+        return getMapper().readValue(json, Account.class);
     }
 
     public static CurrentLawVotesEndBalance jsonToCurrentLawVotesBalance(String json) throws JsonProcessingException {
-        return (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).readValue(json, CurrentLawVotesEndBalance.class);
+        return getMapper().readValue(json, CurrentLawVotesEndBalance.class);
+    }
+
+    public static EntityChain jsonToEntityChain(String json) throws JsonProcessingException {
+        return getMapper().readValue(json, EntityChain.class);
     }
 
     public static DtoTransaction jsonToDtoTransaction(String json) throws JsonProcessingException {
-        return (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).readValue(json, DtoTransaction.class);
+        return getMapper().readValue(json, DtoTransaction.class);
     }
 
     public static DataShortBlockchainInformation jsonToDataShortBlockchainInformation(String json) throws JsonProcessingException {
-        return (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).readValue(json, DataShortBlockchainInformation.class);
+        return getMapper().readValue(json, DataShortBlockchainInformation.class);
     }
 
     public static List<DtoTransaction> jsonToDtoTransactionList(String json) throws JsonProcessingException {
-        return (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).readValue(json, new TypeReference<List<DtoTransaction>>(){});
+        return getMapper().readValue(json, new TypeReference<List<DtoTransaction>>(){});
     }
 
     public static Map<String, Account> balances(String json) throws JsonProcessingException {
-        Map<String, Account> balances = (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).readValue(json, new TypeReference<Map<String, Account>>(){});
-        if (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL) {
-            for (Account account : balances.values()) {
-                account.setDigitalDollarBalance(formatBigDecimal(account.getDigitalDollarBalance()));
-                account.setDigitalStockBalance(formatBigDecimal(account.getDigitalStockBalance()));
-                account.setDigitalStakingBalance(formatBigDecimal(account.getDigitalStakingBalance()));
-            }
-        }
-        return balances;
+        return getMapper().readValue(json, new TypeReference<Map<String, Account>>(){});
     }
 
+    //сохранение скользящего окна
     public static void saveWindowsToFile(Map<Long, Map<String, Account>> windows, String filePath) throws IOException {
-        if (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL) {
-            Map<Long, Map<String, Account>> formattedWindows = new LinkedHashMap<>();
-            for (Map.Entry<Long, Map<String, Account>> entry : windows.entrySet()) {
-                Map<String, Account> formattedAccounts = new HashMap<>();
-                for (Map.Entry<String, Account> accountEntry : entry.getValue().entrySet()) {
-                    Account formattedAccount = accountEntry.getValue();
-                    formattedAccount.setDigitalDollarBalance(formatBigDecimal(formattedAccount.getDigitalDollarBalance()));
-                    formattedAccount.setDigitalStockBalance(formatBigDecimal(formattedAccount.getDigitalStockBalance()));
-                    formattedAccount.setDigitalStakingBalance(formatBigDecimal(formattedAccount.getDigitalStakingBalance()));
-                    formattedAccounts.put(accountEntry.getKey(), formattedAccount);
-                }
-                formattedWindows.put(entry.getKey(), formattedAccounts);
-            }
-            newMapper.writeValue(new File(filePath), formattedWindows);
-        } else {
-            mapper.writeValue(new File(filePath), windows);
-        }
+        getMapper().writeValue(new File(filePath), windows);
     }
 
+    //загрузка скользящего окна
     public static Map<Long, Map<String, Account>> loadWindowsFromFile(String filePath) {
         try {
-            LinkedHashMap<Long, Map<String, Account>> windows = (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL ? newMapper : mapper).readValue(
+            LinkedHashMap<Long, Map<String, Account>> windows = getMapper().readValue(
                     new File(filePath),
                     new TypeReference<LinkedHashMap<Long, Map<String, Account>>>() {}
             );
-
-            if (BasisController.getBlockchainSize() - 1 > Seting.JSON_VERSION_DECIMAL) {
-                for (Map<String, Account> accountMap : windows.values()) {
-                    for (Account account : accountMap.values()) {
-                        account.setDigitalDollarBalance(formatBigDecimal(account.getDigitalDollarBalance()));
-                        account.setDigitalStockBalance(formatBigDecimal(account.getDigitalStockBalance()));
-                        account.setDigitalStakingBalance(formatBigDecimal(account.getDigitalStakingBalance()));
-                    }
-                }
-            }
 
             return reapplySlidingWindowBehavior(windows, Seting.SLIDING_WINDOW_BALANCE);
         } catch (IOException e) {

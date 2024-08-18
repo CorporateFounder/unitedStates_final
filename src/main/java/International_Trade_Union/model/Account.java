@@ -6,7 +6,6 @@ import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.IOException;
@@ -25,14 +24,8 @@ import java.util.Objects;
 @Data
 public class Account implements Cloneable {
     private String account;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.0000000000")
     private BigDecimal digitalDollarBalance;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.0000000000")
     private BigDecimal digitalStockBalance;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.0000000000")
     private BigDecimal digitalStakingBalance;
 
     public Account(String account, BigDecimal digitalDollarBalance) {

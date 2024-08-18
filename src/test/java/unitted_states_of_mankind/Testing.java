@@ -489,7 +489,7 @@ public class Testing {
         String str = "{\"start\":167337,\"finish\":167338}";
         String s = " http://194.87.236.238:82";
         SubBlockchainEntity subBlockchainEntity = (SubBlockchainEntity) UtilsJson.jsonToObject(str, SubBlockchainEntity.class);
-        List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(str, s + "/sub-blocks"));
+        List<Block> subBlocks = UtilsJson.jsonToObject(UtilUrl.getObject(str, s + "/sub-blocks"));
         System.out.println(subBlocks.size());
     }
 
@@ -685,8 +685,8 @@ public class Testing {
         System.out.println("1:sublockchainJson: " + subBlockchainJson);
         String localhost = "http://localhost:8083";
         String server = "http://194.87.236.238:80";
-        List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, server + "/sub-blocks"));
-        List<Block> subBlocks1 = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, localhost + "/sub-blocks"));
+        List<Block> subBlocks = UtilsJson.jsonToObject(UtilUrl.getObject(subBlockchainJson, server + "/sub-blocks"));
+        List<Block> subBlocks1 = UtilsJson.jsonToObject(UtilUrl.getObject(subBlockchainJson, localhost + "/sub-blocks"));
         List<Block> fromFile = UtilsBlock.readLineObject("C://resources/blockchain");
         Block from = fromFile.get(0);
 
