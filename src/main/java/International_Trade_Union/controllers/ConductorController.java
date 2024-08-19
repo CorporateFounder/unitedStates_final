@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
@@ -121,17 +122,16 @@ public class ConductorController {
             System.out.println("Password contains invalid Base58 characters");
             return result;
         }
-    dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
-    stock = UtilsUse.round(stock, Seting.SENDING_DECIMAL_PLACES);
-    reward = 0.0;
+        dollar = UtilsUse.truncateAndRound(BigDecimal.valueOf(dollar)).doubleValue();
+        stock = UtilsUse.truncateAndRound(BigDecimal.valueOf(stock)).doubleValue();
+        reward = UtilsUse.truncateAndRound(BigDecimal.valueOf(reward)).doubleValue();
+
+        reward = 0.0;
     if (dollar == null || dollar <  Seting.MINIMUM) dollar = 0.0;
     if (stock == null || stock <  Seting.MINIMUM) stock = 0.0;
     if (reward == null || reward <  Seting.MINIMUM) reward = 0.0;
 
 
-        dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
-        stock = UtilsUse.round(stock, Seting.SENDING_DECIMAL_PLACES);
-        reward = UtilsUse.round(reward, Seting.SENDING_DECIMAL_PLACES);
 
         Laws laws = new Laws();
     laws.setLaws(new ArrayList<>());

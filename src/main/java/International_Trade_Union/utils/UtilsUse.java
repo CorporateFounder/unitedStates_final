@@ -10,7 +10,6 @@ import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.VoteEnum;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -27,6 +26,8 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static International_Trade_Union.setings.Seting.SENDING_DECIMAL_PLACES;
 
 public class UtilsUse {
     private static MessageDigest digest;
@@ -87,7 +88,7 @@ public class UtilsUse {
     }
 
     //ПОДСЧЕТ НАГРАДЫ
-    public static double blocksReward(List<DtoTransaction> acutal, List<DtoTransaction> prev) {
+    public static double blocksReward(List<DtoTransaction> acutal, List<DtoTransaction> prev, long index) {
         long actualUniqAddress = acutal.stream()
                 .filter(t -> !t.getSender().equals(Seting.BASIS_ADDRESS))
                 .map(t -> t.getSender())
@@ -109,6 +110,7 @@ public class UtilsUse {
                 .filter(t -> !t.getSender().equals(Seting.BASIS_ADDRESS))
                 .mapToDouble(t -> t.getDigitalDollar())
                 .sum();
+
 
         return actualUniqAddress > prevUniqAddress && actualSumDollar > prevSumDollar ? Seting.COEFFICIENT : 0;
 
@@ -370,7 +372,7 @@ public class UtilsUse {
         int number = 0;
         int limit = 135; // Предполагается, что limit это максимальное значение + 1
 
-        if (actual.getIndex() < Seting.WAIGHT_MINING_INDEX ) {
+        if (actual.getIndex() < Seting.WAIGHT_MINING_INDEX) {
             waight = Seting.WAIGHT_MINING;
             number = 1;
             limit = 55;
@@ -379,7 +381,7 @@ public class UtilsUse {
             number = 10;
             limit = 135;
 
-        } else if(actual.getIndex() > Seting.NEW_ALGO_MINING) {
+        } else if (actual.getIndex() > Seting.NEW_ALGO_MINING) {
             waight = Seting.WAIGHT_MINING_3;
             number = 1;
             limit = 150;
@@ -406,12 +408,12 @@ public class UtilsUse {
             long mineScore = calculateScore(miner.getDigitalStakingBalance().doubleValue(), number);
 
             int diffLimit = (int) (actual.getHashCompexity() - 19);
-            diffLimit = diffLimit >= 0? diffLimit: 0;
+            diffLimit = diffLimit >= 0 ? diffLimit : 0;
             // Рассчитываем очки за количество транзакций
-            double transactionCountPoints = Math.min(transactionCount, mineScore * 2 + diffLimit * 3)  ;
+            double transactionCountPoints = Math.min(transactionCount, mineScore * 2 + diffLimit * 3);
 
             // Новая формула для максимального количества баллов за транзакции
-            double maxTransactionPoints = diffLimit* 3 + mineScore;
+            double maxTransactionPoints = diffLimit * 3 + mineScore;
 
             // Выбираем большее из количества и суммы транзакций
             double transactionPoints = Math.max(transactionCountPoints, transactionSumPoints);
@@ -421,8 +423,7 @@ public class UtilsUse {
 
             // Финальный результат
             result = (int) (result + (actual.getHashCompexity() * waight) + mineScore + transactionPoints);
-        }
-        else {
+        } else {
             result = (int) ((int) (result + (actual.getHashCompexity() * waight)) + calculateScore(miner.getDigitalStakingBalance().doubleValue(), number));
 
         }
@@ -438,6 +439,7 @@ public class UtilsUse {
         double score = Math.ceil(Math.log(x / x0) / Math.log(2));
         return Math.min(400, (long) score);
     }
+
     public static long calculateScore(BigDecimal x, BigDecimal x0) {
         if (x.compareTo(BigDecimal.ZERO) <= 0) {
             return 0;
@@ -446,13 +448,14 @@ public class UtilsUse {
         BigDecimal score = BigDecimal.valueOf(Math.ceil(Math.log(x.divide(x0, RoundingMode.HALF_UP).doubleValue()) / log2.doubleValue()));
         return Math.min(400, score.longValue());
     }
+
     //позволяет получить список балансов, если баланс до калькуляции в addBlock отличается от
     //баланса после изменения. Что позволяет добавлятьв h2 только те балансы которые изменились
     public static Map<String, Account> differentAccount(Map<String, Account> first, Map<String, Account> second) {
         Map<String, Account> thirdMap = new HashMap<>();
         for (Map.Entry<String, Account> entry : second.entrySet()) {
             String key = entry.getKey();
-            if(key.isBlank() || key.isEmpty()){
+            if (key.isBlank() || key.isEmpty()) {
                 continue;
             }
             Account accountInSecondMap = entry.getValue();
@@ -555,6 +558,9 @@ public class UtilsUse {
         return blockService.findBYAccountString(accounts);
     }
 
+    public static BigDecimal truncateAndRound(BigDecimal value) {
+        return value.setScale(SENDING_DECIMAL_PLACES, RoundingMode.DOWN);
+    }
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
         long factor = (long) Math.pow(10, places);
@@ -566,6 +572,7 @@ public class UtilsUse {
         if (places < 0) throw new IllegalArgumentException();
         return value.setScale(places, RoundingMode.HALF_UP);
     }
+
     //find dublicate in transactions list
     public static List<DtoTransaction> getDuplicateTransactions(Block block) {
         Base base = new Base58();
@@ -583,7 +590,7 @@ public class UtilsUse {
         return duplicates;
     }
 
-    public static boolean isTransaction(DtoTransaction transaction){
+    public static boolean isTransaction(DtoTransaction transaction) {
         boolean result = true;
         List<String> laws = transaction.getLaws().getLaws();
         String name = transaction.getLaws().getPacketLawName();
@@ -591,17 +598,18 @@ public class UtilsUse {
                 transaction.getDigitalStockBalance() < Seting.MINIMUM &&
                 transaction.getBonusForMiner() < Seting.MINIMUM;
 
-        if((name == null || name.isEmpty()) && money){
+        if ((name == null || name.isEmpty()) && money) {
             System.out.println("package name null: " + transaction.getLaws().getPacketLawName());
             result = false;
         }
-        if((laws == null || laws.isEmpty()) && money){
+        if ((laws == null || laws.isEmpty()) && money) {
             System.out.println("laws list null: " + transaction.getLaws().getPacketLawName());
             result = false;
         }
         return result;
     }
-    public static List<DtoTransaction> balanceTransaction(List<DtoTransaction> transactions, Map<String, Account> basis) throws IOException {
+
+    public static List<DtoTransaction> balanceTransaction(List<DtoTransaction> transactions, Map<String, Account> basis, long index) throws IOException {
 
         List<DtoTransaction> dtoTransactions = new ArrayList<>();
         Map<String, Account> balances = new HashMap<>();
@@ -623,7 +631,7 @@ public class UtilsUse {
                     continue;
                 }
 
-                BigDecimal transactionDigitalDollar =  new BigDecimal(Double.toString(transaction.getDigitalDollar()));
+                BigDecimal transactionDigitalDollar = new BigDecimal(Double.toString(transaction.getDigitalDollar()));
                 BigDecimal transactionDigitalStock = new BigDecimal(Double.toString(transaction.getDigitalStockBalance()));
                 BigDecimal transactionBonusForMiner = new BigDecimal(Double.toString(transaction.getBonusForMiner()));
 
@@ -671,6 +679,7 @@ public class UtilsUse {
                             balances.put(sender.getAccount(), sender);
                             balances.put(customer.getAccount(), customer);
                         }
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -680,8 +689,8 @@ public class UtilsUse {
         return dtoTransactions;
     }
 
-        //возвращает скользящее окно для хранения последних 30 слепков балана
-    public static Map<Long, Map<String, Account>> slideWindow(){
+    //возвращает скользящее окно для хранения последних 30 слепков балана
+    public static Map<Long, Map<String, Account>> slideWindow() {
         // Replace the HashMap with a LinkedHashMap that has a size limit for the sliding window
         Map<Long, Map<String, Account>> windows = new LinkedHashMap<Long, Map<String, Account>>(30, 0.75f, true) {
             @Override
@@ -691,5 +700,10 @@ public class UtilsUse {
         };
 
         return windows;
+    }
+
+    //определяет количество знаков после запятой и не пропускает транзакции с большим количеством знаков.
+    public static boolean isTransactionValid(BigDecimal value) {
+        return value.scale() <= SENDING_DECIMAL_PLACES;
     }
 }

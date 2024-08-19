@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
@@ -62,13 +63,12 @@ public class MineController {
         Base base = new Base58();
 
 
-        dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
+        dollar = UtilsUse.truncateAndRound(BigDecimal.valueOf(dollar)).doubleValue();
+        reward = UtilsUse.truncateAndRound(BigDecimal.valueOf(reward)).doubleValue();
         reward = 0.0;
         if (dollar == null || dollar <  Seting.MINIMUM)
             dollar = 0.0;
 
-        dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
-        reward = UtilsUse.round(reward, Seting.SENDING_DECIMAL_PLACES);
 
         Laws laws = new Laws();
         laws.setLaws(new ArrayList<>());
@@ -158,13 +158,14 @@ public class MineController {
         System.out.println("start post /miningTransaction");
         Base base = new Base58();
 
-        dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
+        dollar = UtilsUse.truncateAndRound(BigDecimal.valueOf(dollar)).doubleValue();
+        reward = UtilsUse.truncateAndRound(BigDecimal.valueOf(reward)).doubleValue();
+
         reward = 0.0;
         if (dollar == null || dollar < Seting.MINIMUM)
             dollar = 0.0;
 
-        dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
-        reward = UtilsUse.round(reward, Seting.SENDING_DECIMAL_PLACES);
+
 
         Laws laws = new Laws();
         laws.setLaws(new ArrayList<>());

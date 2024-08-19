@@ -26,12 +26,14 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static International_Trade_Union.setings.Seting.SENDING_DECIMAL_PLACES;
 import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
 //wallet
 
 public class UtilsBalance {
     private static BlockService blockService;
 
+    public static long INDEX = 0;
     public static BlockService getBlockService() {
         return blockService;
     }
@@ -89,9 +91,12 @@ public class UtilsBalance {
                 if (block.getIndex() > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX && block.getIndex() < Seting.V34_NEW_ALGO) {
                     minerRewards = 261;
                     digitalReputationForMiner = 261;
-                } else if (block.getIndex() >= Seting.V34_NEW_ALGO) {
+                } else if (block.getIndex() >= Seting.V34_NEW_ALGO && block.getIndex() <= Seting.ALGORITM_MINING) {
                     minerRewards = 1500;
                     digitalReputationForMiner = 1500;
+                }else if(block.getIndex() > Seting.NEW_ALGO_MINING){
+                    minerRewards = 12000;
+                    digitalReputationForMiner = 12000;
                 }
 
                 if (block.getIndex() == Seting.SPECIAL_BLOCK_FORK && block.getMinerAddress().equals(Seting.FORK_ADDRESS_SPECIAL)) {
@@ -122,6 +127,7 @@ public class UtilsBalance {
                     digitalDollar = new BigDecimal(Double.toString(transaction.getDigitalDollar()));
                     digitalStock = new BigDecimal(Double.toString(transaction.getDigitalStockBalance()));
                     mine = new BigDecimal(Double.toString(transaction.getBonusForMiner()));
+                    UtilsBalance.INDEX = block.getIndex();
                     sendTrue = UtilsBalance.rollBackSendMoneyNew(
                             sender,
                             customer,
@@ -232,9 +238,12 @@ public class UtilsBalance {
                 if (block.getIndex() > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX && block.getIndex() < Seting.V34_NEW_ALGO) {
                     minerRewards = 261;
                     digitalReputationForMiner = 261;
-                } else if (block.getIndex() >= Seting.V34_NEW_ALGO) {
+                } else if (block.getIndex() >= Seting.V34_NEW_ALGO && block.getIndex() <= Seting.ALGORITM_MINING) {
                     minerRewards = 1500;
                     digitalReputationForMiner = 1500;
+                }else if(block.getIndex() > Seting.NEW_ALGO_MINING){
+                    minerRewards = 12000;
+                    digitalReputationForMiner = 12000;
                 }
 
                 if (block.getIndex() == Seting.SPECIAL_BLOCK_FORK && block.getMinerAddress().equals(Seting.FORK_ADDRESS_SPECIAL)) {
@@ -264,7 +273,7 @@ public class UtilsBalance {
                     digitalDollar = new BigDecimal(Double.toString(transaction.getDigitalDollar()));
                      digitalStock = new BigDecimal(Double.toString(transaction.getDigitalStockBalance()));
                      mine = new BigDecimal(Double.toString(transaction.getBonusForMiner()));
-
+                    UtilsBalance.INDEX = block.getIndex();
                     sendTrue = UtilsBalance.sendMoneyNew(
                             sender,
                             customer,
@@ -287,6 +296,7 @@ public class UtilsBalance {
                             digitalStock,
                             mine,
                             transaction.getVoteEnum()
+
                     );
 
                 }
@@ -342,7 +352,7 @@ public class UtilsBalance {
         return account != null ? account : new Account(address, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
     }
 
-    public static boolean sendMoney(Account senderAddress, Account recipientAddress, double digitalDollar, double digitalReputation, double minerRewards) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public static boolean sendMoney(Account senderAddress, Account recipientAddress, double digitalDollar, double digitalReputation, double minerRewards, long index) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
         return sendMoney(senderAddress, recipientAddress, BigDecimal.valueOf(digitalDollar), BigDecimal.valueOf(digitalReputation), BigDecimal.valueOf(minerRewards), VoteEnum.YES);
 
@@ -363,6 +373,7 @@ public class UtilsBalance {
         BigDecimal recipientDigitalStaking = recipientAddress.getDigitalStakingBalance();
         boolean sendTrue = true;
         MathContext mc = new MathContext(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP);
+
         if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
 
             digitalDollar = digitalDollar.round(mc);
@@ -440,6 +451,7 @@ public class UtilsBalance {
 
         boolean sendTrue = true;
         MathContext mc = new MathContext(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP);
+
         if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
 
             digitalDollar = digitalDollar.round(mc);
@@ -507,7 +519,12 @@ public class UtilsBalance {
 
     // Truncate to 10 decimal places and ensure rounding
     public static BigDecimal truncateAndRound(BigDecimal value) {
-        return value.setScale(Seting.DECIMAL_PLACES, RoundingMode.DOWN).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP);
+        if(INDEX > Seting.ALGORITM_MINING){
+            return value.setScale(SENDING_DECIMAL_PLACES, RoundingMode.DOWN);
+        }else {
+            return value.setScale(Seting.DECIMAL_PLACES, RoundingMode.DOWN).setScale(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP);
+
+        }
     }
 
     public static boolean sendMoneyNew(Account senderAddress, Account recipientAddress, BigDecimal digitalDollar, BigDecimal digitalStock, BigDecimal minerRewards, VoteEnum voteEnum) {

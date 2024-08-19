@@ -7,6 +7,7 @@ import International_Trade_Union.entity.entities.EntityBlock;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.HostEndDataShortB;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.json.JSONException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,8 @@ import java.io.File;
 import java.io.IOException;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.net.NoRouteToHostException;
 import java.net.SocketException;
 import java.security.*;
@@ -1374,6 +1377,30 @@ public class BasisController {
 
 
         return result;
+    }
+
+    @GetMapping("/testJson")
+    @ResponseBody
+    public String testJson() throws JsonProcessingException {
+        Block previusblock = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.679999999999996,\"digitalStockBalance\":26.679999999999996,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIGJgO67IRfp9WRBqfyO32iwIma2rIxXUa0Ma96FvcILuAiEAx/z75ESJ6k8VZ5f/R60sfViBxKOeQB/KQb6c1HMjFfg=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az\",\"digitalDollar\":266.79999999999995,\"digitalStockBalance\":266.79999999999995,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICKmTeszZPOMuH7uEXTeN6RyfK8siKe7Y8v+pWao5jwwAiEAt8vUpDbUI6uYpeD1Rcuud0n8ji2hkRnkaOE9cEp601M=\"}],\"previousHash\":\"0c0004662e9240e6199c09640a04a8801830b22760a40a841005489458033512\",\"minerAddress\":\"28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":2702159777149640,\"minerRewards\":0.0,\"hashCompexity\":21,\"timestamp\":1718494423000,\"index\":268767,\"hashBlock\":\"901c41d0442d443530581010888680d049018174505004345041d2c92c61028a\"}");
+        DtoTransaction dtoTransaction = previusblock.getDtoTransactions().get(1);
+
+        MathContext mc = new MathContext(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP);
+        mc = new MathContext(Seting.SENDING_DECIMAL_PLACES, RoundingMode.DOWN);
+
+        String doubleAsStringDollar = new BigDecimal(Double.toString(dtoTransaction.getDigitalDollar())).toPlainString();
+        BigDecimal bigDecimalValueDollar = new BigDecimal(doubleAsStringDollar);
+        double dollar = bigDecimalValueDollar.round(mc).doubleValue();
+        String doubleAsStringStock = new BigDecimal(Double.toString(dtoTransaction.getDigitalDollar())).toPlainString();
+        BigDecimal bigDecimalValueStock = new BigDecimal(doubleAsStringStock);
+        double stock = bigDecimalValueStock.round(mc).doubleValue();
+
+        double roundDollar = UtilsUse.round(dtoTransaction.getDigitalDollar(), Seting.SENDING_DECIMAL_PLACES);
+        double roundStock = UtilsUse.round(dtoTransaction.getDigitalStockBalance(), Seting.SENDING_DECIMAL_PLACES);
+        String  str = "mc: dollar " + dollar + " mc: stock " + stock + "\n";
+        str += " original: dollar: " + dtoTransaction.getDigitalDollar() + " original: stock: " + dtoTransaction.getDigitalStockBalance() + "\n";
+        str += " roundDollar: " + roundDollar + " roundStock: " + roundStock + "\n";
+       return str;
     }
 }
 

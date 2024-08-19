@@ -385,12 +385,10 @@ public class Testing {
     }
 
     @Test
-    public void test() throws JsonProcessingException {
+    public void test() throws IOException {
         Block previusblock = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.679999999999996,\"digitalStockBalance\":26.679999999999996,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIGJgO67IRfp9WRBqfyO32iwIma2rIxXUa0Ma96FvcILuAiEAx/z75ESJ6k8VZ5f/R60sfViBxKOeQB/KQb6c1HMjFfg=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az\",\"digitalDollar\":266.79999999999995,\"digitalStockBalance\":266.79999999999995,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICKmTeszZPOMuH7uEXTeN6RyfK8siKe7Y8v+pWao5jwwAiEAt8vUpDbUI6uYpeD1Rcuud0n8ji2hkRnkaOE9cEp601M=\"}],\"previousHash\":\"0c0004662e9240e6199c09640a04a8801830b22760a40a841005489458033512\",\"minerAddress\":\"28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":2702159777149640,\"minerRewards\":0.0,\"hashCompexity\":21,\"timestamp\":1718494423000,\"index\":268767,\"hashBlock\":\"901c41d0442d443530581010888680d049018174505004345041d2c92c61028a\"}");
-        Block thisBlock = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.68,\"digitalStockBalance\":26.68,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCgvClMkSz4HdvyMbVLrYKu1QDfA+g2ocl2xif57jxkbQIhAN02wvGyJzz8YLpYvDY8neK73Fa1kPdY1ZkLViVilgoN\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"zraD2LuUah83KXTtYP33pwbUuS62dmp21CxPYXDNGWqW\",\"digitalDollar\":266.8,\"digitalStockBalance\":266.8,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIE2jCPp6U7sXVeoUGUE9lZPjb6NznXByPRVRKT9AK2iWAiEA+1gAOZfwqBs0mJtDrEY9juuadtdqB7kFXXd+4CYpr+A=\"}],\"previousHash\":\"901c41d0442d443530581010888680d049018174505004345041d2c92c61028a\",\"minerAddress\":\"zraD2LuUah83KXTtYP33pwbUuS62dmp21CxPYXDNGWqW\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":14411518811790413,\"minerRewards\":0.0,\"hashCompexity\":21,\"timestamp\":1718494610000,\"index\":268768,\"hashBlock\":\"e880d0625192a181108048c0108c43004180498a6a2a42500248309270f29203\"}\n");
-        Account account = new Account("28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az", BigDecimal.valueOf(266.79999999999995),  BigDecimal.valueOf(266.79999999999995), BigDecimal.ZERO);
-        Account account1 = new Account("zraD2LuUah83KXTtYP33pwbUuS62dmp21CxPYXDNGWqW", BigDecimal.valueOf(266.8), BigDecimal.valueOf(266.8), BigDecimal.ZERO);
-
+        String json = UtilsJson.objToStringJson(previusblock);
+        System.out.println(previusblock);
     }
     @Test
     public void testReadHost() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
@@ -488,8 +486,8 @@ public class Testing {
     public void sub() throws IOException {
         String str = "{\"start\":167337,\"finish\":167338}";
         String s = " http://194.87.236.238:82";
-        SubBlockchainEntity subBlockchainEntity = (SubBlockchainEntity) UtilsJson.jsonToObject(str, SubBlockchainEntity.class);
-        List<Block> subBlocks = UtilsJson.jsonToObject(UtilUrl.getObject(str, s + "/sub-blocks"));
+        SubBlockchainEntity subBlockchainEntity = (SubBlockchainEntity) UtilsJson.jsonToClass(str, SubBlockchainEntity.class);
+        List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(str, s + "/sub-blocks"));
         System.out.println(subBlocks.size());
     }
 
@@ -505,7 +503,7 @@ public class Testing {
         String prevJ = "{\"dtoTransactions\":[{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":145.0,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCTFqeYDMUThwkeM4D2tueoUc5Vz2PqoHt4wvSZHWJ7PgIhAO4kKiHYEcZcbbmZT54WVQ9GazDvovTdo3gtQFYX+GOb\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":13.0,\"digitalStockBalance\":13.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDfMGbzuDX/CzVlybjFgR48xpKKCg7NKj4SkayKiyQxxQIgCO1RDGyWBYAO61jk2cZ8tQweqtFTqvkYzBnQ62HSu+Y=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"BUDGET\",\"digitalDollar\":130.0,\"digitalStockBalance\":130.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCID8bfgSNZPlip+WSHSLrVB8VGlp81QWdTXgkXeUde8ikAiEAi2d7UjxFifMVA/uZvOigPvZ00HoSrvcp5sfL9AhMlYg=\"}],\"previousHash\":\"000005b2203e97829d6cfb01b36f4ae9e9fb50ff7a608d0532d4da702a968e7b\",\"minerAddress\":\"BUDGET\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":425566,\"minerRewards\":0.0,\"hashCompexity\":1,\"timestamp\":1702731065000,\"index\":127487,\"hashBlock\":\"00000777a26bed8b58d10f344d94bd3048348b66cce633223aff1b39efd204b7\"}";
         Block actual = UtilsJson.jsonToBLock(actualJ);
         Block prev = UtilsJson.jsonToBLock(prevJ);
-       double G =  UtilsUse.blocksReward(actual.getDtoTransactions(), prev.getDtoTransactions());
+       double G =  UtilsUse.blocksReward(actual.getDtoTransactions(), prev.getDtoTransactions(), 20);
         System.out.println("G: " + G);
         double reward = (5+G) * 26;
         reward = reward/ DOLLAR;
@@ -685,8 +683,8 @@ public class Testing {
         System.out.println("1:sublockchainJson: " + subBlockchainJson);
         String localhost = "http://localhost:8083";
         String server = "http://194.87.236.238:80";
-        List<Block> subBlocks = UtilsJson.jsonToObject(UtilUrl.getObject(subBlockchainJson, server + "/sub-blocks"));
-        List<Block> subBlocks1 = UtilsJson.jsonToObject(UtilUrl.getObject(subBlockchainJson, localhost + "/sub-blocks"));
+        List<Block> subBlocks = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, server + "/sub-blocks"));
+        List<Block> subBlocks1 = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, localhost + "/sub-blocks"));
         List<Block> fromFile = UtilsBlock.readLineObject("C://resources/blockchain");
         Block from = fromFile.get(0);
 

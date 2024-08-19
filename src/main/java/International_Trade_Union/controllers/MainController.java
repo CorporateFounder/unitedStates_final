@@ -339,8 +339,9 @@ public class MainController {
             System.out.println("Password contains invalid Base58 characters");
             return "redirect:/result-sending";
         }
-        dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
-        stock = UtilsUse.round(stock, Seting.SENDING_DECIMAL_PLACES);
+        dollar = UtilsUse.truncateAndRound(BigDecimal.valueOf(dollar)).doubleValue();
+        stock = UtilsUse.truncateAndRound(BigDecimal.valueOf(stock)).doubleValue();
+        reward = UtilsUse.truncateAndRound(BigDecimal.valueOf(reward)).doubleValue();
         reward = 0.0;
         if(dollar == null || dollar < Seting.MINIMUM)
             dollar = 0.0;
@@ -348,9 +349,7 @@ public class MainController {
         if(stock == null || stock <  Seting.MINIMUM)
             stock = 0.0;
 
-        dollar = UtilsUse.round(dollar, Seting.SENDING_DECIMAL_PLACES);
-        stock = UtilsUse.round(stock, Seting.SENDING_DECIMAL_PLACES);
-        reward = UtilsUse.round(reward, Seting.SENDING_DECIMAL_PLACES);
+
 
         Laws laws =  new Laws();
         laws.setLaws(new ArrayList<>());

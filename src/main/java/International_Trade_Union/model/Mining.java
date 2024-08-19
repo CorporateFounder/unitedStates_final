@@ -23,16 +23,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
+import static International_Trade_Union.setings.Seting.*;
 
 @Component
 public class Mining {
@@ -121,8 +120,7 @@ public class Mining {
 
 
             //возвращает все законы с голосами проголосовавшими за них
-            List<LawEligibleForParliamentaryApproval> allLawsWithBalance =
-                    UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+            List<LawEligibleForParliamentaryApproval> allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
         }
 
 
@@ -134,16 +132,9 @@ public class Mining {
     }
 
 
-    public static Block miningDay(
-            Account minner,
-            List<Block> blockchain,
-            long blockGenerationInterval,
-            int DIFFICULTY_ADJUSTMENT_INTERVAL,
-            List<DtoTransaction> transactionList,
-            Map<String, Account> balances,
-            long index
-    ) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public static Block miningDay(Account minner, List<Block> blockchain, long blockGenerationInterval, int DIFFICULTY_ADJUSTMENT_INTERVAL, List<DtoTransaction> transactionList, Map<String, Account> balances, long index) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Directors directors = new Directors();
+        System.out.println("index: " + index);
         //получение транзакций с сети
         List<DtoTransaction> listTransactions = transactionList;
 
@@ -161,19 +152,34 @@ public class Mining {
                         System.out.println("minerAccount null");
                         continue cicle;
                     }
+
+                    if(index > Seting.ALGORITM_MINING){
+                        double digitalDollar = transaction.getDigitalDollar();
+                        double digitalStock = transaction.getDigitalStockBalance();
+                        double digitalBonus = transaction.getBonusForMiner();
+                        if(!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalDollar))){
+                            System.out.println("the number dollar of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
+                            continue;
+                        }
+                        if(!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalStock))){
+                            System.out.println("the number stock of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
+                            continue;
+                        }
+                        if(!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalBonus))){
+                            System.out.println("the number bonus of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
+                            continue;
+                        }
+                    }
+
                     //NAME_LAW_ADDRESS_START если адресс  означает правила выбранные сетью
                     if (transaction.getCustomer().startsWith(Seting.NAME_LAW_ADDRESS_START) && !balances.containsKey(transaction.getCustomer())) {
                         //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
                         //отправитель совпадает с законом
 //                    List<Director> enumPosition = directors.getDirectors();
-                        List<String> corporateSeniorPositions = directors.getDirectors().stream()
-                                .map(t -> t.getName()).collect(Collectors.toList());
-                        System.out.println("LawsController: create_law: " + transaction.getLaws().getPacketLawName()
-                                + "contains: " + corporateSeniorPositions.contains(transaction.getLaws().getPacketLawName()));
-                        if (corporateSeniorPositions.contains(transaction.getLaws().getPacketLawName())
-                                && !UtilsGovernment.checkPostionSenderEqualsLaw(transaction.getSender(), transaction.getLaws())) {
-                            System.out.println("if your create special corporate position, you need " +
-                                    "sender to be equals with first law: now its wrong");
+                        List<String> corporateSeniorPositions = directors.getDirectors().stream().map(t -> t.getName()).collect(Collectors.toList());
+                        System.out.println("LawsController: create_law: " + transaction.getLaws().getPacketLawName() + "contains: " + corporateSeniorPositions.contains(transaction.getLaws().getPacketLawName()));
+                        if (corporateSeniorPositions.contains(transaction.getLaws().getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(transaction.getSender(), transaction.getLaws())) {
+                            System.out.println("if your create special corporate position, you need " + "sender to be equals with first law: now its wrong");
                             continue cicle;
                         }
                     }
@@ -193,9 +199,7 @@ public class Mining {
                         }
 
 
-                        if (transaction.getVoteEnum().equals(VoteEnum.STAKING)
-                                || transaction.getVoteEnum().equals(VoteEnum.YES)
-                                || transaction.getVoteEnum().equals(VoteEnum.NO)) {
+                        if (transaction.getVoteEnum().equals(VoteEnum.STAKING) || transaction.getVoteEnum().equals(VoteEnum.YES) || transaction.getVoteEnum().equals(VoteEnum.NO)) {
                             BigDecimal transactionDigitalDollar = BigDecimal.valueOf(transaction.getDigitalDollar());
                             BigDecimal transactionBonusForMiner = BigDecimal.valueOf(transaction.getBonusForMiner());
                             BigDecimal totalTransactionAmount = transactionDigitalDollar.add(transactionBonusForMiner);
@@ -256,13 +260,12 @@ public class Mining {
         }
 
         if (index > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX && index < Seting.V34_NEW_ALGO) {
-            long money = (index - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
-                    / (576 * Seting.YEAR);
+            long money = (index - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX) / (576 * Seting.YEAR);
             money = (long) (Seting.MULTIPLIER - money);
             money = money < 1 ? 1 : money;
 
 
-            double G = UtilsUse.blocksReward(forAdd, prevBlock.getDtoTransactions());
+            double G = UtilsUse.blocksReward(forAdd, prevBlock.getDtoTransactions(), index);
             minerRewards = (Seting.V28_REWARD + G) * money;
             digitalReputationForMiner = (Seting.V28_REWARD + G) * money;
             founderReward = minerRewards / Seting.DOLLAR;
@@ -273,19 +276,38 @@ public class Mining {
                     / (576 * Seting.YEAR);
             money = (long) (Seting.MULTIPLIER - money);
             money = money < 1 ? 1 : money;
+            double moneyFromDif = 0;
+            if(index > Seting.ALGORITM_MINING){
+                moneyFromDif = (difficulty - 22) / 2;
+                moneyFromDif = moneyFromDif > 0? moneyFromDif: 0;
+            }
+            double G = UtilsUse.blocksReward(forAdd, prevBlock.getDtoTransactions(), index);
+            minerRewards = (Seting.V28_REWARD + G + (difficulty * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
+            digitalReputationForMiner = (Seting.V28_REWARD + G + (difficulty * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
 
 
-            double G = UtilsUse.blocksReward(forAdd, prevBlock.getDtoTransactions());
-            minerRewards = (Seting.V28_REWARD + G + (difficulty * Seting.V34_MINING_REWARD)) * money;
-            digitalReputationForMiner = (Seting.V28_REWARD + G + (difficulty * Seting.V34_MINING_REWARD)) * money;
+            if (index > ALGORITM_MINING) {
+                long percent = UtilsUse.calculateScore(minner.getDigitalStakingBalance(), BigDecimal.valueOf(1));
+                minerRewards += minerRewards * (percent / 100.0);
+                digitalReputationForMiner += digitalReputationForMiner * (percent / 100.0);
+
+            }
             founderReward = minerRewards / Seting.DOLLAR;
             founderDigigtalReputationReward = digitalReputationForMiner / Seting.STOCK;
 
-            if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
+
+
+            if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES && index <= ALGORITM_MINING) {
                 minerRewards = UtilsUse.round(minerRewards, Seting.DECIMAL_PLACES);
                 digitalReputationForMiner = UtilsUse.round(digitalReputationForMiner, Seting.DECIMAL_PLACES);
                 founderReward = UtilsUse.round(founderReward, Seting.DECIMAL_PLACES);
                 founderDigigtalReputationReward = UtilsUse.round(founderDigigtalReputationReward, Seting.DECIMAL_PLACES);
+            }
+            if(index > ALGORITM_MINING){
+                minerRewards = UtilsUse.round(minerRewards, SENDING_DECIMAL_PLACES);
+                digitalReputationForMiner = UtilsUse.round(digitalReputationForMiner, SENDING_DECIMAL_PLACES);
+                founderReward = UtilsUse.round(founderReward, SENDING_DECIMAL_PLACES);
+                founderDigigtalReputationReward = UtilsUse.round(founderDigigtalReputationReward, SENDING_DECIMAL_PLACES);
             }
         }
         Base base = new Base58();
@@ -295,7 +317,7 @@ public class Mining {
         double sumRewards = forAdd.stream().collect(Collectors.summingDouble(DtoTransaction::getBonusForMiner));
 
         try {
-            forAdd = UtilsUse.balanceTransaction(forAdd, balances);
+            forAdd = UtilsUse.balanceTransaction(forAdd, balances, index );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -307,8 +329,7 @@ public class Mining {
             return null;
         }
         //вознаграждение основателя
-        DtoTransaction founderRew = new DtoTransaction(Seting.BASIS_ADDRESS, addressFounrder,
-                founderReward, founderDigigtalReputationReward, new Laws(), 0.0, VoteEnum.YES);
+        DtoTransaction founderRew = new DtoTransaction(Seting.BASIS_ADDRESS, addressFounrder, founderReward, founderDigigtalReputationReward, new Laws(), 0.0, VoteEnum.YES);
         byte[] signFounder = UtilsSecurity.sign(privateKey, founderRew.toSign());
 
         founderRew.setSign(signFounder);
@@ -330,8 +351,7 @@ public class Mining {
         }
 
         //вознаграждения майнера
-        DtoTransaction minerRew = new DtoTransaction(Seting.BASIS_ADDRESS, minner.getAccount(),
-                minerRewards, digitalReputationForMiner, new Laws(), sumRewards, VoteEnum.YES);
+        DtoTransaction minerRew = new DtoTransaction(Seting.BASIS_ADDRESS, minner.getAccount(), minerRewards, digitalReputationForMiner, new Laws(), sumRewards, VoteEnum.YES);
 
 
         //подписывает
@@ -351,13 +371,7 @@ public class Mining {
         })).collect(Collectors.toList());
 
         forAdd = forAdd.stream().filter(t -> t != null).collect(Collectors.toList());
-        Block block = new Block(
-                forAdd,
-                prevBlock.getHashBlock(),
-                minner.getAccount(),
-                addressFounrder,
-                difficulty,
-                index);
+        Block block = new Block(forAdd, prevBlock.getHashBlock(), minner.getAccount(), addressFounrder, difficulty, index);
 
 
         return block;
