@@ -96,7 +96,9 @@ public class UtilsBlock {
         UtilsFileSaveRead.saves(jsons, nextFile, true);
     }
 
-    /**Записывает блок в файл, если файл больше 10 мегабайт, создает новый файл с новым идентификационным номером.*/
+    /**
+     * Записывает блок в файл, если файл больше 10 мегабайт, создает новый файл с новым идентификационным номером.
+     */
     public static void saveBLock(Block block, String filename) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         int fileLimit = Seting.SIZE_FILE_LIMIT * 1024 * 1024;
 
@@ -261,20 +263,19 @@ public class UtilsBlock {
             return difficulty;
         } else if (latestBlock.getIndex() > Seting.NEW_START_DIFFICULT + 288 && latestBlock.getIndex() < Seting.CHANGE_MEET_DIFFICULTY) {
             difficulty = UtilsDIfficult.getAdjustedDifficulty(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
-        } else if(latestBlock.getIndex() >= Seting.CHANGE_MEET_DIFFICULTY && latestBlock.getIndex() < Seting.CHANGE_MEET_DIFFICULTY + 288){
+        } else if (latestBlock.getIndex() >= Seting.CHANGE_MEET_DIFFICULTY && latestBlock.getIndex() < Seting.CHANGE_MEET_DIFFICULTY + 288) {
             difficulty = 3;
-        }else if(latestBlock.getIndex() >= Seting.CHANGE_MEET_DIFFICULTY + 288 && latestBlock.getIndex() < Seting.v3MeetsDifficulty){
+        } else if (latestBlock.getIndex() >= Seting.CHANGE_MEET_DIFFICULTY + 288 && latestBlock.getIndex() < Seting.v3MeetsDifficulty) {
             difficulty = UtilsDIfficult.getAdjustedDifficultyMedian(latestBlock,
                     blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
-        }
-        else if(latestBlock.getIndex() > Seting.v3MeetsDifficulty && latestBlock.getIndex() < Seting.v3MeetsDifficulty + 288){
+        } else if (latestBlock.getIndex() > Seting.v3MeetsDifficulty && latestBlock.getIndex() < Seting.v3MeetsDifficulty + 288) {
             difficulty = 2;
-        }else if(latestBlock.getIndex() >= Seting.v3MeetsDifficulty + 288 &&latestBlock.getIndex() < Seting.v4MeetsDifficulty){
+        } else if (latestBlock.getIndex() >= Seting.v3MeetsDifficulty + 288 && latestBlock.getIndex() < Seting.v4MeetsDifficulty) {
             difficulty = UtilsDIfficult.getAdjustedDifficultyMedian(latestBlock,
                     blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
         } else if (latestBlock.getIndex() >= Seting.v4MeetsDifficulty && latestBlock.getIndex() < Seting.v4MeetsDifficulty + 288) {
             difficulty = 2;
-        } else if (latestBlock.getIndex() >= Seting.v4MeetsDifficulty +288 && latestBlock.getIndex() < Seting.V28_CHANGE_ALGORITH_DIFF_INDEX) {
+        } else if (latestBlock.getIndex() >= Seting.v4MeetsDifficulty + 288 && latestBlock.getIndex() < Seting.V28_CHANGE_ALGORITH_DIFF_INDEX) {
 
 
             if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
@@ -287,44 +288,37 @@ public class UtilsBlock {
         }
 
 
-
         ///*****************************************************************************************
         else if (latestBlock.getIndex() >= Seting.V28_CHANGE_ALGORITH_DIFF_INDEX && latestBlock.getIndex() < Seting.V28_CHANGE_ALGORITH_DIFF_INDEX + 288) {
             difficulty = 1;
-        } else if (latestBlock.getIndex() >= Seting.V28_CHANGE_ALGORITH_DIFF_INDEX +288 && latestBlock.getIndex() < Seting.V30_INDEX_ALGO) {
+        } else if (latestBlock.getIndex() >= Seting.V28_CHANGE_ALGORITH_DIFF_INDEX + 288 && latestBlock.getIndex() < Seting.V30_INDEX_ALGO) {
             if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
                 difficulty = UtilsDIfficult.v28_changeAlgorith_diff(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
                 //более умеренная модель сложности
             } else {
                 difficulty = latestBlock.getHashCompexity();
             }
-        }
-
-        else if (latestBlock.getIndex() >= Seting.V30_INDEX_ALGO && latestBlock.getIndex() < Seting.V30_INDEX_ALGO + 288) {
+        } else if (latestBlock.getIndex() >= Seting.V30_INDEX_ALGO && latestBlock.getIndex() < Seting.V30_INDEX_ALGO + 288) {
 
             difficulty = 1;
-        } else if (latestBlock.getIndex() >= Seting.V30_INDEX_ALGO +288 && latestBlock.getIndex() < Seting.V30_INDEX_DIFF) {
+        } else if (latestBlock.getIndex() >= Seting.V30_INDEX_ALGO + 288 && latestBlock.getIndex() < Seting.V30_INDEX_DIFF) {
             if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
                 difficulty = UtilsDIfficult.v30_changeAlgorith_diff(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
                 //более умеренная модель сложности
             } else {
                 difficulty = latestBlock.getHashCompexity();
             }
-        }
-
-        else if (latestBlock.getIndex() >= Seting.V30_INDEX_DIFF && latestBlock.getIndex() < Seting.V30_INDEX_DIFF + 288) {
+        } else if (latestBlock.getIndex() >= Seting.V30_INDEX_DIFF && latestBlock.getIndex() < Seting.V30_INDEX_DIFF + 288) {
 
             difficulty = 1;
-        } else if (latestBlock.getIndex() >= Seting.V30_INDEX_ALGO +288 && latestBlock.getIndex() < Seting.V30_INDEX_DIFF) {
+        } else if (latestBlock.getIndex() >= Seting.V30_INDEX_ALGO + 288 && latestBlock.getIndex() < Seting.V30_INDEX_DIFF) {
             if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
                 difficulty = UtilsDIfficult.v30_1_changeAlgorith_diff(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
                 //более умеренная модель сложности
             } else {
                 difficulty = latestBlock.getHashCompexity();
             }
-        }
-
-        else if (latestBlock.getIndex() >= Seting.V30_1_FIXED_DIFF && latestBlock.getIndex() < Seting.V31_DIFF_END_MINING) {
+        } else if (latestBlock.getIndex() >= Seting.V30_1_FIXED_DIFF && latestBlock.getIndex() < Seting.V31_DIFF_END_MINING) {
 
             if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
                 difficulty = UtilsDIfficult.v30_1_changeAlgorith_diff(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
@@ -332,26 +326,19 @@ public class UtilsBlock {
             } else {
                 difficulty = latestBlock.getHashCompexity();
             }
-        }
-
-
-        else if (latestBlock.getIndex() >= Seting.V31_DIFF_END_MINING && latestBlock.getIndex() < Seting.V31_DIFF_END_MINING + 288) {
+        } else if (latestBlock.getIndex() >= Seting.V31_DIFF_END_MINING && latestBlock.getIndex() < Seting.V31_DIFF_END_MINING + 288) {
             System.out.println("algo V31_FIXED_DIFF");
             difficulty = 14;
-        }
-        else if (latestBlock.getIndex() >= Seting.V31_FIX_DIFF && latestBlock.getIndex() <= Seting.V32_FIX_DIFF) {
+        } else if (latestBlock.getIndex() >= Seting.V31_FIX_DIFF && latestBlock.getIndex() <= Seting.V32_FIX_DIFF) {
             if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
                 difficulty = UtilsDIfficult.v30_1_changeAlgorith_diff(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
                 //более умеренная модель сложности
             } else {
                 difficulty = latestBlock.getHashCompexity();
             }
-        }
-        else if(latestBlock.getIndex() > Seting.V32_FIX_DIFF && latestBlock.getIndex() < Seting.V32_FIX_DIFF + 10){
-            difficulty =16;
-        }
-
-        else if (latestBlock.getIndex() >= Seting.V32_FIX_DIFF + 10 ) {
+        } else if (latestBlock.getIndex() > Seting.V32_FIX_DIFF && latestBlock.getIndex() < Seting.V32_FIX_DIFF + 10) {
+            difficulty = 16;
+        } else if (latestBlock.getIndex() >= Seting.V32_FIX_DIFF + 10) {
             if (latestBlock.getIndex() != 0 && latestBlock.getIndex() % DIFFICULTY_ADJUSTMENT_INTERVAL == 0) {
                 difficulty = UtilsDIfficult.v30_1_changeAlgorith_diff(latestBlock, blocks, BLOCK_GENERATION_INTERVAL, DIFFICULTY_ADJUSTMENT_INTERVAL);
                 //более умеренная модель сложности
@@ -360,8 +347,8 @@ public class UtilsBlock {
             }
         }
 
-        if(latestBlock.getIndex() > Seting.V31_FIX_DIFF){
-            difficulty = difficulty < 11? 11: difficulty;
+        if (latestBlock.getIndex() > Seting.V31_FIX_DIFF) {
+            difficulty = difficulty < 11 ? 11 : difficulty;
         }
 //        if(Seting.IS_TEST && latestBlock.getIndex() >= Seting.TEST_DIFF){
 //            difficulty = 1;
@@ -370,6 +357,7 @@ public class UtilsBlock {
 
         return difficulty == 0 ? 1 : difficulty;
     }
+
     public static boolean validationOneBlock(
             String addressFounder,
             Block previusblock,
@@ -387,23 +375,23 @@ public class UtilsBlock {
 //            return false;
 
         }
-        if(thisBlock.getHashCompexity() < 1){
+        if (thisBlock.getHashCompexity() < 1) {
             System.out.println("wrong: difficulty less 1: " + thisBlock.getHashCompexity());
 //            return false;
         }
-        if(thisBlock == null){
+        if (thisBlock == null) {
             System.out.println("wrong: block is null: ");
 //            return false;
         }
-        if(thisBlock.getHashBlock().isEmpty() || thisBlock.getHashBlock() == null){
+        if (thisBlock.getHashBlock().isEmpty() || thisBlock.getHashBlock() == null) {
             System.out.println("wrong: hash empty or null");
 //            return false;
         }
-        if(thisBlock.getMinerAddress().isEmpty() || thisBlock.getMinerAddress() == null){
+        if (thisBlock.getMinerAddress().isEmpty() || thisBlock.getMinerAddress() == null) {
             System.out.println("wrong: miner address empty or null");
 //            return false;
         }
-        if(thisBlock.getFounderAddress().isEmpty() || thisBlock.getFounderAddress() == null){
+        if (thisBlock.getFounderAddress().isEmpty() || thisBlock.getFounderAddress() == null) {
             System.out.println("wrong: miner address empty or null");
 //            return false;
         }
@@ -418,7 +406,7 @@ public class UtilsBlock {
         int countBasisSendAll = 0;
 
 
-        if(thisBlock.getIndex() > Seting.DUBLICATE_IN_ONE_BLOCK_TRANSACTIONS && UtilsUse.getDuplicateTransactions(thisBlock).size() > 0){
+        if (thisBlock.getIndex() > Seting.DUBLICATE_IN_ONE_BLOCK_TRANSACTIONS && UtilsUse.getDuplicateTransactions(thisBlock).size() > 0) {
             System.out.println("the block contains transactions with duplicate signatures.");
             List<DtoTransaction> dublicates = UtilsUse.getDuplicateTransactions(thisBlock);
             for (int i = 0; i < dublicates.size(); i++) {
@@ -429,25 +417,34 @@ public class UtilsBlock {
             return validated;
         }
 
-        if(thisBlock.getIndex() > FROM_STRING_DOUBLE ){
+        if (thisBlock.getIndex() > FROM_STRING_DOUBLE) {
             Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(thisBlock.getDtoTransactions()));
-            int transactionsCount = thisBlock.getDtoTransactions().stream().filter(t->!BASIS_ADDRESS.equals(t.getSender())).collect(Collectors.toList()).size();
-            int after = UtilsUse.balanceTransaction(thisBlock.getDtoTransactions(), balances, thisBlock.getIndex()).size();
-            if(after != transactionsCount){
+            List<DtoTransaction> transactions = thisBlock.getDtoTransactions()
+                    .stream()
+                    .filter(t->!BASIS_ADDRESS.equals(t.getSender()))
+                    .collect(Collectors.toList());
+            int transactionsCount = transactions.size();
+            List<DtoTransaction> temp = UtilsUse.balanceTransaction(transactions, balances, thisBlock.getIndex());
+            int after = temp.size();
+
+           if (after != transactionsCount) {
                 System.out.println("*************************************");
+
+                System.out.println("transactionsCount: " + transactionsCount + "\n");
+                System.out.println("after: " + after + "\n");
                 System.out.println("The block contains transactions where the user's balance is insufficient.");
-                System.out.println("*************************************");
+                  System.out.println("*************************************");
                 validated = false;
                 return validated;
             }
         }
 
-        if(thisBlock.getIndex() > ALGORITM_MINING){
+        if (thisBlock.getIndex() > ALGORITM_MINING) {
             for (DtoTransaction dtoTransaction : thisBlock.getDtoTransactions()) {
-                if(!dtoTransaction.getCustomer().equals(BASIS_ADDRESS)){
-                    if(dtoTransaction.getDigitalDollar() < MINIMUM
-                    && dtoTransaction.getDigitalStockBalance() < MINIMUM
-                    ){
+                if (!dtoTransaction.getCustomer().equals(BASIS_ADDRESS)) {
+                    if (dtoTransaction.getDigitalDollar() < MINIMUM
+                            && dtoTransaction.getDigitalStockBalance() < MINIMUM
+                    ) {
                         System.out.println("*************************************");
                         System.out.println("If a transaction is not a voting transaction, it cannot transfer less than 0.01 of both a dollar and shares at the same time.");
                         System.out.println("index: " + thisBlock.getIndex());
@@ -466,17 +463,17 @@ public class UtilsBlock {
                     double digitalDollar = dtoTransaction.getDigitalDollar();
                     double digitalStock = dtoTransaction.getDigitalStockBalance();
                     double digitalBonus = dtoTransaction.getBonusForMiner();
-                    if(!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalDollar))){
+                    if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalDollar))) {
                         System.out.println("the number dollar of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
                         validated = false;
                         return validated;
                     }
-                    if(!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalStock))){
+                    if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalStock))) {
                         System.out.println("the number stock of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
                         validated = false;
                         return validated;
                     }
-                    if(!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalBonus))){
+                    if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalBonus))) {
                         System.out.println("the number bonus of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
                         validated = false;
                         return validated;
@@ -496,43 +493,43 @@ public class UtilsBlock {
                     minerReward += thisBlock.getIndex() % 2 == 0 ? 0 : 1;
                     minerPowerReward += thisBlock.getIndex() % 2 == 0 ? 0 : 1;
                 }
-                if(thisBlock.getIndex() > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX && thisBlock.getIndex() <= Seting.V34_NEW_ALGO){
+                if (thisBlock.getIndex() > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX && thisBlock.getIndex() <= Seting.V34_NEW_ALGO) {
                     long money = (thisBlock.getIndex() - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
                             / (576 * Seting.YEAR);
                     money = (long) (Seting.MULTIPLIER - money);
-                    money = money < 1 ? 1: money;
+                    money = money < 1 ? 1 : money;
 
                     double G = UtilsUse.blocksReward(thisBlock.getDtoTransactions(), previusblock.getDtoTransactions(), thisBlock.getIndex());
                     minerReward = (Seting.V28_REWARD + G) * money;
                     minerPowerReward = (Seting.V28_REWARD + G) * money;
 
                 }
-                if( thisBlock.getIndex() > Seting.V34_NEW_ALGO ){
+                if (thisBlock.getIndex() > Seting.V34_NEW_ALGO) {
                     long money = (thisBlock.getIndex() - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
                             / (576 * Seting.YEAR);
                     money = (long) (Seting.MULTIPLIER - money);
-                    money = money < 1 ? 1: money;
+                    money = money < 1 ? 1 : money;
 
                     double moneyFromDif = 0;
-                    if(thisBlock.getIndex() > Seting.ALGORITM_MINING){
+                    if (thisBlock.getIndex() > Seting.ALGORITM_MINING) {
                         moneyFromDif = (thisBlock.getHashCompexity() - 22) / 2;
-                        moneyFromDif = moneyFromDif > 0? moneyFromDif: 0;
+                        moneyFromDif = moneyFromDif > 0 ? moneyFromDif : 0;
                     }
                     double G = UtilsUse.blocksReward(thisBlock.getDtoTransactions(), previusblock.getDtoTransactions(), thisBlock.getIndex());
                     minerReward = (Seting.V28_REWARD + G + (thisBlock.getHashCompexity() * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
-                    minerPowerReward = (Seting.V28_REWARD + G + (thisBlock.getHashCompexity() * Seting.V34_MINING_REWARD) + moneyFromDif)* money;
+                    minerPowerReward = (Seting.V28_REWARD + G + (thisBlock.getHashCompexity() * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
 
 
-                    if(thisBlock.getIndex() > Seting.START_BLOCK_DECIMAL_PLACES && thisBlock.getIndex() <= ALGORITM_MINING){
+                    if (thisBlock.getIndex() > Seting.START_BLOCK_DECIMAL_PLACES && thisBlock.getIndex() <= ALGORITM_MINING) {
                         minerReward = UtilsUse.round(minerReward, Seting.DECIMAL_PLACES);
                         minerPowerReward = UtilsUse.round(minerPowerReward, Seting.DECIMAL_PLACES);
                     }
 
 
-                    if(thisBlock.getIndex() > ALGORITM_MINING){
+                    if (thisBlock.getIndex() > ALGORITM_MINING) {
                         minerReward = UtilsUse.round(minerReward, SENDING_DECIMAL_PLACES);
                         minerPowerReward = UtilsUse.round(minerPowerReward, SENDING_DECIMAL_PLACES);
-                       }
+                    }
                 }
                 if (thisBlock.getIndex() == Seting.SPECIAL_BLOCK_FORK && thisBlock.getMinerAddress().equals(Seting.FORK_ADDRESS_SPECIAL)) {
                     minerReward = SPECIAL_FORK_BALANCE;
@@ -613,9 +610,8 @@ public class UtilsBlock {
                             }
                         }
 
-                    }
-                    else if(thisBlock.getIndex() > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX){
-                        if(thisBlock.getIndex() > START_BLOCK_DECIMAL_PLACES){
+                    } else if (thisBlock.getIndex() > Seting.V28_CHANGE_ALGORITH_DIFF_INDEX) {
+                        if (thisBlock.getIndex() > START_BLOCK_DECIMAL_PLACES) {
                             double epsilon = 1e-9;  // Define a small margin of error
                             double expectedDollar = minerReward / Seting.DOLLAR;
                             double actualDollar = transaction.getDigitalDollar();
@@ -627,7 +623,7 @@ public class UtilsBlock {
                                 expectedStock = UtilsUse.round(expectedStock, SENDING_DECIMAL_PLACES);
                             }
 
-                            if(Math.abs(expectedDollar - actualDollar) > epsilon){
+                            if (Math.abs(expectedDollar - actualDollar) > epsilon) {
                                 System.out.printf("wrong founder reward dollar: index: %d, expected: %.10f, dollar actual: %.10f\n",
                                         thisBlock.getIndex(), expectedDollar, actualDollar);
                                 UtilsFileSaveRead.save("************************************", ERROR_FILE, true);
@@ -639,7 +635,7 @@ public class UtilsBlock {
                                 break;
                             }
 
-                            if(Math.abs(expectedStock - actualStock) > epsilon){
+                            if (Math.abs(expectedStock - actualStock) > epsilon) {
                                 System.out.printf("wrong founder reward stock: index: %d, expected: %.10f, stock actual: %.10f\n",
                                         thisBlock.getIndex(), expectedStock, actualStock);
 
@@ -651,31 +647,30 @@ public class UtilsBlock {
                                 validated = false;
                                 break;
                             }
-                        }
-                        else {
-                            if(transaction.getDigitalDollar() < minerReward/Seting.DOLLAR || transaction.getDigitalDollar() > minerReward){
+                        } else {
+                            if (transaction.getDigitalDollar() < minerReward / Seting.DOLLAR || transaction.getDigitalDollar() > minerReward) {
                                 System.out.printf("wrong founder reward dollar: index: %d, " +
                                                 " expected : %f, dollar actual: %f: ", thisBlock.getIndex(),
-                                        (minerReward/Seting.DOLLAR), transaction.getDigitalDollar());
+                                        (minerReward / Seting.DOLLAR), transaction.getDigitalDollar());
 
                                 UtilsFileSaveRead.save("************************************", ERROR_FILE, true);
                                 UtilsFileSaveRead.save(String.format("2. wrong founder reward dollar: index: %d, " +
                                                 " expected : %f, dollar actual: %f: ", thisBlock.getIndex(),
-                                        (minerReward/Seting.DOLLAR), transaction.getDigitalDollar()), ERROR_FILE, true);
+                                        (minerReward / Seting.DOLLAR), transaction.getDigitalDollar()), ERROR_FILE, true);
                                 UtilsFileSaveRead.save("************************************", ERROR_FILE, true);
 
                                 validated = false;
                                 break;
                             }
-                            if (transaction.getDigitalStockBalance() < minerPowerReward/Seting.STOCK || transaction.getDigitalStockBalance() > minerPowerReward){
+                            if (transaction.getDigitalStockBalance() < minerPowerReward / Seting.STOCK || transaction.getDigitalStockBalance() > minerPowerReward) {
                                 System.out.printf("wrong founder reward stock: index: %d, " +
                                                 " expected : %f, dollar actual: %f: ", thisBlock.getIndex(),
-                                        (minerPowerReward/Seting.STOCK), transaction.getDigitalStockBalance());
+                                        (minerPowerReward / Seting.STOCK), transaction.getDigitalStockBalance());
 
                                 UtilsFileSaveRead.save("************************************", ERROR_FILE, true);
                                 UtilsFileSaveRead.save(String.format("2. wrong founder reward stock: index: %d, " +
                                                 " expected : %f, dollar actual: %f: ", thisBlock.getIndex(),
-                                        (minerPowerReward/Seting.STOCK), transaction.getDigitalStockBalance()), ERROR_FILE, true);
+                                        (minerPowerReward / Seting.STOCK), transaction.getDigitalStockBalance()), ERROR_FILE, true);
                                 UtilsFileSaveRead.save("************************************", ERROR_FILE, true);
                                 validated = false;
                                 break;
@@ -723,9 +718,9 @@ public class UtilsBlock {
                 break finished;
             }
 
-            if(thisBlock.getIndex() > Seting.DUPLICATE_INDEX ){
-                if(blockService != null){
-                    if(blockService.existsBySign(transaction.getSign())){
+            if (thisBlock.getIndex() > Seting.DUPLICATE_INDEX) {
+                if (blockService != null) {
+                    if (blockService.existsBySign(transaction.getSign())) {
                         System.out.println("=====================================");
                         System.out.println("has duplicate transaction");
                         System.out.println("sign: " + base.encode(transaction.getSign()));
@@ -768,7 +763,7 @@ public class UtilsBlock {
 
         if (thisBlock.getIndex() > Seting.v4MeetsDifficulty && thisBlock.getIndex() < Seting.V34_NEW_ALGO) {
             long diff = UtilsBlock.difficulty(lastBlock, Seting.BLOCK_GENERATION_INTERVAL, Seting.DIFFICULTY_ADJUSTMENT_INTERVAL);
-            if (thisBlock.getHashCompexity() != diff ) {
+            if (thisBlock.getHashCompexity() != diff) {
                 System.out.println("utils Block: actual difficult: " + thisBlock.getHashCompexity() + ":expected: "
                         + diff);
                 System.out.println("wrong difficult");
@@ -780,7 +775,7 @@ public class UtilsBlock {
                 return false;
             }
         } else if (thisBlock.getHashCompexity() >= Seting.V34_NEW_ALGO) {
-            if(Seting.IS_TEST == false && thisBlock.getHashCompexity() < Seting.V34_MIN_DIFF){
+            if (Seting.IS_TEST == false && thisBlock.getHashCompexity() < Seting.V34_MIN_DIFF) {
                 System.out.printf("your diff %d, less than it %d\n", thisBlock.getHashCompexity(),
                         Seting.V34_MIN_DIFF);
             }
@@ -832,7 +827,7 @@ public class UtilsBlock {
 
         long timeDifferenceSeconds = (thisBlock.getTimestamp().getTime() - previusblock.getTimestamp().getTime()) / 1000;
 
-        if(IS_SECURITY == true && thisBlock.getIndex() >= Seting.TIME_CHECK_BLOCK){
+        if (IS_SECURITY == true && thisBlock.getIndex() >= Seting.TIME_CHECK_BLOCK) {
             long actualTime = UtilsTime.getUniversalTimestamp() / 1000L;
             if (timeDifferenceSeconds < 100 || timeDifferenceSeconds > actualTime) {
                 // Время thisBlock не соответствует условиям

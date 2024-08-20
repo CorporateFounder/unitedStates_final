@@ -631,6 +631,8 @@ public class UtilsUse {
                     continue;
                 }
 
+
+
                 BigDecimal transactionDigitalDollar = new BigDecimal(Double.toString(transaction.getDigitalDollar()));
                 BigDecimal transactionDigitalStock = new BigDecimal(Double.toString(transaction.getDigitalStockBalance()));
                 BigDecimal transactionBonusForMiner = new BigDecimal(Double.toString(transaction.getBonusForMiner()));
@@ -681,10 +683,12 @@ public class UtilsUse {
                         }
 
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+
         }
         return dtoTransactions;
     }

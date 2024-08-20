@@ -55,6 +55,7 @@ public class MainController {
     @PostConstruct
     public void init() {
         Blockchain.setBlockService(blockService);
+        UtilsBlock.setBlockService(blockService);
 
     }
     @Autowired
