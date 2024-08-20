@@ -1,5 +1,6 @@
 package International_Trade_Union.controllers;
 
+import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Director;
@@ -21,6 +22,7 @@ import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.*;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.*;
@@ -33,7 +35,13 @@ import java.util.stream.Collectors;
 public class LawsController {
     @Autowired
     BlockService blockService;
+    @PostConstruct
+    public void init() {
+        Blockchain.setBlockService(blockService);
+        UtilsBalance.setBlockService(blockService);
+        UtilsBlock.setBlockService(blockService);
 
+    }
 
     /**Отображает детали пакета законов в браузере.
      * Displays the details of the law package in the browser.*/

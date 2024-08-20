@@ -2,9 +2,12 @@ package International_Trade_Union.controllers;
 
 import International_Trade_Union.entity.DataForTransaction;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
+import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.UtilsBalance;
+import International_Trade_Union.utils.UtilsBlock;
 import International_Trade_Union.utils.UtilsBlockToEntityBlock;
 import International_Trade_Union.utils.UtilsFileSaveRead;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -30,6 +34,14 @@ public class TransactionsController {
 
     @Autowired
     BlockService blockService;
+
+    @PostConstruct
+    public void init() {
+        Blockchain.setBlockService(blockService);
+        UtilsBalance.setBlockService(blockService);
+        UtilsBlock.setBlockService(blockService);
+
+    }
 
     private static int fromBlock = 0;
     private static int toBlock = BasisController.getBlockchainSize();

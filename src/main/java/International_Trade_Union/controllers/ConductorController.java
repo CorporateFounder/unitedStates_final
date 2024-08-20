@@ -1,6 +1,7 @@
 package International_Trade_Union.controllers;
 
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
+import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.entities.EntityBlock;
 import International_Trade_Union.entity.entities.EntityDtoTransaction;
@@ -22,6 +23,7 @@ import International_Trade_Union.vote.VoteEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.*;
@@ -39,6 +41,14 @@ public class ConductorController {
     BlockService blockService;
     @Autowired
     UtilsResolving utilsResolving;
+
+    @PostConstruct
+    public void init() {
+        Blockchain.setBlockService(blockService);
+        UtilsBalance.setBlockService(blockService);
+        UtilsBlock.setBlockService(blockService);
+
+    }
     /**
      * создает новую пару ключ и пароль.
      * creates a new key and password pair.

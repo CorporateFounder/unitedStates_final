@@ -42,6 +42,8 @@ public class GovernmentController {
     @PostConstruct
     public void init() {
         Blockchain.setBlockService(blockService);
+        UtilsBalance.setBlockService(blockService);
+        UtilsBlock.setBlockService(blockService);
 
     }
 

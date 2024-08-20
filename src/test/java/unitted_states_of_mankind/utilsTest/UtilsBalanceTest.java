@@ -238,9 +238,9 @@ public class UtilsBalanceTest {
     public void rollbackBalanceFromFile() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         Map<String, Account> balance = new HashMap<>();
          List<Block> blocks = UtilsBlock.readLineObject("C:\\strategy3\\blockchain\\");
-         BigDecimal dollar = BigDecimal.valueOf(20000000);
-         BigDecimal stock = BigDecimal.valueOf(20000000);
-         BigDecimal staking = BigDecimal.valueOf(20000000);
+         BigDecimal dollar = BigDecimal.valueOf(2000);
+         BigDecimal stock = BigDecimal.valueOf(2000);
+         BigDecimal staking = BigDecimal.valueOf(2000);
         blocks = blocks.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
 
         for (Block block: blocks ) {
@@ -284,15 +284,14 @@ public class UtilsBalanceTest {
         Map<String, Account> result2 = UtilsUse.differentAccount(cloneReapete, balance);
 
         //true test completed
-        Assert.assertTrue(result.size() == 0);
-        Assert.assertTrue(result2.size() == 0);
+
         System.out.println("result:  " + result.size());
         System.out.println("result2:  " + result2.size());
-
+        System.out.println("result2: " + result2);
         System.out.println("size: balance: " + balance.size());
         System.out.println("size: cloneBalance: " + cloneBalance.size());
         System.out.println("=========================================");
-        for (Map.Entry<String, Account> accountEntry : result.entrySet()) {
+        for (Map.Entry<String, Account> accountEntry : result2.entrySet()) {
             Account temp = balance.get(accountEntry.getKey());
             if(temp == null){
                 System.out.println("balance: null: " + accountEntry.getKey());
@@ -301,7 +300,7 @@ public class UtilsBalanceTest {
         }
 
         System.out.println("=========================================");
-        for (Map.Entry<String, Account> accountEntry : result.entrySet()) {
+        for (Map.Entry<String, Account> accountEntry : result2.entrySet()) {
             Account temp = cloneBalance.get(accountEntry.getKey());
             if(temp == null){
                 System.out.println("cloneBalance: null: " + accountEntry.getKey());
@@ -312,7 +311,21 @@ public class UtilsBalanceTest {
         System.out.println("size: cloneBalance: " + cloneBalance.size());
 
         System.out.println("==============================================");
+        for (Map.Entry<String, Account> accountEntry : result2.entrySet()) {
+            Account temp = cloneReapete.get(accountEntry.getKey());
+            if(temp == null){
+                System.out.println("cloneReapete: null: " + accountEntry.getKey());
+            }
+            System.out.println(temp);
+        }
+        System.out.println("size: balance: " + balance.size());
+        System.out.println("size: cloneBalance: " + cloneBalance.size());
+        System.out.println("size: cloneReapete: " + cloneReapete.size());
+
+        System.out.println("==============================================");
         System.out.println("size: result: " + result.size());
+        Assert.assertTrue(result.size() == 0);
+        Assert.assertTrue(result2.size() == 0);
 
     }
 
@@ -701,7 +714,7 @@ public class UtilsBalanceTest {
 //
 //        windows = UtilsJson.loadWindowsFromFile("C://strategy3" + Seting.SLIDING_WINDOWS_BALANCE);
         System.out.println("windows: " + windows.size());
-        Assert.assertTrue(windows.size() == 30);
+        Assert.assertTrue(windows.size() == 100);
         for (Map.Entry<Long, Map<String, Account>> longMapEntry : windows.entrySet()) {
             System.out.println(longMapEntry.getKey());
         }

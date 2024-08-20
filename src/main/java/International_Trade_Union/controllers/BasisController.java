@@ -64,6 +64,8 @@ public class BasisController {
     public BasisController(BlockService blockService) {
         this.blockService = blockService;
         Blockchain.setBlockService(blockService);
+        UtilsBalance.setBlockService(blockService);
+        UtilsBlock.setBlockService(blockService);
         initializeBlockchain();
     }
 

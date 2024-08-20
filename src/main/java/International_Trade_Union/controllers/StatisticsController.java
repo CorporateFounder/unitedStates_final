@@ -13,6 +13,7 @@ import International_Trade_Union.statistics.Statistic;
 import International_Trade_Union.statistics.UtilsStatistics;
 import International_Trade_Union.utils.UtilsAccountToEntityAccount;
 import International_Trade_Union.utils.UtilsBalance;
+import International_Trade_Union.utils.UtilsBlock;
 import International_Trade_Union.utils.UtilsBlockToEntityBlock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,6 +43,8 @@ public class StatisticsController {
     @PostConstruct
     public void init() {
         Blockchain.setBlockService(blockService);
+        UtilsBalance.setBlockService(blockService);
+        UtilsBlock.setBlockService(blockService);
 
     }
     private static Periud periud = International_Trade_Union.statistics.Periud.DAY;

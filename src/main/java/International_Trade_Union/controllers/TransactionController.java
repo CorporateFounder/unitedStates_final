@@ -7,6 +7,7 @@ import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.UtilsBalance;
 import International_Trade_Union.utils.UtilsBlock;
 import International_Trade_Union.utils.UtilsFileSaveRead;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class TransactionController {
     @PostConstruct
     public void init() {
         Blockchain.setBlockService(blockService);
+        UtilsBalance.setBlockService(blockService);
+        UtilsBlock.setBlockService(blockService);
 
     }
 
