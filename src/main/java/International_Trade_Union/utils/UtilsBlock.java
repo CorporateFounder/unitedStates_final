@@ -522,12 +522,7 @@ public class UtilsBlock {
                     minerReward = (Seting.V28_REWARD + G + (thisBlock.getHashCompexity() * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
                     minerPowerReward = (Seting.V28_REWARD + G + (thisBlock.getHashCompexity() * Seting.V34_MINING_REWARD) + moneyFromDif)* money;
 
-                    Account minner = UtilsAccountToEntityAccount.entityAccountToAccount(blockService.findByAccount(thisBlock.getMinerAddress()));
-                    if (thisBlock.getIndex() > ALGORITM_MINING) {
-                        long percent = UtilsUse.calculateScore(minner.getDigitalStakingBalance(), BigDecimal.valueOf(1));
-                        minerReward += minerReward * (percent / 100.0);
-                        minerPowerReward += minerPowerReward * (percent / 100.0);
-                    }
+
                     if(thisBlock.getIndex() > Seting.START_BLOCK_DECIMAL_PLACES && thisBlock.getIndex() <= ALGORITM_MINING){
                         minerReward = UtilsUse.round(minerReward, Seting.DECIMAL_PLACES);
                         minerPowerReward = UtilsUse.round(minerPowerReward, Seting.DECIMAL_PLACES);

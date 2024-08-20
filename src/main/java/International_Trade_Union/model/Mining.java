@@ -286,12 +286,7 @@ public class Mining {
             digitalReputationForMiner = (Seting.V28_REWARD + G + (difficulty * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
 
 
-            if (index > ALGORITM_MINING) {
-                long percent = UtilsUse.calculateScore(minner.getDigitalStakingBalance(), BigDecimal.valueOf(1));
-                minerRewards += minerRewards * (percent / 100.0);
-                digitalReputationForMiner += digitalReputationForMiner * (percent / 100.0);
 
-            }
             founderReward = minerRewards / Seting.DOLLAR;
             founderDigigtalReputationReward = digitalReputationForMiner / Seting.STOCK;
 
