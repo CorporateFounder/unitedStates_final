@@ -28,19 +28,12 @@ public class Account implements Cloneable {
 
     public Account(String account, BigDecimal digitalDollarBalance, BigDecimal digitalStockBalance, BigDecimal digitalStakingBalance) {
         this.account = account;
-        this.digitalDollarBalance = trimToScale(digitalDollarBalance);
-        this.digitalStockBalance = trimToScale(digitalStockBalance);
-        this.digitalStakingBalance = trimToScale(digitalStakingBalance);
+        this.digitalDollarBalance = digitalDollarBalance;
+        this.digitalStockBalance = digitalStockBalance;
+        this.digitalStakingBalance = digitalStakingBalance;
     }
 
     public Account() {
-    }
-
-    private BigDecimal trimToScale(BigDecimal value) {
-        if (value != null) {
-            return value.setScale(8, RoundingMode.DOWN);
-        }
-        return null;
     }
 
     @Override
@@ -93,9 +86,10 @@ public class Account implements Cloneable {
     public Account clone() throws CloneNotSupportedException {
         return new Account(
                 this.account,
-                this.digitalDollarBalance != null ? trimToScale(new BigDecimal(this.digitalDollarBalance.toString())) : null,
-                this.digitalStockBalance != null ? trimToScale(new BigDecimal(this.digitalStockBalance.toString())) : null,
-                this.digitalStakingBalance != null ? trimToScale(new BigDecimal(this.digitalStakingBalance.toString())) : null
+                this.digitalDollarBalance != null ? new BigDecimal(this.digitalDollarBalance.toString()) : null,
+                this.digitalStockBalance != null ? new BigDecimal(this.digitalStockBalance.toString()) : null,
+                this.digitalStakingBalance != null ? new BigDecimal(this.digitalStakingBalance.toString()) : null
         );
     }
+
 }

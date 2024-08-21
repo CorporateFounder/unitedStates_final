@@ -27,16 +27,8 @@ public class EntityAccount {
 
     private String account;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
-    @Column(precision = 30, scale = 8)
     private BigDecimal digitalDollarBalance;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
-    @Column(precision = 30, scale = 8)
     private BigDecimal digitalStockBalance;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
-    @Column(precision = 30, scale = 8)
     private BigDecimal digitalStakingBalance;
 
     public EntityAccount() {
@@ -47,23 +39,10 @@ public class EntityAccount {
                          BigDecimal digitalStockBalance,
                          BigDecimal digitalStakingBalance) {
         this.account = account;
-        this.digitalDollarBalance = digitalDollarBalance.setScale(8, RoundingMode.DOWN);
-        this.digitalStockBalance = digitalStockBalance.setScale(8, RoundingMode.DOWN);
-        this.digitalStakingBalance = digitalStakingBalance.setScale(8, RoundingMode.DOWN);
-    }
 
-    @PrePersist
-    @PreUpdate
-    public void trimDecimalValues() {
-        if (digitalDollarBalance != null) {
-            digitalDollarBalance = digitalDollarBalance.setScale(8, RoundingMode.DOWN);
-        }
-        if (digitalStockBalance != null) {
-            digitalStockBalance = digitalStockBalance.setScale(8, RoundingMode.DOWN);
-        }
-        if (digitalStakingBalance != null) {
-            digitalStakingBalance = digitalStakingBalance.setScale(8, RoundingMode.DOWN);
-        }
+        this.digitalDollarBalance = digitalDollarBalance;
+        this.digitalStockBalance = digitalStockBalance;
+        this.digitalStakingBalance = digitalStakingBalance;
     }
 
     @Override

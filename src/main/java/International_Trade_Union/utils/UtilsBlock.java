@@ -428,16 +428,16 @@ public class UtilsBlock {
             List<DtoTransaction> temp = UtilsUse.balanceTransaction(transactions, balances, thisBlock.getIndex());
             int after = temp.size();
 
-           if (after != transactionsCount) {
-                System.out.println("*************************************");
-
-                System.out.println("transactionsCount: " + transactionsCount + "\n");
-                System.out.println("after: " + after + "\n");
-                System.out.println("The block contains transactions where the user's balance is insufficient.");
-                  System.out.println("*************************************");
-                validated = false;
-                return validated;
-            }
+//           if (after != transactionsCount) {
+//                System.out.println("*************************************");
+//
+//                System.out.println("transactionsCount: " + transactionsCount + "\n");
+//                System.out.println("after: " + after + "\n");
+//                System.out.println("The block contains transactions where the user's balance is insufficient.");
+//                  System.out.println("*************************************");
+//                validated = false;
+//                return validated;
+//            }
         }
 
         if (thisBlock.getIndex() > ALGORITM_MINING) {
