@@ -9,7 +9,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 @Data
@@ -22,26 +25,18 @@ public class EntityAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
     private String account;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.0000000000")
-    @Column(precision = 30, scale = 10)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
+    @Column(precision = 30, scale = 8)
     private BigDecimal digitalDollarBalance;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.0000000000")
-    @Column(precision = 30, scale = 10)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
+    @Column(precision = 30, scale = 8)
     private BigDecimal digitalStockBalance;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.0000000000")
-    @Column(precision = 30, scale = 10)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
+    @Column(precision = 30, scale = 8)
     private BigDecimal digitalStakingBalance;
 
     public EntityAccount() {
@@ -52,10 +47,23 @@ public class EntityAccount {
                          BigDecimal digitalStockBalance,
                          BigDecimal digitalStakingBalance) {
         this.account = account;
+        this.digitalDollarBalance = digitalDollarBalance.setScale(8, RoundingMode.DOWN);
+        this.digitalStockBalance = digitalStockBalance.setScale(8, RoundingMode.DOWN);
+        this.digitalStakingBalance = digitalStakingBalance.setScale(8, RoundingMode.DOWN);
+    }
 
-        this.digitalDollarBalance = digitalDollarBalance;
-        this.digitalStockBalance = digitalStockBalance;
-        this.digitalStakingBalance = digitalStakingBalance;
+    @PrePersist
+    @PreUpdate
+    public void trimDecimalValues() {
+        if (digitalDollarBalance != null) {
+            digitalDollarBalance = digitalDollarBalance.setScale(8, RoundingMode.DOWN);
+        }
+        if (digitalStockBalance != null) {
+            digitalStockBalance = digitalStockBalance.setScale(8, RoundingMode.DOWN);
+        }
+        if (digitalStakingBalance != null) {
+            digitalStakingBalance = digitalStakingBalance.setScale(8, RoundingMode.DOWN);
+        }
     }
 
     @Override

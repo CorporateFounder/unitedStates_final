@@ -346,8 +346,9 @@ public interface Seting {
 
 
     int FROM_STRING_DOUBLE = 295709;
-    int SLIDING_WINDOW_BALANCE = 100;
+    int SLIDING_WINDOW_BALANCE = 1000;
 
     int ALGORITM_MINING = 295316;
 
+    int BALANCE_CHEKING = 295813;
 }

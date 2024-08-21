@@ -28,6 +28,24 @@ import java.util.stream.Collectors;
 public class UtilsBalanceTest {
 
     @Test
+    public void eqaulsSenderCustomer() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        List<Block> blocks = UtilsBlock.readLineObject("C:\\strategy3\\blockchain\\");
+        Base base = new Base58();
+        List<String> sign = new ArrayList<>();
+        for (Block block : blocks) {
+            for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
+               if(sign.contains(base.encode(dtoTransaction.getSign()))){
+                   System.out.println("wrong transaction");
+               }else {
+                   sign.add(base.encode(dtoTransaction.getSign()));
+               }
+            }
+
+        }
+
+    }
+
+    @Test
     public void testActualBalance() throws IOException {
         Map<String, Account> basis = new HashMap<>();
         String account = "oi4M59ViufpL1QnQK1XQ8LyTEraLZrCZ2VKHvwUTFCxt";
@@ -87,7 +105,7 @@ public class UtilsBalanceTest {
                 }
                 try {
                     if(result == true){
-                        boolean sendtrue = UtilsBalance.sendMoney(
+                        boolean sendtrue = UtilsBalance.sendMoneyNew(
                                 sender,
                                 customer,
                                 BigDecimal.valueOf(transaction.getDigitalDollar()),
@@ -238,9 +256,9 @@ public class UtilsBalanceTest {
     public void rollbackBalanceFromFile() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         Map<String, Account> balance = new HashMap<>();
          List<Block> blocks = UtilsBlock.readLineObject("C:\\strategy3\\blockchain\\");
-         BigDecimal dollar = BigDecimal.valueOf(2000);
-         BigDecimal stock = BigDecimal.valueOf(2000);
-         BigDecimal staking = BigDecimal.valueOf(2000);
+         BigDecimal dollar = BigDecimal.valueOf(20000);
+         BigDecimal stock = BigDecimal.valueOf(20000);
+         BigDecimal staking = BigDecimal.valueOf(20000);
         blocks = blocks.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
 
         for (Block block: blocks ) {
@@ -361,7 +379,7 @@ public class UtilsBalanceTest {
             UtilsBalance.calculateBalance(balance, temp, new ArrayList<>());
         }
 
-        UtilsJson.saveWindowsToFile(windows, "C://strategy3/" + Seting.SLIDING_WINDOWS_BALANCE);
+        UtilsJson.saveWindowsToFile(windows, "C://strategy3/test/" + Seting.SLIDING_WINDOWS_BALANCE);
 
         System.out.println("---------------------------------------------------------------------");
         System.out.println("before");
@@ -370,7 +388,7 @@ public class UtilsBalanceTest {
 
         list = list.stream().sorted(Comparator.comparing(Block::getIndex).reversed()).collect(Collectors.toList());
 
-        windows = UtilsJson.loadWindowsFromFile( "C://strategy3/"+Seting.SLIDING_WINDOWS_BALANCE);
+        windows = UtilsJson.loadWindowsFromFile( "C://strategy3/test/"+Seting.SLIDING_WINDOWS_BALANCE);
         Map<String, Account> cloneWindow = UtilsUse.balancesClone(balance);
         for (Block temp : list) {
             cloneWindow.putAll(windows.get(temp.getIndex()));
@@ -698,21 +716,21 @@ public class UtilsBalanceTest {
 
     @Test
     public void testSizeWindows() throws CloneNotSupportedException, IOException {
-        Map<Long, Map<String, Account>> windows = UtilsUse.slideWindow();
-//        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile("C://strategy3" + Seting.SLIDING_WINDOWS_BALANCE);
+//        Map<Long, Map<String, Account>> windows = UtilsUse.slideWindow();
+        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile("C://strategy3" + Seting.SLIDING_WINDOWS_BALANCE);
         Map<String, Account> balance = new HashMap<>();
         Account account = new Account("sender", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         balance.put(account.getAccount(), account);
-        for (long i = 0; i < 120; i++) {
+        for (long i = 0; i < 150; i++) {
             balance.get("sender").setDigitalStakingBalance(BigDecimal.valueOf(i));
             balance.get("sender").setDigitalStockBalance(BigDecimal.valueOf(i));
             balance.get("sender").setDigitalDollarBalance(BigDecimal.valueOf(i));
             windows.put(Long.valueOf(i), UtilsUse.balancesClone(balance));
             System.out.println("windows: "+windows.get(i));
         }
-//        UtilsJson.saveWindowsToFile(windows, "C://strategy3" + Seting.SLIDING_WINDOWS_BALANCE);
-//
-//        windows = UtilsJson.loadWindowsFromFile("C://strategy3" + Seting.SLIDING_WINDOWS_BALANCE);
+        UtilsJson.saveWindowsToFile(windows, "C://strategy3/test/" + Seting.SLIDING_WINDOWS_BALANCE);
+
+        windows = UtilsJson.loadWindowsFromFile("C://strategy3/test/" + Seting.SLIDING_WINDOWS_BALANCE);
         System.out.println("windows: " + windows.size());
         Assert.assertTrue(windows.size() == 100);
         for (Map.Entry<Long, Map<String, Account>> longMapEntry : windows.entrySet()) {

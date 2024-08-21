@@ -10,17 +10,11 @@ import lombok.Data;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Objects;
 
-/**
- * Класс Аккаунт, хранит данные такие данные.
- * account - public key ECDSA
- * digitalDollarBalance - цифровой доллар (деньги).
- * digitalStockBalance - акции, используется для голосования.
- * digitalStakingBalance - сумма долларов которые зарезервированы для staking (pos).
- **/
 @Data
 public class Account implements Cloneable {
     private String account;
@@ -34,12 +28,19 @@ public class Account implements Cloneable {
 
     public Account(String account, BigDecimal digitalDollarBalance, BigDecimal digitalStockBalance, BigDecimal digitalStakingBalance) {
         this.account = account;
-        this.digitalDollarBalance = digitalDollarBalance;
-        this.digitalStockBalance = digitalStockBalance;
-        this.digitalStakingBalance = digitalStakingBalance;
+        this.digitalDollarBalance = trimToScale(digitalDollarBalance);
+        this.digitalStockBalance = trimToScale(digitalStockBalance);
+        this.digitalStakingBalance = trimToScale(digitalStakingBalance);
     }
 
     public Account() {
+    }
+
+    private BigDecimal trimToScale(BigDecimal value) {
+        if (value != null) {
+            return value.setScale(8, RoundingMode.DOWN);
+        }
+        return null;
     }
 
     @Override
@@ -92,10 +93,9 @@ public class Account implements Cloneable {
     public Account clone() throws CloneNotSupportedException {
         return new Account(
                 this.account,
-                this.digitalDollarBalance != null ? new BigDecimal(this.digitalDollarBalance.toString()) : null,
-                this.digitalStockBalance != null ? new BigDecimal(this.digitalStockBalance.toString()) : null,
-                this.digitalStakingBalance != null ? new BigDecimal(this.digitalStakingBalance.toString()) : null
+                this.digitalDollarBalance != null ? trimToScale(new BigDecimal(this.digitalDollarBalance.toString())) : null,
+                this.digitalStockBalance != null ? trimToScale(new BigDecimal(this.digitalStockBalance.toString())) : null,
+                this.digitalStakingBalance != null ? trimToScale(new BigDecimal(this.digitalStakingBalance.toString())) : null
         );
     }
-
 }

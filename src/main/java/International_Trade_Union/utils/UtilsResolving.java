@@ -219,7 +219,7 @@ public class UtilsResolving {
                                     continue;
                                 }
                                 System.out.println("1:download sub block: " + subBlocks.size());
-                                System.out.println("2: host: " + s);
+                                System.out.println("1: host: " + s);
                                 if (Seting.IS_SECURITY == true && subBlocks.size() < Seting.PORTION_DOWNLOAD) {
                                     System.out.println("Blocked host: " + subBlocks.size());
                                     //TODO записывать сюда заблокированные хосты
@@ -395,7 +395,7 @@ public class UtilsResolving {
                                     }
                                     subBlocks = UtilsJson.jsonToListBLock(str);
 
-                                    if (subBlocks.isEmpty() || subBlocks.size() == 0) {
+                                    if (subBlocks == null ||subBlocks.isEmpty() || subBlocks.size() == 0) {
                                         System.out.println("-------------------------------------");
                                         System.out.println("sublocks: " + subBlocks.size());
                                         System.out.println("-------------------------------------");
@@ -529,7 +529,7 @@ public class UtilsResolving {
                             }
                             List<Block> subBlocks = UtilsJson.jsonToListBLock(str);
 
-                            if (subBlocks.isEmpty() || subBlocks.size() == 0) {
+                            if (subBlocks == null ||subBlocks.isEmpty() || subBlocks.size() == 0) {
                                 System.out.println("-------------------------------------");
                                 System.out.println("sublocks: " + subBlocks.size());
                                 System.out.println("-------------------------------------");

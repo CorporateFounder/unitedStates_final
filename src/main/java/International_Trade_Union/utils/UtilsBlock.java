@@ -7,6 +7,7 @@ import International_Trade_Union.model.Account;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
+import International_Trade_Union.vote.VoteEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
@@ -477,6 +478,20 @@ public class UtilsBlock {
                         System.out.println("the number bonus of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
                         validated = false;
                         return validated;
+                    }
+                }
+
+                if(thisBlock.getIndex() > BALANCE_CHEKING) {
+                    if (dtoTransaction.getVoteEnum().equals(VoteEnum.YES) || dtoTransaction.getVoteEnum().equals(VoteEnum.NO)) {
+                        if (dtoTransaction.getSender().equals(dtoTransaction.getCustomer())) {
+                            System.out.println("*************************************");
+                            System.out.println("dtoSender: The sender and recipient address cannot be the same if VoteEnum.YES or NO");
+                            System.out.println("transaction: : " + dtoTransaction);
+                            System.out.println("index block: " + thisBlock.getIndex());
+                            System.out.println("*************************************");
+                            validated = false;
+                            return validated;
+                        }
                     }
                 }
             }

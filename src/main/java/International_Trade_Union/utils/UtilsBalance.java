@@ -14,7 +14,7 @@ import International_Trade_Union.vote.LawEligibleForParliamentaryApproval;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
 
-import java.io.*;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -202,7 +202,7 @@ public class UtilsBalance {
                     continue;
                 }
             }
-            if (sign.contains(base.encode(transaction.getSign()))) {
+            else if (sign.contains(base.encode(transaction.getSign()))) {
                 System.out.println("this transaction signature has already been used and is not valid");
                 continue;
             } else {
@@ -304,9 +304,6 @@ public class UtilsBalance {
                     );
 
                 }
-
-
-
 
 
                 //если транзация валидная то записать данн иыезменения в баланс
