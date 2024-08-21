@@ -54,8 +54,10 @@ public class UtilsBalance {
         int i = (int) block.getIndex();
         List<DtoTransaction> transactions = block.getDtoTransactions();
         transactions = transactions.stream()
-                .sorted(Comparator.comparing(DtoTransaction::getDigitalDollar))
+                .sorted(Comparator.comparing(DtoTransaction::getDigitalDollar)
+                        .thenComparing(t -> base.encode(t.getSign())))
                 .collect(Collectors.toList());
+
         int BasisSendCount = 0;
         for (int j = 0; j < transactions.size(); j++) {
 
@@ -185,8 +187,10 @@ public class UtilsBalance {
 
         List<DtoTransaction> transactions = block.getDtoTransactions();
         transactions = transactions.stream()
-                .sorted(Comparator.comparing(DtoTransaction::getDigitalDollar))
+                .sorted(Comparator.comparing(DtoTransaction::getDigitalDollar)
+                        .thenComparing(t -> base.encode(t.getSign())))
                 .collect(Collectors.toList());
+
         int BasisSendCount = 0;
         for (int j = 0; j < transactions.size(); j++) {
 
