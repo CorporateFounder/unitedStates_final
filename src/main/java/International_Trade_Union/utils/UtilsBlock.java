@@ -418,7 +418,7 @@ public class UtilsBlock {
             return validated;
         }
 
-        if (thisBlock.getIndex() > FROM_STRING_DOUBLE) {
+        if (thisBlock.getIndex() > BALANCE_CHEKING) {
             Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(thisBlock.getDtoTransactions()));
             List<DtoTransaction> transactions = thisBlock.getDtoTransactions()
                     .stream()
