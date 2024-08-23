@@ -11,10 +11,7 @@ import International_Trade_Union.entity.entities.EntityBlock;
 import International_Trade_Union.entity.repository.EntityAccountRepository;
 import International_Trade_Union.entity.repository.EntityBlockRepository;
 import International_Trade_Union.entity.services.BlockService;
-import International_Trade_Union.model.Account;
-import International_Trade_Union.model.HostEndDataShortB;
-import International_Trade_Union.model.Mining;
-import International_Trade_Union.model.NodeChecker;
+import International_Trade_Union.model.*;
 import International_Trade_Union.model.comparator.HostEndDataShortBComparator;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.vote.LawEligibleForParliamentaryApproval;
@@ -1398,15 +1395,17 @@ public class UtilsResolving {
 
 //    Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
 
+
+        SlidingWindowManager windowManager = SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
         // Replace the HashMap with a LinkedHashMap that has a size limit for the sliding window
-        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile(Seting.SLIDING_WINDOWS_BALANCE);
+//        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile(Seting.SLIDING_WINDOWS_BALANCE);
 
         for (int i = deleteBlocks.size() - 1; i >= 0; i--) {
             Block block = deleteBlocks.get(i);
             System.out.println("rollBackAddBlock4 :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());
 
-                if (windows.containsKey(Long.valueOf(i))) {
-                    balances.putAll(windows.get(Long.valueOf(i)));
+                if (windowManager.getWindows().containsKey(Long.valueOf(i))) {
+                    balances.putAll(windowManager.getWindow(Long.valueOf(i)));
                 } else {
                     balances = rollbackCalculateBalance(balances, block);
                 }
@@ -1491,14 +1490,14 @@ public class UtilsResolving {
 
 //        Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
 
-
+        SlidingWindowManager windowManager = SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
         // Replace the HashMap with a LinkedHashMap that has a size limit for the sliding window
-        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile(Seting.SLIDING_WINDOWS_BALANCE);
+//        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile(Seting.SLIDING_WINDOWS_BALANCE);
         try {
             for (int i = deleteBlocks.size() - 1; i >= 0; i--) {
                 Block block = deleteBlocks.get(i);
-                if (windows.containsKey(Long.valueOf(i))) {
-                    balances.putAll(windows.get(Long.valueOf(i)));
+                if (windowManager.getWindows().containsKey(Long.valueOf(i))) {
+                    balances.putAll(windowManager.getWindow(Long.valueOf(i)));
                 } else {
                     balances = rollbackCalculateBalance(balances, block);
                 }
@@ -1885,19 +1884,19 @@ public class UtilsResolving {
         Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
         long start = UtilsTime.getUniversalTimestamp();
 
-
-        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile(Seting.SLIDING_WINDOWS_BALANCE);
+        SlidingWindowManager windowManager = SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
+//        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile(Seting.SLIDING_WINDOWS_BALANCE);
 
         for (Block block : originalBlocks) {
             System.out.println(" :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());
 
             EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
             list.add(entityBlock);
-            windows.put(block.getIndex(), UtilsUse.balancesClone(balances));
+            windowManager.addWindow(block.getIndex(), UtilsUse.balancesClone(balances));
             calculateBalance(balances, block, signs);
         }
-        UtilsJson.saveWindowsToFile(windows, Seting.SLIDING_WINDOWS_BALANCE);
-
+//        UtilsJson.saveWindowsToFile(windows, Seting.SLIDING_WINDOWS_BALANCE);
+        windowManager.saveWindowsToFile();
         list = list.stream().sorted(Comparator.comparing(EntityBlock::getSpecialIndex)).collect(Collectors.toList());
         // Вызов getLaws один раз для всех блоков
 

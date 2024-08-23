@@ -153,19 +153,19 @@ public class Mining {
                         continue cicle;
                     }
 
-                    if(index > Seting.ALGORITM_MINING){
+                    if (index > Seting.ALGORITM_MINING) {
                         double digitalDollar = transaction.getDigitalDollar();
                         double digitalStock = transaction.getDigitalStockBalance();
                         double digitalBonus = transaction.getBonusForMiner();
-                        if(!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalDollar))){
+                        if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalDollar))) {
                             System.out.println("the number dollar of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
                             continue;
                         }
-                        if(!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalStock))){
+                        if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalStock))) {
                             System.out.println("the number stock of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
                             continue;
                         }
-                        if(!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalBonus))){
+                        if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalBonus))) {
                             System.out.println("the number bonus of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
                             continue;
                         }
@@ -277,19 +277,21 @@ public class Mining {
             money = (long) (Seting.MULTIPLIER - money);
             money = money < 1 ? 1 : money;
             double moneyFromDif = 0;
-            if(index > Seting.ALGORITM_MINING){
-                moneyFromDif = (difficulty - 22) / 2;
-                moneyFromDif = moneyFromDif > 0? moneyFromDif: 0;
-            }
             double G = UtilsUse.blocksReward(forAdd, prevBlock.getDtoTransactions(), index);
+            if (index > Seting.ALGORITM_MINING ) {
+                moneyFromDif = (difficulty - DIFFICULT_MONEY) / 2;
+                moneyFromDif = moneyFromDif > 0 ? moneyFromDif : 0;
+            }
+
             minerRewards = (Seting.V28_REWARD + G + (difficulty * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
             digitalReputationForMiner = (Seting.V28_REWARD + G + (difficulty * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
 
-
-
+            if(index > ALGORITM_MINING_2){
+                minerRewards += moneyFromDif * (MULT + G);
+                digitalReputationForMiner += moneyFromDif * (MULT + G);
+            }
             founderReward = minerRewards / Seting.DOLLAR;
             founderDigigtalReputationReward = digitalReputationForMiner / Seting.STOCK;
-
 
 
             if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES && index <= ALGORITM_MINING) {
@@ -298,7 +300,7 @@ public class Mining {
                 founderReward = UtilsUse.round(founderReward, Seting.DECIMAL_PLACES);
                 founderDigigtalReputationReward = UtilsUse.round(founderDigigtalReputationReward, Seting.DECIMAL_PLACES);
             }
-            if(index > ALGORITM_MINING){
+            if (index > ALGORITM_MINING) {
                 minerRewards = UtilsUse.round(minerRewards, SENDING_DECIMAL_PLACES);
                 digitalReputationForMiner = UtilsUse.round(digitalReputationForMiner, SENDING_DECIMAL_PLACES);
                 founderReward = UtilsUse.round(founderReward, SENDING_DECIMAL_PLACES);
@@ -312,7 +314,7 @@ public class Mining {
         double sumRewards = forAdd.stream().collect(Collectors.summingDouble(DtoTransaction::getBonusForMiner));
 
         try {
-            forAdd = UtilsUse.balanceTransaction(forAdd, balances, index );
+            forAdd = UtilsUse.balanceTransaction(forAdd, balances, index);
         } catch (Exception e) {
             e.printStackTrace();
         }

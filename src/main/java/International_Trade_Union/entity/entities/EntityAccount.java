@@ -1,18 +1,15 @@
 package International_Trade_Union.entity.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Objects;
 
 @Data
@@ -26,6 +23,7 @@ public class EntityAccount {
     private Long id;
 
     private String account;
+
 
     private BigDecimal digitalDollarBalance;
     private BigDecimal digitalStockBalance;

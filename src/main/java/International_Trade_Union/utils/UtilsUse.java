@@ -88,33 +88,46 @@ public class UtilsUse {
     }
 
     //ПОДСЧЕТ НАГРАДЫ
-    public static double blocksReward(List<DtoTransaction> acutal, List<DtoTransaction> prev, long index) {
-        long actualUniqAddress = acutal.stream()
-                .filter(t -> !t.getSender().equals(Seting.BASIS_ADDRESS))
-                .map(t -> t.getSender())
+    public static double blocksReward(List<DtoTransaction> actual, List<DtoTransaction> prev, long index) {
+        // Задаем пороговый индекс
+        int ALGORITM_MINING_2 = Seting.ALGORITM_MINING_2;
+
+        // Определяем фильтр на основе значения индекса
+        Predicate<DtoTransaction> transactionFilter;
+        if (index > ALGORITM_MINING_2) {
+            transactionFilter = t -> !t.getSender().equals(Seting.BASIS_ADDRESS) && t.getDigitalDollar() >= Seting.MINIMUM;
+        } else {
+            transactionFilter = t -> !t.getSender().equals(Seting.BASIS_ADDRESS);
+        }
+
+        // Подсчитываем уникальные адреса и суммы для актуальных транзакций
+        long actualUniqAddress = actual.stream()
+                .filter(transactionFilter)
+                .map(DtoTransaction::getSender)
                 .distinct()
                 .count();
 
-        long prevUniqAddress = prev.stream()
-                .filter(t -> !t.getSender().equals(Seting.BASIS_ADDRESS))
-                .map(t -> t.getSender())
-                .distinct()
-                .count();
-
-        double actualSumDollar = acutal.stream()
-                .filter(t -> !t.getSender().equals(Seting.BASIS_ADDRESS))
-                .mapToDouble(t -> t.getDigitalDollar())
+        double actualSumDollar = actual.stream()
+                .filter(transactionFilter)
+                .mapToDouble(DtoTransaction::getDigitalDollar)
                 .sum();
+
+        // Подсчитываем уникальные адреса и суммы для предыдущих транзакций
+        long prevUniqAddress = prev.stream()
+                .filter(transactionFilter)
+                .map(DtoTransaction::getSender)
+                .distinct()
+                .count();
 
         double prevSumDollar = prev.stream()
-                .filter(t -> !t.getSender().equals(Seting.BASIS_ADDRESS))
-                .mapToDouble(t -> t.getDigitalDollar())
+                .filter(transactionFilter)
+                .mapToDouble(DtoTransaction::getDigitalDollar)
                 .sum();
 
-
+        // Возвращаем коэффициент, если выполнены условия, иначе 0
         return actualUniqAddress > prevUniqAddress && actualSumDollar > prevSumDollar ? Seting.COEFFICIENT : 0;
-
     }
+
 
     //    одно число от другого в процентах
     public static Double percentDifferent(Double first, Double second) {
@@ -469,20 +482,18 @@ public class UtilsUse {
     }
 
     public static boolean areAccountsDifferent(Account account1, Account account2) {
-        BigDecimal divisor = BigDecimal.TEN.pow(10);
+        BigDecimal account1DollarBalance = account1.getDigitalDollarBalance();
+        BigDecimal account2DollarBalance = account2.getDigitalDollarBalance();
 
-        BigDecimal account1DollarLast10 = account1.getDigitalDollarBalance().remainder(divisor);
-        BigDecimal account2DollarLast10 = account2.getDigitalDollarBalance().remainder(divisor);
+        BigDecimal account1StockBalance = account1.getDigitalStockBalance();
+        BigDecimal account2StockBalance = account2.getDigitalStockBalance();
 
-        BigDecimal account1StockLast10 = account1.getDigitalStockBalance().remainder(divisor);
-        BigDecimal account2StockLast10 = account2.getDigitalStockBalance().remainder(divisor);
+        BigDecimal account1StakingBalance = account1.getDigitalStakingBalance();
+        BigDecimal account2StakingBalance = account2.getDigitalStakingBalance();
 
-        BigDecimal account1StakingLast10 = account1.getDigitalStakingBalance().remainder(divisor);
-        BigDecimal account2StakingLast10 = account2.getDigitalStakingBalance().remainder(divisor);
-
-        return account1DollarLast10.compareTo(account2DollarLast10) != 0 ||
-                account1StockLast10.compareTo(account2StockLast10) != 0 ||
-                account1StakingLast10.compareTo(account2StakingLast10) != 0;
+        return account1DollarBalance.compareTo(account2DollarBalance) != 0 ||
+                account1StockBalance.compareTo(account2StockBalance) != 0 ||
+                account1StakingBalance.compareTo(account2StakingBalance) != 0;
     }
 
     public static Map<String, Account> getEqualsKeyBalance(
@@ -670,7 +681,7 @@ public class UtilsUse {
 
 
 
-                        boolean sendtrue = UtilsBalance.sendMoneyNew(
+                        boolean sendtrue = UtilsBalance.sendMoney(
                                 sender,
                                 customer,
                                 transactionDigitalDollar,

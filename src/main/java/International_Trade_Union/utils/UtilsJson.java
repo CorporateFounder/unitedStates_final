@@ -15,6 +15,7 @@ import International_Trade_Union.model.Account;
 import International_Trade_Union.vote.CurrentLawVotes;
 import International_Trade_Union.vote.LawEligibleForParliamentaryApproval;
 import International_Trade_Union.vote.Laws;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 
 import java.io.File;
@@ -29,6 +30,8 @@ import java.util.Set;
 
 public class UtilsJson {
     private static ObjectMapper mapper = new ObjectMapper();
+
+
     public static String objToStringJson(Object object) throws IOException {
 
         StringWriter writer = new StringWriter();

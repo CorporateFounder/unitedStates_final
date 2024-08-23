@@ -6,11 +6,12 @@ import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Objects;
@@ -18,7 +19,10 @@ import java.util.Objects;
 @Data
 public class Account implements Cloneable {
     private String account;
+
+
     private BigDecimal digitalDollarBalance;
+
     private BigDecimal digitalStockBalance;
     private BigDecimal digitalStakingBalance;
 

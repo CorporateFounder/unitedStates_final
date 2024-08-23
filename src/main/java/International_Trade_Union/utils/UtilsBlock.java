@@ -422,25 +422,25 @@ public class UtilsBlock {
             Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(thisBlock.getDtoTransactions()));
             List<DtoTransaction> transactions = thisBlock.getDtoTransactions()
                     .stream()
-                    .filter(t->!BASIS_ADDRESS.equals(t.getSender()))
+                    .filter(t -> !BASIS_ADDRESS.equals(t.getSender()))
                     .collect(Collectors.toList());
             int transactionsCount = transactions.size();
             List<DtoTransaction> temp = UtilsUse.balanceTransaction(transactions, balances, thisBlock.getIndex());
             int after = temp.size();
 
-           if (after != transactionsCount) {
+            if (after != transactionsCount) {
                 System.out.println("*************************************");
 
                 System.out.println("transactionsCount: " + transactionsCount + "\n");
                 System.out.println("after: " + after + "\n");
                 System.out.println("The block contains transactions where the user's balance is insufficient.");
-                  System.out.println("*************************************");
+                System.out.println("*************************************");
                 validated = false;
                 return validated;
             }
         }
 
-        if (thisBlock.getIndex() > ALGORITM_MINING) {
+        if (thisBlock.getIndex() > ALGORITM_MINING_2) {
             for (DtoTransaction dtoTransaction : thisBlock.getDtoTransactions()) {
                 if (!dtoTransaction.getCustomer().equals(BASIS_ADDRESS)) {
                     if (dtoTransaction.getDigitalDollar() < MINIMUM
@@ -481,7 +481,7 @@ public class UtilsBlock {
                     }
                 }
 
-                if(thisBlock.getIndex() > BALANCE_CHEKING) {
+                if (thisBlock.getIndex() > BALANCE_CHEKING) {
                     if (dtoTransaction.getVoteEnum().equals(VoteEnum.YES) || dtoTransaction.getVoteEnum().equals(VoteEnum.NO)) {
                         if (dtoTransaction.getSender().equals(dtoTransaction.getCustomer())) {
                             System.out.println("*************************************");
@@ -526,13 +526,18 @@ public class UtilsBlock {
                     money = money < 1 ? 1 : money;
 
                     double moneyFromDif = 0;
+                    double G = UtilsUse.blocksReward(thisBlock.getDtoTransactions(), previusblock.getDtoTransactions(), thisBlock.getIndex());
                     if (thisBlock.getIndex() > Seting.ALGORITM_MINING) {
-                        moneyFromDif = (thisBlock.getHashCompexity() - 22) / 2;
+                        moneyFromDif = (thisBlock.getHashCompexity() - DIFFICULT_MONEY) / 2;
                         moneyFromDif = moneyFromDif > 0 ? moneyFromDif : 0;
                     }
-                    double G = UtilsUse.blocksReward(thisBlock.getDtoTransactions(), previusblock.getDtoTransactions(), thisBlock.getIndex());
                     minerReward = (Seting.V28_REWARD + G + (thisBlock.getHashCompexity() * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
                     minerPowerReward = (Seting.V28_REWARD + G + (thisBlock.getHashCompexity() * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
+
+                    if(thisBlock.getIndex() > ALGORITM_MINING_2){
+                        minerReward += moneyFromDif * (MULT + G);
+                        minerPowerReward += moneyFromDif * (MULT + G);
+                    }
 
 
                     if (thisBlock.getIndex() > Seting.START_BLOCK_DECIMAL_PLACES && thisBlock.getIndex() <= ALGORITM_MINING) {

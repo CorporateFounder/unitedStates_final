@@ -19,6 +19,7 @@ International_Trade_Union\entity\repository\EntityBlockRepository.class
 International_Trade_Union\entity\InfoDificultyBlockchain.class
 International_Trade_Union\entity\DataForTransaction.class
 International_Trade_Union\about_us_engDraft\AboutUsEngDraft.class
+International_Trade_Union\model\SlidingWindowManager$2.class
 International_Trade_Union\governments\Directors.class
 International_Trade_Union\controllers\GovernmentController.class
 International_Trade_Union\vote\UtilsCurrentLaw.class
@@ -39,6 +40,7 @@ International_Trade_Union\model\Keys.class
 International_Trade_Union\setings\originalCorporateCharter\OriginalCHARTER.class
 International_Trade_Union\governments\CompareObject.class
 International_Trade_Union\utils\UtilsSecurity.class
+International_Trade_Union\model\SlidingWindowManager.class
 International_Trade_Union\setings\originalCorporateCharter\OriginalPreamble.class
 International_Trade_Union\model\CreateAccount.class
 International_Trade_Union\utils\UtilsJson$4.class
@@ -48,6 +50,7 @@ International_Trade_Union\controllers\StatisticsController.class
 International_Trade_Union\vote\Vote.class
 International_Trade_Union\controllers\WebController\WebBasisController.class
 International_Trade_Union\entity\blockchain\Blockchain.class
+International_Trade_Union\model\SlidingWindowManager$1.class
 International_Trade_Union\entity\blockchain\Blockchain$8.class
 International_Trade_Union\controllers\LawsController.class
 International_Trade_Union\setings\Seting.class
