@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -1895,7 +1896,7 @@ public class UtilsResolving {
             calculateBalance(balances, block, signs);
         }
 //        UtilsJson.saveWindowsToFile(windows, Seting.SLIDING_WINDOWS_BALANCE);
-        windowManager.saveWindowsToFile();
+
         list = list.stream().sorted(Comparator.comparing(EntityBlock::getSpecialIndex)).collect(Collectors.toList());
         // Вызов getLaws один раз для всех блоков
 
@@ -1904,12 +1905,14 @@ public class UtilsResolving {
         try {
             blockService.saveAllBLockF(list);
 
+
             tempBalances = UtilsUse.differentAccount(tempBalances, balances);
             List<EntityAccount> accountList = blockService.findByAccountIn(tempBalances);
             accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
 
             start = UtilsTime.getUniversalTimestamp();
             blockService.saveAccountAllF(accountList);
+
             finish = UtilsTime.getUniversalTimestamp();
         } catch (Exception e) {
 
@@ -1917,7 +1920,7 @@ public class UtilsResolving {
             for (StackTraceElement stackTraceElement : e.getStackTrace()) {
                 stackerror += stackTraceElement.toString() + "\n";
             }
-
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return false;
 
         }
@@ -1925,7 +1928,7 @@ public class UtilsResolving {
         System.out.println("UtilsResolving: addBlock3: time save accounts: " + UtilsTime.differentMillSecondTime(start, finish));
         System.out.println("UtilsResolving: addBlock3: total different balance: " + tempBalances.size());
         System.out.println("UtilsResolving: addBlock3: total original balance: " + balances.size());
-
+        windowManager.saveWindowsToFile();
         UtilsBlock.saveBlocks(originalBlocks, filename);
         allLaws = UtilsLaws.getLaws(originalBlocks, Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE, allLaws);
         allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);

@@ -371,16 +371,9 @@ public class UtilsBalance {
         BigDecimal senderDigitalStaking = senderAddress.getDigitalStakingBalance();
         BigDecimal recipientDigitalDollar = recipientAddress.getDigitalDollarBalance();
         BigDecimal recipientDigitalStock = recipientAddress.getDigitalStockBalance();
-        BigDecimal recipientDigitalStaking = recipientAddress.getDigitalStakingBalance();
+
         boolean sendTrue = true;
-//        MathContext mc = new MathContext(Seting.DECIMAL_PLACES, RoundingMode.HALF_UP);
-//
-//        if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES) {
-//
-//            digitalDollar = digitalDollar.round(mc);
-//            digitalStock = digitalStock.round(mc);
-//            minerRewards = minerRewards.round(mc);
-//        }
+
 
         if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
             if (senderDigitalStock.compareTo(digitalStock) < 0) {
@@ -425,7 +418,7 @@ public class UtilsBalance {
                 senderAddress.setDigitalStakingBalance(senderDigitalStaking.add(digitalDollar));
             } else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
                 System.out.println("UNSTAKING");
-                if (senderDigitalStaking.compareTo(digitalDollar) < 0) {
+                if (senderDigitalStaking.compareTo(digitalDollar.add(minerRewards)) < 0) {
                     System.out.println("less staking");
                     sendTrue = false;
                     return sendTrue;
