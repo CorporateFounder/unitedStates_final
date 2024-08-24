@@ -106,7 +106,7 @@ public class UtilsBalanceTest {
                 }
                 try {
                     if(result == true){
-                        boolean sendtrue = UtilsBalance.sendMoneyNew(
+                        boolean sendtrue = UtilsBalance.sendMoney(
                                 sender,
                                 customer,
                                 BigDecimal.valueOf(transaction.getDigitalDollar()),

@@ -59,6 +59,7 @@ public class UtilsResolving {
         UtilsBalance.setBlockService(blockService);
         UtilsBlock.setBlockService(blockService);
     }
+
     public int resolve3() {
         BasisController.setUpdating(true);
 
@@ -320,8 +321,6 @@ public class UtilsResolving {
                                 global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
                                 temp = new DataShortBlockchainInformation();
                                 sign = new ArrayList<>();
-                                temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
-
 
 //                                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
                                 balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(subBlocks, blockService));
@@ -392,7 +391,7 @@ public class UtilsResolving {
                                     }
                                     subBlocks = UtilsJson.jsonToListBLock(str);
 
-                                    if (subBlocks == null ||subBlocks.isEmpty() || subBlocks.size() == 0) {
+                                    if (subBlocks == null || subBlocks.isEmpty() || subBlocks.size() == 0) {
                                         System.out.println("-------------------------------------");
                                         System.out.println("sublocks: " + subBlocks.size());
                                         System.out.println("-------------------------------------");
@@ -424,9 +423,8 @@ public class UtilsResolving {
                                     }
                                     System.out.println("2: jsonGlobalData: " + jsonGlobalData);
                                     global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
-//                                    balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+
                                     balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(subBlocks, blockService));
-//                                    tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
                                     tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(subBlocks, blockService));
                                     sign = new ArrayList<>();
                                     temp = new DataShortBlockchainInformation();
@@ -526,7 +524,7 @@ public class UtilsResolving {
                             }
                             List<Block> subBlocks = UtilsJson.jsonToListBLock(str);
 
-                            if (subBlocks == null ||subBlocks.isEmpty() || subBlocks.size() == 0) {
+                            if (subBlocks == null || subBlocks.isEmpty() || subBlocks.size() == 0) {
                                 System.out.println("-------------------------------------");
                                 System.out.println("sublocks: " + subBlocks.size());
                                 System.out.println("-------------------------------------");
@@ -534,11 +532,13 @@ public class UtilsResolving {
                             }
                             System.out.println("3:download sub block: " + subBlocks.size());
 //                            tempBalances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-                            List<EntityAccount> accounts = blockService.findAllAccounts();
-                            if (accounts == null || accounts.isEmpty()) {
+
+
+                            tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(subBlocks, blockService));
+
+                            if (tempBalances == null || tempBalances.isEmpty()) {
                                 continue;
                             }
-                            tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(accounts);
                             List<String> sign = new ArrayList<>();
 
                             if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY && BasisController.getBlockchainSize() < Seting.V34_NEW_ALGO) {
@@ -569,16 +569,7 @@ public class UtilsResolving {
                             System.out.println("3: sublocks: " + subBlocks.size());
 
 
-//                            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
                             balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(subBlocks, blockService));
-//                            tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
-                            tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(subBlocks, blockService));
-                            sign = new ArrayList<>();
-                            temp = new DataShortBlockchainInformation();
-                            temp = Blockchain.shortCheck(BasisController.getPrevBlock(), subBlocks, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
-//                            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
-                            balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(subBlocks, blockService));
-//                            tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
                             tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(subBlocks, blockService));
                             sign = new ArrayList<>();
                             if (!local_size_upper) {
@@ -913,6 +904,10 @@ public class UtilsResolving {
                 System.out.println("******************************");
                 return temp;
             }
+
+            if (emptyList.isEmpty()) {
+                return temp;
+            }
             if (different.isEmpty() && emptyList.isEmpty()) {
                 return temp;
             }
@@ -1112,6 +1107,10 @@ public class UtilsResolving {
                 System.out.println("******************************");
                 System.out.println("connecting exeption helpresolve4: address: " + s);
                 System.out.println("******************************");
+                return temp;
+            }
+
+            if(emptyList.isEmpty()){
                 return temp;
             }
             System.out.println("different: ");
@@ -1404,11 +1403,11 @@ public class UtilsResolving {
             Block block = deleteBlocks.get(i);
             System.out.println("rollBackAddBlock4 :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());
 
-                if (windowManager.getWindows().containsKey(Long.valueOf(i))) {
-                    balances.putAll(windowManager.getWindow(Long.valueOf(i)));
-                } else {
-                    balances = rollbackCalculateBalance(balances, block);
-                }
+            if (windowManager.getWindows().containsKey(Long.valueOf(i))) {
+                balances.putAll(windowManager.getWindow(Long.valueOf(i)));
+            } else {
+                balances = rollbackCalculateBalance(balances, block);
+            }
 
 
         }
@@ -1443,12 +1442,12 @@ public class UtilsResolving {
         System.out.println("tempBlock: index: finish: " + tempBlock.get(tempBlock.size() - 1).getIndex());
         System.out.println("balances size: " + balances.size());
 
-        if (!saveBlocks.isEmpty()) {
-            boolean save = addBlock3(saveBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-            if (!save) {
-                existM = false;
-            }
+
+        boolean save = addBlock3(saveBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        if (!save) {
+            existM = false;
         }
+
 
         return existM;
     }

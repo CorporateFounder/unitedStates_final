@@ -435,8 +435,8 @@ public class UtilsBlock {
                 System.out.println("after: " + after + "\n");
                 System.out.println("The block contains transactions where the user's balance is insufficient.");
                 System.out.println("*************************************");
-                validated = false;
-                return validated;
+//                validated = false;
+//                return validated;
             }
         }
 
@@ -481,7 +481,7 @@ public class UtilsBlock {
                     }
                 }
 
-                if (thisBlock.getIndex() > BALANCE_CHEKING) {
+                if (thisBlock.getIndex() > ALGORITM_MINING_2) {
                     if (dtoTransaction.getVoteEnum().equals(VoteEnum.YES) || dtoTransaction.getVoteEnum().equals(VoteEnum.NO)) {
                         if (dtoTransaction.getSender().equals(dtoTransaction.getCustomer())) {
                             System.out.println("*************************************");
@@ -527,10 +527,12 @@ public class UtilsBlock {
 
                     double moneyFromDif = 0;
                     double G = UtilsUse.blocksReward(thisBlock.getDtoTransactions(), previusblock.getDtoTransactions(), thisBlock.getIndex());
+
                     if (thisBlock.getIndex() > Seting.ALGORITM_MINING) {
                         moneyFromDif = (thisBlock.getHashCompexity() - DIFFICULT_MONEY) / 2;
                         moneyFromDif = moneyFromDif > 0 ? moneyFromDif : 0;
                     }
+
                     minerReward = (Seting.V28_REWARD + G + (thisBlock.getHashCompexity() * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
                     minerPowerReward = (Seting.V28_REWARD + G + (thisBlock.getHashCompexity() * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
 

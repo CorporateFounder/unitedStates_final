@@ -290,6 +290,7 @@ public class Mining {
                 minerRewards += moneyFromDif * (MULT + G);
                 digitalReputationForMiner += moneyFromDif * (MULT + G);
             }
+
             founderReward = minerRewards / Seting.DOLLAR;
             founderDigigtalReputationReward = digitalReputationForMiner / Seting.STOCK;
 
