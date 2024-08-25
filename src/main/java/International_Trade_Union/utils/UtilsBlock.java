@@ -435,8 +435,8 @@ public class UtilsBlock {
                 System.out.println("after: " + after + "\n");
                 System.out.println("The block contains transactions where the user's balance is insufficient.");
                 System.out.println("*************************************");
-//                validated = false;
-//                return validated;
+                validated = false;
+                return validated;
             }
         }
 
@@ -772,12 +772,12 @@ public class UtilsBlock {
         String target = BlockchainDifficulty.calculateTarget(thisBlock.getHashCompexity());
         BigInteger bigTarget = BlockchainDifficulty.calculateTargetV30(thisBlock.getHashCompexity());
         if (!UtilsUse.chooseComplexity(thisBlock.getHashBlock(), thisBlock.getHashCompexity(), thisBlock.getIndex(), target, bigTarget)) {
-            System.out.println("does't start hash with 0");
+            System.out.println("wrong difficulty hash");
 
             System.out.println("this block hash: " + thisBlock.getHashBlock());
 
             UtilsFileSaveRead.save("************************************", ERROR_FILE, true);
-            UtilsFileSaveRead.save("does't start hash with 0", ERROR_FILE, true);
+            UtilsFileSaveRead.save("wrong difficulty hash", ERROR_FILE, true);
             UtilsFileSaveRead.save("************************************", ERROR_FILE, true);
 
             return false;
@@ -869,7 +869,6 @@ public class UtilsBlock {
     public static void deleteFiles() {
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_BLOCKCHAIN_FILE);
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_TEMPORARY_BLOCKS);
-//        UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE);
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_BALANCE_FILE);
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);

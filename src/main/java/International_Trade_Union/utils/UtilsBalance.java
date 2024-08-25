@@ -26,8 +26,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static International_Trade_Union.setings.Seting.SENDING_DECIMAL_PLACES;
-import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
+import static International_Trade_Union.setings.Seting.*;
 //wallet
 
 public class UtilsBalance {
@@ -202,7 +201,7 @@ public class UtilsBalance {
                     continue;
                 }
             }
-            else if (sign.contains(base.encode(transaction.getSign()))) {
+            if (sign.contains(base.encode(transaction.getSign())) && block.getIndex() <= DUBLICATE_IN_ONE_BLOCK_TRANSACTIONS) {
                 System.out.println("this transaction signature has already been used and is not valid");
                 continue;
             } else {
@@ -273,21 +272,7 @@ public class UtilsBalance {
                 BigDecimal digitalStock = null;
                 BigDecimal mine = null;
 
-//                if(block.getIndex() > Seting.FROM_STRING_DOUBLE){
-//                    digitalDollar = new BigDecimal(Double.toString(transaction.getDigitalDollar()));
-//                     digitalStock = new BigDecimal(Double.toString(transaction.getDigitalStockBalance()));
-//                     mine = new BigDecimal(Double.toString(transaction.getBonusForMiner()));
-//                    UtilsBalance.INDEX = block.getIndex();
-//                    sendTrue = UtilsBalance.sendMoneyNew(
-//                            sender,
-//                            customer,
-//                            digitalDollar,
-//                            digitalStock,
-//                            mine,
-//                            transaction.getVoteEnum()
-//                    );
-//
-//                }else {
+
                     digitalDollar = BigDecimal.valueOf(transaction.getDigitalDollar());
                     digitalStock = BigDecimal.valueOf(transaction.getDigitalStockBalance());
                     mine = BigDecimal.valueOf(transaction.getBonusForMiner());
@@ -302,9 +287,6 @@ public class UtilsBalance {
                             transaction.getVoteEnum()
 
                     );
-
-//                }
-
 
                 //если транзация валидная то записать данн иыезменения в баланс
                 if (sendTrue) {

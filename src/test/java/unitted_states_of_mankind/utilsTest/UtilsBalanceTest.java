@@ -357,7 +357,7 @@ public class UtilsBalanceTest {
 
 
         List<Block> list = UtilsBlock.readLineObject("C:\\strategy3\\blockchain\\");
-
+        System.out.println("size: " + list.size());
         list = list.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
         BigDecimal dollar = BigDecimal.valueOf(100000);
         BigDecimal stock = BigDecimal.valueOf(100000);
