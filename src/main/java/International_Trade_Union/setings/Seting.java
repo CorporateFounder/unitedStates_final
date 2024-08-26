@@ -348,7 +348,7 @@ public interface Seting {
 
     int ALGORITM_MINING = 295316;
 
-    int BALANCE_CHEKING = 297526;
+    int BALANCE_CHEKING = 297563;
     int ALGORITM_MINING_2 = 296583;
     int MULT = 6;
 

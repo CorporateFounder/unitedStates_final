@@ -63,7 +63,9 @@ public class UtilsResolving {
 
     public int resolve3() {
         BasisController.setUpdating(true);
-
+        Blockchain.setBlockService(blockService);
+        UtilsBalance.setBlockService(blockService);
+        UtilsBlock.setBlockService(blockService);
 
         //удаляет файлы которые хранять заблокированные хосты
         if (BasisController.getBlockchainSize() % Seting.DELETED_FILE_BLOCKED_HOST == 0) {
@@ -481,16 +483,7 @@ public class UtilsResolving {
                                         continue;
                                     }
 
-//                                    BasisController.setShortDataBlockchain(temp);
-//                                    BasisController.setBlockcheinSize((int) temp.getSize());
-//                                    BasisController.setBlockchainValid(temp.isValidation());
-//
-//                                    tempBlock = blockService.findBySpecialIndex(BasisController.getBlockchainSize() - 1);
-//                                    BasisController.setPrevBlock(UtilsBlockToEntityBlock.entityBlockToBlock(tempBlock));
-//
-//                                    json = UtilsJson.objToStringJson(BasisController.getShortDataBlockchain());
-//                                    UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
-                                }
+     }
                             }
                         } else {
 
