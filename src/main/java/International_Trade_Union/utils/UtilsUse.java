@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static International_Trade_Union.setings.Seting.ERROR_FILE;
 import static International_Trade_Union.setings.Seting.SENDING_DECIMAL_PLACES;
 
 public class UtilsUse {
@@ -656,6 +657,13 @@ public class UtilsUse {
                         transactionBonusForMiner.compareTo(BigDecimal.ZERO) < 0 ||
                         sender.getDigitalDollarBalance().compareTo(BigDecimal.ZERO) < 0 ||
                         sender.getDigitalStockBalance().compareTo(BigDecimal.ZERO) < 0) {
+                    UtilsFileSaveRead.save("--------------------------", ERROR_FILE, true);
+                    UtilsFileSaveRead.save("transactionDigitalDollar: " + transactionDigitalDollar, ERROR_FILE, true);
+                    UtilsFileSaveRead.save("sender.getDigitalDollarBalance(): " + sender.getDigitalDollarBalance(), ERROR_FILE, true);
+                    UtilsFileSaveRead.save("transactionDigitalStock: " +transactionDigitalStock, ERROR_FILE, true);
+                    UtilsFileSaveRead.save("transactionBonusForMiner: " +transactionBonusForMiner, ERROR_FILE, true);
+                    UtilsFileSaveRead.save("sender.getDigitalStockBalance(): " +sender.getDigitalStockBalance(), ERROR_FILE, true);
+                    UtilsFileSaveRead.save("--------------------------", ERROR_FILE, true);
                     continue;
                 }
 
@@ -679,8 +687,6 @@ public class UtilsUse {
                 try {
                     if (result) {
 
-
-
                         boolean sendtrue = UtilsBalance.sendMoney(
                                 sender,
                                 customer,
@@ -693,6 +699,11 @@ public class UtilsUse {
                             balances.put(customer.getAccount(), customer);
                         }
 
+                    }else {
+                        UtilsFileSaveRead.save("-------------", ERROR_FILE, true);
+                        UtilsFileSaveRead.save("transaction: " + transaction, ERROR_FILE,true);
+                        UtilsFileSaveRead.save("sender: " + sender, ERROR_FILE, true);
+                        UtilsFileSaveRead.save("-------------", ERROR_FILE, true);
                     }
 
                 } catch (Exception e) {

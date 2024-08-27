@@ -1,11 +1,11 @@
 package International_Trade_Union.utils;
 
 
-import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.services.BlockService;
+
 import International_Trade_Union.model.Account;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.base.Base;
@@ -16,8 +16,6 @@ import International_Trade_Union.vote.VoteEnum;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -26,7 +24,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static International_Trade_Union.setings.Seting.*;
+import static International_Trade_Union.setings.Seting.DUBLICATE_IN_ONE_BLOCK_TRANSACTIONS;
+import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
 //wallet
 
 public class UtilsBalance {
@@ -60,7 +59,7 @@ public class UtilsBalance {
         int BasisSendCount = 0;
         for (int j = 0; j < transactions.size(); j++) {
 
-            DtoTransaction transaction = block.getDtoTransactions().get(j);
+            DtoTransaction transaction = transactions.get(j);
             if (transaction.getSender().startsWith(Seting.NAME_LAW_ADDRESS_START)) {
                 System.out.println("law balance cannot be sender");
                 continue;
@@ -189,12 +188,11 @@ public class UtilsBalance {
                 .sorted(Comparator.comparing(t -> base.encode(t.getSign())))
                 .collect(Collectors.toList());
 
-
         int BasisSendCount = 0;
         for (int j = 0; j < transactions.size(); j++) {
 
 
-            DtoTransaction transaction = block.getDtoTransactions().get(j);
+            DtoTransaction transaction = transactions.get(j);
             if (blockService != null) {
                 if (blockService.existsBySign(transaction.getSign())) {
                     System.out.println("this transaction signature has already been used and is not valid from db");

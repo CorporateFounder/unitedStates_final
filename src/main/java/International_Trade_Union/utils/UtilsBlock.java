@@ -440,6 +440,7 @@ public class UtilsBlock {
             }
         }
 
+
         if (thisBlock.getIndex() > ALGORITM_MINING_2) {
             for (DtoTransaction dtoTransaction : thisBlock.getDtoTransactions()) {
                 if (!dtoTransaction.getCustomer().equals(BASIS_ADDRESS)) {
