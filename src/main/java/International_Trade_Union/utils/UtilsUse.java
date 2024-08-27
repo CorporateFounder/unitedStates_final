@@ -92,6 +92,10 @@ public class UtilsUse {
     public static double blocksReward(List<DtoTransaction> actual, List<DtoTransaction> prev, long index) {
         // Задаем пороговый индекс
         int ALGORITM_MINING_2 = Seting.ALGORITM_MINING_2;
+        Base base = new Base58();
+        actual = actual.stream().sorted(Comparator.comparing(t->base.encode(t.getSign()))).collect(Collectors.toList());
+        prev = prev.stream().sorted(Comparator.comparing(t->base.encode(t.getSign()))).collect(Collectors.toList());
+
 
         // Определяем фильтр на основе значения индекса
         Predicate<DtoTransaction> transactionFilter;
@@ -622,7 +626,7 @@ public class UtilsUse {
     }
 
     public static List<DtoTransaction> balanceTransaction(List<DtoTransaction> transactions, Map<String, Account> basis, long index) throws IOException {
-
+        Base base = new Base58();
         List<DtoTransaction> dtoTransactions = new ArrayList<>();
         Map<String, Account> balances = new HashMap<>();
         try {
@@ -631,6 +635,7 @@ public class UtilsUse {
             e.printStackTrace();
         }
 
+        transactions = transactions.stream().sorted(Comparator.comparing(t->base.encode(t.getSign()))).collect(Collectors.toList());
 
         for (DtoTransaction transaction : transactions) {
             boolean result = false;

@@ -498,8 +498,10 @@ public class UtilsBlock {
             }
 
         }
+        List<DtoTransaction> transactions = thisBlock.getDtoTransactions();
+        transactions = transactions.stream().sorted(Comparator.comparing(t->base.encode(t.getSign()))).collect(Collectors.toList());
         finished:
-        for (DtoTransaction transaction : thisBlock.getDtoTransactions()) {
+        for (DtoTransaction transaction : transactions) {
             if (transaction.verify() && transaction.getSender().equals(Seting.BASIS_ADDRESS)) {
                 double minerReward = Seting.DIGITAL_DOLLAR_REWARDS_BEFORE;
                 double minerPowerReward = Seting.DIGITAL_STOCK_REWARDS_BEFORE;

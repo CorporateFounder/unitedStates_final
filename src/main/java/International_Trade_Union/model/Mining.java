@@ -137,7 +137,8 @@ public class Mining {
         System.out.println("index: " + index);
         //получение транзакций с сети
         List<DtoTransaction> listTransactions = transactionList;
-
+        Base base = new Base58();
+        transactionList = transactionList.stream().sorted(Comparator.comparing(t->base.encode(t.getSign()))).collect(Collectors.toList());
         //определение валидных транзакций
         List<DtoTransaction> forAdd = new ArrayList<>();
 
@@ -308,7 +309,7 @@ public class Mining {
                 founderDigigtalReputationReward = UtilsUse.round(founderDigigtalReputationReward, SENDING_DECIMAL_PLACES);
             }
         }
-        Base base = new Base58();
+
 
         //суммирует все вознаграждения майнеров
         PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(Seting.BASIS_PASSWORD));
@@ -369,6 +370,7 @@ public class Mining {
         })).collect(Collectors.toList());
 
         forAdd = forAdd.stream().filter(t -> t != null).collect(Collectors.toList());
+        forAdd = forAdd.stream().sorted(Comparator.comparing(t->base.encode(t.getSign()))).collect(Collectors.toList());
         Block block = new Block(forAdd, prevBlock.getHashBlock(), minner.getAccount(), addressFounrder, difficulty, index);
 
 
