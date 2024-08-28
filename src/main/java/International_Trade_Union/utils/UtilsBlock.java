@@ -5,6 +5,7 @@ import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.Mining;
+import International_Trade_Union.model.MyLogger;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.VoteEnum;
@@ -453,11 +454,11 @@ public class UtilsBlock {
                         System.out.println("transaction: " + dtoTransaction);
                         System.out.println("*************************************");
 
-                        UtilsFileSaveRead.save("************************************", ERROR_FILE, true);
-                        UtilsFileSaveRead.save("If a transaction is not a voting transaction, it cannot transfer less than 0.01 of both a dollar and shares at the same time.", ERROR_FILE, true);
-                        UtilsFileSaveRead.save("index: " + thisBlock.getIndex(), ERROR_FILE, true);
-                        UtilsFileSaveRead.save("transaction: " + dtoTransaction, ERROR_FILE, true);
-                        UtilsFileSaveRead.save("************************************", ERROR_FILE, true);
+                        MyLogger.saveLog("************************************");
+                        MyLogger.saveLog("If a transaction is not a voting transaction, it cannot transfer less than 0.01 of both a dollar and shares at the same time.");
+                        MyLogger.saveLog("index: " + thisBlock.getIndex());
+                        MyLogger.saveLog("transaction: " + dtoTransaction);
+                        MyLogger.saveLog("************************************");
 
                         validated = false;
                         return validated;

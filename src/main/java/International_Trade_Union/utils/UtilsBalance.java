@@ -7,6 +7,7 @@ import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.services.BlockService;
 
 import International_Trade_Union.model.Account;
+import International_Trade_Union.model.MyLogger;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
@@ -24,7 +25,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static International_Trade_Union.setings.Seting.DUBLICATE_IN_ONE_BLOCK_TRANSACTIONS;
 import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
 //wallet
 
@@ -188,6 +188,7 @@ public class UtilsBalance {
                 .sorted(Comparator.comparing(t -> base.encode(t.getSign())))
                 .collect(Collectors.toList());
 
+        MyLogger.saveLog("calculate block index: " + block.getIndex());
         int BasisSendCount = 0;
         for (int j = 0; j < transactions.size(); j++) {
 
@@ -195,16 +196,10 @@ public class UtilsBalance {
             DtoTransaction transaction = transactions.get(j);
             if (blockService != null) {
                 if (blockService.existsBySign(transaction.getSign())) {
+                    MyLogger.saveLog("this transaction signature has already been used and is not valid from db");
                     System.out.println("this transaction signature has already been used and is not valid from db");
                     continue;
                 }
-            }
-            if (sign.contains(base.encode(transaction.getSign())) && block.getIndex() <= DUBLICATE_IN_ONE_BLOCK_TRANSACTIONS) {
-                System.out.println("this transaction signature has already been used and is not valid");
-                continue;
-            } else {
-//                    System.out.println("we added new sign transaction");
-                sign.add(base.encode(transaction.getSign()));
             }
 
             if (transaction.getSender().startsWith(Seting.NAME_LAW_ADDRESS_START)) {
@@ -217,6 +212,7 @@ public class UtilsBalance {
                 if (transaction.getSender().equals(Seting.BASIS_ADDRESS)) {
                     BasisSendCount++;
                     if (sender.getAccount().equals(Seting.BASIS_ADDRESS) && BasisSendCount > 2) {
+                        MyLogger.saveLog("Basis address can send only two the base address can send no more than two times per block:");
                         System.out.println("Basis address can send only two the base address can send no more than two times per block:" + Seting.BASIS_ADDRESS);
                         continue;
                     }
@@ -255,6 +251,9 @@ public class UtilsBalance {
 
                 if (sender.getAccount().equals(Seting.BASIS_ADDRESS)) {
                     if (i > 1 && (transaction.getDigitalDollar() > minerRewards || transaction.getDigitalStockBalance() > digitalReputationForMiner)) {
+                        MyLogger.saveLog("rewards cannot be upper than " + minerRewards);
+                        MyLogger.saveLog("rewards dollar: " + transaction.getDigitalDollar());
+                        MyLogger.saveLog("rewards stock: " + transaction.getDigitalStockBalance());
                         System.out.println("rewards cannot be upper than " + minerRewards);
                         System.out.println("rewards cannot be upper than " + digitalReputationForMiner);
                         System.out.println("rewards dollar: " + transaction.getDigitalDollar());
@@ -263,6 +262,7 @@ public class UtilsBalance {
                     }
                     if (!customer.getAccount().equals(block.getFounderAddress()) && !customer.getAccount().equals(block.getMinerAddress())) {
                         System.out.println("Basis address can send only to founder or miner");
+                        MyLogger.saveLog("Basis address can send only to founder or miner");
                         continue;
                     }
                 }

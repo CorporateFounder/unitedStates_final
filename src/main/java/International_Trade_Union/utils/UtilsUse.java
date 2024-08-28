@@ -6,6 +6,7 @@ import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Account;
+import International_Trade_Union.model.MyLogger;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
@@ -17,8 +18,8 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -625,7 +626,7 @@ public class UtilsUse {
         return result;
     }
 
-    public static List<DtoTransaction> balanceTransaction(List<DtoTransaction> transactions, Map<String, Account> basis, long index) throws IOException {
+    public static List<DtoTransaction> balanceTransaction(List<DtoTransaction> transactions, Map<String, Account> basis, long index) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Base base = new Base58();
         List<DtoTransaction> dtoTransactions = new ArrayList<>();
         Map<String, Account> balances = new HashMap<>();
@@ -635,7 +636,7 @@ public class UtilsUse {
             e.printStackTrace();
         }
 
-        transactions = transactions.stream().sorted(Comparator.comparing(t->base.encode(t.getSign()))).collect(Collectors.toList());
+        transactions = transactions.stream().sorted(Comparator.comparing(t -> base.encode(t.getSign()))).collect(Collectors.toList());
 
         for (DtoTransaction transaction : transactions) {
             boolean result = false;
@@ -647,8 +648,6 @@ public class UtilsUse {
                 if (sender == null || customer == null) {
                     continue;
                 }
-
-
 
                 BigDecimal transactionDigitalDollar = new BigDecimal(Double.toString(transaction.getDigitalDollar()));
                 BigDecimal transactionDigitalStock = new BigDecimal(Double.toString(transaction.getDigitalStockBalance()));
@@ -662,63 +661,45 @@ public class UtilsUse {
                         transactionBonusForMiner.compareTo(BigDecimal.ZERO) < 0 ||
                         sender.getDigitalDollarBalance().compareTo(BigDecimal.ZERO) < 0 ||
                         sender.getDigitalStockBalance().compareTo(BigDecimal.ZERO) < 0) {
-                    UtilsFileSaveRead.save("--------------------------", ERROR_FILE, true);
-                    UtilsFileSaveRead.save("transactionDigitalDollar: " + transactionDigitalDollar, ERROR_FILE, true);
-                    UtilsFileSaveRead.save("sender.getDigitalDollarBalance(): " + sender.getDigitalDollarBalance(), ERROR_FILE, true);
-                    UtilsFileSaveRead.save("transactionDigitalStock: " +transactionDigitalStock, ERROR_FILE, true);
-                    UtilsFileSaveRead.save("transactionBonusForMiner: " +transactionBonusForMiner, ERROR_FILE, true);
-                    UtilsFileSaveRead.save("sender.getDigitalStockBalance(): " +sender.getDigitalStockBalance(), ERROR_FILE, true);
-                    UtilsFileSaveRead.save("--------------------------", ERROR_FILE, true);
+                    MyLogger.saveLog("balanceTransaction: transactionDigitalDollar: " + transactionDigitalDollar);
+                    MyLogger.saveLog("balanceTransaction: sender.getDigitalDollarBalance(): " + sender.getDigitalDollarBalance());
+                    MyLogger.saveLog("balanceTransaction: transactionDigitalStock: " + transactionDigitalStock);
+                    MyLogger.saveLog("balanceTransaction: transactionBonusForMiner: " + transactionBonusForMiner);
+                    MyLogger.saveLog("balanceTransaction: sender.getDigitalStockBalance(): " + sender.getDigitalStockBalance());
+
                     continue;
                 }
 
-                if (sender.getDigitalDollarBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0) {
-                    dtoTransactions.add(transaction);
-                    result = true;
-                } else if (sender.getDigitalStockBalance().compareTo(transactionDigitalStock.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.YES)) {
-                    dtoTransactions.add(transaction);
-                    result = true;
-                } else if (sender.getDigitalStockBalance().compareTo(transactionDigitalStock.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.NO)) {
-                    dtoTransactions.add(transaction);
-                    result = true;
-                } else if (sender.getDigitalDollarBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.STAKING)) {
-                    dtoTransactions.add(transaction);
-                    result = true;
-                } else if (sender.getDigitalStakingBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0 && transaction.getVoteEnum().equals(VoteEnum.UNSTAKING)) {
-                    dtoTransactions.add(transaction);
-                    result = true;
+                // Ensure the sender has enough balance for the transaction, including the bonus for the miner
+                 if (transaction.getVoteEnum().equals(VoteEnum.YES) || transaction.getVoteEnum().equals(VoteEnum.NO)) {
+                    if (sender.getDigitalStockBalance().compareTo(transactionDigitalStock.add(transactionBonusForMiner)) >= 0 && sender.getDigitalDollarBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0) {
+                        result = UtilsBalance.sendMoney(sender, customer, transactionDigitalDollar, transactionDigitalStock, transactionBonusForMiner, transaction.getVoteEnum());
+                    }
+                } else if (transaction.getVoteEnum().equals(VoteEnum.STAKING) ) {
+                    if (sender.getDigitalDollarBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0) {
+                        result = UtilsBalance.sendMoney(sender, customer, transactionDigitalDollar, transactionDigitalStock, transactionBonusForMiner, transaction.getVoteEnum());
+                    }
+                }else if (transaction.getVoteEnum().equals(VoteEnum.UNSTAKING) ) {
+                    if (sender.getDigitalStakingBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0) {
+                        result = UtilsBalance.sendMoney(sender, customer, transactionDigitalDollar, transactionDigitalStock, transactionBonusForMiner, transaction.getVoteEnum());
+                    }
                 }
 
-                try {
-                    if (result) {
-
-                        boolean sendtrue = UtilsBalance.sendMoney(
-                                sender,
-                                customer,
-                                transactionDigitalDollar,
-                                transactionDigitalStock,
-                                transactionBonusForMiner,
-                                transaction.getVoteEnum());
-                        if (sendtrue) {
-                            balances.put(sender.getAccount(), sender);
-                            balances.put(customer.getAccount(), customer);
-                        }
-
-                    }else {
-                        UtilsFileSaveRead.save("-------------", ERROR_FILE, true);
-                        UtilsFileSaveRead.save("transaction: " + transaction, ERROR_FILE,true);
-                        UtilsFileSaveRead.save("sender: " + sender, ERROR_FILE, true);
-                        UtilsFileSaveRead.save("-------------", ERROR_FILE, true);
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (result) {
+                    dtoTransactions.add(transaction);
+                    balances.put(sender.getAccount(), sender);
+                    balances.put(customer.getAccount(), customer);
+                } else {
+                    MyLogger.saveLog("balanceTransaction: transaction: " + transaction);
+                    MyLogger.saveLog("balanceTransaction: json: " + UtilsJson.objToStringJson(transaction));
+                    MyLogger.saveLog("balanceTransaction: sender: " + sender);
+                    MyLogger.saveLog("balanceTransaction: index: " + index);
                 }
             }
-
         }
         return dtoTransactions;
     }
+
 
     //возвращает скользящее окно для хранения последних 30 слепков балана
     public static Map<Long, Map<String, Account>> slideWindow() {
