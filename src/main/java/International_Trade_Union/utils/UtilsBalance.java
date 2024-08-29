@@ -188,7 +188,7 @@ public class UtilsBalance {
                 .sorted(Comparator.comparing(t -> base.encode(t.getSign())))
                 .collect(Collectors.toList());
 
-        MyLogger.saveLog("calculate block index: " + block.getIndex());
+
         int BasisSendCount = 0;
         for (int j = 0; j < transactions.size(); j++) {
 
@@ -396,6 +396,8 @@ public class UtilsBalance {
                 }
                 senderAddress.setDigitalDollarBalance(senderDigitalDollar.subtract(digitalDollar));
                 senderAddress.setDigitalStakingBalance(senderDigitalStaking.add(digitalDollar));
+                recipientAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance());
+                recipientAddress.setDigitalStakingBalance(senderAddress.getDigitalStakingBalance());
             } else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
                 System.out.println("UNSTAKING");
                 if (senderDigitalStaking.compareTo(digitalDollar.add(minerRewards)) < 0) {
@@ -405,6 +407,8 @@ public class UtilsBalance {
                 }
                 senderAddress.setDigitalDollarBalance(senderDigitalDollar.add(digitalDollar));
                 senderAddress.setDigitalStakingBalance(senderDigitalStaking.subtract(digitalDollar));
+                recipientAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance());
+                recipientAddress.setDigitalStakingBalance(senderAddress.getDigitalStakingBalance());
             }
 
         } else if (senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
@@ -456,6 +460,8 @@ public class UtilsBalance {
                 }
                 senderAddress.setDigitalDollarBalance(senderDigitalDollar.add(digitalDollar));
                 senderAddress.setDigitalStakingBalance(senderDigitalStaking.subtract(digitalDollar));
+                recipientAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance());
+                recipientAddress.setDigitalStakingBalance(senderAddress.getDigitalStakingBalance());
             } else if (voteEnum.equals(VoteEnum.UNSTAKING)) {
                 System.out.println("UNSTAKING");
 
@@ -469,6 +475,8 @@ public class UtilsBalance {
                 }
                 senderAddress.setDigitalDollarBalance(senderDigitalDollar.subtract(digitalDollar));
                 senderAddress.setDigitalStakingBalance(senderDigitalStaking.add(digitalDollar));
+                recipientAddress.setDigitalDollarBalance(senderAddress.getDigitalDollarBalance());
+                recipientAddress.setDigitalStakingBalance(senderAddress.getDigitalStakingBalance());
             }
 
         } else if (senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {

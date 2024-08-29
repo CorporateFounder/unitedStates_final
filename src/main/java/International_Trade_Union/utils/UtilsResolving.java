@@ -1392,7 +1392,7 @@ public class UtilsResolving {
         SlidingWindowManager windowManager = SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
         // Replace the HashMap with a LinkedHashMap that has a size limit for the sliding window
 //        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile(Seting.SLIDING_WINDOWS_BALANCE);
-
+        try {
         for (int i = deleteBlocks.size() - 1; i >= 0; i--) {
             Block block = deleteBlocks.get(i);
             System.out.println("rollBackAddBlock4 :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());
@@ -1402,20 +1402,20 @@ public class UtilsResolving {
             } else {
                 balances = rollbackCalculateBalance(balances, block);
             }
+            blockService.saveAccountAllF(UtilsAccountToEntityAccount.accountsToEntityAccounts(balances));
 
 
         }
 
+            blockService.deleteEntityBlocksAndRelatedData(threshold);
 
-        try {
-            blockService.saveAccountAllF(UtilsAccountToEntityAccount.accountsToEntityAccounts(balances));
         } catch (Exception e) {
-
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return false;
         }
 
 
-        blockService.deleteEntityBlocksAndRelatedData(threshold);
+
 
         allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
@@ -1494,25 +1494,23 @@ public class UtilsResolving {
                 } else {
                     balances = rollbackCalculateBalance(balances, block);
                 }
+                blockService.saveAccountAllF(UtilsAccountToEntityAccount.accountsToEntityAccounts(balances));
 
             }
+
+            blockService.deleteEntityBlocksAndRelatedData(threshold);
         } catch (Throwable e) {
+            MyLogger.saveLog("error tournament: ", e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return false;
         }
 
 //        tempBalances = UtilsUse.differentAccount(tempBalances, balances);
 //        tempBalances = UtilsUse.merge(tempBalances, balances);
 
-        List<EntityAccount> accountList = null;
-        try {
-//            accountList = blockService.findByAccountIn(balances);
-//            accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
-            blockService.saveAccountAllF(UtilsAccountToEntityAccount.accountsToEntityAccounts(balances));
 
-        } catch (Exception e) {
-            return false;
-        }
-        blockService.deleteEntityBlocksAndRelatedData(threshold);
+
+
         allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
         Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
         UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
@@ -1547,7 +1545,7 @@ public class UtilsResolving {
         UtilsBalance.setBlockService(blockService);
         Blockchain.setBlockService(blockService);
         UtilsBlock.setBlockService(blockService);
-        List<EntityBlock> list = new ArrayList<>();
+
         List<String> signs = new ArrayList<>();
         Map<String, Laws> allLaws = new HashMap<>();
 
@@ -1560,38 +1558,32 @@ public class UtilsResolving {
 
         SlidingWindowManager windowManager = SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
 //        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile(Seting.SLIDING_WINDOWS_BALANCE);
-
+        try {
+            start = UtilsTime.getUniversalTimestamp();
         for (Block block : originalBlocks) {
             System.out.println(" :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());
 
             EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
-            list.add(entityBlock);
+
 
             windowManager.addWindow(block.getIndex(), UtilsUse.balancesClone(balances));
             balances = calculateBalance(balances, block, signs);
+
+            tempBalances = UtilsUse.differentAccount(tempBalances, balances);
+            List<EntityAccount> accountList = blockService.findByAccountIn(tempBalances);
+            accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
+
+            blockService.saveAccountAllF(accountList);
 
             List<EntityBlock> tempList = new ArrayList<>();
             tempList.add(entityBlock);
             blockService.saveAllBLockF(tempList);
         }
 
-        list = list.stream().sorted(Comparator.comparing(EntityBlock::getSpecialIndex)).collect(Collectors.toList());
         // Вызов getLaws один раз для всех блоков
 
-        long finish = UtilsTime.getUniversalTimestamp();
-        System.out.println("UtilsResolving: addBlock3: for: time different: " + UtilsTime.differentMillSecondTime(start, finish));
-        try {
 
 
-
-            tempBalances = UtilsUse.differentAccount(tempBalances, balances);
-            List<EntityAccount> accountList = blockService.findByAccountIn(tempBalances);
-            accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
-
-            start = UtilsTime.getUniversalTimestamp();
-            blockService.saveAccountAllF(accountList);
-
-            finish = UtilsTime.getUniversalTimestamp();
         } catch (Exception e) {
 
 
@@ -1600,6 +1592,8 @@ public class UtilsResolving {
             return false;
 
         }
+        long finish = UtilsTime.getUniversalTimestamp();
+        System.out.println("UtilsResolving: addBlock3: for: time different: " + UtilsTime.differentMillSecondTime(start, finish));
 
         System.out.println("UtilsResolving: addBlock3: time save accounts: " + UtilsTime.differentMillSecondTime(start, finish));
         System.out.println("UtilsResolving: addBlock3: total different balance: " + tempBalances.size());
