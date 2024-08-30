@@ -429,6 +429,7 @@ public class UtilsBlock {
             List<DtoTransaction> temp = UtilsUse.balanceTransaction(transactions, balances, thisBlock.getIndex());
             int after = temp.size();
 
+
             if (after != transactionsCount) {
                 System.out.println("*************************************");
 
@@ -439,7 +440,6 @@ public class UtilsBlock {
                 validated = false;
                 return validated;
             }
-
         }
 
 

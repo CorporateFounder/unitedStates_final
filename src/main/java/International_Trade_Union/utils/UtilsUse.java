@@ -686,6 +686,7 @@ public class UtilsUse {
                     }
                 }
 
+
                 if (result) {
                     dtoTransactions.add(transaction);
                     balances.put(sender.getAccount(), sender);

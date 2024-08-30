@@ -275,10 +275,12 @@ public class UtilsBalance {
                     digitalDollar = BigDecimal.valueOf(transaction.getDigitalDollar());
                     digitalStock = BigDecimal.valueOf(transaction.getDigitalStockBalance());
                     mine = BigDecimal.valueOf(transaction.getBonusForMiner());
+                    if(block.getIndex() >= Seting.BALANCE_CHEKING){
+                        MyLogger.saveLog("balanse sender before: " + sender + " index: " + block.getIndex());
+                        MyLogger.saveLog("balanse customer before: " + customer + " index: " + block.getIndex());
 
-                    MyLogger.saveLog("balanse sender before: " + sender + " index: " + block.getIndex());
-                    MyLogger.saveLog("balanse customer before: " + customer + " index: " + block.getIndex());
-                    sendTrue = UtilsBalance.sendMoney(
+                    }
+                     sendTrue = UtilsBalance.sendMoney(
                             sender,
                             customer,
                             digitalDollar,
@@ -301,6 +303,7 @@ public class UtilsBalance {
             }
 
         }
+
 
 
 //        System.out.println("finish calculateBalance");
