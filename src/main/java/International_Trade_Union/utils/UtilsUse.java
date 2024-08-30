@@ -670,14 +670,17 @@ public class UtilsUse {
 
                 // Ensure the sender has enough balance for the transaction, including the bonus for the miner
                  if (transaction.getVoteEnum().equals(VoteEnum.YES) || transaction.getVoteEnum().equals(VoteEnum.NO)) {
+                     if(sender.getAccount().equals(customer.getAccount())){
+                         continue;
+                     }
                     if (sender.getDigitalStockBalance().compareTo(transactionDigitalStock.add(transactionBonusForMiner)) >= 0 && sender.getDigitalDollarBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0) {
                         result = UtilsBalance.sendMoney(sender, customer, transactionDigitalDollar, transactionDigitalStock, transactionBonusForMiner, transaction.getVoteEnum());
                     }
-                } else if (transaction.getVoteEnum().equals(VoteEnum.STAKING) ) {
+                } else if (transaction.getVoteEnum().equals(VoteEnum.STAKING) && !sender.getAccount().equals(customer.getAccount())) {
                     if (sender.getDigitalDollarBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0) {
                         result = UtilsBalance.sendMoney(sender, customer, transactionDigitalDollar, transactionDigitalStock, transactionBonusForMiner, transaction.getVoteEnum());
                     }
-                }else if (transaction.getVoteEnum().equals(VoteEnum.UNSTAKING) ) {
+                }else if (transaction.getVoteEnum().equals(VoteEnum.UNSTAKING) && !sender.getAccount().equals(customer.getAccount())) {
                     if (sender.getDigitalStakingBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0) {
                         result = UtilsBalance.sendMoney(sender, customer, transactionDigitalDollar, transactionDigitalStock, transactionBonusForMiner, transaction.getVoteEnum());
                     }
