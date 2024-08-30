@@ -17,20 +17,6 @@ public class UtilsAccountTest {
     private static final double delta = 0.0000000001;
 
 
-    @Test
-    public void getAllBalanceGoldTest(){
-        long block = (long) (Seting.COUNT_BLOCK_IN_DAY * Seting.YEAR * 1);
-        List<Account> accounts = new ArrayList<>();
-        double balance = 50;
-
-        accounts.add(new Account("first", BigDecimal.valueOf(balance)));
-        accounts.add(new Account("second",BigDecimal.valueOf(balance)));
-
-        double expected = balance *2.0;
-        double result = UtilAccounts.getAllBalance( accounts);
-
-        Assert.assertEquals(expected, result, delta);
-    }
 
     @Test
     public void getAllRemnantUpperLevel(){

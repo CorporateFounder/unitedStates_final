@@ -337,20 +337,21 @@ public class UtilsResolving {
 //                                tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
                                 tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(subBlocks, blockService));
                                 sign = new ArrayList<>();
-                                if (!local_size_upper) {
+                                if (!local_size_upper && temp.getBigRandomNumber() < global.getBigRandomNumber()) {
                                     System.out.println("===========================");
                                     System.out.println("!local_size_upper: " + !local_size_upper);
                                     System.out.println("===========================");
-                                    temp = helpResolve4(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks, false);
+                                    temp = helpResolve4(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks, true);
 
                                 }
 
-                                if (local_size_upper) {
+                                if (local_size_upper && temp.getBigRandomNumber() < global.getBigRandomNumber()) {
                                     System.out.println("===========================");
                                     System.out.println("local_size_upper: " + local_size_upper);
                                     System.out.println("===========================");
-                                    temp = helpResolve5(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks, false);
+                                    temp = helpResolve5(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks, true);
                                 }
+
 
                                 System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++");
                                 //если скачанный блокчейн не валидный, то не добавляет в блокчейн, возвращает -10
@@ -455,7 +456,7 @@ public class UtilsResolving {
 //                                    tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
                                     tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(subBlocks, blockService));
                                     sign = new ArrayList<>();
-                                    if (!local_size_upper) {
+                                    if (!local_size_upper && temp.getBigRandomNumber() < global.getBigRandomNumber()) {
                                         System.out.println("===========================");
                                         System.out.println("!local_size_upper: " + !local_size_upper);
                                         System.out.println("===========================");
@@ -463,12 +464,13 @@ public class UtilsResolving {
 
                                     }
 
-                                    if (local_size_upper) {
+                                    if (local_size_upper && temp.getBigRandomNumber() < global.getBigRandomNumber()) {
                                         System.out.println("===========================");
                                         System.out.println("local_size_upper: " + local_size_upper);
                                         System.out.println("===========================");
                                         temp = helpResolve5(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks, true);
                                     }
+
 
                                     if (Seting.IS_SECURITY && BasisController.getBlockchainSize() > 1 && !temp.isValidation()) {
                                         //TODO добавить хост в заблокированный файл
@@ -566,7 +568,7 @@ public class UtilsResolving {
                             balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(subBlocks, blockService));
                             tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(subBlocks, blockService));
                             sign = new ArrayList<>();
-                            if (!local_size_upper) {
+                            if (!local_size_upper && temp.getBigRandomNumber() < global.getBigRandomNumber()) {
                                 System.out.println("===========================");
                                 System.out.println("!local_size_upper: " + !local_size_upper);
                                 System.out.println("===========================");
@@ -574,7 +576,7 @@ public class UtilsResolving {
 
                             }
 
-                            if (local_size_upper) {
+                            if (local_size_upper && temp.getBigRandomNumber() < global.getBigRandomNumber()) {
                                 System.out.println("===========================");
                                 System.out.println("local_size_upper: " + local_size_upper);
                                 System.out.println("===========================");

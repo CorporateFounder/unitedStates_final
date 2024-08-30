@@ -100,11 +100,9 @@ public class UtilsUse {
 
         // Определяем фильтр на основе значения индекса
         Predicate<DtoTransaction> transactionFilter;
-        if (index > ALGORITM_MINING_2) {
-            transactionFilter = t -> !t.getSender().equals(Seting.BASIS_ADDRESS) && t.getDigitalDollar() >= Seting.MINIMUM;
-        } else {
+
             transactionFilter = t -> !t.getSender().equals(Seting.BASIS_ADDRESS);
-        }
+
 
         // Подсчитываем уникальные адреса и суммы для актуальных транзакций
         long actualUniqAddress = actual.stream()
