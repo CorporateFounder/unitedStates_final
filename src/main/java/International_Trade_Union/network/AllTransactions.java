@@ -40,7 +40,13 @@ public class AllTransactions {
             try {
                 System.out.println("get transactions from server: " + s + "its time 45 seconds");
                 String json = UtilUrl.readJsonFromUrl(s + "/getTransactions");
-                List<DtoTransaction> list = UtilsJson.jsonToDtoTransactionList(json);
+                List<DtoTransaction> list;
+                if(!json.isEmpty()){
+                    list= UtilsJson.jsonToDtoTransactionList(json);
+                }else {
+                    list = new ArrayList<>();
+                }
+
 
                 instance.addAll(list);
 
