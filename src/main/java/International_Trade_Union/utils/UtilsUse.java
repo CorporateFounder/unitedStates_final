@@ -5,6 +5,7 @@ import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.services.BlockService;
+
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.MyLogger;
 import International_Trade_Union.setings.Seting;
@@ -28,7 +29,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static International_Trade_Union.setings.Seting.ERROR_FILE;
 import static International_Trade_Union.setings.Seting.SENDING_DECIMAL_PLACES;
 
 public class UtilsUse {
@@ -684,7 +684,9 @@ public class UtilsUse {
                     if (sender.getDigitalStakingBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0) {
                         result = UtilsBalance.sendMoney(sender, customer, transactionDigitalDollar, transactionDigitalStock, transactionBonusForMiner, transaction.getVoteEnum());
                     }
-                }
+                }else if(transaction.getVoteEnum().equals(VoteEnum.REMOVE_YOUR_VOICE) && transaction.getCustomer().startsWith("LIBER")){
+                     result = UtilsBalance.sendMoney(sender, customer, transactionDigitalDollar, transactionDigitalStock, transactionBonusForMiner, transaction.getVoteEnum());
+                 }
 
 
                 if (result) {

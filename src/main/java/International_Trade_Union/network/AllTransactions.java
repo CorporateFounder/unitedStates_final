@@ -43,12 +43,13 @@ public class AllTransactions {
                 List<DtoTransaction> list;
                 if(!json.isEmpty()){
                     list= UtilsJson.jsonToDtoTransactionList(json);
+                    instance.addAll(list);
                 }else {
                     list = new ArrayList<>();
                 }
 
 
-                instance.addAll(list);
+
 
 
             } catch (IOException | JSONException e) {
