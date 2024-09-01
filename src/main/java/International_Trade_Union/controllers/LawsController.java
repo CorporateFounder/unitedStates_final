@@ -364,14 +364,6 @@ public class LawsController {
                 boardOfShareholders,
                 votesMap);
 
-//        for (long i = from; i < to; i += 10000) {
-//            List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(i, Math.min(to, i + 1000)));
-//            for (Block block : list) {
-//                votesMap = UtilsCurrentLaw.calculateVote(votesMap, accounts, block);
-//            }
-//        }
-
-
 
 
         //убрать появление всех бюджет и эмиссий из отображения в действующих законах

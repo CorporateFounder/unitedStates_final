@@ -30,9 +30,7 @@ public class AllTransactions {
     }
 
     public static synchronized List<DtoTransaction> getInstance() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        if (instance == null) {
-            instance = new ArrayList<>();
-        }
+
         instance = new ArrayList<>();
 
         //считываем с пула транзакции из дисковери.

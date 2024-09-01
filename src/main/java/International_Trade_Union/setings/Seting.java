@@ -354,5 +354,6 @@ public interface Seting {
 
     int DIFFICULT_MONEY =  22;
 
+    int ONLY_SUM_BALANCE = 299845;
 }
 

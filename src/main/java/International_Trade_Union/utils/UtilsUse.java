@@ -128,6 +128,7 @@ public class UtilsUse {
                 .mapToDouble(DtoTransaction::getDigitalDollar)
                 .sum();
 
+
         // Возвращаем коэффициент, если выполнены условия, иначе 0
         return actualUniqAddress > prevUniqAddress && actualSumDollar > prevSumDollar ? Seting.COEFFICIENT : 0;
     }
@@ -432,8 +433,15 @@ public class UtilsUse {
             // Новая формула для максимального количества баллов за транзакции
             double maxTransactionPoints = diffLimit * 3 + mineScore;
 
+
+            double transactionPoints = 0;
+
+            if(actual.getIndex() > Seting.ONLY_SUM_BALANCE){
+                transactionPoints = calculateScore(transactionSum, number);
+            }else {
+                transactionPoints = Math.max(transactionCountPoints, transactionSumPoints);
+            }
             // Выбираем большее из количества и суммы транзакций
-            double transactionPoints = Math.max(transactionCountPoints, transactionSumPoints);
 
             // Ограничиваем баллы за транзакции новым максимумом
             transactionPoints = Math.min(transactionPoints, maxTransactionPoints);
