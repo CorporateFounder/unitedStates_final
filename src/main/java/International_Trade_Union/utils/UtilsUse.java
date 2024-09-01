@@ -437,7 +437,7 @@ public class UtilsUse {
             double transactionPoints = 0;
 
             if(actual.getIndex() > Seting.ONLY_SUM_BALANCE){
-                transactionPoints = calculateScore(transactionSum, 0.01);
+                transactionPoints = calculateScore(transactionSum, 0.1);
             }else {
                 transactionPoints = Math.max(transactionCountPoints, transactionSumPoints);
             }
