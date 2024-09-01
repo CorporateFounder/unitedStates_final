@@ -365,13 +365,14 @@ public class Testing {
     @Test
     public  void calculateScore(){
 
+
         double sumBalance = 1;
         double count = 6;
         int diff = 18;
         int result = 4;
         double transactionSumPoints = UtilsUse.calculateScore(sumBalance / count, 1);
         double transactionCountPoints = count * 0.5;
-        long score = UtilsUse.calculateScore(4400000, 1);
+        long score = UtilsUse.calculateScore(2.01, 1);
 
         double maxTransactionSumPoints = (diff - 17 + score) * 0.6;
         if (transactionSumPoints > maxTransactionSumPoints) {
