@@ -1400,23 +1400,25 @@ public class UtilsResolving {
 
             if (windowManager.getWindows().containsKey(Long.valueOf(i))) {
                 balances.putAll(windowManager.getWindow(Long.valueOf(i)));
+                windowManager.remove(Long.valueOf(i));
             } else {
                 balances = rollbackCalculateBalance(balances, block);
             }
 
 
         }
-
-
         try {
+
             blockService.saveAccountAllF(UtilsAccountToEntityAccount.accountsToEntityAccounts(balances));
+            blockService.deleteEntityBlocksAndRelatedData(threshold);
+            windowManager.saveWindowsToFile();
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return false;
         }
 
 
-        blockService.deleteEntityBlocksAndRelatedData(threshold);
+
 
         allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
@@ -1441,6 +1443,9 @@ public class UtilsResolving {
         boolean save = addBlock3(saveBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
         if (!save) {
             existM = false;
+            MyLogger.saveLog("error rollback4: tempBlock index 0: " + tempBlock.get(0).getIndex());
+            MyLogger.saveLog("error rollback4: saveBlocks index 0: " + saveBlocks.get(0).getIndex());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
 
 
@@ -1492,16 +1497,22 @@ public class UtilsResolving {
                 Block block = deleteBlocks.get(i);
                 if (windowManager.getWindows().containsKey(Long.valueOf(i))) {
                     balances.putAll(windowManager.getWindow(Long.valueOf(i)));
+                    windowManager.remove(Long.valueOf(i));
+
                 } else {
                     balances = rollbackCalculateBalance(balances, block);
                 }
 
             }
+
             blockService.saveAccountAllF(UtilsAccountToEntityAccount.accountsToEntityAccounts(balances));
 
             blockService.deleteEntityBlocksAndRelatedData(threshold);
+            windowManager.saveWindowsToFile();
         } catch (Throwable e) {
             MyLogger.saveLog("error tournament: ", e);
+            MyLogger.saveLog("error rollback4: tempBlock index 0: " + tempBlock.get(0).getIndex());
+            MyLogger.saveLog("error rollback4: saveBlocks index 0: " + saveBlocks.get(0).getIndex());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return false;
         }
@@ -1522,6 +1533,7 @@ public class UtilsResolving {
         boolean save = addBlock3(saveBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
         if (!save) {
             existM = false;
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
 //        MyLogger.saveLog("rollBackAddBlock3 finish");
         return existM;

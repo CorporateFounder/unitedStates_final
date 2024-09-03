@@ -42,6 +42,10 @@ public class SlidingWindowManager {
         }
     }
 
+    public synchronized void remove(Long key){
+        windows.remove(key);
+    }
+
     // Метод для получения записи по ключу
     public synchronized Map<String, Account> getWindow(Long key) {
         return windows.get(key);

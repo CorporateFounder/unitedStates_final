@@ -360,7 +360,7 @@ public class UtilsBalance {
         if (!senderAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
             if (senderDigitalStock.compareTo(digitalStock) < 0) {
                 System.out.println("less stock");
-                MyLogger.saveLog("less stock:senderDigitalStock " + senderDigitalStock + " digitalStock " + digitalStock );
+                MyLogger.saveLog("less stock:senderDigitalStock " + senderDigitalStock + " digitalStock " + digitalStock + " sender: " + senderAddress );
                 sendTrue = false;
             } else if (recipientAddress.getAccount().equals(Seting.BASIS_ADDRESS)) {
                 System.out.println("Basis cannot be recipient");
