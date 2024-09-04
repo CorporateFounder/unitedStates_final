@@ -31,7 +31,12 @@ public class SlidingWindowManager {
                 }
             }
         }
+
         return instance;
+    }
+
+    public static SlidingWindowManager loadInstance(String filePath){
+        return  instance = new SlidingWindowManager(filePath);
     }
 
     // Потокобезопасное добавление новой записи в скользящее окно

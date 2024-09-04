@@ -371,7 +371,7 @@ public class UtilsBalanceTest {
         }
 
         // Replace the HashMap with a LinkedHashMap that has a size limit for the sliding window
-        SlidingWindowManager windows = SlidingWindowManager.getInstance("C://strategy3/test/" + Seting.SLIDING_WINDOWS_BALANCE);
+        SlidingWindowManager windows = SlidingWindowManager.loadInstance("C://strategy3/test/" + Seting.SLIDING_WINDOWS_BALANCE);
         Map<String, Account> clone = UtilsUse.balancesClone(balance);
         for (Block temp : list) {
             windows.addWindow(temp.getIndex(), UtilsUse.balancesClone(balance));
@@ -724,7 +724,7 @@ public class UtilsBalanceTest {
     public void testSizeWindows() throws CloneNotSupportedException, IOException {
 //        Map<Long, Map<String, Account>> windows = UtilsUse.slideWindow();
 
-        SlidingWindowManager windowManager = SlidingWindowManager.getInstance("C://strategy3/test/" + Seting.SLIDING_WINDOWS_BALANCE);
+        SlidingWindowManager windowManager = SlidingWindowManager.loadInstance("C://strategy3/test/" + Seting.SLIDING_WINDOWS_BALANCE);
 //        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile("C://strategy3" + Seting.SLIDING_WINDOWS_BALANCE);
         Map<String, Account> balance = new HashMap<>();
         Account account = new Account("sender", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);

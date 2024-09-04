@@ -493,7 +493,7 @@ public class BasisController {
             if (BasisController.getBlockchainSize() > 1){
                 temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
 
-                SlidingWindowManager windowManager = SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
+                SlidingWindowManager windowManager = SlidingWindowManager.loadInstance(Seting.SLIDING_WINDOWS_BALANCE);
                 boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, windowManager);
                 if (result) {
                     BasisController.setShortDataBlockchain(temp);
@@ -508,7 +508,7 @@ public class BasisController {
 
                 }
             }else {
-                SlidingWindowManager windowManager =  SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
+                SlidingWindowManager windowManager =  SlidingWindowManager.loadInstance(Seting.SLIDING_WINDOWS_BALANCE);
                 boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, windowManager);
                 balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
                 tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));

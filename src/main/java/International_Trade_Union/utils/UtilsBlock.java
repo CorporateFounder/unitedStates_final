@@ -422,7 +422,7 @@ public class UtilsBlock {
 
         if (thisBlock.getIndex() > BALANCE_CHEKING) {
 //            Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(thisBlock.getDtoTransactions()));
-           SlidingWindowManager windowManager =  SlidingWindowManager.getInstance(SLIDING_WINDOWS_BALANCE);
+           SlidingWindowManager windowManager =  SlidingWindowManager.loadInstance(SLIDING_WINDOWS_BALANCE);
             Map<String, Account> balances = windowManager.getWindow(previusblock.getIndex());
             balances = UtilsBalance.calculateBalance(balances, previusblock, new ArrayList<>());
             List<DtoTransaction> transactions = thisBlock.getDtoTransactions()
