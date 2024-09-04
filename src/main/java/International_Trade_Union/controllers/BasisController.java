@@ -6,7 +6,7 @@ import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.entities.EntityBlock;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.UtilsGovernment;
-import International_Trade_Union.model.HostEndDataShortB;
+import International_Trade_Union.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.json.JSONException;
 
@@ -17,9 +17,6 @@ import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
-import International_Trade_Union.model.Account;
-import International_Trade_Union.model.Mining;
-import International_Trade_Union.model.User;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
@@ -496,8 +493,8 @@ public class BasisController {
             if (BasisController.getBlockchainSize() > 1){
                 temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
 
-
-                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                SlidingWindowManager windowManager = SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
+                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, windowManager);
                 if (result) {
                     BasisController.setShortDataBlockchain(temp);
                     BasisController.setBlockchainSize((int) temp.getSize());
@@ -511,7 +508,8 @@ public class BasisController {
 
                 }
             }else {
-                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                SlidingWindowManager windowManager =  SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
+                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, windowManager);
                 balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
                 tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
                 if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY && BasisController.getBlockchainSize() < Seting.V34_NEW_ALGO) {

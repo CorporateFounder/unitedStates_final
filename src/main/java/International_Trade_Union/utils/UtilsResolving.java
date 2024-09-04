@@ -282,7 +282,8 @@ public class UtilsResolving {
                                         System.out.println("first: " + subBlocks.get(1).getIndex());
                                         System.out.println("temp: " + temp);
                                     }
-                                    boolean save = addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                                    SlidingWindowManager windowManager = SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
+                                    boolean save = addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, windowManager);
                                     temp = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
                                     if (!temp.isValidation()) {
                                         System.out.println("error validation: " + temp);
@@ -1009,8 +1010,8 @@ public class UtilsResolving {
                 temp.setValidation(false);
                 return temp;
             }
-
-            boolean save = addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            SlidingWindowManager windowManager = SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
+            boolean save = addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, windowManager);
             if (save) {
                 BasisController.setShortDataBlockchain(temp);
                 BasisController.setBlockchainSize((int) temp.getSize());
@@ -1215,8 +1216,8 @@ public class UtilsResolving {
                 return temp;
             }
 
-
-            boolean save = addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            SlidingWindowManager windowManager = SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
+            boolean save = addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, windowManager);
             if (save) {
                 BasisController.setShortDataBlockchain(temp);
                 BasisController.setBlockchainSize((int) temp.getSize());
@@ -1331,7 +1332,8 @@ public class UtilsResolving {
             //вызывает методы, для сохранения списка блоков в текущий блокчейн,
             //так же записывает в базу h2, делает перерасчет всех балансов,
             //и так же их записывает, а так же записывает другие данные.
-            boolean save = addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+            SlidingWindowManager windowManager = SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
+            boolean save = addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, windowManager);
             if (save) {
                 BasisController.setShortDataBlockchain(temp);
                 BasisController.setBlockchainSize((int) temp.getSize());
@@ -1411,7 +1413,7 @@ public class UtilsResolving {
 
             blockService.saveAccountAllF(UtilsAccountToEntityAccount.accountsToEntityAccounts(balances));
             blockService.deleteEntityBlocksAndRelatedData(threshold);
-            windowManager.saveWindowsToFile();
+
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return false;
@@ -1440,7 +1442,7 @@ public class UtilsResolving {
         System.out.println("balances size: " + balances.size());
 
 
-        boolean save = addBlock3(saveBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        boolean save = addBlock3(saveBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, windowManager);
         if (!save) {
             existM = false;
             MyLogger.saveLog("error rollback4: tempBlock index 0: " + tempBlock.get(0).getIndex());
@@ -1487,10 +1489,8 @@ public class UtilsResolving {
             });
         }
 
-//        Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
-
-        SlidingWindowManager windowManager = SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
         // Replace the HashMap with a LinkedHashMap that has a size limit for the sliding window
+        SlidingWindowManager windowManager = SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
 //        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile(Seting.SLIDING_WINDOWS_BALANCE);
         try {
             for (int i = deleteBlocks.size() - 1; i >= 0; i--) {
@@ -1508,7 +1508,7 @@ public class UtilsResolving {
             blockService.saveAccountAllF(UtilsAccountToEntityAccount.accountsToEntityAccounts(balances));
 
             blockService.deleteEntityBlocksAndRelatedData(threshold);
-            windowManager.saveWindowsToFile();
+
         } catch (Throwable e) {
             MyLogger.saveLog("error tournament: ", e);
             MyLogger.saveLog("error rollback4: tempBlock index 0: " + tempBlock.get(0).getIndex());
@@ -1516,8 +1516,6 @@ public class UtilsResolving {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return false;
         }
-
-
 
 
         allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
@@ -1530,7 +1528,7 @@ public class UtilsResolving {
         Blockchain.deleteFileBlockchain(Integer.parseInt(file.getName().replace(".txt", "")), Seting.ORIGINAL_BLOCKCHAIN_FILE);
         UtilsBlock.saveBlocks(tempBlock, filename);
 
-        boolean save = addBlock3(saveBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        boolean save = addBlock3(saveBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, windowManager);
         if (!save) {
             existM = false;
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -1538,6 +1536,7 @@ public class UtilsResolving {
 //        MyLogger.saveLog("rollBackAddBlock3 finish");
         return existM;
     }
+
 
 
 
@@ -1551,7 +1550,7 @@ public class UtilsResolving {
 
 
     @Transactional
-    public boolean addBlock3(List<Block> originalBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
+    public boolean addBlock3(List<Block> originalBlocks, Map<String, Account> balances, String filename, SlidingWindowManager windowManager) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         java.sql.Timestamp lastIndex = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
         UtilsBalance.setBlockService(blockService);
         Blockchain.setBlockService(blockService);
@@ -1566,7 +1565,7 @@ public class UtilsResolving {
         Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
         long start = UtilsTime.getUniversalTimestamp();
 
-        SlidingWindowManager windowManager = SlidingWindowManager.getInstance(Seting.SLIDING_WINDOWS_BALANCE);
+
 //        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile(Seting.SLIDING_WINDOWS_BALANCE);
 
         for (Block block : originalBlocks) {
