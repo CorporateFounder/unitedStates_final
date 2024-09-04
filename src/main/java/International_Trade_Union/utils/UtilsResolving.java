@@ -1402,7 +1402,6 @@ public class UtilsResolving {
 
             if (windowManager.getWindows().containsKey(Long.valueOf(i))) {
                 balances.putAll(windowManager.getWindow(Long.valueOf(i)));
-                windowManager.remove(Long.valueOf(i));
             } else {
                 balances = rollbackCalculateBalance(balances, block);
             }
@@ -1497,7 +1496,7 @@ public class UtilsResolving {
                 Block block = deleteBlocks.get(i);
                 if (windowManager.getWindows().containsKey(Long.valueOf(i))) {
                     balances.putAll(windowManager.getWindow(Long.valueOf(i)));
-                    windowManager.remove(Long.valueOf(i));
+
 
                 } else {
                     balances = rollbackCalculateBalance(balances, block);
