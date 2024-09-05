@@ -181,6 +181,9 @@ public class UtilsBalance {
 
         Base base = new Base58();
         System.out.println("calculateBalance: index: " + block.getIndex());
+        if(balances == null || balances.size() == 0){
+            MyLogger.saveLog("balances null: " + balances + " index block: " + block.getIndex());
+        }
 
         int i = (int) block.getIndex();
 

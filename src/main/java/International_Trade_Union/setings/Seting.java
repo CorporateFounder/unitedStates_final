@@ -344,7 +344,7 @@ public interface Seting {
 
     double MINIMUM = 0.01;
 
-    int SLIDING_WINDOW_BALANCE = 100;
+    int SLIDING_WINDOW_BALANCE = 200;
 
     int ALGORITM_MINING = 295316;
 
