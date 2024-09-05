@@ -333,7 +333,7 @@ public interface Seting {
     int IS_BIG_DIFFERENT = 20;
 
 //    int DUPLICATE_INDEX = 0;
-    int DUPLICATE_INDEX = 300735;
+    int DUPLICATE_INDEX = 243927;
 
     int START_BLOCK_DECIMAL_PLACES = 268765;
     int NEW_ALGO_MINING = 286892;

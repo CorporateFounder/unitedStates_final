@@ -1539,6 +1539,7 @@ public class UtilsResolving {
 
 
 
+
     /**
      * rewrites the blockchain into files and into the h2 database. From here they are called
      * * methods that calculate balance and other calculations.
@@ -1594,13 +1595,12 @@ public class UtilsResolving {
             blockService.saveAccountAllF(accountList);
 
             finish = UtilsTime.getUniversalTimestamp();
-        } catch (Throwable e) {
+        } catch (Exception e) {
 
             String stackerror = "";
             for (StackTraceElement stackTraceElement : e.getStackTrace()) {
                 stackerror += stackTraceElement.toString() + "\n";
             }
-            windowManager = SlidingWindowManager.loadInstance(Seting.SLIDING_WINDOWS_BALANCE);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return false;
 
