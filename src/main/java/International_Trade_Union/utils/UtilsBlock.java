@@ -418,6 +418,7 @@ public class UtilsBlock {
         int countBasisSendAll = 0;
 
 
+
         if (thisBlock.getIndex() > Seting.DUBLICATE_IN_ONE_BLOCK_TRANSACTIONS && UtilsUse.getDuplicateTransactions(thisBlock).size() > 0) {
             System.out.println("the block contains transactions with duplicate signatures.");
             List<DtoTransaction> dublicates = UtilsUse.getDuplicateTransactions(thisBlock);
@@ -468,6 +469,16 @@ public class UtilsBlock {
 
         if (thisBlock.getIndex() > ALGORITM_MINING_2) {
             for (DtoTransaction dtoTransaction : thisBlock.getDtoTransactions()) {
+
+                if (thisBlock.getIndex() > VOTE_ENUM_CONTAIN) {
+                    if (!EnumSet.allOf(VoteEnum.class).contains(dtoTransaction.getVoteEnum())) {
+                        // Значение не существует в перечислении
+                        System.out.println("Enum value does not exist in VoteEnum");
+                        MyLogger.saveLog("Enum value does not exist in VoteEnum");
+                        validated = false;
+                        return validated;
+                    }
+                }
                 if (!dtoTransaction.getCustomer().equals(BASIS_ADDRESS)) {
                     if (dtoTransaction.getDigitalDollar() < MINIMUM
                             && dtoTransaction.getDigitalStockBalance() < MINIMUM
