@@ -8,8 +8,7 @@ import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
-import International_Trade_Union.model.HostEndDataShortB;
-import International_Trade_Union.model.Mining;
+import International_Trade_Union.model.*;
 import International_Trade_Union.setings.originalCorporateCharter.OriginalCHARTER;
 import International_Trade_Union.setings.originalCorporateCharter.OriginalCHARTER_ENG;
 import International_Trade_Union.setings.originalCorporateCharter.OriginalPreamble;
@@ -24,8 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
-import International_Trade_Union.model.Account;
-import International_Trade_Union.model.User;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
@@ -52,12 +49,15 @@ public class MainController {
 
     @Autowired
     BlockService blockService;
+
+    @Autowired
+    SlidingWindowManager slidingWindowManager;
     @PostConstruct
     public void init() {
         Blockchain.setBlockService(blockService);
         UtilsBalance.setBlockService(blockService);
         UtilsBlock.setBlockService(blockService);
-
+        UtilsBlock.setSlidingWindowManager(slidingWindowManager);
     }
     @Autowired
     UtilsResolving utilsResolving;

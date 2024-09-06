@@ -7,6 +7,7 @@ import International_Trade_Union.entity.entities.EntityBlock;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.Mining;
+import International_Trade_Union.model.SlidingWindowManager;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.statistics.Periud;
 import International_Trade_Union.statistics.Statistic;
@@ -39,13 +40,14 @@ import java.util.stream.Collectors;
 public class StatisticsController {
     @Autowired
     BlockService blockService;
-
+    @Autowired
+    SlidingWindowManager slidingWindowManager;
     @PostConstruct
     public void init() {
         Blockchain.setBlockService(blockService);
         UtilsBalance.setBlockService(blockService);
         UtilsBlock.setBlockService(blockService);
-
+        UtilsBlock.setSlidingWindowManager(slidingWindowManager);
     }
     private static Periud periud = International_Trade_Union.statistics.Periud.DAY;
 

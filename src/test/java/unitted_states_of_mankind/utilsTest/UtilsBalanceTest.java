@@ -371,14 +371,12 @@ public class UtilsBalanceTest {
         }
 
         // Replace the HashMap with a LinkedHashMap that has a size limit for the sliding window
-        SlidingWindowManager windows = SlidingWindowManager.loadInstance("C://strategy3/test/" + Seting.SLIDING_WINDOWS_BALANCE);
         Map<String, Account> clone = UtilsUse.balancesClone(balance);
         for (Block temp : list) {
-            windows.addWindow(temp.getIndex(), UtilsUse.balancesClone(balance));
+
             UtilsBalance.calculateBalance(balance, temp, new ArrayList<>());
         }
 
-        windows.saveWindowsToFile();
         System.out.println("---------------------------------------------------------------------");
         System.out.println("before");
 
@@ -386,16 +384,10 @@ public class UtilsBalanceTest {
 
         list = list.stream().sorted(Comparator.comparing(Block::getIndex).reversed()).collect(Collectors.toList());
 
-        windows.reloadFromFile();
         Map<String, Account> cloneWindow = UtilsUse.balancesClone(balance);
         for (Block temp : list) {
-            if (windows.getWindows().containsKey(temp.getIndex())){
-                balance.putAll(windows.getWindow(temp.getIndex()));
-            }else {
+
                 UtilsBalance.rollbackCalculateBalance(balance, temp);
-            }
-
-
 
         }
 
@@ -406,7 +398,7 @@ public class UtilsBalanceTest {
         System.out.println("result size: " + result.size());
         System.out.println("result2 size: " + result2.size());
         Long index = list.get(list.size() - 5).getIndex();
-        System.out.println("windows: " + windows.getWindow(index));
+
         //true test completed
         Assert.assertTrue(result.size() == 0);
         Assert.assertTrue(result.size() == 0);
@@ -720,38 +712,6 @@ public class UtilsBalanceTest {
 
     }
 
-    @Test
-    public void testSizeWindows() throws CloneNotSupportedException, IOException {
-//        Map<Long, Map<String, Account>> windows = UtilsUse.slideWindow();
-
-        SlidingWindowManager windowManager = SlidingWindowManager.loadInstance("C://strategy3/test/" + Seting.SLIDING_WINDOWS_BALANCE);
-//        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile("C://strategy3" + Seting.SLIDING_WINDOWS_BALANCE);
-        Map<String, Account> balance = new HashMap<>();
-        Account account = new Account("sender", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
-        balance.put(account.getAccount(), account);
-        for (long i = 0; i < 150; i++) {
-            balance.get("sender").setDigitalStakingBalance(BigDecimal.valueOf(i));
-            balance.get("sender").setDigitalStockBalance(BigDecimal.valueOf(i));
-            balance.get("sender").setDigitalDollarBalance(BigDecimal.valueOf(i));
-            windowManager.addWindow(Long.valueOf(i), UtilsUse.balancesClone(balance));
-            System.out.println("windows: " + windowManager.getWindow(i));
-        }
-        windowManager.saveWindowsToFile();
-        System.out.println("windows: " + windowManager.getWindows().size());
-        Assert.assertTrue(windowManager.getWindows().size() == 100);
-        for (Map.Entry<Long, Map<String, Account>> longMapEntry : windowManager.getWindows().entrySet()) {
-            System.out.println(longMapEntry.getKey());
-        }
-        System.out.println("contains: " + windowManager.getWindows().containsKey(Long.valueOf(110)));
-        System.out.println(windowManager.getWindow(Long.valueOf(110)));
-        Assert.assertTrue(windowManager.getWindow(Long.valueOf(110)) != null);
-        for (int i = 30; i < 60; i++) {
-            if (windowManager.getWindows().containsKey(Long.valueOf(i))) {
-                System.out.println("has: " + i);
-            }
-        }
-
-    }
 
 }
 

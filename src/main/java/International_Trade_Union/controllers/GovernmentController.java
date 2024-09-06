@@ -10,6 +10,7 @@ import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.model.FIndPositonHelperData;
 import International_Trade_Union.model.Mining;
+import International_Trade_Union.model.SlidingWindowManager;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
@@ -39,12 +40,15 @@ public class GovernmentController {
 
     @Autowired
     BlockService blockService;
+
+    @Autowired
+    SlidingWindowManager slidingWindowManager;
     @PostConstruct
     public void init() {
         Blockchain.setBlockService(blockService);
         UtilsBalance.setBlockService(blockService);
         UtilsBlock.setBlockService(blockService);
-
+        UtilsBlock.setSlidingWindowManager(slidingWindowManager);
     }
 
 

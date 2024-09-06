@@ -34,6 +34,15 @@ public class UtilsBlock {
 
 
     private static BlockService blockService;
+    private static SlidingWindowManager slidingWindowManager;
+
+    public static SlidingWindowManager getSlidingWindowManager() {
+        return slidingWindowManager;
+    }
+
+    public static void setSlidingWindowManager(SlidingWindowManager slidingWindowManager) {
+        UtilsBlock.slidingWindowManager = slidingWindowManager;
+    }
 
     public static BlockService getBlockService() {
         return blockService;
@@ -422,9 +431,10 @@ public class UtilsBlock {
 
         if (thisBlock.getIndex() > BALANCE_CHEKING) {
 //            Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(thisBlock.getDtoTransactions()));
-           SlidingWindowManager windowManager =  SlidingWindowManager.loadInstance(SLIDING_WINDOWS_BALANCE);
 
-           Map<String, Account> balances = windowManager.getWindow(previusblock.getIndex());
+            List<String> accountIds = slidingWindowManager.getAccountIdsFromBlock(previusblock);
+            // Получаем балансы по списку аккаунтов
+            Map<String, Account> balances  = slidingWindowManager.getBalancesForAccounts(accountIds, previusblock.getIndex());
 
            if(balances == null){
                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(previusblock.getDtoTransactions()));
