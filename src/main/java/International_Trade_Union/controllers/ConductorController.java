@@ -43,14 +43,11 @@ public class ConductorController {
     @Autowired
     UtilsResolving utilsResolving;
 
-    @Autowired
-    SlidingWindowManager slidingWindowManager;
     @PostConstruct
     public void init() {
         Blockchain.setBlockService(blockService);
         UtilsBalance.setBlockService(blockService);
         UtilsBlock.setBlockService(blockService);
-        UtilsBlock.setSlidingWindowManager(slidingWindowManager);
 
     }
     /**
@@ -469,6 +466,15 @@ public class ConductorController {
             e.printStackTrace();
         }
         return accountMap;
+    }
+
+
+    @GetMapping("/fromWindow")
+    @ResponseBody
+    public String fromWindow(@RequestParam long index){
+        SlidingWindowManager windowManager = SlidingWindowManager.loadInstance(Seting.SLIDING_WINDOWS_BALANCE);
+        Map<String, Account> balance =  windowManager.getWindow(index);
+        return balance.toString() + " : " + balance.size();
     }
 
 }

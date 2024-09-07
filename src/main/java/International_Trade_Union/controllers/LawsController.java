@@ -7,7 +7,6 @@ import International_Trade_Union.governments.Director;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.model.FIndPositonHelperData;
-import International_Trade_Union.model.SlidingWindowManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,15 +35,11 @@ import java.util.stream.Collectors;
 public class LawsController {
     @Autowired
     BlockService blockService;
-
-    @Autowired
-    SlidingWindowManager slidingWindowManager;
     @PostConstruct
     public void init() {
         Blockchain.setBlockService(blockService);
         UtilsBalance.setBlockService(blockService);
         UtilsBlock.setBlockService(blockService);
-        UtilsBlock.setSlidingWindowManager(slidingWindowManager);
 
     }
 

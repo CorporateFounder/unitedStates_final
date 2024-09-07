@@ -10,7 +10,6 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\mode
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\EntityChain.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\setings\Seting.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\about_us_engDraft\AboutUsEngDraft.java
-D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\entities\SlidingWindowBalanceEntity.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\base\Base58.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsCreatedDirectory.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\vote\UtilsLaws.java
@@ -88,7 +87,6 @@ D:\unitedStates duplicates original\src\main\java\International_Trade_Union\gove
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\AddressUrl.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilsTransaction.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\repository\EntityLawsRepository.java
-D:\unitedStates duplicates original\src\main\java\International_Trade_Union\entity\repository\SlidingWindowBalanceRepository.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\utils\UtilAccounts.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\exception\NotValidTransactionException.java
 D:\unitedStates duplicates original\src\main\java\International_Trade_Union\setings\originalCorporateCharter\OriginalPreambleEng.java

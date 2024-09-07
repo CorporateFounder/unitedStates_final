@@ -741,7 +741,7 @@ public class Testing {
                 .collect(Collectors.toList());
 
         List<EntityAccount> entityAccounts = UtilsAccountToEntityAccount.accountsToEntityAccounts(balances);
-        List<Account> testAccount = UtilsAccountToEntityAccount.entityAccountsToListAccounts(entityAccounts);
+        List<Account> testAccount = UtilsAccountToEntityAccount.EntityAccountToAccount(entityAccounts);
         assertEquals(testAccount, accountList);
 
     }

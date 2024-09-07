@@ -5,7 +5,6 @@ import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Mining;
-import International_Trade_Union.model.SlidingWindowManager;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.UtilsBalance;
@@ -32,14 +31,12 @@ public class TransactionController {
     @Autowired
     BlockService blockService;
 
-    @Autowired
-    SlidingWindowManager slidingWindowManager;
     @PostConstruct
     public void init() {
         Blockchain.setBlockService(blockService);
         UtilsBalance.setBlockService(blockService);
         UtilsBlock.setBlockService(blockService);
-        UtilsBlock.setSlidingWindowManager(slidingWindowManager);
+
     }
 
     /**Добавляет транзакцию во внутренний файл.

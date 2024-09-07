@@ -57,16 +57,12 @@ import static International_Trade_Union.utils.UtilsBalance.*;
 public class BasisController {
 
     private BlockService blockService;
-
-    @Autowired
-    SlidingWindowManager slidingWindowManager;
     @Autowired
     public BasisController(BlockService blockService) {
         this.blockService = blockService;
         Blockchain.setBlockService(blockService);
         UtilsBalance.setBlockService(blockService);
         UtilsBlock.setBlockService(blockService);
-        UtilsBlock.setSlidingWindowManager(slidingWindowManager);
         initializeBlockchain();
     }
 
@@ -496,19 +492,9 @@ public class BasisController {
             DataShortBlockchainInformation temp = new DataShortBlockchainInformation();
             if (BasisController.getBlockchainSize() > 1){
                 temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
-                slidingWindowManager.clearTemporaryWindow();
 
-                for (Block block : list) {
-                    // Собираем список адресов из блока
-                    List<String> accountIds = slidingWindowManager.getAccountIdsFromBlock(block);
-
-                    // Получаем балансы по списку аккаунтов
-                    Map<String, Account> restoredBalances = slidingWindowManager.getBalancesForAccounts(accountIds, block.getIndex());
-
-                    // Восстанавливаем данные в общую карту балансов
-                    balances.putAll(restoredBalances);
-                }
-                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, slidingWindowManager);
+                SlidingWindowManager windowManager = SlidingWindowManager.loadInstance(Seting.SLIDING_WINDOWS_BALANCE);
+                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, windowManager);
                 if (result) {
                     BasisController.setShortDataBlockchain(temp);
                     BasisController.setBlockchainSize((int) temp.getSize());
@@ -522,18 +508,8 @@ public class BasisController {
 
                 }
             }else {
-                slidingWindowManager.clearTemporaryWindow();
-
-                for (Block block : list) {
-                    // Собираем список адресов из блока
-                    List<String> accountIds = slidingWindowManager.getAccountIdsFromBlock(block);
-
-                    // Получаем балансы по списку аккаунтов
-                    Map<String, Account> restoredBalances = slidingWindowManager.getBalancesForAccounts(accountIds, block.getIndex());
-
-                    // Восстанавливаем данные в общую карту балансов
-                    balances.putAll(restoredBalances);
-                }                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, slidingWindowManager);
+                SlidingWindowManager windowManager =  SlidingWindowManager.loadInstance(Seting.SLIDING_WINDOWS_BALANCE);
+                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, windowManager);
                 balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
                 tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
                 if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY && BasisController.getBlockchainSize() < Seting.V34_NEW_ALGO) {

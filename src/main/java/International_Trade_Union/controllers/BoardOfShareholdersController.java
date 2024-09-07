@@ -6,7 +6,6 @@ import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Mining;
-import International_Trade_Union.model.SlidingWindowManager;
 import International_Trade_Union.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,15 +31,11 @@ import java.util.stream.Collectors;
 public class BoardOfShareholdersController {
     @Autowired
     BlockService blockService;
-
-    @Autowired
-    SlidingWindowManager slidingWindowManager;
     @PostConstruct
     public void init() {
         Blockchain.setBlockService(blockService);
         UtilsBalance.setBlockService(blockService);
         UtilsBlock.setBlockService(blockService);
-        UtilsBlock.setSlidingWindowManager(slidingWindowManager);
 
     }
     /**отображает список Совета Акционеров, отображается в браузере.

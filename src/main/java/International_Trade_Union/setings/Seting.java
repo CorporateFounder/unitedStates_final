@@ -344,7 +344,7 @@ public interface Seting {
 
     double MINIMUM = 0.01;
 
-    int SLIDING_WINDOW_BALANCE = 200;
+    int SLIDING_WINDOW_BALANCE = 25;
 
     int ALGORITM_MINING = 295316;
 
@@ -356,6 +356,5 @@ public interface Seting {
 
     int ONLY_SUM_BALANCE = 299845;
 
-    int VOTE_ENUM_CONTAIN = 300681;
 }
 
