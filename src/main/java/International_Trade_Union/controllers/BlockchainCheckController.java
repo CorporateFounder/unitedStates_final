@@ -37,18 +37,13 @@ public class BlockchainCheckController {
     @GetMapping("/checkValidation")
     public boolean checkValidation() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
-        try{
-            DataShortBlockchainInformation data = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-            boolean check = data.isValidation();
-            if(check == false){
-                System.out.println("deleted blockchain files");
-            }
-
-            System.out.println("check: " + check);
-            return check;}
-        catch (IOException e){
-            e.printStackTrace();
-            return false;
+        DataShortBlockchainInformation data = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        boolean check = data.isValidation();
+        if(check == false){
+            System.out.println("deleted blockchain files");
         }
+
+        System.out.println("check: " + check);
+        return check;
     }
 }

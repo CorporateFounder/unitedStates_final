@@ -297,8 +297,8 @@ public class BasisController {
             blockchainValid = shortDataBlockchain.isValidation();
             prevBlock = Blockchain.indexFromFile(blockchainSize - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException |
-                 SignatureException | NoSuchProviderException | InvalidKeyException e) {
+        } catch ( IOException  e) {
+            MyLogger.saveLog("initializeBlockchain: ", e);
             throw new RuntimeException(e);
         }
     }
@@ -491,7 +491,8 @@ public class BasisController {
             tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
             DataShortBlockchainInformation temp = new DataShortBlockchainInformation();
             if (BasisController.getBlockchainSize() > 1){
-                temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
+                Map<String, Account> balanceForValidation = UtilsUse.balancesClone(balances);
+                temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign, balanceForValidation);
 
                 SlidingWindowManager windowManager = SlidingWindowManager.loadInstance(Seting.SLIDING_WINDOWS_BALANCE);
                 boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, windowManager);
@@ -520,7 +521,8 @@ public class BasisController {
                             )
                     );
                 }
-                temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign);
+                Map<String, Account> balanceForValidation = UtilsUse.balancesClone(balances);
+                temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign, balanceForValidation);
 
                 BasisController.setShortDataBlockchain(temp);
                 BasisController.setBlockchainSize((int) temp.getSize());
@@ -1089,15 +1091,18 @@ public class BasisController {
             }
             //проверяет блок на валидность, соответствует ли блок требованиям.
             //checks the block for validity, whether the block meets the requirements.
+            List<Block> blocks = new ArrayList<>();
+            blocks.add(prevBlock);
+            blocks.add(block);
+            Map<String,Account> balance = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(blocks, blockService));
             if (testingValidationsBlock.size() > 1) {
                 boolean validationTesting = UtilsBlock.validationOneBlock(
                         addresFounder,
                         testingValidationsBlock.get(testingValidationsBlock.size() - 1),
                         block,
-                        Seting.BLOCK_GENERATION_INTERVAL,
-                        diff,
                         testingValidationsBlock,
-                        blockService);
+                        blockService,
+                        balance);
 
                 if (validationTesting == false) {
                     System.out.println("wrong validation block: " + validationTesting);

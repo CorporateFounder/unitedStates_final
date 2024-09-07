@@ -51,7 +51,6 @@ International_Trade_Union\vote\Vote.class
 International_Trade_Union\controllers\WebController\WebBasisController.class
 International_Trade_Union\entity\blockchain\Blockchain.class
 International_Trade_Union\model\SlidingWindowManager$1.class
-International_Trade_Union\entity\blockchain\Blockchain$8.class
 International_Trade_Union\controllers\LawsController.class
 International_Trade_Union\setings\Seting.class
 International_Trade_Union\controllers\MainController.class

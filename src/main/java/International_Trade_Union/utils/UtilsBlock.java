@@ -365,10 +365,9 @@ public class UtilsBlock {
             String addressFounder,
             Block previusblock,
             Block thisBlock,
-            long blockGenerationInterval,
-            int difficultyAdjustmentInterval,
             List<Block> lastBlock,
-            BlockService blockService) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+            BlockService blockService,
+            Map<String, Account> balance) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
         Base base = new Base58();
         if (!addressFounder.equals(thisBlock.getFounderAddress())) {
@@ -422,9 +421,14 @@ public class UtilsBlock {
 
         if (thisBlock.getIndex() > BALANCE_CHEKING) {
 //            Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(thisBlock.getDtoTransactions()));
-           SlidingWindowManager windowManager =  SlidingWindowManager.loadInstance(SLIDING_WINDOWS_BALANCE);
+//           SlidingWindowManager windowManager =  SlidingWindowManager.loadInstance(SLIDING_WINDOWS_BALANCE);
 
-           Map<String, Account> balances = windowManager.getWindow(previusblock.getIndex());
+//           Map<String, Account> balances = windowManager.getWindow(previusblock.getIndex());
+           List<Block> tempBlock = new ArrayList<>();
+           tempBlock.add(previusblock);
+           tempBlock.add(thisBlock);
+            Map<String, Account> balances = UtilsBalance.rollbackCalculateBalance(balance, previusblock);
+
 
            if(balances == null){
                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(previusblock.getDtoTransactions()));
@@ -923,7 +927,7 @@ public class UtilsBlock {
 
         Block prevBlock = null;
         boolean haveTwoIndexOne = false;
-
+        Map<String, Account> balanceForValidation = new HashMap<>();
         List<Block> tempList = new ArrayList<>();
         for (int i = 1; i < blocks.size(); i++) {
             index++;
@@ -957,13 +961,14 @@ public class UtilsBlock {
                 tempList.remove(0);
             }
 //            tempList = tempList.stream().distinct().collect(Collectors.toList());
+
+            balanceForValidation = UtilsBalance.calculateBalance(balanceForValidation, block, new ArrayList<>());
             validated = validationOneBlock(block.getFounderAddress(),
                     prevBlock,
                     block,
-                    BLOCK_GENERATION_INTERVAL,
-                    DIFFICULTY_ADJUSTMENT_INTERVAL,
                     tempList,
-                    blockService);
+                    blockService,
+                    balanceForValidation);
 
 //            SaveBalances.saveBalances(cheater, "C://testing/cheaters/");
             if (validated == false) {
