@@ -420,27 +420,22 @@ public class UtilsBlock {
         }
 
         if (thisBlock.getIndex() > BALANCE_CHEKING) {
-//            Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(thisBlock.getDtoTransactions()));
-//           SlidingWindowManager windowManager =  SlidingWindowManager.loadInstance(SLIDING_WINDOWS_BALANCE);
+            Map<String, Account> balances = balance;
 
-//           Map<String, Account> balances = windowManager.getWindow(previusblock.getIndex());
            List<Block> tempBlock = new ArrayList<>();
            tempBlock.add(previusblock);
            tempBlock.add(thisBlock);
-            Map<String, Account> balances = UtilsBalance.rollbackCalculateBalance(balance, previusblock);
 
 
            if(balances == null){
                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(previusblock.getDtoTransactions()));
                MyLogger.saveLog("validation balance from SlidingWingdowManager null: " + balances);
            }
-            balances = UtilsBalance.calculateBalance(balances, previusblock, new ArrayList<>());
             if(balances == null){
                 MyLogger.saveLog("2 validation balance from SlidingWingdowManager null: " + balances);
             }
             List<DtoTransaction> transactions = thisBlock.getDtoTransactions()
                     .stream()
-                    .filter(t -> !BASIS_ADDRESS.equals(t.getSender()))
                     .collect(Collectors.toList());
             int transactionsCount = transactions.size();
             List<DtoTransaction> temp = UtilsUse.balanceTransaction(transactions, balances, thisBlock.getIndex());

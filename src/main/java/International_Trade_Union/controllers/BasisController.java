@@ -494,8 +494,7 @@ public class BasisController {
                 Map<String, Account> balanceForValidation = UtilsUse.balancesClone(balances);
                 temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign, balanceForValidation);
 
-                SlidingWindowManager windowManager = SlidingWindowManager.loadInstance(Seting.SLIDING_WINDOWS_BALANCE);
-                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, windowManager);
+                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                 if (result) {
                     BasisController.setShortDataBlockchain(temp);
                     BasisController.setBlockchainSize((int) temp.getSize());
@@ -509,8 +508,7 @@ public class BasisController {
 
                 }
             }else {
-                SlidingWindowManager windowManager =  SlidingWindowManager.loadInstance(Seting.SLIDING_WINDOWS_BALANCE);
-                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, windowManager);
+                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                 balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
                 tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
                 if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY && BasisController.getBlockchainSize() < Seting.V34_NEW_ALGO) {

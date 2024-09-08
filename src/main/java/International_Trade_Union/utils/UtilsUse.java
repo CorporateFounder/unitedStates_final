@@ -93,14 +93,14 @@ public class UtilsUse {
         // Задаем пороговый индекс
         int ALGORITM_MINING_2 = Seting.ALGORITM_MINING_2;
         Base base = new Base58();
-        actual = actual.stream().sorted(Comparator.comparing(t->base.encode(t.getSign()))).collect(Collectors.toList());
-        prev = prev.stream().sorted(Comparator.comparing(t->base.encode(t.getSign()))).collect(Collectors.toList());
+        actual = actual.stream().sorted(Comparator.comparing(t -> base.encode(t.getSign()))).collect(Collectors.toList());
+        prev = prev.stream().sorted(Comparator.comparing(t -> base.encode(t.getSign()))).collect(Collectors.toList());
 
 
         // Определяем фильтр на основе значения индекса
         Predicate<DtoTransaction> transactionFilter;
 
-            transactionFilter = t -> !t.getSender().equals(Seting.BASIS_ADDRESS);
+        transactionFilter = t -> !t.getSender().equals(Seting.BASIS_ADDRESS);
 
 
         // Подсчитываем уникальные адреса и суммы для актуальных транзакций
@@ -435,9 +435,9 @@ public class UtilsUse {
 
             double transactionPoints = 0;
 
-            if(actual.getIndex() > Seting.ONLY_SUM_BALANCE){
+            if (actual.getIndex() > Seting.ONLY_SUM_BALANCE) {
                 transactionPoints = calculateScore(transactionSum, 0.1);
-            }else {
+            } else {
                 transactionPoints = Math.max(transactionCountPoints, transactionSumPoints);
             }
             // Выбираем большее из количества и суммы транзакций
@@ -583,6 +583,7 @@ public class UtilsUse {
     public static BigDecimal truncateAndRound(BigDecimal value) {
         return value.setScale(SENDING_DECIMAL_PLACES, RoundingMode.DOWN);
     }
+
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
         long factor = (long) Math.pow(10, places);
@@ -640,11 +641,20 @@ public class UtilsUse {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        // Создаём EnumSet из всех возможных значений VoteEnum
+        EnumSet<VoteEnum> voteSet = EnumSet.allOf(VoteEnum.class);
         transactions = transactions.stream().sorted(Comparator.comparing(t -> base.encode(t.getSign()))).collect(Collectors.toList());
 
         for (DtoTransaction transaction : transactions) {
+
             boolean result = false;
+
+
+            if (!voteSet.contains(transaction.getVoteEnum())) {
+                System.out.println("Value is not contained in VoteEnum enum");
+                MyLogger.saveLog("Value is not contained in VoteEnum enum");
+                continue;
+            }
 
             if (balances.containsKey(transaction.getSender())) {
                 Account sender = balances.get(transaction.getSender());
@@ -659,13 +669,13 @@ public class UtilsUse {
                 BigDecimal transactionBonusForMiner = new BigDecimal(Double.toString(transaction.getBonusForMiner()));
 
                 // Check for null or negative values in transaction amounts and sender's balances
-                if (transactionDigitalDollar == null || transactionDigitalStock == null || transactionBonusForMiner == null ||
+                if ((transactionDigitalDollar == null || transactionDigitalStock == null || transactionBonusForMiner == null ||
                         sender.getDigitalDollarBalance() == null || sender.getDigitalStockBalance() == null ||
                         transactionDigitalDollar.compareTo(BigDecimal.ZERO) < 0 ||
                         transactionDigitalStock.compareTo(BigDecimal.ZERO) < 0 ||
                         transactionBonusForMiner.compareTo(BigDecimal.ZERO) < 0 ||
                         sender.getDigitalDollarBalance().compareTo(BigDecimal.ZERO) < 0 ||
-                        sender.getDigitalStockBalance().compareTo(BigDecimal.ZERO) < 0) {
+                        sender.getDigitalStockBalance().compareTo(BigDecimal.ZERO) < 0) && !Seting.BASIS_ADDRESS.equals(transaction.getSender())) {
                     MyLogger.saveLog("balanceTransaction: transactionDigitalDollar: " + transactionDigitalDollar);
                     MyLogger.saveLog("balanceTransaction: sender.getDigitalDollarBalance(): " + sender.getDigitalDollarBalance());
                     MyLogger.saveLog("balanceTransaction: transactionDigitalStock: " + transactionDigitalStock);
@@ -675,11 +685,12 @@ public class UtilsUse {
                     continue;
                 }
 
-                // Ensure the sender has enough balance for the transaction, including the bonus for the miner
-                 if (transaction.getVoteEnum().equals(VoteEnum.YES) || transaction.getVoteEnum().equals(VoteEnum.NO)) {
-                     if(sender.getAccount().equals(customer.getAccount())){
-                         continue;
-                     }
+                if (Seting.BASIS_ADDRESS.equals(transaction.getSender())) {
+                    result = UtilsBalance.sendMoney(sender, customer, transactionDigitalDollar, transactionDigitalStock, transactionBonusForMiner, transaction.getVoteEnum());// Ensure the sender has enough balance for the transaction, including the bonus for the miner
+                } else if (transaction.getVoteEnum().equals(VoteEnum.YES) || transaction.getVoteEnum().equals(VoteEnum.NO)) {
+                    if (sender.getAccount().equals(customer.getAccount())) {
+                        continue;
+                    }
                     if (sender.getDigitalStockBalance().compareTo(transactionDigitalStock) >= 0 && sender.getDigitalDollarBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0) {
                         result = UtilsBalance.sendMoney(sender, customer, transactionDigitalDollar, transactionDigitalStock, transactionBonusForMiner, transaction.getVoteEnum());
                     }
@@ -687,13 +698,13 @@ public class UtilsUse {
                     if (sender.getDigitalDollarBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0) {
                         result = UtilsBalance.sendMoney(sender, customer, transactionDigitalDollar, transactionDigitalStock, transactionBonusForMiner, transaction.getVoteEnum());
                     }
-                }else if (transaction.getVoteEnum().equals(VoteEnum.UNSTAKING) && sender.getAccount().equals(customer.getAccount())) {
+                } else if (transaction.getVoteEnum().equals(VoteEnum.UNSTAKING) && sender.getAccount().equals(customer.getAccount())) {
                     if (sender.getDigitalStakingBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0) {
                         result = UtilsBalance.sendMoney(sender, customer, transactionDigitalDollar, transactionDigitalStock, transactionBonusForMiner, transaction.getVoteEnum());
                     }
-                }else if(transaction.getVoteEnum().equals(VoteEnum.REMOVE_YOUR_VOICE) && transaction.getCustomer().startsWith("LIBER")){
-                     result = UtilsBalance.sendMoney(sender, customer, transactionDigitalDollar, transactionDigitalStock, transactionBonusForMiner, transaction.getVoteEnum());
-                 }
+                } else if (transaction.getVoteEnum().equals(VoteEnum.REMOVE_YOUR_VOICE) && transaction.getCustomer().startsWith("LIBER")) {
+                    result = UtilsBalance.sendMoney(sender, customer, transactionDigitalDollar, transactionDigitalStock, transactionBonusForMiner, transaction.getVoteEnum());
+                }
 
 
                 if (result) {

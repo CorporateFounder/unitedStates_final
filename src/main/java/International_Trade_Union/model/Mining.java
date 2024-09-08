@@ -315,11 +315,7 @@ public class Mining {
         PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(Seting.BASIS_PASSWORD));
         double sumRewards = forAdd.stream().collect(Collectors.summingDouble(DtoTransaction::getBonusForMiner));
 
-        try {
-            forAdd = UtilsUse.balanceTransaction(forAdd, balances, index);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
 
 
         String addressFounrder = Blockchain.indexFromFile(0, Seting.ORIGINAL_BLOCKCHAIN_FILE).getFounderAddress();
@@ -369,6 +365,11 @@ public class Mining {
             }
         })).collect(Collectors.toList());
 
+        try {
+            forAdd = UtilsUse.balanceTransaction(forAdd, balances, index);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         forAdd = forAdd.stream().filter(t -> t != null).collect(Collectors.toList());
         forAdd = forAdd.stream().sorted(Comparator.comparing(t->base.encode(t.getSign()))).collect(Collectors.toList());
         Block block = new Block(forAdd, prevBlock.getHashBlock(), minner.getAccount(), addressFounrder, difficulty, index);
