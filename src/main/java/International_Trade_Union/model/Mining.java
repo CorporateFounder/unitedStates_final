@@ -172,6 +172,11 @@ public class Mining {
                         }
                     }
 
+                    try {
+                        forAdd = UtilsUse.balanceTransaction(forAdd, balances, index);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     //NAME_LAW_ADDRESS_START если адресс  означает правила выбранные сетью
                     if (transaction.getCustomer().startsWith(Seting.NAME_LAW_ADDRESS_START) && !balances.containsKey(transaction.getCustomer())) {
                         //если в названия закона совпадает с корпоративными должностями, то закон является действительным только когда
@@ -365,11 +370,6 @@ public class Mining {
             }
         })).collect(Collectors.toList());
 
-        try {
-            forAdd = UtilsUse.balanceTransaction(forAdd, balances, index);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         forAdd = forAdd.stream().filter(t -> t != null).collect(Collectors.toList());
         forAdd = forAdd.stream().sorted(Comparator.comparing(t->base.encode(t.getSign()))).collect(Collectors.toList());
         Block block = new Block(forAdd, prevBlock.getHashBlock(), minner.getAccount(), addressFounrder, difficulty, index);
