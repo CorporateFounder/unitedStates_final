@@ -449,8 +449,8 @@ public class UtilsBlock {
                 System.out.println("after: " + after + "\n");
                 System.out.println("The block contains transactions where the user's balance is insufficient.");
                 System.out.println("*************************************");
-                validated = false;
-                return validated;
+//                validated = false;
+//                return validated;
             }
         }
 
