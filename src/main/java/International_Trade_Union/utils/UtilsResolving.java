@@ -1466,11 +1466,9 @@ public class UtilsResolving {
 
             EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
             list.add(entityBlock);
-
-
             calculateBalance(balances, block, signs);
-
             blockService.saveAllBLockF(list);
+            list = new ArrayList<>();
 
 
             tempBalances = UtilsUse.differentAccount(tempBalances, balances);
@@ -1483,12 +1481,8 @@ public class UtilsResolving {
         }
 //        UtilsJson.saveWindowsToFile(windows, Seting.SLIDING_WINDOWS_BALANCE);
 
-        list = list.stream().sorted(Comparator.comparing(EntityBlock::getSpecialIndex)).collect(Collectors.toList());
+//        list = list.stream().sorted(Comparator.comparing(EntityBlock::getSpecialIndex)).collect(Collectors.toList());
         // Вызов getLaws один раз для всех блоков
-
-        long finish = UtilsTime.getUniversalTimestamp();
-        System.out.println("UtilsResolving: addBlock3: for: time different: " + UtilsTime.differentMillSecondTime(start, finish));
-
 
 
         } catch (Exception e) {
