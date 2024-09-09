@@ -4,6 +4,7 @@ import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
+import International_Trade_Union.model.MyLogger;
 import International_Trade_Union.model.SlidingWindowManager;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
@@ -23,10 +24,41 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static International_Trade_Union.setings.Seting.BASIS_ADDRESS;
+
 
 //TODO высянить почему не списывается правильно долги
 @SpringBootTest
 public class UtilsBalanceTest {
+
+    @Test
+    public void TestStaking() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        Map<String, Account> balances = new HashMap<>();
+        BigDecimal money = BigDecimal.valueOf(1000000);
+        Account sender = new Account("rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM", money, BigDecimal.valueOf(110), money);
+        balances.put(sender.getAccount(), sender);
+
+
+        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":5000.0,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"STAKING\",\"sign\":\"MEUCIQCX15uQJ4FZlvbMZ4fSVItGbSu1LNh9y1ddlZshIM6URwIgPfrrfojTGXRVOlJawKc9FDOl04L1XqOuFo+B3DtPqd8=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":33.06,\"digitalStockBalance\":33.06,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCtcwa+1Wx+8i4vY7N32uIVgcpFGOr+6V0KXicC8/HUlQIgOg7p/cvCswTGtGUMYLdGOVVgfCWuUa31vbyLTbd1V+k=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":330.6,\"digitalStockBalance\":330.6,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDqE+H7q6elS6PL/wL1mSsU6llJEz6Pc2XFDw8hCW3PwgIgELiZXrLWC+Puywn2KVLiDg0qSCA/LViD//oUJirABNw=\"}],\"previousHash\":\"300a0764101d672286f45d44a39a900840a861b881400a0020b41985a28ca000\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":10808639124376381,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1725871560000,\"index\":300984,\"hashBlock\":\"05e01e12408d49202e105010a722804081250d8ed3671a004ac1a04260f17002\"}\n");
+        List<DtoTransaction> transactions = block.getDtoTransactions()
+                .stream()
+                .filter(t->!t.getSender().equals(BASIS_ADDRESS))
+                .collect(Collectors.toList());
+        int transactionsCount = transactions.size();
+        List<DtoTransaction> temp = UtilsUse.balanceTransaction(transactions, balances, block.getIndex());
+        int after = temp.size();
+
+
+        if (after != transactionsCount) {
+            System.out.println("*************************************");
+
+            System.out.println("transactionsCount: " + transactionsCount + "\n");
+            System.out.println("after: " + after + "\n");
+            System.out.println("The block contains transactions where the user's balance is insufficient.");
+            System.out.println("*************************************");
+
+        }
+    }
 
     @Test
     public void eqaulsSenderCustomer() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {

@@ -445,10 +445,13 @@ public class UtilsBlock {
 
             if (after != transactionsCount) {
                 System.out.println("*************************************");
-
+                MyLogger.saveLog("transactions: " + transactions);
+                MyLogger.saveLog("balance: " + balance);
                 System.out.println("transactionsCount: " + transactionsCount + "\n");
+                MyLogger.saveLog("transactionsCount: " + transactionsCount + "\n" + " index: " + thisBlock.getIndex());
                 System.out.println("after: " + after + "\n");
                 System.out.println("The block contains transactions where the user's balance is insufficient.");
+                MyLogger.saveLog("The block contains transactions where the user's balance is insufficient.: index: " + thisBlock.getIndex());
                 System.out.println("*************************************");
                 validated = false;
                 return validated;
