@@ -436,6 +436,7 @@ public class UtilsBlock {
             }
             List<DtoTransaction> transactions = thisBlock.getDtoTransactions()
                     .stream()
+                    .filter(t->!t.getSender().equals(BASIS_ADDRESS))
                     .collect(Collectors.toList());
             int transactionsCount = transactions.size();
             List<DtoTransaction> temp = UtilsUse.balanceTransaction(transactions, balances, thisBlock.getIndex());
