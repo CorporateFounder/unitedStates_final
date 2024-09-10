@@ -738,98 +738,6 @@ public class UtilsResolving {
         return temp;
     }
 
-
-    public DataShortBlockchainInformation check2(DataShortBlockchainInformation temp,
-                                                 DataShortBlockchainInformation global,
-                                                 String s,
-                                                 List<Block> lastDiff,
-                                                 Map<String, Account> tempBalances,
-                                                 List<String> sign) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        Map<String, Account> tempBalance = UtilsUse.balancesClone(tempBalances);
-        if (BasisController.getShortDataBlockchain().getSize() > 1 && !temp.isValidation()) {
-            System.out.println("__________________________________________________________");
-
-            List<Block> emptyList = new ArrayList<>();
-            List<Block> different = new ArrayList<>();
-
-            int lastBlockIndex = (int) (global.getSize() - 1);
-            int currentIndex = lastBlockIndex;
-
-
-            //TODO тестовая версия, мы проверяем если блокчейн ценее, но при этом меньше
-            if (global.getSize() < BasisController.getBlockchainSize()) {
-                List<EntityBlock> entityBlocks = blockService.findBySpecialIndexBetween(global.getSize(), BasisController.getBlockchainSize() - 1);
-                different.addAll(UtilsBlockToEntityBlock.entityBlocksToBlocks(entityBlocks));
-
-            }
-
-            stop:
-            while (currentIndex >= 0) {
-
-                int startIndex = Math.max(currentIndex - 499, 0);
-                int endIndex = currentIndex;
-
-                SubBlockchainEntity subBlockchainEntity = new SubBlockchainEntity(startIndex, endIndex);
-                String subBlockchainJson = UtilsJson.objToStringJson(subBlockchainEntity);
-                List<Block> blockList = UtilsJson.jsonToListBLock(UtilUrl.getObject(subBlockchainJson, s + "/sub-blocks"));
-                System.out.println("check2 subBlockchainEntity: " + subBlockchainEntity);
-                blockList = blockList.stream().sorted(Comparator.comparing(Block::getIndex).reversed()).collect(Collectors.toList());
-
-
-                for (Block block : blockList) {
-                    System.out.println("check2: block index: " + block.getIndex());
-
-                    if (block.getIndex() > BasisController.getBlockchainSize() - 1) {
-                        System.out.println("check2 :download blocks: " + block.getIndex() +
-                                " your block : " + (BasisController.getBlockchainSize()) + ":waiting need download blocks: " + (block.getIndex() - BasisController.getBlockchainSize())
-                                + " host: " + s);
-                        emptyList.add(block);
-                    } else if (!blockService.findBySpecialIndex(block.getIndex()).getHashBlock().equals(block.getHashBlock())) {
-                        emptyList.add(block);
-                        different.add(UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(block.getIndex())));
-                        System.out.println("********************************");
-                        System.out.println(":dowdnload block index: " + block.getIndex());
-                        System.out.println(":block original index: " + blockService.findBySpecialIndex(block.getIndex()).getIndex());
-                        System.out.println(":block from index: " + block.getIndex());
-                    } else {
-
-                        break stop;
-                    }
-                }
-
-                // Обновляем индекс для следующей итерации
-                currentIndex = startIndex - 1;
-            }
-
-            if (different.isEmpty() && emptyList.isEmpty()) {
-                return temp;
-            }
-
-
-            System.out.println("shortDataBlockchain: " + BasisController.getShortDataBlockchain());
-            System.out.println("check 2: rollback temp: " + temp);
-
-            different = different.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
-            emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
-
-            Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(different.get(0).getIndex() - 1));
-            temp = Blockchain.rollBackShortCheck(different, BasisController.getShortDataBlockchain(), tempBalance, sign);
-
-            if (!emptyList.isEmpty()) {
-
-                for (Block block : emptyList) {
-                    List<Block> tempList = new ArrayList<>();
-                    tempList.add(block);
-                    temp = Blockchain.shortCheck(tempPrevBlock, tempList, temp, lastDiff, tempBalance, sign, UtilsUse.balancesClone(tempBalances));
-                    tempPrevBlock = block;
-                }
-            }
-
-
-        }
-        return temp;
-    }
-
     public DataShortBlockchainInformation helpResolve5(DataShortBlockchainInformation temp,
                                                        DataShortBlockchainInformation global,
                                                        String s,
@@ -1461,59 +1369,60 @@ public class UtilsResolving {
 
 
 //        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile(Seting.SLIDING_WINDOWS_BALANCE);
-        try {
-        for (Block block : originalBlocks) {
-            System.out.println(" :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());
+            for (Block block : originalBlocks) {
+                System.out.println(" :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());
 
-            EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
-            list.add(entityBlock);
-            calculateBalance(balances, block, signs);
-            blockService.saveAllBLockF(list);
-            list = new ArrayList<>();
-
-
-            tempBalances = UtilsUse.differentAccount(tempBalances, balances);
-            List<EntityAccount> accountList = blockService.findByAccountIn(tempBalances);
-            accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
-
-            start = UtilsTime.getUniversalTimestamp();
-            blockService.saveAccountAllF(accountList);
-
-        }
-//        UtilsJson.saveWindowsToFile(windows, Seting.SLIDING_WINDOWS_BALANCE);
-
-//        list = list.stream().sorted(Comparator.comparing(EntityBlock::getSpecialIndex)).collect(Collectors.toList());
-        // Вызов getLaws один раз для всех блоков
-
-
-        } catch (Exception e) {
-
-            String stackerror = "";
-            for (StackTraceElement stackTraceElement : e.getStackTrace()) {
-                stackerror += stackTraceElement.toString() + "\n";
+                EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
+                list.add(entityBlock);
+                calculateBalance(balances, block, signs);
             }
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return false;
+//        UtilsJson.saveWindowsToFile(windows, Seting.SLIDING_WINDOWS_BALANCE);
+            list = list.stream().sorted(Comparator.comparing(EntityBlock::getSpecialIndex)).collect(Collectors.toList());
+            // Вызов getLaws один раз для всех блоков
 
-        }
+            long finish = UtilsTime.getUniversalTimestamp();
+            System.out.println("UtilsResolving: addBlock3: for: time different: " + UtilsTime.differentMillSecondTime(start, finish));
+            try {
+                blockService.saveAllBLockF(list);
+
+                tempBalances = UtilsUse.differentAccount(tempBalances, balances);
+                List<EntityAccount> accountList = blockService.findByAccountIn(tempBalances);
+                accountList = UtilsUse.mergeAccounts(tempBalances, accountList);
+
+                start = UtilsTime.getUniversalTimestamp();
+                blockService.saveAccountAllF(accountList);
+                finish = UtilsTime.getUniversalTimestamp();
+            } catch (Exception e) {
+
+                String stackerror = "";
+                for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+                    stackerror += stackTraceElement.toString() + "\n";
+                }
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                return false;
+
+            }
+
+            System.out.println("UtilsResolving: addBlock3: time save accounts: " + UtilsTime.differentMillSecondTime(start, finish));
+            System.out.println("UtilsResolving: addBlock3: total different balance: " + tempBalances.size());
+            System.out.println("UtilsResolving: addBlock3: total original balance: " + balances.size());
+
+            UtilsBlock.saveBlocks(originalBlocks, filename);
+            allLaws = UtilsLaws.getLaws(originalBlocks, Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE, allLaws);
+            allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+
+            Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+            UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+
+            java.sql.Timestamp actualTime = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
+            Long result = actualTime.toInstant().until(lastIndex.toInstant(), ChronoUnit.MILLIS);
+            System.out.println("addBlock 3: time: result: " + result);
+            System.out.println(":BasisController: addBlock3: finish: " + originalBlocks.size());
+            return true;
+            }
 
 
-        System.out.println("UtilsResolving: addBlock3: total different balance: " + tempBalances.size());
-        System.out.println("UtilsResolving: addBlock3: total original balance: " + balances.size());
 
-        UtilsBlock.saveBlocks(originalBlocks, filename);
-        allLaws = UtilsLaws.getLaws(originalBlocks, Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE, allLaws);
-        allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-
-        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-        UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-
-        java.sql.Timestamp actualTime = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
-        Long result = actualTime.toInstant().until(lastIndex.toInstant(), ChronoUnit.MILLIS);
-        System.out.println("addBlock 3: time: result: " + result);
-        System.out.println(":BasisController: addBlock3: finish: " + originalBlocks.size());
-        return true;
-    }
     public List<HostEndDataShortB> sortPriorityHostOriginal(Set<String> hosts) throws IOException, JSONException {
         List<HostEndDataShortB> list = new ArrayList<>();
         for (String s : hosts) {
@@ -1542,21 +1451,6 @@ public class UtilsResolving {
     /**
      * Записывает Блоки и баланс во временный файл.
      */
-
-    public boolean isRightDSB(DataShortBlockchainInformation actual, DataShortBlockchainInformation expected) {
-        boolean result = true;
-        if (actual.isValidation() != expected.isValidation()
-                || actual.getSize() < expected.getSize()
-                || actual.getTransactions() < expected.getTransactions()
-                || actual.getStaking().compareTo(expected.getStaking()) < 0
-                || actual.getBigRandomNumber() < expected.getBigRandomNumber()
-                || actual.getHashCount() < expected.getHashCount()) {
-            result = false;
-        }
-        return result;
-    }
-
-
     public List<HostEndDataShortB> sortPriorityHost(Set<String> hosts) {
 
         // Добавляем ORIGINAL_ADDRESSES к входящему набору хостов

@@ -367,7 +367,8 @@ public class UtilsBlock {
             Block thisBlock,
             List<Block> lastBlock,
             BlockService blockService,
-            Map<String, Account> balance) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+            Map<String, Account> balance,
+            List<String> signs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
         Base base = new Base58();
         if (!addressFounder.equals(thisBlock.getFounderAddress())) {
@@ -429,11 +430,9 @@ public class UtilsBlock {
 
            if(balances == null){
                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(previusblock.getDtoTransactions()));
-               MyLogger.saveLog("validation balance from SlidingWingdowManager null: " + balances);
+               MyLogger.saveLog("validation balance from  null: " + balances);
            }
-            if(balances == null){
-                MyLogger.saveLog("2 validation balance from SlidingWingdowManager null: " + balances);
-            }
+
             List<DtoTransaction> transactions = thisBlock.getDtoTransactions()
                     .stream()
                     .filter(t->!t.getSender().equals(BASIS_ADDRESS))
@@ -784,6 +783,13 @@ public class UtilsBlock {
                         System.out.println("=====================================");
                         validated = false;
                         break finished;
+                    }else if(thisBlock.getIndex() > Seting.CHECK_DUBLICATE_IN_DB_BLOCK && signs.contains(base.encode(transaction.getSign()))) {
+                        MyLogger.saveLog("the transaction already exists in the blockchain: " + base.encode(transaction.getSign()) + " index: " + thisBlock.getIndex());
+                        validated = false;
+                        break  finished;
+                    }
+                    else {
+                        signs.add(base.encode(transaction.getSign()));
                     }
                 }
             }
@@ -928,6 +934,7 @@ public class UtilsBlock {
         boolean haveTwoIndexOne = false;
         Map<String, Account> balanceForValidation = new HashMap<>();
         List<Block> tempList = new ArrayList<>();
+        List<String> signs = new ArrayList<>();
         for (int i = 1; i < blocks.size(); i++) {
             index++;
 
@@ -967,7 +974,8 @@ public class UtilsBlock {
                     block,
                     tempList,
                     blockService,
-                    balanceForValidation);
+                    balanceForValidation,
+                    signs);
 
 //            SaveBalances.saveBalances(cheater, "C://testing/cheaters/");
             if (validated == false) {

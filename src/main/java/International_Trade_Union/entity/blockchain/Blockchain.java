@@ -162,6 +162,7 @@ public class Blockchain implements Cloneable {
             System.out.println("shortCheck: blockList: size: " + blockList.size());
             System.out.println("shortCheck: tempList: size: " + tempList.size());
 
+            List<String> signs = new ArrayList<>();
             for (Block block : blocks) {
                 blockList.add(prev);
                 if (blockList.size() > Seting.PORTION_BLOCK_TO_COMPLEXCITY) {
@@ -180,7 +181,8 @@ public class Blockchain implements Cloneable {
                         block,
                         blockList,
                         blockService,
-                        balanceForValidation);
+                        balanceForValidation,
+                        signs);
                 prev = block.clone();
                 size++;
 
@@ -238,6 +240,7 @@ public class Blockchain implements Cloneable {
             }
         }).collect(Collectors.toList());
 
+        List<String> signs = new ArrayList<>();
         for (final File fileEntry : folders) {
             if (fileEntry.isDirectory()) {
                 System.out.println("is directory " + fileEntry.getAbsolutePath());
@@ -314,7 +317,8 @@ public class Blockchain implements Cloneable {
                                 block,
                                 tempList,
                                 blockService,
-                                UtilsUse.balancesClone(balances));
+                                UtilsUse.balancesClone(balances),
+                                signs);
                     } catch (IOException e) {
                         MyLogger.saveLog("checkFromFile: ", e);
                         throw new RuntimeException(e);

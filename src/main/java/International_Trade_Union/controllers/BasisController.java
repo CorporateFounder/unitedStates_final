@@ -1093,6 +1093,8 @@ public class BasisController {
             blocks.add(prevBlock);
             blocks.add(block);
             Map<String,Account> balance = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(blocks, blockService));
+
+            List<String> signs = new ArrayList<>();
             if (testingValidationsBlock.size() > 1) {
                 boolean validationTesting = UtilsBlock.validationOneBlock(
                         addresFounder,
@@ -1100,7 +1102,8 @@ public class BasisController {
                         block,
                         testingValidationsBlock,
                         blockService,
-                        balance);
+                        balance,
+                        signs);
 
                 if (validationTesting == false) {
                     System.out.println("wrong validation block: " + validationTesting);
@@ -1268,9 +1271,9 @@ public class BasisController {
 
 
         System.out.println("=========================================");
-        System.out.println("all balance in server "+balances.size());
+        System.out.println("all balance in local "+balances.size());
         System.out.println("=========================================");
-        System.out.println("all balance in local "+accounts.size());
+        System.out.println("all balance in server "+accounts.size());
 
         System.out.println("=========================================");
         System.out.println("=========================================");
