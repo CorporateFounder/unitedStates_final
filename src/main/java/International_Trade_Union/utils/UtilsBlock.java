@@ -452,8 +452,8 @@ public class UtilsBlock {
                 System.out.println("The block contains transactions where the user's balance is insufficient.");
                 MyLogger.saveLog("The block contains transactions where the user's balance is insufficient.: index: " + thisBlock.getIndex());
                 System.out.println("*************************************");
-                validated = false;
-                return validated;
+//                validated = false;
+//                return validated;
             }
         }
 
