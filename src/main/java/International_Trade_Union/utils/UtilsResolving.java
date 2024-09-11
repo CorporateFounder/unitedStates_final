@@ -162,12 +162,8 @@ public class UtilsResolving {
                         List<Block> lastDiff = new ArrayList<>();
                         SubBlockchainEntity subBlockchainEntity = null;
                         String subBlockchainJson = null;
-//                        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-//                        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+
                         Map<String, Account> balances = new HashMap<>();
-//                        Map<String, Account> tempBalances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-//                        Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
-//                        Map<String, Account> tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
                         Map<String, Account> tempBalances = new HashMap<>();
 
 

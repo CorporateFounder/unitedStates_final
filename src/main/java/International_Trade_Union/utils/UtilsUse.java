@@ -712,7 +712,6 @@ public class UtilsUse {
                     balances.put(sender.getAccount(), sender);
                     balances.put(customer.getAccount(), customer);
                 } else {
-                    MyLogger.saveLog("balanceTransaction: transaction: " + transaction);
                     MyLogger.saveLog("balanceTransaction: json: " + UtilsJson.objToStringJson(transaction));
                     MyLogger.saveLog("balanceTransaction: sender: " + sender);
                     MyLogger.saveLog("balanceTransaction: index: " + index);

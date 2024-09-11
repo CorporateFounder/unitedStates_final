@@ -968,7 +968,6 @@ public class UtilsBlock {
             }
 //            tempList = tempList.stream().distinct().collect(Collectors.toList());
 
-            balanceForValidation = UtilsBalance.calculateBalance(balanceForValidation, block, new ArrayList<>());
             validated = validationOneBlock(block.getFounderAddress(),
                     prevBlock,
                     block,
@@ -976,6 +975,7 @@ public class UtilsBlock {
                     blockService,
                     balanceForValidation,
                     signs);
+            balanceForValidation = UtilsBalance.calculateBalance(balanceForValidation, block, new ArrayList<>());
 
 //            SaveBalances.saveBalances(cheater, "C://testing/cheaters/");
             if (validated == false) {
