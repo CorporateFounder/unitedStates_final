@@ -871,7 +871,7 @@ public class UtilsResolving {
 
                     boolean save;
                     boolean result = true;
-                    Map<String, Account> tempBalanc = rollBackAddBlock4(different, emptyList, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                    Map<String, Account> tempBalanc = rollBackAddBlock3(different, emptyList, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
                     if(tempBalanc.size() > 0){
                         result = addBlock3(emptyList, tempBalanc, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
@@ -1170,87 +1170,6 @@ public class UtilsResolving {
 
 
     @Transactional
-    public Map<String, Account> rollBackAddBlock4(List<Block> deleteBlocks, List<Block> saveBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
-        java.sql.Timestamp lastIndex = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
-        boolean existM = true;
-
-        List<String> signs = new ArrayList<>();
-        Map<String, Laws> allLaws = new HashMap<>();
-        List<LawEligibleForParliamentaryApproval> allLawsWithBalance = new ArrayList<>();
-        deleteBlocks = deleteBlocks.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
-        long threshold = deleteBlocks.get(0).getIndex();
-        if (threshold <= 0)
-            return new HashMap<>();
-
-        File file = Blockchain.indexNameFileBlock((int) threshold, filename);
-        if (file == null) {
-            System.out.println("rollBackAddBlock4 file:" + file.getAbsolutePath());
-            existM = false;
-            return new HashMap<>();
-        }
-
-        System.out.println("rollBackAddBlock4: file: " + file.getAbsolutePath());
-
-        List<Block> tempBlock = new ArrayList<>();
-        try (Stream<String> lines = Files.lines(file.toPath()).parallel()) {
-            tempBlock = lines.map(line -> {
-                        try {
-                            return UtilsJson.jsonToBLock(line);
-                        } catch (JsonProcessingException e) {
-                            return null;
-                        }
-                    }).filter(block -> block != null && block.getIndex() < threshold)
-                    .sorted(Comparator.comparing(Block::getIndex))
-                    .collect(Collectors.toList());
-        }
-
-
-        for (int i = deleteBlocks.size() - 1; i >= 0; i--) {
-            Block block = deleteBlocks.get(i);
-            System.out.println("rollBackAddBlock4 :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());
-                balances = rollbackCalculateBalance(balances, block);
-
-
-
-        }
-        try {
-
-            blockService.saveAccountAllF(UtilsAccountToEntityAccount.accountsToEntityAccounts(balances));
-            blockService.deleteEntityBlocksAndRelatedData(threshold);
-
-        } catch (Exception e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return new HashMap<>();
-        }
-
-        allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-
-        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-        UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-
-        java.sql.Timestamp actualTime = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
-        Long result = actualTime.toInstant().until(lastIndex.toInstant(), ChronoUnit.MILLIS);
-
-        Blockchain.deleteFileBlockchain(Integer.parseInt(file.getName().replace(".txt", "")), Seting.ORIGINAL_BLOCKCHAIN_FILE);
-        tempBlock = tempBlock.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
-        UtilsBlock.saveBlocks(tempBlock, filename);
-
-        System.out.println("addBlock 3: time: result: " + result);
-        System.out.println(":BasisController: addBlock3: finish: " + deleteBlocks.size());
-        System.out.println("deleteBlocks: index: start: " + deleteBlocks.get(deleteBlocks.size() - 1).getIndex());
-        System.out.println("tempBlock: index: start: " + tempBlock.get(0).getIndex());
-        System.out.println("tempBlock: index: finish: " + tempBlock.get(tempBlock.size() - 1).getIndex());
-        System.out.println("balances size: " + balances.size());
-
-
-
-
-
-        return balances;
-    }
-
-
-    @Transactional
     public Map<String, Account> rollBackAddBlock3(List<Block> deleteBlocks, List<Block> saveBlocks, Map<String, Account> balances, String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         java.sql.Timestamp lastIndex = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
         boolean existM = true;
@@ -1273,11 +1192,12 @@ public class UtilsResolving {
 
         List<Block> tempBlock = Collections.synchronizedList(new ArrayList<>());
         try (Stream<String> lines = Files.lines(file.toPath())) {
+            List<Block> finalTempBlock = tempBlock;
             lines.parallel().forEach(line -> {
                 try {
                     Block block = UtilsJson.jsonToBLock(line);
                     if (block.getIndex() < threshold) {
-                        tempBlock.add(block);
+                        finalTempBlock.add(block);
                     }
                 } catch (JsonProcessingException e) {
                 }
@@ -1309,6 +1229,7 @@ public class UtilsResolving {
         java.sql.Timestamp actualTime = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
 
         Blockchain.deleteFileBlockchain(Integer.parseInt(file.getName().replace(".txt", "")), Seting.ORIGINAL_BLOCKCHAIN_FILE);
+        tempBlock = tempBlock.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
         UtilsBlock.saveBlocks(tempBlock, filename);
 
 
