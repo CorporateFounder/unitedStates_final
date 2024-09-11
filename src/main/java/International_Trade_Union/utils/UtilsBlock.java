@@ -444,8 +444,8 @@ public class UtilsBlock {
 
             if (after != transactionsCount) {
                 System.out.println("*************************************");
-                MyLogger.saveLog("transactions: " + transactions);
-                MyLogger.saveLog("balance: " + balance);
+//                MyLogger.saveLog("transactions: " + transactions);
+//                MyLogger.saveLog("balance: " + balance);
                 System.out.println("transactionsCount: " + transactionsCount + "\n");
                 MyLogger.saveLog("transactionsCount: " + transactionsCount + "\n" + " index: " + thisBlock.getIndex());
                 System.out.println("after: " + after + "\n");
