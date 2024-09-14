@@ -245,7 +245,7 @@ public class UtilsBalanceTest {
         for (Block block : blocks) {
 
             Map<String, Account> cloneBalance = UtilsUse.balancesClone(balance);
-            balance = UtilsBalance.calculateBalance(balance, block, sign);
+            balance = UtilsBalance.calculateBalance(balance, block, sign, new ArrayList<>());
             balance = UtilsBalance.rollbackCalculateBalance(balance, block);
 
             Map<String, Account> result = UtilsUse.differentAccount(cloneBalance, balance);
@@ -310,7 +310,7 @@ public class UtilsBalanceTest {
 
         List<String> sign = new ArrayList<>();
         for (Block block : blocks) {
-            balance = UtilsBalance.calculateBalance(balance, block, sign);
+            balance = UtilsBalance.calculateBalance(balance, block, sign, new ArrayList<>());
         }
 
         //повторный подсчет
@@ -328,7 +328,7 @@ public class UtilsBalanceTest {
 
         sign = new ArrayList<>();
         for (Block block : blocks) {
-            balance = UtilsBalance.calculateBalance(balance, block, sign);
+            balance = UtilsBalance.calculateBalance(balance, block, sign, new ArrayList<>());
         }
 
         Map<String, Account> result2 = UtilsUse.differentAccount(cloneReapete, balance);
@@ -406,7 +406,7 @@ public class UtilsBalanceTest {
         Map<String, Account> clone = UtilsUse.balancesClone(balance);
         for (Block temp : list) {
 
-            UtilsBalance.calculateBalance(balance, temp, new ArrayList<>());
+            UtilsBalance.calculateBalance(balance, temp, new ArrayList<>(), new ArrayList<>());
         }
 
 
@@ -482,7 +482,7 @@ public class UtilsBalanceTest {
         for (int i = 0; i < blocks.size(); i++) {
             List<Block> temp = new ArrayList<>();
             temp.add(blocks.get(i));
-            dataShortBlockchainInformation = Blockchain.shortCheck(prev, temp, dataShortBlockchainInformation, new ArrayList<>(), balance, sign, UtilsUse.balancesClone(balance));
+            dataShortBlockchainInformation = Blockchain.shortCheck(prev, temp, dataShortBlockchainInformation, new ArrayList<>(), balance, sign, UtilsUse.balancesClone(balance), new ArrayList<>());
             prev = blocks.get(i);
         }
 
@@ -491,7 +491,7 @@ public class UtilsBalanceTest {
         for (int i = 0; i < blocks.size(); i++) {
             List<Block> temp = new ArrayList<>();
             temp.add(blocks.get(i));
-            dataShortBlockchainInformation = Blockchain.rollBackShortCheck(temp, dataShortBlockchainInformation, balance, sign);
+            dataShortBlockchainInformation = Blockchain.rollBackShortCheck(temp, dataShortBlockchainInformation, balance);
             prev = blocks.get(i);
         }
         System.out.println("dataL " + dataShortBlockchainInformation);

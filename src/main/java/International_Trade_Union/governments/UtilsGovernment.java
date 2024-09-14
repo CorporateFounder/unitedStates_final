@@ -79,11 +79,6 @@ public class UtilsGovernment {
                 .sorted(Comparator.comparing(Account::getDigitalStakingBalance).reversed())
                 .collect(Collectors.toList());
 
-//        boardOfShareholders = boardOfShareholders
-//                .stream()
-//                .limit(Seting.BOARD_OF_SHAREHOLDERS)
-//                .collect(Collectors.toList());
-
         return boardOfShareholders;
     }
 
@@ -201,7 +196,7 @@ public class UtilsGovernment {
 
         }
 
-        //изирается Генеральный исполнительный директор
+        //избирается Генеральный исполнительный директор
         List<String> primeMinister = new ArrayList<>();
         List<String> hightJudge = new ArrayList<>();
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : current) {

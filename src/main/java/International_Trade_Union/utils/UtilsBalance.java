@@ -164,7 +164,8 @@ public class UtilsBalance {
     public static Map<String, Account> calculateBalance(
             Map<String, Account> balances,
             Block block,
-            List<String> sign) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+            List<String> sign,
+            List<String> signaturesNotTakenIntoAccount) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
         Base base = new Base58();
         System.out.println("calculateBalance: index: " + block.getIndex());
@@ -190,12 +191,12 @@ public class UtilsBalance {
             //если нет, то в список добавляется эта подпись и продолжается процедура.
             DtoTransaction transaction = transactions.get(j);
             if (blockService != null) {
-                if (blockService.existsBySign(transaction.getSign())) {
+                if (blockService.existsBySign(transaction.getSign()) && !signaturesNotTakenIntoAccount.contains(base.encode(transaction.getSign()))) {
                     MyLogger.saveLog("this transaction signature has already been used and is not valid from db: index: " + block.getIndex() + " signature: " + base.encode(transaction.getSign()));
                     System.out.println("this transaction signature has already been used and is not valid from db");
                     continue;
                 }else {
-                    if(sign.contains(base.encode(transaction.getSign()))){
+                    if(sign.contains(base.encode(transaction.getSign())) && !signaturesNotTakenIntoAccount.contains(base.encode(transaction.getSign()))){
                         System.out.println("this transaction signature has already been used and is not valid from list");
                         continue;
                     }else {
@@ -316,7 +317,7 @@ public class UtilsBalance {
         Map<String, Laws> allLaws = new HashMap<>();
         List<LawEligibleForParliamentaryApproval> allLawsWithBalance = new ArrayList<>();
         for (Block block : blocks) {
-            calculateBalance(balances, block, signs);
+            calculateBalance(balances, block, signs, new ArrayList<>());
         }
 
         return balances;

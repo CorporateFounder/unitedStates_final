@@ -61,8 +61,13 @@ public class Testing {
      return UtilsUse.sha256hash(jsonString());
 
      }*/
-
-
+    @Test
+    public void getTransactionCountTest() throws IOException, JSONException {
+        String s = "http://194.87.236.238:82";
+        String json = UtilUrl.readJsonFromUrl(s + "/getTransactions");
+        List<DtoTransaction> dtoTransactions = UtilsJson.jsonToDtoTransactionList(json);
+        System.out.println("size: " + dtoTransactions.size());
+     }
     @Test
     public void testAccounts () throws JSONException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
       DtoTransaction transaction = UtilsJson.jsonToDtoTransaction("DtoTransaction(sender=21Qsp2EjJhYhqP1fnWm6UufnEtavocHXJbS8MhAV9UKwJ, customer=21Qsp2EjJhYhqP1fnWm6UufnEtavocHXJbS8MhAV9UKwJ, digitalDollar=2000.0, digitalStockBalance=0.0, laws=Laws(packetLawName=, laws=[], hashLaw=), bonusForMiner=0.0, voteEnum=STAKING, sign=[48, 70, 2, 33, 0, -88, -41, 55, 25, -77, 15, 66, -32, -105, -64, 7, 101, -12, 122, -102, 97, -38, -82, -119, -121, -1, -95, 24, 88, 13, -24, 1, 61, -43, -33, -13, 127, 2, 33, 0, -117, 3, 12, 73, 56, -79, -47, -22, -118, 58, -76, -85, -128, -82, 9, -121, 15, 42, -113, 98, -86, 43, -3, -59, 87, 77, -32, -110, 74, -67, -96, -3])");

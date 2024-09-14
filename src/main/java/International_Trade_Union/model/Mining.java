@@ -83,23 +83,7 @@ public class Mining {
         //start test
 
 
-//        //папка чтобы проверить есть ли
-//        File folder = new File(filename);
-//        List<String> files = new ArrayList<>();
-//        for (File file : folder.listFiles()) {
-//            if(!file.isDirectory()){
-//                files.add(file.getAbsolutePath());
-//            }
-//        }
-//
-//        if (files.size() > 0 ){
-//            File file = new File(files.get(files.size()-1));
-//            if(file.exists() && file.length() > 0){
-//                balances = SaveBalances.readLineObject(filename);
-//            }
-//
-//        }
-//
+
 
         balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
         if (balances == null) {
@@ -109,7 +93,7 @@ public class Mining {
         Block block;
         if (blockchain != null && blockchain.sizeBlockhain() > 0) {
             block = blockchain.getBlock(blockchain.sizeBlockhain() - 1);
-            balances = UtilsBalance.calculateBalance(balances, block, signs);
+            balances = UtilsBalance.calculateBalance(balances, block, signs, new ArrayList<>());
             //test
             Map<String, Laws> allLaws = new HashMap<>();
 

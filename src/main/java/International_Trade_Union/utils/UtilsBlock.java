@@ -368,7 +368,8 @@ public class UtilsBlock {
             List<Block> lastBlock,
             BlockService blockService,
             Map<String, Account> balance,
-            List<String> signs) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+            List<String> signs,
+            List<String> SignaturesNotTakenIntoAccount) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
         Base base = new Base58();
         if (!addressFounder.equals(thisBlock.getFounderAddress())) {
@@ -762,7 +763,9 @@ public class UtilsBlock {
 
             if (thisBlock.getIndex() > Seting.DUPLICATE_INDEX) {
                 if (blockService != null) {
-                    if (blockService.existsBySign(transaction.getSign())) {
+
+
+                    if (blockService.existsBySign(transaction.getSign()) && !SignaturesNotTakenIntoAccount.contains(base.encode(transaction.getSign()))) {
                         System.out.println("=====================================");
                         System.out.println("has duplicate transaction");
                         System.out.println("sign: " + base.encode(transaction.getSign()));
@@ -783,7 +786,7 @@ public class UtilsBlock {
                         System.out.println("=====================================");
                         validated = false;
                         break finished;
-                    }else if(thisBlock.getIndex() > Seting.CHECK_DUBLICATE_IN_DB_BLOCK && signs.contains(base.encode(transaction.getSign()))) {
+                    }else if(thisBlock.getIndex() > Seting.CHECK_DUBLICATE_IN_DB_BLOCK && signs.contains(base.encode(transaction.getSign())) && !SignaturesNotTakenIntoAccount.contains(transaction.getSign())) {
                         MyLogger.saveLog("the transaction already exists in the blockchain: " + base.encode(transaction.getSign()) + " index: " + thisBlock.getIndex());
                         validated = false;
                         break  finished;
@@ -968,14 +971,17 @@ public class UtilsBlock {
             }
 //            tempList = tempList.stream().distinct().collect(Collectors.toList());
 
+
+
             validated = validationOneBlock(block.getFounderAddress(),
                     prevBlock,
                     block,
                     tempList,
                     blockService,
                     balanceForValidation,
-                    signs);
-            balanceForValidation = UtilsBalance.calculateBalance(balanceForValidation, block, new ArrayList<>());
+                    signs,
+                    new ArrayList<>());
+            balanceForValidation = UtilsBalance.calculateBalance(balanceForValidation, block, new ArrayList<>(), new ArrayList<>());
 
 //            SaveBalances.saveBalances(cheater, "C://testing/cheaters/");
             if (validated == false) {

@@ -131,7 +131,8 @@ public class Blockchain implements Cloneable {
             List<Block> tempList,
             Map<String, Account> balances,
             List<String> sign,
-            Map<String, Account> balanceForValidation) {
+            Map<String, Account> balanceForValidation,
+            List<String> signaturesNotTakenIntoAccount) {
         int size = (int) data.getSize();
 
         if (size >= blocks.get(0).getIndex() + 1 || prevBlock == null) {
@@ -182,7 +183,8 @@ public class Blockchain implements Cloneable {
                         blockList,
                         blockService,
                         balanceForValidation,
-                        signs);
+                        signs,
+                        signaturesNotTakenIntoAccount);
                 prev = block.clone();
                 size++;
 
@@ -197,7 +199,7 @@ public class Blockchain implements Cloneable {
 
                 transactions += block.getDtoTransactions().size();
 
-                balances = UtilsBalance.calculateBalance(balances, block, sign);
+                balances = UtilsBalance.calculateBalance(balances, block, sign, signaturesNotTakenIntoAccount);
                 balanceForValidation = UtilsUse.balancesClone(balances);
 
                 if (!validation) {
@@ -278,7 +280,7 @@ public class Blockchain implements Cloneable {
 
                     hashCount += UtilsUse.powerDiff(block.getHashCompexity());
                     try {
-                        balances = UtilsBalance.calculateBalance(balances, block, sign);
+                        balances = UtilsBalance.calculateBalance(balances, block, sign, new ArrayList<>());
                     } catch (IOException e) {
                         MyLogger.saveLog("checkFromFile: ", e);
                         throw new RuntimeException(e);
@@ -319,7 +321,8 @@ public class Blockchain implements Cloneable {
                                 tempList,
                                 blockService,
                                 UtilsUse.balancesClone(balances),
-                                signs);
+                                signs,
+                                new ArrayList<>());
                     } catch (IOException e) {
                         MyLogger.saveLog("checkFromFile: ", e);
                         throw new RuntimeException(e);
@@ -360,34 +363,6 @@ public class Blockchain implements Cloneable {
         }
 
         return new DataShortBlockchainInformation(size, valid, hashCount, staking, transactions, bigRandomNumber);
-    }
-
-    public static boolean saveBalanceFromfile(String filename) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        boolean valid = true;
-        File folder = new File(filename);
-
-        Map<String, Account> balances = new HashMap<>();
-        List<String> signs = new ArrayList<>();
-        Map<String, Laws> allLaws = new HashMap<>();
-        List<LawEligibleForParliamentaryApproval> allLawsWithBalance = new ArrayList<>();
-
-        for (final File fileEntry : folder.listFiles()) {
-            if (fileEntry.isDirectory()) {
-                System.out.println("is directory " + fileEntry.getAbsolutePath());
-                System.out.println("is directory " + fileEntry.getName());
-            } else {
-
-                List<String> list = UtilsFileSaveRead.reads(fileEntry.getAbsolutePath());
-                for (String s : list) {
-
-                    Block block = UtilsJson.jsonToBLock(s);
-
-                    UtilsBalance.calculateBalance(balances, block, signs);
-                }
-            }
-        }
-
-        return valid;
     }
 
 
@@ -764,8 +739,7 @@ public class Blockchain implements Cloneable {
     public static DataShortBlockchainInformation rollBackShortCheck(
             List<Block> blocks,
             DataShortBlockchainInformation data,
-            Map<String, Account> balances,
-            List<String> sign
+            Map<String, Account> balances
     ) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
         int size = (int) data.getSize();

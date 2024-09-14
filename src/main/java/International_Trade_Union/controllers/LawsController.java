@@ -299,7 +299,10 @@ public class LawsController {
             return "redirect:/processUpdating";
         }
 
+        //получает список должностей
         Directors directors = new Directors();
+
+        //получает блоки из базы данных, за больший период (414720 блоков)
         List<Block> blocksList = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                 blockService.findBySpecialIndexBetween(
                         BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE,
@@ -309,19 +312,17 @@ public class LawsController {
 
 
         Map<String, Account> balances = new HashMap<>();
-        //считывать баланс
-//        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        //извлекает весь список балансов из базы данных.
         balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
+        //извлекает из файла список объектов.
         List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
                 UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
-        //получить совет акционеров из файла
+        //получить совет стэйкеров из файла
         List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blocksList, Seting.BOARDS_BLOCK);
 
 
-        //TODO доработать оптимизацию
-        //TODO избавиться от find position в данном методе
         //отфильтровать по типам голосов
         Map<Director, FIndPositonHelperData> fIndPositonHelperDataMap = new HashMap<>();
         for (Director higherSpecialPositions : directors.getDirectors()) {
@@ -342,7 +343,7 @@ public class LawsController {
 
         }
 
-        //подсчет происходит с базы данных, таким образом вычисления происходят быст
+        //подсчет происходит с блоками, полученными порциями из базы данных.
         Map<String, CurrentLawVotes> votesMap = new HashMap<>();
         List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
         long from = 0;
@@ -357,7 +358,7 @@ public class LawsController {
         }
 
 
-        //подсчитать голоса за все проголосованные заканы
+        //подсчитать голоса за все проголосованные законы (здесь происходит подсчет, на основе монет)
         List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
                 lawEligibleForParliamentaryApprovals,
                 balances,
@@ -373,6 +374,7 @@ public class LawsController {
                 .collect(Collectors.toList());
 
 
+        //здесь отображается избранный совет директоров, на основе правил.
         List<CurrentLawVotesEndBalance> electedBoardOfDirectors = current.stream()
                 .filter(t -> directors.isElectedByStocks(t.getPackageName()))
                 .filter(t -> t.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString()))
@@ -381,8 +383,7 @@ public class LawsController {
                 .limit(directors.getDirector(NamePOSITION.BOARD_OF_DIRECTORS.toString()).getCount())
                 .collect(Collectors.toList());
 
-        //минимальное значение количество положительных голосов для того чтобы закон действовал,
-        //позиции избираемые акциями CORPORATE_COUNCIL_OF_REFEREES
+        //здесь отображается избранный совет судей, на основе правил.
         List<CurrentLawVotesEndBalance> electedByStockCorporateCouncilOfReferees = current.stream()
                 .filter(t -> directors.isElectedByStocks(t.getPackageName()))
                 .filter(t -> t.getPackageName().equals(NamePOSITION.CORPORATE_COUNCIL_OF_REFEREES.toString()))
@@ -392,7 +393,7 @@ public class LawsController {
                 .collect(Collectors.toList());
 
 
-        //позиции созданные всеми участниками
+        //позиции утвержденные советом директоров
         List<CurrentLawVotesEndBalance> createdByBoardOfDirectors = current.stream()
                 .filter(t -> t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
                 .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT
@@ -404,7 +405,7 @@ public class LawsController {
             directors.addAllByBoardOfDirectors(currentLawVotesEndBalance.getLaws());
         }
 
-        //позиции избираемые только всеми участниками
+        //позиции избираемые советом директоров и судей
         List<CurrentLawVotesEndBalance> electedByBoardOfDirectors = current.stream()
                 .filter(t -> directors.isofficeOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
                 .filter(t ->
@@ -433,14 +434,14 @@ public class LawsController {
         }
 
 
-        //позиции избираемые советом корпоративных верховных судей
+        //позиции избираемые советом  судей
         List<CurrentLawVotesEndBalance> electedByCorporateCouncilOfReferees = current.stream()
                 .filter(t -> directors.isElectedBYCorporateCouncilOfReferees(t.getPackageName()))
                 .filter(t -> t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesCorporateCouncilOfReferees)).collect(Collectors.toList());
 
 
-        //избираемые GENERAL_EXECUTIVE_DIRECTOR
+        //избираемые Гендиректором
         List<CurrentLawVotesEndBalance> electedByGeneralExecutiveDirector = electedByBoardOfDirectors.stream()
                 .filter(t -> directors.isElectedCEO(t.getPackageName()))
                 .filter(t -> NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString().equals(t.getPackageName()))
@@ -448,7 +449,7 @@ public class LawsController {
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVoteGeneralExecutiveDirector))
                 .collect(Collectors.toList());
 
-        //голос верховного судьи
+        //голос верховного судьи (на данный момент не используется)
         List<CurrentLawVotesEndBalance> electedByHightJudge = electedByCorporateCouncilOfReferees.stream()
                 .filter(t -> directors.isElectedBYCorporateCouncilOfReferees(t.getPackageName()))
                 .filter(t -> t.getVoteHightJudge() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE)

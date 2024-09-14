@@ -376,61 +376,6 @@ public class BasisController {
     }
 
 
-    //String jsonGlobalData = UtilUrl.readJsonFromUrl(s + "/datashort");
-//                                System.out.println("jsonGlobalData: " + jsonGlobalData);
-//                                DataShortBlockchainInformation global = UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
-//                                temp = helpResolve3(temp, global, s, lastDiff, tempBalances, sign, balances, subBlocks);
-
-
-    /**
-     * TODO Устарел и нигде не используется. TODO Deprecated and not used anywhere.
-     */
-
-    public void addBlock2(List<Block> originalBlocks, Map<String, Account> balances) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
-
-
-        System.out.println(" addBlock2 start: ");
-
-        List<String> signs = new ArrayList<>();
-        Map<String, Laws> allLaws = new HashMap<>();
-        List<LawEligibleForParliamentaryApproval> allLawsWithBalance = new ArrayList<>();
-
-        List<EntityBlock> entityBlocks = new ArrayList<>();
-        //write a new blockchain from scratch to the resources folder
-        //записать с нуля новый блокчейн в папку resources
-        for (Block block : originalBlocks) {
-            System.out.println(" :BasisController: addBlock2: blockchain is being updated: ");
-            UtilsBlock.saveBLock(block, Seting.ORIGINAL_BLOCKCHAIN_FILE);
-            EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
-            entityBlocks.add(entityBlock);
-            calculateBalance(balances, block, signs);
-
-
-        }
-        blockService.saveAllBlock(entityBlocks);
-        List<EntityAccount> entityBalances = UtilsAccountToEntityAccount
-                .accountsToEntityAccounts(balances);
-        blockService.saveAccountAll(entityBalances);
-
-
-        Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
-        SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
-
-        //возвращает все законы с балансом
-        allLawsWithBalance = UtilsLaws.getCurrentLaws(allLaws, balances,
-                Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-
-        //removal of obsolete laws
-        //удаление устаревших законов
-        Mining.deleteFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-        //rewriting all existing laws
-        //перезапись всех действующих законов
-        UtilsLaws.saveCurrentsLaws(allLawsWithBalance, Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-
-
-        System.out.println(":BasisController: addBlock2: finish: " + originalBlocks.size());
-    }
-
 
     /**
      * Если вы предполагаете что некоторые файлы повреждены, то после вызова данного метода, происходить
@@ -492,9 +437,9 @@ public class BasisController {
             DataShortBlockchainInformation temp = new DataShortBlockchainInformation();
             if (BasisController.getBlockchainSize() > 1){
                 Map<String, Account> balanceForValidation = UtilsUse.balancesClone(balances);
-                temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign, balanceForValidation);
+                temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign, balanceForValidation, new ArrayList<>());
 
-                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, new ArrayList<>());
                 if (result) {
                     BasisController.setShortDataBlockchain(temp);
                     BasisController.setBlockchainSize((int) temp.getSize());
@@ -508,7 +453,7 @@ public class BasisController {
 
                 }
             }else {
-                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE);
+                boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, new ArrayList<>());
                 balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
                 tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
                 if (BasisController.getBlockchainSize() > Seting.PORTION_BLOCK_TO_COMPLEXCITY && BasisController.getBlockchainSize() < Seting.V34_NEW_ALGO) {
@@ -520,7 +465,7 @@ public class BasisController {
                     );
                 }
                 Map<String, Account> balanceForValidation = UtilsUse.balancesClone(balances);
-                temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign, balanceForValidation);
+                temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign, balanceForValidation, new ArrayList<>());
 
                 BasisController.setShortDataBlockchain(temp);
                 BasisController.setBlockchainSize((int) temp.getSize());
@@ -1103,7 +1048,8 @@ public class BasisController {
                         testingValidationsBlock,
                         blockService,
                         balance,
-                        signs);
+                        signs,
+                        new ArrayList<>());
 
                 if (validationTesting == false) {
                     System.out.println("wrong validation block: " + validationTesting);
