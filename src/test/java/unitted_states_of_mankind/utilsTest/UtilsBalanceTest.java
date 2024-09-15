@@ -97,11 +97,11 @@ public class UtilsBalanceTest {
         basis.put(resipient2, new Account(account, BigDecimal.valueOf(balance), BigDecimal.valueOf(balance), BigDecimal.valueOf(balance)));
 
 
-        List<DtoTransaction> result = balanceTransaction(dtoTransactions, basis);
+        List<DtoTransaction> result = balanceTransaction(dtoTransactions, basis, block.getIndex());
         System.out.println("result: " + result.size());
     }
 
-    public List<DtoTransaction> balanceTransaction(List<DtoTransaction> transactions, Map<String, Account> basis) throws IOException {
+    public List<DtoTransaction> balanceTransaction(List<DtoTransaction> transactions, Map<String, Account> basis, long index) throws IOException {
         List<DtoTransaction> dtoTransactions = new ArrayList<>();
         Map<String, Account> balances = basis;
 

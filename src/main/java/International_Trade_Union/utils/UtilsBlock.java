@@ -1,29 +1,31 @@
 package International_Trade_Union.utils;
 
 
-import International_Trade_Union.controllers.BasisController;
-import International_Trade_Union.entity.services.BlockService;
-import International_Trade_Union.model.Account;
-import International_Trade_Union.model.Mining;
-import International_Trade_Union.model.MyLogger;
-import International_Trade_Union.model.SlidingWindowManager;
-import International_Trade_Union.utils.base.Base;
-import International_Trade_Union.utils.base.Base58;
-import International_Trade_Union.vote.VoteEnum;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import International_Trade_Union.config.BLockchainFactory;
 import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.services.BlockService;
+
+import International_Trade_Union.model.Account;
+import International_Trade_Union.model.MyLogger;
 import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.base.Base;
+import International_Trade_Union.utils.base.Base58;
+import International_Trade_Union.vote.VoteEnum;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
-
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -786,7 +788,7 @@ public class UtilsBlock {
                         System.out.println("=====================================");
                         validated = false;
                         break finished;
-                    }else if(thisBlock.getIndex() > Seting.CHECK_DUBLICATE_IN_DB_BLOCK && signs.contains(base.encode(transaction.getSign())) && !SignaturesNotTakenIntoAccount.contains(transaction.getSign())) {
+                    }else if(thisBlock.getIndex() > Seting.CHECK_DUBLICATE_IN_DB_BLOCK && signs.contains(base.encode(transaction.getSign()))) {
                         MyLogger.saveLog("the transaction already exists in the blockchain: " + base.encode(transaction.getSign()) + " index: " + thisBlock.getIndex());
                         validated = false;
                         break  finished;
@@ -898,7 +900,6 @@ public class UtilsBlock {
 
     public static void deleteFiles() {
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_BLOCKCHAIN_FILE);
-        UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_TEMPORARY_BLOCKS);
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_BALANCE_FILE);
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_FILE);
         UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
@@ -909,8 +910,7 @@ public class UtilsBlock {
 
 
         UtilsFileSaveRead.deleteFile(Seting.TEMPORARY_BLOCKCHAIN_FILE);
-        UtilsFileSaveRead.deleteFile(Seting.ORIGINAL_TEMPORARY_SHORT);
-        UtilsFileSaveRead.deleteAllFiles(Seting.ORIGINAL_ALL_CLASSIC_LAWS);
+
 
     }
 
