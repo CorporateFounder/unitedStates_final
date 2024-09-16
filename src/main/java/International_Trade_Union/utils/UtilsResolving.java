@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
@@ -877,6 +878,7 @@ public class UtilsResolving {
             }
 
             boolean save = addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, new ArrayList<>());
+
             if (save) {
                 BasisController.setShortDataBlockchain(temp);
                 BasisController.setBlockchainSize((int) temp.getSize());
@@ -989,7 +991,7 @@ public class UtilsResolving {
      */
 
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public boolean addBlock3(List<Block> originalBlocks, Map<String, Account> balances, String filename, List<String> signaturesNotTakenIntoAccount) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
         java.sql.Timestamp lastIndex = new java.sql.Timestamp(UtilsTime.getUniversalTimestamp());
         UtilsBalance.setBlockService(blockService);
@@ -1012,15 +1014,14 @@ public class UtilsResolving {
             EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
             list.add(entityBlock);
             //посчитывает баланс на основе блока
-            calculateBalance(balances, block, signs, signaturesNotTakenIntoAccount);
+            balances =  calculateBalance(balances, block, signs, signaturesNotTakenIntoAccount);
         }
         list = list.stream().sorted(Comparator.comparing(EntityBlock::getSpecialIndex)).collect(Collectors.toList());
 
         long finish = UtilsTime.getUniversalTimestamp();
         System.out.println("UtilsResolving: addBlock3: for: time different: " + UtilsTime.differentMillSecondTime(start, finish));
         try {
-            //записывает блоки в базу данных
-            blockService.saveAllBLockF(list);
+
 
             //находит счета, которые изменились после перерасчета
             tempBalances = UtilsUse.differentAccount(tempBalances, balances);
@@ -1032,6 +1033,8 @@ public class UtilsResolving {
             start = UtilsTime.getUniversalTimestamp();
             //записывает в базу данных счета
             blockService.saveAccountAllF(accountList);
+            //записывает блоки в базу данных
+            blockService.saveAllBLockF(list);
             finish = UtilsTime.getUniversalTimestamp();
         } catch (Exception e) {
 
@@ -1039,6 +1042,7 @@ public class UtilsResolving {
             for (StackTraceElement stackTraceElement : e.getStackTrace()) {
                 stackerror += stackTraceElement.toString() + "\n";
             }
+            MyLogger.saveLog("stackerror: " + stackerror);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return false;
 
@@ -1063,8 +1067,6 @@ public class UtilsResolving {
         System.out.println(":BasisController: addBlock3: finish: " + originalBlocks.size());
         return true;
     }
-
-
     public List<HostEndDataShortB> sortPriorityHostOriginal(Set<String> hosts) throws IOException, JSONException {
         List<HostEndDataShortB> list = new ArrayList<>();
         for (String s : hosts) {

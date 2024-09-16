@@ -197,6 +197,7 @@ public class UtilsBalance {
                     continue;
                 }else {
                     if(sign.contains(base.encode(transaction.getSign()))){
+                        MyLogger.saveLog("this transaction signature has already been used and is not valid from signList: index: " + block.getIndex() + " signature: " + base.encode(transaction.getSign()));
                         System.out.println("this transaction signature has already been used and is not valid from list");
                         continue;
                     }else {
