@@ -357,6 +357,5 @@ public interface Seting {
     int ONLY_SUM_BALANCE = 299845;
 
     int CHECK_DUBLICATE_IN_DB_BLOCK = 287773;
-
 }
 

@@ -63,14 +63,153 @@ public class Testing {
      }*/
     @Test
     public void getTransactionCountTest() throws IOException, JSONException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        Block server = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.3,\"digitalStockBalance\":0.3,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIB4Mwg7k5aPuD98UwzPSCP48Labd92x82GCU8KzkiMnWAiBzUWiLp6k4KtUYYi5edMDHDYYAPcNEYwVigASDkJ0mgA==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.12,\"digitalStockBalance\":0.12,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIBlhi4RJyDCLtiFvqmnevupwxQC6meN9YInbb28sjlHnAiEAzgPhYzhfMxHtSaXfsDa04aYdHxtR2sYc85UsUGt7sj4=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"28eNM7pFKzTgYb8WyUHgttJK9v9oV3TH4jYMxB1xXAK4o\",\"digitalDollar\":261.0,\"digitalStockBalance\":261.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIDMLnpg0sl+7LLPuZ/KigMRMz77M30dWsJIdnXacrR9iAiEAm7mLj/yt9m+LG+6qJcTRgzWEpV6m/YvgRX98Ui5qSbM=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.33,\"digitalStockBalance\":0.33,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCID2bYvHVZwyvoTb4r6QIJbNoviu25ygrK0WA+8P6zZjnAiEAxTKREmFYPHPBTjpcnnj4iAjJxfIqEWotoEZY27ORZBU=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.4,\"digitalStockBalance\":0.4,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIGUCfPzLNDzlSRJEJfpSBZcQR7RfxcsuYN88P+MXZZsYAiEAj8jK4bk5UI0Xe5KzidN2RqN0F+RHs4ECa6yQodmMf94=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.1,\"digitalStockBalance\":0.1,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCXQbq0fPy3X1n7khRdPiuiof4/TV8mPpAYfz1ghKmhcwIgJIpCTSJl2ouXCsM3ohVBiOo0c4JlBiyWN8kQohcKPaw=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.1,\"digitalStockBalance\":0.1,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCkTvJWojtPAwaYUmNESgVjI5ydSJtUf7fmmVt7xv3gowIgNvmKMncU8RND7YE6hKRW9Rqd+krqqcTYzPn7rEFme/0=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.25,\"digitalStockBalance\":0.25,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCvaAbv5OR+Yfhjv4Z4eed/sE4as6MJ4vmXaQTELmmliwIgXkUUsb06hW5Yww1sRfiW26/vZmdFdFIXVlUCU9aNSDY=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.28,\"digitalStockBalance\":0.28,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQC92xDO79NfIP+pBIePl4oLyvdbkx62+ChISAjqv2e7WwIgMqr8GDKYVnf6aIrPkx6Q9jWqgTwYs6qGIDjFaI9geHQ=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.36,\"digitalStockBalance\":0.36,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDfjSXcHI+ewqAyyNVrmDWDWsWvyj6xDYA8MITpM1JkTAIgG/UECOCu9ExW2j4gihDAcNl+PKw8Hx2aLMkO0wlTHOI=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.22,\"digitalStockBalance\":0.22,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCF54o8sxNjsghBIGvVgMQfPp6qGq8ledbIfJ6dcoIgQQIhAPtYvLA1QMjHW5NEibiUBW6D3fR1V1GiCEOLcBJVOpwF\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.1,\"digitalStockBalance\":26.1,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCsiSYJW9RDpFTsp3L4JwFisQqazVN5LqbO6E391duVrAIhAMgjZIOFxgsAiHwaBZk9QE9v1wsBQOYc2E43QbtmGy3P\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.14,\"digitalStockBalance\":0.14,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQC0P/wX6Ilhc8NmRXvGaZ9tnQxxZ35KLXXvjTCDhjaPdAIhAJfNSGS0HOxJU4bTBQY69tzC4KAIyk7OLGym7p5xY4VV\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.57,\"digitalStockBalance\":0.57,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDFF37PeOi+W2iyoIJfwDQovycRH4aCRUpkAgM5M30MLgIhALhqFgSC47oYLRU8nfD085Blo+mh/jULdL9mFGPFORPd\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.5,\"digitalStockBalance\":0.5,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDs/Og8hQDZKAwlF91KZQjxaxQJSMZLIF3IZgusFUSyrAIhAMDnLoklV7ppCEHd6d0BtCd3vatWAsOYIZtmsThLojrc\"}],\"previousHash\":\"0159420412f0265828144c05004816861689c2190940650a130130004904ec82\",\"minerAddress\":\"28eNM7pFKzTgYb8WyUHgttJK9v9oV3TH4jYMxB1xXAK4o\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":18915118437539464,\"minerRewards\":0.0,\"hashCompexity\":20,\"timestamp\":1726412057000,\"index\":303322,\"hashBlock\":\"4c8539008a900388d82e73002522c02b841305002531418600d0504156204099\"}");
-        Block wallet = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.3,\"digitalStockBalance\":0.3,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIB4Mwg7k5aPuD98UwzPSCP48Labd92x82GCU8KzkiMnWAiBzUWiLp6k4KtUYYi5edMDHDYYAPcNEYwVigASDkJ0mgA==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.12,\"digitalStockBalance\":0.12,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIBlhi4RJyDCLtiFvqmnevupwxQC6meN9YInbb28sjlHnAiEAzgPhYzhfMxHtSaXfsDa04aYdHxtR2sYc85UsUGt7sj4=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"28eNM7pFKzTgYb8WyUHgttJK9v9oV3TH4jYMxB1xXAK4o\",\"digitalDollar\":261.0,\"digitalStockBalance\":261.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIDMLnpg0sl+7LLPuZ/KigMRMz77M30dWsJIdnXacrR9iAiEAm7mLj/yt9m+LG+6qJcTRgzWEpV6m/YvgRX98Ui5qSbM=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.33,\"digitalStockBalance\":0.33,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCID2bYvHVZwyvoTb4r6QIJbNoviu25ygrK0WA+8P6zZjnAiEAxTKREmFYPHPBTjpcnnj4iAjJxfIqEWotoEZY27ORZBU=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.4,\"digitalStockBalance\":0.4,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIGUCfPzLNDzlSRJEJfpSBZcQR7RfxcsuYN88P+MXZZsYAiEAj8jK4bk5UI0Xe5KzidN2RqN0F+RHs4ECa6yQodmMf94=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.1,\"digitalStockBalance\":0.1,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCXQbq0fPy3X1n7khRdPiuiof4/TV8mPpAYfz1ghKmhcwIgJIpCTSJl2ouXCsM3ohVBiOo0c4JlBiyWN8kQohcKPaw=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.1,\"digitalStockBalance\":0.1,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCkTvJWojtPAwaYUmNESgVjI5ydSJtUf7fmmVt7xv3gowIgNvmKMncU8RND7YE6hKRW9Rqd+krqqcTYzPn7rEFme/0=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.25,\"digitalStockBalance\":0.25,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCvaAbv5OR+Yfhjv4Z4eed/sE4as6MJ4vmXaQTELmmliwIgXkUUsb06hW5Yww1sRfiW26/vZmdFdFIXVlUCU9aNSDY=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.28,\"digitalStockBalance\":0.28,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQC92xDO79NfIP+pBIePl4oLyvdbkx62+ChISAjqv2e7WwIgMqr8GDKYVnf6aIrPkx6Q9jWqgTwYs6qGIDjFaI9geHQ=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.36,\"digitalStockBalance\":0.36,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDfjSXcHI+ewqAyyNVrmDWDWsWvyj6xDYA8MITpM1JkTAIgG/UECOCu9ExW2j4gihDAcNl+PKw8Hx2aLMkO0wlTHOI=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.22,\"digitalStockBalance\":0.22,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCF54o8sxNjsghBIGvVgMQfPp6qGq8ledbIfJ6dcoIgQQIhAPtYvLA1QMjHW5NEibiUBW6D3fR1V1GiCEOLcBJVOpwF\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.1,\"digitalStockBalance\":26.1,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCsiSYJW9RDpFTsp3L4JwFisQqazVN5LqbO6E391duVrAIhAMgjZIOFxgsAiHwaBZk9QE9v1wsBQOYc2E43QbtmGy3P\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.14,\"digitalStockBalance\":0.14,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQC0P/wX6Ilhc8NmRXvGaZ9tnQxxZ35KLXXvjTCDhjaPdAIhAJfNSGS0HOxJU4bTBQY69tzC4KAIyk7OLGym7p5xY4VV\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.57,\"digitalStockBalance\":0.57,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDFF37PeOi+W2iyoIJfwDQovycRH4aCRUpkAgM5M30MLgIhALhqFgSC47oYLRU8nfD085Blo+mh/jULdL9mFGPFORPd\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.5,\"digitalStockBalance\":0.5,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDs/Og8hQDZKAwlF91KZQjxaxQJSMZLIF3IZgusFUSyrAIhAMDnLoklV7ppCEHd6d0BtCd3vatWAsOYIZtmsThLojrc\"}],\"previousHash\":\"0159420412f0265828144c05004816861689c2190940650a130130004904ec82\",\"minerAddress\":\"28eNM7pFKzTgYb8WyUHgttJK9v9oV3TH4jYMxB1xXAK4o\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":18915118437539464,\"minerRewards\":0.0,\"hashCompexity\":20,\"timestamp\":1726412057000,\"index\":303322,\"hashBlock\":\"4c8539008a900388d82e73002522c02b841305002531418600d0504156204099\"}");
-        System.out.println(server.equals(wallet));
+       Base base = new Base58();
+        Block server = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.09,\"digitalStockBalance\":0.09,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCICTpBDpvFdSD6t9bT23QzbD5XgQ9oPow2CDhJ3AlCSPIAiANu0QXJHghfQOIEEI6bgf9q+7X8LvpBcoewHx4H0d2Lw==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.2,\"digitalStockBalance\":0.2,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCICw+jziUiyjO75TFIMg25pjGkv6dXVZdSqfSeLUzhQ34AiBWY+/HP3EhUDIrHDsqPi5sftkws+eLL5cB1mo+HO1qGg==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.14,\"digitalStockBalance\":0.14,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIHLEyJfdaBkKURA9VzDwNZaJiQwNPr/O1hdYd7Ny4VhEAiBTEmPI+qcBg/U9yBxO8ikEr8IReKnm5vvRFlk6xmx/Ew==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.3,\"digitalStockBalance\":0.3,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIA73+tDloVLErRepnYbeuHA76BGqukunKUeFyce4UsxwAiEA9bZ7NYRhHDQkdVZIZddJ80GO1jrJemI0DJe/JvOfb7g=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.3,\"digitalStockBalance\":0.3,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIERL9cAnRE86RfHcEEx9w9Tc7mFcGnmdj9852MdkYC1RAiEAy83yeCxwFTcQG81G+6oOMBkJdg3G6LSUppNHBsQdE3o=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.44,\"digitalStockBalance\":0.44,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIE52gq9VInIUb8IK2NICKd/62aPHIQQWtNb6ugE24MnZAiEAoiYKHOH2wveITIHQy9nWSi1CWfgVJMwPynadcX2TAf8=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.28,\"digitalStockBalance\":0.28,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIFXf9F6yfM11caRCv4Z4QmfPmkX1sS0fboJKVawbOtcxAiEA4XyKnOtvkebinno5A/J1xy38LCqd/kD1ImGac6UgNhM=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.42,\"digitalStockBalance\":0.42,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIGNgZWgMnHTwx4hqOMWkjJrHcH93AGd9Nxn8pd7+Pq/zAiEAykQ5Ma1jZqOdP1N+HzityHtG8UAlA0jxRx/35lwemus=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.09,\"digitalStockBalance\":0.09,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCLZ7KfMuZOCQEXkZZym++EqAjQ0PocAj4omNZ7yDEZFgIgcyPgOsBpFwSU+X15B8jm735GYvFvecvRYLcwBrDM4ew=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.36,\"digitalStockBalance\":24.36,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDsytYjCaj2D+bQYXomv57D232ZTRLZ241WOoB1cIZX1gIgFb/DkLQJ6sFJXrEl0/i0T6CaiDLNOzVhfBf/napP9p4=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"21Qsp2EjJhYhqP1fnWm6UufnEtavocHXJbS8MhAV9UKwJ\",\"digitalDollar\":243.6,\"digitalStockBalance\":243.6,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCNfUnvlZeW3Uf7nummgYXTDk7YEztdYt0mgiOSAgWS7gIhAP9awY1Fkm2LNLgo7ZhRq8MNRFrct+wVOODn5plGsvHa\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.11,\"digitalStockBalance\":0.11,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCbs1f246EobdZcrP5Y9gfFDnFtMEMoDjJ4unNrv7I4qQIhAP046DxjerwMeOKC7+q1u2EFaJYIKUynXDxZ1suMlHZR\"}],\"previousHash\":\"18004e9c2c010021011c8943902320ca80456023e29088a4e240ac2208036d10\",\"minerAddress\":\"21Qsp2EjJhYhqP1fnWm6UufnEtavocHXJbS8MhAV9UKwJ\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":16264312,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1726515524000,\"index\":303805,\"hashBlock\":\"b2a31635941008008802623070027203a217c521c980c3e82325900a0211a112\"}");
+        Block wallet = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.09,\"digitalStockBalance\":0.09,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCICTpBDpvFdSD6t9bT23QzbD5XgQ9oPow2CDhJ3AlCSPIAiANu0QXJHghfQOIEEI6bgf9q+7X8LvpBcoewHx4H0d2Lw==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.2,\"digitalStockBalance\":0.2,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCICw+jziUiyjO75TFIMg25pjGkv6dXVZdSqfSeLUzhQ34AiBWY+/HP3EhUDIrHDsqPi5sftkws+eLL5cB1mo+HO1qGg==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.14,\"digitalStockBalance\":0.14,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIHLEyJfdaBkKURA9VzDwNZaJiQwNPr/O1hdYd7Ny4VhEAiBTEmPI+qcBg/U9yBxO8ikEr8IReKnm5vvRFlk6xmx/Ew==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.3,\"digitalStockBalance\":0.3,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIA73+tDloVLErRepnYbeuHA76BGqukunKUeFyce4UsxwAiEA9bZ7NYRhHDQkdVZIZddJ80GO1jrJemI0DJe/JvOfb7g=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.3,\"digitalStockBalance\":0.3,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIERL9cAnRE86RfHcEEx9w9Tc7mFcGnmdj9852MdkYC1RAiEAy83yeCxwFTcQG81G+6oOMBkJdg3G6LSUppNHBsQdE3o=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.44,\"digitalStockBalance\":0.44,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIE52gq9VInIUb8IK2NICKd/62aPHIQQWtNb6ugE24MnZAiEAoiYKHOH2wveITIHQy9nWSi1CWfgVJMwPynadcX2TAf8=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.28,\"digitalStockBalance\":0.28,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIFXf9F6yfM11caRCv4Z4QmfPmkX1sS0fboJKVawbOtcxAiEA4XyKnOtvkebinno5A/J1xy38LCqd/kD1ImGac6UgNhM=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.42,\"digitalStockBalance\":0.42,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIGNgZWgMnHTwx4hqOMWkjJrHcH93AGd9Nxn8pd7+Pq/zAiEAykQ5Ma1jZqOdP1N+HzityHtG8UAlA0jxRx/35lwemus=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.09,\"digitalStockBalance\":0.09,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCLZ7KfMuZOCQEXkZZym++EqAjQ0PocAj4omNZ7yDEZFgIgcyPgOsBpFwSU+X15B8jm735GYvFvecvRYLcwBrDM4ew=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.36,\"digitalStockBalance\":24.36,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDsytYjCaj2D+bQYXomv57D232ZTRLZ241WOoB1cIZX1gIgFb/DkLQJ6sFJXrEl0/i0T6CaiDLNOzVhfBf/napP9p4=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"21Qsp2EjJhYhqP1fnWm6UufnEtavocHXJbS8MhAV9UKwJ\",\"digitalDollar\":243.6,\"digitalStockBalance\":243.6,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCNfUnvlZeW3Uf7nummgYXTDk7YEztdYt0mgiOSAgWS7gIhAP9awY1Fkm2LNLgo7ZhRq8MNRFrct+wVOODn5plGsvHa\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.11,\"digitalStockBalance\":0.11,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCbs1f246EobdZcrP5Y9gfFDnFtMEMoDjJ4unNrv7I4qQIhAP046DxjerwMeOKC7+q1u2EFaJYIKUynXDxZ1suMlHZR\"}],\"previousHash\":\"18004e9c2c010021011c8943902320ca80456023e29088a4e240ac2208036d10\",\"minerAddress\":\"21Qsp2EjJhYhqP1fnWm6UufnEtavocHXJbS8MhAV9UKwJ\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":16264312,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1726515524000,\"index\":303805,\"hashBlock\":\"b2a31635941008008802623070027203a217c521c980c3e82325900a0211a112\"}");
+        System.out.println("block equals: "+server.equals(wallet));
         System.out.println(server.getMinerAddress());
+        System.out.println("block index: " + server.getIndex());
+        for (int i = 0; i < server.getDtoTransactions().size(); i++) {
+            DtoTransaction serverDto = server.getDtoTransactions().get(i);
+            DtoTransaction walletDto = wallet.getDtoTransactions().get(i);
+            System.out.println("-----------------------------");
 
-        for (DtoTransaction dtoTransaction : server.getDtoTransactions()) {
-            System.out.println("dto: " + dtoTransaction.getCustomer() + " ");
+            System.out.println("server: digital: " + serverDto.getDigitalDollar() + " sender " + serverDto.getSender() + " customer " + serverDto.getCustomer() + " vote: " + serverDto.getVoteEnum() + " sign: " + base.encode(serverDto.getSign()));
+            System.out.println("wallet: digital: " + walletDto.getDigitalDollar() + " sender " + walletDto.getSender() + " customer " + walletDto.getCustomer() + " vote: " + walletDto.getVoteEnum()+ " sign: " + base.encode(walletDto.getSign()));
+
+            System.out.println("-----------------------------");
+
         }
+        // Создаем экземпляры Account с заданными балансами
+        Account account1 = new Account(
+                "zraD2LuUah83KXTtYP33pwbUuS62dmp21CxPYXDNGWqW",
+                BigDecimal.valueOf(111626.40),
+                BigDecimal.valueOf(145626.40),
+                BigDecimal.valueOf(34000.00)
+        );
+
+        Account account2 = new Account(
+                "h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4",
+                BigDecimal.valueOf(64222.99),
+                BigDecimal.valueOf(64222.99),
+                BigDecimal.valueOf(0.00)
+        );
+
+        Account account3 = new Account(
+                "gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY",
+                BigDecimal.valueOf(3577.10),
+                BigDecimal.valueOf(3577.10),
+                BigDecimal.valueOf(0.00)
+        );
+
+        Account account4 = new Account(
+                "jKvrxZX8Wx8H4toXBW3axAWHPUEbDBoWBCcCkrNELZQz",
+                BigDecimal.valueOf(64400.19),
+                BigDecimal.valueOf(644327.19),
+                BigDecimal.valueOf(1000000.00)
+        );
+
+        Account account5 = new Account(
+                "2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL",
+                BigDecimal.valueOf(5667213.10),
+                BigDecimal.valueOf(10067213.10),
+                BigDecimal.valueOf(4400000.00)
+        );
+
+        Account account6 = new Account(
+                "21Qsp2EjJhYhqP1fnWm6UufnEtavocHXJbS8MhAV9UKwJ",
+                BigDecimal.valueOf(18744.80),
+                BigDecimal.valueOf(418744.80),
+                BigDecimal.valueOf(400000.00)
+        );
+
+        Account account7 = new Account(
+                "m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM",
+                BigDecimal.valueOf(313859.81),
+                BigDecimal.valueOf(313859.81),
+                BigDecimal.valueOf(0.00)
+        );
+
+        Account account8 = new Account(
+                "qDWgdtEBzbSGs7AdUVLYEiBP5Bs7nb3m3L8GaBGgbSEP",
+                BigDecimal.valueOf(557.25),
+                BigDecimal.valueOf(270386.25),
+                BigDecimal.valueOf(269229.00)
+        );
+
+        Account account9 = new Account(
+                "faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ",
+                BigDecimal.valueOf(0.00),
+                BigDecimal.valueOf(0.00),
+                BigDecimal.valueOf(0.00)
+        );
+
+        Account account10 = new Account(
+                "274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m",
+                BigDecimal.valueOf(3618.34),
+                BigDecimal.valueOf(3618.34),
+                BigDecimal.valueOf(0.00)
+        );
+
+        Account account11 = new Account(
+                "nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43",
+                BigDecimal.valueOf(28325166.84),
+                BigDecimal.valueOf(28325189.86),
+                BigDecimal.valueOf(0.00)
+        );
+
+        Account account12 = new Account(
+                "wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o",
+                BigDecimal.valueOf(3679.33),
+                BigDecimal.valueOf(3679.33),
+                BigDecimal.valueOf(0.00)
+        );
+
+        Account account13 = new Account(
+                "2A8vxijdyY5ST1WhLQan3N1P6wSdzBDo9VmEFhck9bArG",
+                BigDecimal.valueOf(7995.41),
+                BigDecimal.valueOf(1297995.41),
+                BigDecimal.valueOf(1290000.00)
+        );
+
+        Account account14 = new Account(
+                "28eNM7pFKzTgYb8WyUHgttJK9v9oV3TH4jYMxB1xXAK4o",
+                BigDecimal.valueOf(22629.19),
+                BigDecimal.valueOf(1418629.25),
+                BigDecimal.valueOf(1426000.06)
+        );
+
+        Account account15 = new Account(
+                "eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7",
+                BigDecimal.valueOf(309989.76),
+                BigDecimal.valueOf(309989.76),
+                BigDecimal.valueOf(0.00)
+        );
+
+        // Инициализируем Map<String, Account> balances и добавляем аккаунты
+        Map<String, Account> balances = new HashMap<>();
+        balances.put(account1.getAccount(), account1);
+        balances.put(account2.getAccount(), account2);
+        balances.put(account3.getAccount(), account3);
+        balances.put(account4.getAccount(), account4);
+        balances.put(account5.getAccount(), account5);
+        balances.put(account6.getAccount(), account6);
+        balances.put(account7.getAccount(), account7);
+        balances.put(account8.getAccount(), account8);
+        balances.put(account9.getAccount(), account9);
+        balances.put(account10.getAccount(), account10);
+        balances.put(account11.getAccount(), account11);
+        balances.put(account12.getAccount(), account12);
+        balances.put(account13.getAccount(), account13);
+        balances.put(account14.getAccount(), account14);
+        balances.put(account15.getAccount(), account15);
+
+        Map<String, Account> different = UtilsBalance.calculateBalance(balances, wallet, new ArrayList<>(), new ArrayList<>());
+
+
+        System.out.println("different");
+        different.entrySet().stream().map(t->t.getValue()).forEach(System.out::println);
+
 
     }
     @Test
