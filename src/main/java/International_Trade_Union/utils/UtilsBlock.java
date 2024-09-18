@@ -983,7 +983,6 @@ public class UtilsBlock {
                     new ArrayList<>());
             balanceForValidation = UtilsBalance.calculateBalance(balanceForValidation, block, new ArrayList<>(), new ArrayList<>());
 
-//            SaveBalances.saveBalances(cheater, "C://testing/cheaters/");
             if (validated == false) {
 
                 System.out.println("ERROR: UtilsBlock: validation: prevBLock.Hash():" + prevBlock.getHashBlock());
