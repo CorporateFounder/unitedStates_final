@@ -636,7 +636,6 @@ public class UtilsResolving {
         if (
                 actual.getSize() < expected.getSize()
                         || actual.getBigRandomNumber() < expected.getBigRandomNumber()
-                        || actual.getTransactions() < expected.getTransactions()
         ) {
             return true;
         }
