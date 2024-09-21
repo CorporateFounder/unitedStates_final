@@ -1013,12 +1013,7 @@ public class UtilsResolving {
             EntityBlock entityBlock = UtilsBlockToEntityBlock.blockToEntityBlock(block);
             list.add(entityBlock);
             //посчитывает баланс на основе блока
-            MyLogger.saveLog("---------------------------------");
-            MyLogger.saveLog("block index: " + block.getIndex());
-            MyLogger.saveLog("before balance: " + balances);
             balances =  calculateBalance(balances, block, signs, signaturesNotTakenIntoAccount);
-            MyLogger.saveLog("after balance: " + balances);
-            MyLogger.saveLog("---------------------------------");
         }
         list = list.stream().sorted(Comparator.comparing(EntityBlock::getSpecialIndex)).collect(Collectors.toList());
 
