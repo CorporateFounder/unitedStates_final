@@ -661,7 +661,17 @@ public class UtilsUse {
                 Account sender = balances.get(transaction.getSender());
                 Account customer = balances.get(transaction.getCustomer());
 
+                if(sender == null){
+                    sender = new Account(transaction.getSender(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+                }
+
+                if(customer == null){
+                    customer = new Account(transaction.getCustomer(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+                }
+
                 if (sender == null || customer == null) {
+                    MyLogger.saveLog("balanceTransaction:transaction: null: " + transaction );
+                    MyLogger.saveLog("balanceTransaction: sender or customer null: " + sender + ": " + customer);
                     continue;
                 }
 
@@ -690,6 +700,7 @@ public class UtilsUse {
                     result = UtilsBalance.sendMoney(sender, customer, transactionDigitalDollar, transactionDigitalStock, transactionBonusForMiner, transaction.getVoteEnum());// Ensure the sender has enough balance for the transaction, including the bonus for the miner
                 } else if (transaction.getVoteEnum().equals(VoteEnum.YES) || transaction.getVoteEnum().equals(VoteEnum.NO)) {
                     if (sender.getAccount().equals(customer.getAccount())) {
+                        MyLogger.saveLog("balanceTransaction: Seting.BASIS_ADDRESS.equals(transaction.getSender()): " + Seting.BASIS_ADDRESS.equals(transaction.getSender()));
                         continue;
                     }
                     if (sender.getDigitalStockBalance().compareTo(transactionDigitalStock) >= 0 && sender.getDigitalDollarBalance().compareTo(transactionDigitalDollar.add(transactionBonusForMiner)) >= 0) {
