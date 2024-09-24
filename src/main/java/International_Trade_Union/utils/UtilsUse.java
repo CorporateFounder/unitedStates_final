@@ -661,9 +661,6 @@ public class UtilsUse {
                 Account sender = balances.get(transaction.getSender());
                 Account customer = balances.get(transaction.getCustomer());
 
-                if(sender == null){
-                    sender = new Account(transaction.getSender(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
-                }
 
                 if(customer == null){
                     customer = new Account(transaction.getCustomer(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
