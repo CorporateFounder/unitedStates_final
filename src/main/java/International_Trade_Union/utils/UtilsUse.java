@@ -665,6 +665,8 @@ public class UtilsUse {
                 if(customer == null){
                     customer = new Account(transaction.getCustomer(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
                 }
+                balances.put(customer.getAccount(), customer);
+                basis.put(customer.getAccount(), customer);
 
                 if (sender == null || customer == null) {
                     MyLogger.saveLog("balanceTransaction:transaction: null: " + transaction );
