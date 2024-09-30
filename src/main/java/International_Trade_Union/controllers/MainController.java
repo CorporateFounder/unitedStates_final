@@ -5,6 +5,7 @@ import International_Trade_Union.entity.InfoDificultyBlockchain;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
@@ -216,7 +217,7 @@ public class MainController {
 
 
 
-        Map<String, Account> balances = new HashMap<>();
+
 
         model.addAttribute("size", size);
         model.addAttribute("version", Seting.VERSION);
@@ -234,10 +235,8 @@ public class MainController {
             UtilsBlock.deleteFiles();
         }
         model.addAttribute("validation", validation);
-//        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
-
-        Account account = UtilsBalance.getBalance(User.getUserAddress(), balances);
+        EntityAccount entityAccount = blockService.findByAccount(User.getUserAddress());
+        Account account = UtilsAccountToEntityAccount.entityAccountToAccount(entityAccount);
         model.addAttribute("account", account);
         model.addAttribute("score", UtilsUse.calculateScore(account.getDigitalStakingBalance(), BigDecimal.valueOf(1)));
 
@@ -387,7 +386,9 @@ public class MainController {
         if(dtoTransaction.verify()){
             Account senderAccount = null;
             try{
-                senderAccount = UtilsAccountToEntityAccount.entityAccountToAccount(blockService.findByAccount(sender));
+                EntityAccount entityAccount = blockService.findByAccount(sender);
+
+                senderAccount = UtilsAccountToEntityAccount.entityAccountToAccount(entityAccount);
 
             }catch (Exception e){
                 redirectAttrs.addFlashAttribute("sending", "wrong transaction, address");
