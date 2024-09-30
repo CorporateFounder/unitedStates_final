@@ -1,8 +1,10 @@
 package International_Trade_Union.controllers;
 
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
+import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
+import International_Trade_Union.model.Account;
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
@@ -11,6 +13,7 @@ import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +29,8 @@ import java.util.stream.Collectors;
 @Controller
 public class MineController {
     private static int computers = 1;
-
+    @Autowired
+    BlockService blockService;
 
 
     /**
@@ -101,6 +105,19 @@ public class MineController {
         redirectAttrs.addFlashAttribute("sign", base.encode(dtoTransaction.getSign()));
         Directors directors = new Directors();
         if (dtoTransaction.verify()) {
+            Account senderAccount = null;
+            try{
+                senderAccount = UtilsAccountToEntityAccount.entityAccountToAccount(blockService.findByAccount(miner));
+
+            }catch (Exception e){
+                redirectAttrs.addFlashAttribute("sending", "wrong transaction, address");
+            }
+            if(!"success".equals(UtilsUse.checkSendBalance(senderAccount, dtoTransaction))){
+                String str = UtilsUse.checkSendBalance(senderAccount, dtoTransaction);
+                redirectAttrs.addFlashAttribute("sending", str);
+
+                return "redirect:/result-sending";
+            }
 
             //если в названия закона совпадает с корпоративными должностями, то закон является действительным, только когда
             //отправитель совпадает с законом.
@@ -196,6 +213,20 @@ public class MineController {
         redirectAttrs.addFlashAttribute("sign", base.encode(dtoTransaction.getSign()));
         Directors directors = new Directors();
         if (dtoTransaction.verify()) {
+            Account senderAccount = null;
+            try{
+                senderAccount = UtilsAccountToEntityAccount.entityAccountToAccount(blockService.findByAccount(miner));
+
+            }catch (Exception e){
+                redirectAttrs.addFlashAttribute("sending", "wrong transaction, address");
+            }
+            if(!"success".equals(UtilsUse.checkSendBalance(senderAccount, dtoTransaction))){
+                String str = UtilsUse.checkSendBalance(senderAccount, dtoTransaction);
+                redirectAttrs.addFlashAttribute("sending", str);
+
+                return "redirect:/result-sending";
+            }
+
 
             //если в названия закона совпадает с корпоративными должностями, то закон является действительным, только когда
             //отправитель совпадает с законом.

@@ -165,6 +165,18 @@ public class ConductorController {
         return result;
     }
 
+        Account senderAccount = null;
+        try{
+            senderAccount = UtilsAccountToEntityAccount.entityAccountToAccount(blockService.findByAccount(sender));
+
+        }catch (Exception e){
+            return result;
+        }
+        if(!"success".equals(UtilsUse.checkSendBalance(senderAccount, dtoTransaction))){
+            String str = UtilsUse.checkSendBalance(senderAccount, dtoTransaction);
+            return result;
+
+        }
     System.out.println("Main Controller: new transaction: vote: " + VoteEnum.YES);
     dtoTransaction.setSign(sign);
     Directors directors = new Directors();
@@ -183,6 +195,9 @@ public class ConductorController {
     }
 
     if (dtoTransaction.verify()) {
+
+
+
         List<String> corporateSeniorPositions = directors.getDirectors().stream()
                 .map(t -> t.getName()).collect(Collectors.toList());
         System.out.println("LawsController: create_law: " + laws.getPacketLawName() + " contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));

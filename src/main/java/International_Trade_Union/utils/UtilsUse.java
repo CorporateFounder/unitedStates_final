@@ -750,4 +750,27 @@ public class UtilsUse {
     public static boolean isTransactionValid(BigDecimal value) {
         return value.scale() <= SENDING_DECIMAL_PLACES;
     }
+
+    //метод тестирования баланса, достаточно ли денег для отправки.
+    public static String checkSendBalance(Account sender, DtoTransaction dtoTransaction){
+        Account senderAccount = null;
+
+        if(dtoTransaction.getVoteEnum().equals(VoteEnum.YES) ||dtoTransaction.getVoteEnum().equals(VoteEnum.NO) || dtoTransaction.getVoteEnum().equals(VoteEnum.STAKING)){
+            BigDecimal dollarBD = BigDecimal.valueOf(dtoTransaction.getDigitalDollar());
+            BigDecimal stockBD = BigDecimal.valueOf(dtoTransaction.getDigitalStockBalance());
+            if (dollarBD.compareTo(senderAccount.getDigitalDollarBalance()) > 0 || stockBD.compareTo(senderAccount.getDigitalStockBalance()) > 0) {
+
+                return "wrong transaction, less dollar or less stock balance";
+            }
+        }
+        if(dtoTransaction.getVoteEnum().equals(VoteEnum.UNSTAKING) ){
+            BigDecimal dollarBD = BigDecimal.valueOf(dtoTransaction.getDigitalDollar());
+
+            if (dollarBD.compareTo(senderAccount.getDigitalStakingBalance()) > 0 ) {
+
+                return "wrong transaction, less staking balance";
+            }
+        }
+        return "success";
+    }
 }

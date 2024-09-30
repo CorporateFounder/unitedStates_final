@@ -385,6 +385,21 @@ public class MainController {
         redirectAttrs.addFlashAttribute("sign", base.encode(dtoTransaction.getSign()));
         Directors directors = new Directors();
         if(dtoTransaction.verify()){
+            Account senderAccount = null;
+            try{
+                senderAccount = UtilsAccountToEntityAccount.entityAccountToAccount(blockService.findByAccount(sender));
+
+            }catch (Exception e){
+                redirectAttrs.addFlashAttribute("sending", "wrong transaction, address");
+            }
+            if(!"success".equals(UtilsUse.checkSendBalance(senderAccount, dtoTransaction))){
+                String str = UtilsUse.checkSendBalance(senderAccount, dtoTransaction);
+                redirectAttrs.addFlashAttribute("sending", str);
+
+                return "redirect:/result-sending";
+            }
+
+
 
             //если в названия закона совпадает с корпоративными должностями, то закон является действительным, только когда
             //отправитель совпадает с законом.
