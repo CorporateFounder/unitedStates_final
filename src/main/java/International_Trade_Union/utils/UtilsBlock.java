@@ -447,13 +447,15 @@ public class UtilsBlock {
 
             if (after != transactionsCount) {
                 System.out.println("*************************************");
-//                MyLogger.saveLog("transactions: " + transactions);
-//                MyLogger.saveLog("balance: " + balance);
+
                 System.out.println("transactionsCount: " + transactionsCount + "\n");
                 MyLogger.saveLog("transactionsCount: " + transactionsCount + "\n" + " index: " + thisBlock.getIndex());
                 System.out.println("after: " + after + "\n");
                 System.out.println("The block contains transactions where the user's balance is insufficient.");
+
                 MyLogger.saveLog("The block contains transactions where the user's balance is insufficient.: index: " + thisBlock.getIndex());
+                MyLogger.saveLog("insufficient balances: " + balance);
+
                 System.out.println("*************************************");
                 validated = false;
                 return validated;
@@ -522,6 +524,13 @@ public class UtilsBlock {
         transactions = transactions.stream().sorted(Comparator.comparing(t->base.encode(t.getSign()))).collect(Collectors.toList());
         finished:
         for (DtoTransaction transaction : transactions) {
+            boolean verify = transaction.verify();
+            if (verify == false){
+                String json = UtilsJson.objToStringJson(transaction);
+                DtoTransaction tempTransaction = UtilsJson.jsonToDtoTransaction(json);
+                verify = tempTransaction.verify();
+                MyLogger.saveLog("repeat Transaction: verify" + verify + "json: " + json + " index: "  + thisBlock.getIndex());
+            }
             if (transaction.verify() && transaction.getSender().equals(Seting.BASIS_ADDRESS)) {
                 double minerReward = Seting.DIGITAL_DOLLAR_REWARDS_BEFORE;
                 double minerPowerReward = Seting.DIGITAL_STOCK_REWARDS_BEFORE;
@@ -726,6 +735,7 @@ public class UtilsBlock {
 
                 }
 
+
                 if (transaction.getSender().equals(Seting.BASIS_ADDRESS) &&
                         !transaction.getCustomer().equals(addressFounder)) {
                     countBasisSendAll += 1;
@@ -752,12 +762,12 @@ public class UtilsBlock {
                     validated = false;
                     break;
                 }
-            } else if (!transaction.verify()) {
-                System.out.println("wrong transaction: " + transaction + " verify: " + transaction.verify());
+            } else if (!verify) {
+                System.out.println("wrong transaction: " + transaction + " verify: " + verify);
 
-                UtilsFileSaveRead.save("************************************", ERROR_FILE, true);
-                UtilsFileSaveRead.save("wrong transaction: " + transaction + " verify: " + transaction.verify(), ERROR_FILE, true);
-                UtilsFileSaveRead.save("************************************", ERROR_FILE, true);
+                MyLogger.saveLog("************************************");
+                MyLogger.saveLog("wrong transaction: " + transaction + " verify: " + verify + " index: " + thisBlock.getIndex());
+                MyLogger.saveLog("************************************");
 
                 validated = false;
                 break finished;
@@ -765,7 +775,6 @@ public class UtilsBlock {
 
             if (thisBlock.getIndex() > Seting.DUPLICATE_INDEX) {
                 if (blockService != null) {
-
 
                     if (blockService.existsBySign(transaction.getSign()) && !SignaturesNotTakenIntoAccount.contains(base.encode(transaction.getSign()))) {
                         System.out.println("=====================================");

@@ -732,6 +732,10 @@ public class UtilsResolving {
                 return temp;
             }
 
+            for (int i = 0; i < different.size(); i++) {
+                System.out.println("different: " + different.get(i).getIndex());
+                MyLogger.saveLog("different: " + different.get(i).getIndex());
+            }
             if (emptyList.isEmpty()) {
                 return temp;
             }
@@ -944,7 +948,12 @@ public class UtilsResolving {
             //откатывает баланс, исходя из блоков предназначенных для удаления.
             for (int i = deleteBlocks.size() - 1; i >= 0; i--) {
                 Block block = deleteBlocks.get(i);
+                MyLogger.saveLog("----------------------------------");
+                MyLogger.saveLog("rollBackAddBlock3 index: " + block.getIndex());
+                MyLogger.saveLog("balance before: " + balances);
                 balances = rollbackCalculateBalance(balances, block);
+                MyLogger.saveLog("after before: " + balances);
+                MyLogger.saveLog("----------------------------------");
             }
 
 

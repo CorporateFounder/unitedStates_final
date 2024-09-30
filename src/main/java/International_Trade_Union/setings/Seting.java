@@ -340,9 +340,9 @@ public interface Seting {
     int DUBLICATE_IN_ONE_BLOCK_TRANSACTIONS = 287971;
 
     int DECIMAL_PLACES = 10;
-    int SENDING_DECIMAL_PLACES = 2;
+    int SENDING_DECIMAL_PLACES = 8;
 
-    double MINIMUM = 0.01;
+    double MINIMUM = 0.00000001;
 
     int SLIDING_WINDOW_BALANCE = 25;
 

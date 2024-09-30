@@ -17,6 +17,8 @@ import International_Trade_Union.utils.*;
 
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
+import International_Trade_Union.vote.Laws;
+import International_Trade_Union.vote.VoteEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONException;
@@ -51,28 +53,55 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class Testing {
 
-    /**  if (this.index > Seting.NEW_ALGO_MINING) {
-     MerkleTree merkleTree = new MerkleTree(this.getDtoTransactions());
-     String hash = merkleTree.getRoot() + this.previousHash + this.minerAddress + this.founderAddress
-     + this.randomNumberProof + this.minerRewards + this.hashCompexity + this.timestamp +
-     this.index;
-     return UtilsUse.sha256hash(hash);
-     } else {
-     return UtilsUse.sha256hash(jsonString());
-
-     }*/
+    /**
+     * if (this.index > Seting.NEW_ALGO_MINING) {
+     * MerkleTree merkleTree = new MerkleTree(this.getDtoTransactions());
+     * String hash = merkleTree.getRoot() + this.previousHash + this.minerAddress + this.founderAddress
+     * + this.randomNumberProof + this.minerRewards + this.hashCompexity + this.timestamp +
+     * this.index;
+     * return UtilsUse.sha256hash(hash);
+     * } else {
+     * return UtilsUse.sha256hash(jsonString());
+     * <p>
+     * }
+     */
     @Test
     public void getTransactionCountTest() throws IOException, JSONException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        DtoTransaction transaction = UtilsJson.jsonToDtoTransaction("{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.11,\"digitalStockBalance\":0.11,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDy/T5Rgts+QaGlAgB45BZYOIIT5MqPY0YB6Az0dU9FyQIhALRcZsYkC/KSEeQLejKtViLD3q5EFRdjn1vp8Bgypfta\"}");
-        System.out.println(transaction);
+       Block block = UtilsJson.jsonToBLock(
+               "{\"dtoTransactions\":[{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"2BF9sZraGUWqTRNcysGPi5pRdoLFDZ3HnXpx3WFEPYcxf\",\"digitalDollar\":23.0,\"digitalStockBalance\":23.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIEUG3s/s+AkxX5BkeGw3yZe/A8ESUCxbZpObgWi8zC3OAiA3J/tZfwEwSnfRn3KLjmy2CP5yXtixkDMjX0M2QjDDkg==\"},{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"2BF9sZraGUWqTRNcysGPi5pRdoLFDZ3HnXpx3WFEPYcxf\",\"digitalDollar\":20.0,\"digitalStockBalance\":20.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICQPB5J/dhE9Zo1YjrMAYBMNBB14w9VKJoUCBfbYtEdQAiEA7DGZd6ZkY3WkRbLClu6QByX6LOZvMHEG+blGQkNP5O0=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\"digitalDollar\":365.4,\"digitalStockBalance\":365.4,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCC+RSBDDEfigfAY3s6G9YgqwnglEdhuY6TuLsLcrnKKQIgIMzxLQTi4K6TF94xiqgS2aXV3lTUd180iGjFFD/c29E=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":36.54,\"digitalStockBalance\":36.54,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDIZU7YiYRMa2hTMOL3EIRJw4iFhe0oM/kigzdL6uvI7QIhAImd7StJZ8FHo/zJeONNVVWeyQVvyvcM1OjLa/GdGwNG\"}],\"previousHash\":\"c18ca660a92c0410140c008013472c0496006b10435004000a90fa7d4e346aa8\",\"minerAddress\":\"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":6000180218674,\"minerRewards\":0.0,\"hashCompexity\":23,\"timestamp\":1727701417000,\"index\":309427,\"hashBlock\":\"04420880cd7e49bf09a00b0200810988a00d680495e288895003006180880918\"}");
+        List<DtoTransaction> transactions = block.getDtoTransactions();
 
+        for (int i = 0; i < transactions.size(); i++) {
+            System.out.println(transactions.get(i).getSender());
+            System.out.println(transactions.get(i).getCustomer());
+        }
+        BigDecimal dollar = BigDecimal.valueOf(15);
+        BigDecimal stock = BigDecimal.valueOf(42);
+        Map<String, Account> balance = new HashMap<>();
+        Account account1 = new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+        Account account2 = new Account("21Qsp2EjJhYhqP1fnWm6UufnEtavocHXJbS8MhAV9UKwJ", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+        Account account3 = new Account("faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+        Account account4 = new Account("2BF9sZraGUWqTRNcysGPi5pRdoLFDZ3HnXpx3WFEPYcxf", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+        Account account5 = new Account("rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM", dollar, stock, BigDecimal.ZERO);
+        balance.put(account1.getAccount(), account1);
+        balance.put(account2.getAccount(), account2);
+        balance.put(account3.getAccount(), account3);
+        balance.put(account4.getAccount(), account4);
+        balance.put(account5.getAccount(), account5);
+        int size = transactions.size();
+        int sizeAfter = UtilsUse.balanceTransaction(transactions, balance, block.getIndex()).size();
+        System.out.println("size: " + size);
+        System.out.println("sizeAfter: " + sizeAfter);
     }
+
     @Test
-    public void testAccounts () throws JSONException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-      DtoTransaction transaction = UtilsJson.jsonToDtoTransaction("DtoTransaction(sender=21Qsp2EjJhYhqP1fnWm6UufnEtavocHXJbS8MhAV9UKwJ, customer=21Qsp2EjJhYhqP1fnWm6UufnEtavocHXJbS8MhAV9UKwJ, digitalDollar=2000.0, digitalStockBalance=0.0, laws=Laws(packetLawName=, laws=[], hashLaw=), bonusForMiner=0.0, voteEnum=STAKING, sign=[48, 70, 2, 33, 0, -88, -41, 55, 25, -77, 15, 66, -32, -105, -64, 7, 101, -12, 122, -102, 97, -38, -82, -119, -121, -1, -95, 24, 88, 13, -24, 1, 61, -43, -33, -13, 127, 2, 33, 0, -117, 3, 12, 73, 56, -79, -47, -22, -118, 58, -76, -85, -128, -82, 9, -121, 15, 42, -113, 98, -86, 43, -3, -59, 87, 77, -32, -110, 74, -67, -96, -3])");
-      Base base = new Base58();
+    public void testAccounts() throws
+            JSONException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        DtoTransaction transaction = UtilsJson.jsonToDtoTransaction("DtoTransaction(sender=21Qsp2EjJhYhqP1fnWm6UufnEtavocHXJbS8MhAV9UKwJ, customer=21Qsp2EjJhYhqP1fnWm6UufnEtavocHXJbS8MhAV9UKwJ, digitalDollar=2000.0, digitalStockBalance=0.0, laws=Laws(packetLawName=, laws=[], hashLaw=), bonusForMiner=0.0, voteEnum=STAKING, sign=[48, 70, 2, 33, 0, -88, -41, 55, 25, -77, 15, 66, -32, -105, -64, 7, 101, -12, 122, -102, 97, -38, -82, -119, -121, -1, -95, 24, 88, 13, -24, 1, 61, -43, -33, -13, 127, 2, 33, 0, -117, 3, 12, 73, 56, -79, -47, -22, -118, 58, -76, -85, -128, -82, 9, -121, 15, 42, -113, 98, -86, 43, -3, -59, 87, 77, -32, -110, 74, -67, -96, -3])");
+        Base base = new Base58();
         System.out.println(base.encode(transaction.getSign()));
     }
+
     @Test
     public void testDto() throws JsonProcessingException {
         Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.1818181818,\"digitalStockBalance\":0.1818181818,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIHWb5voJj8D5PgHAjhTbRR4NzjJ81e2qalfkIQRTSIeyAiEAsGRdj9UOcHP6AA769GxXbJzIAWxWCwRVzFb5hEhvO0M=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.375,\"digitalStockBalance\":0.375,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIB2Uk7VL0WbT3kIYmqpyY8TE/9+ttqt0yijMuxeLMSX7AiAAhdU9Ecd8i5PDDDb8BiBOL5MUaa7SwA1pPHLoMpjiow==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.3333333333,\"digitalStockBalance\":0.3333333333,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIBANj/gvJEXcib8mazHXHoabUPcJL2kYeIrLmvMCcteiAiBMSzYL5m1C5U1swKH8US3GzxSjplYz6c5hgxois5oBqg==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.2222222222,\"digitalStockBalance\":0.2222222222,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDmByNyAUmbslorqQHXxdaZ4uNIbGpISob9ZVZZWMFNGQIhAJ7x0fzEyY1TDYdk5yG5GfmLoEXchDqUljnzO34AgXx/\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.1428571429,\"digitalStockBalance\":0.1428571429,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQD7uAbvePL9AaxuO4CmmfY9uGkYQ5aS2YjHqOzMqjiqeQIhAMX/kaVP1UAOijyJZ59PlVwHH4+0S+ZbYXBhK+WoMh/U\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.125,\"digitalStockBalance\":0.125,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQD6oeNLSlXz5QKTsEamaIB/BAD1k/Iw6+NhsTdIKn0hJAIhALIrVxOfMS75gzYh13+UTR/HEyj16EuWCmjpN+ol7PVS\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.2,\"digitalStockBalance\":0.2,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDlnBFbOHXFGVRVT177ep4GdzmgImn4ZhYEHdlCDL+FqAIhAPbdWPk/V5tdaABDinqtgsgbvwRycfVvOluM0dEWobs9\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.3,\"digitalStockBalance\":0.3,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIF992QNkfmdQbbwpNtf5deRVrgnvdaU9g1CM36cYbNlyAiEAsmjZMotPwuHNyQE4oM66IXlVsxeUYA6mYXJBAZX8LiE=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.2857142857,\"digitalStockBalance\":0.2857142857,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCICO+dC/uAgKKAzG7yadYT8aVyD5XXGRemL687ESdZRetAiBa8jVuolOGAcIVKBSXxkm1gx1yueUxNqC2tVlbrC7YEQ==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.2222222222,\"digitalStockBalance\":0.2222222222,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQD27Am6Pj3oZjWomzgLXMHQatNpG7YJLRJmlJLG2n+Z2AIgGz/WzLT33FrkBDZutlnSCAB1mfXd1yrC8H1k07x46wI=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.125,\"digitalStockBalance\":0.125,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCngg4JsnXwYLvijt0mlQyuDLUuNsA4fhDDV+EIBVAURwIgfvO9LulhXjo4gyggCvWRxLQzAfnAoxrUV0jOBF7+w4o=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.2727272727,\"digitalStockBalance\":0.2727272727,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIB2Z6LKCQmV8eQXYsTzS6dDacJI+FP+AjgXRpZjRtgZdAiEAnuKAMdobl4AyKESR838WxmakXMiBNAWgJnXEDhMQxkE=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.2857142857,\"digitalStockBalance\":0.2857142857,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIAiDpHPK4+oTGbXO3aaeM0ShIRMVisJALU7aIxeCwA2aAiEAz0sBLWb/jLKJmTGnwM9zTuzVGLrfHpWekcZyV+jvx+c=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.1111111111,\"digitalStockBalance\":0.1111111111,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICT0CNS3u86jtyY8PwudsdMXludJrhqPEYVhfZyg1LfiAiEArCF+XBOSi0T/36BtHqS16KEWXNpZBerEkDod2puxwu4=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.3636363636,\"digitalStockBalance\":0.3636363636,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQC855htlhaOie87d3TEreB/pkrPfXkUyJwNik0K4VSRVgIhALpnoC8al0pzcghHYo83M8vPLQ3DjHNOFgvjqDfEJQw/\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":33.06,\"digitalStockBalance\":33.06,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICrSIQhI1qvxMRpRL/MTq8Ix0Fwfde6nlyWdB8oL0AZYAiEA3TMEaI5JzEDGpgiHaWnm98alpJOmJx4ewqGTrqlfOPc=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":330.6,\"digitalStockBalance\":330.6,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIA1b2EOkfwXqUa9WCb/IiCAMA3jtmRTwomvBab8WVP8RAiEAt65RTNPJeDEb9h5wb46L6zDmoBAxAfIioHDH5dqW550=\"}],\"previousHash\":\"a083d84224200809c12c94b8148cf3375008d110188811a9424a051129251302\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":5404319570533998,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1722276549000,\"index\":286893,\"hashBlock\":\"24cc51b8c8c4198102462741322100542800ee004c0165258918ee2190814106\"}");
@@ -87,12 +116,13 @@ public class Testing {
         dtoTransaction.setDigitalDollar(0.0);
         dtoTransaction.setBonusForMiner(1);
 
-       boolean result = UtilsUse.isTransaction(dtoTransaction);
+        boolean result = UtilsUse.isTransaction(dtoTransaction);
         System.out.println("result: " + result);
     }
 
     @Test
-    public void DeleteAddress() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public void DeleteAddress() throws
+            IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         List<HostEndDataShortB> hosts = new ArrayList<>();
         hosts.add(new HostEndDataShortB("http://0.0.0.0:82", null));
         hosts.add(new HostEndDataShortB("http://37.27.60.116:55", null));
@@ -105,12 +135,13 @@ public class Testing {
 
 //        Mining.deleteFiles("C://"+ORIGINAL_POOL_URL_ADDRESS_FILE);
     }
+
     public void initiateProcess(List<HostEndDataShortB> sortPriorityHost) {
 
         Set<String> allAddresses = new HashSet<>();
         try {
             // Считать все адреса из файла
-            allAddresses = UtilsAllAddresses.readLineObject("C://"+Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
+            allAddresses = UtilsAllAddresses.readLineObject("C://" + Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | SignatureException |
                  NoSuchProviderException | InvalidKeyException e) {
             return;
@@ -123,40 +154,38 @@ public class Testing {
         Set<String> unresponsiveAddresses = Collections.synchronizedSet(new HashSet<>());
 
         // Проверяем состояние всех узлов
-        List<CompletableFuture<Void>> checkFutures = sortPriorityHost.stream()
-                .map(host -> CompletableFuture.runAsync(() -> {
-                    boolean isResponding = false;
-                    for (int attempt = 0; attempt < 3; attempt++) {
-                        try {
-                            String response = UtilUrl.readJsonFromUrl(host.getHost() + "/confirmReadiness", 7000);
-                            isResponding = true;
-                            System.out.println("conecting: " + host.getHost());
-                            if ("ready".equals(response)) {
-                                synchronized (availableHosts) {
-                                    availableHosts.add(host);
-                                }
-                                break;
-                            }
-                        } catch (ConnectException e) {
-                            synchronized (unresponsiveAddresses) {
-                                String hostPort = extractHostPort(host.getHost());
-                                System.out.println("host: " + hostPort);
-                                unresponsiveAddresses.add(hostPort);
-                            }
-                            break; // Не нужно повторять попытки, если соединение отказано
-                        } catch (Exception e) {
-                            System.out.println("host: error" + host.getHost());
+        List<CompletableFuture<Void>> checkFutures = sortPriorityHost.stream().map(host -> CompletableFuture.runAsync(() -> {
+            boolean isResponding = false;
+            for (int attempt = 0; attempt < 3; attempt++) {
+                try {
+                    String response = UtilUrl.readJsonFromUrl(host.getHost() + "/confirmReadiness", 7000);
+                    isResponding = true;
+                    System.out.println("conecting: " + host.getHost());
+                    if ("ready".equals(response)) {
+                        synchronized (availableHosts) {
+                            availableHosts.add(host);
                         }
+                        break;
                     }
-                    if (!isResponding) {
-                        synchronized (unresponsiveAddresses) {
-                            String hostPort = extractHostPort(host.getHost());
-                            System.out.println("host: " + hostPort);
-                            unresponsiveAddresses.add(hostPort);
-                        }
+                } catch (ConnectException e) {
+                    synchronized (unresponsiveAddresses) {
+                        String hostPort = extractHostPort(host.getHost());
+                        System.out.println("host: " + hostPort);
+                        unresponsiveAddresses.add(hostPort);
                     }
-                }))
-                .collect(Collectors.toList());
+                    break; // Не нужно повторять попытки, если соединение отказано
+                } catch (Exception e) {
+                    System.out.println("host: error" + host.getHost());
+                }
+            }
+            if (!isResponding) {
+                synchronized (unresponsiveAddresses) {
+                    String hostPort = extractHostPort(host.getHost());
+                    System.out.println("host: " + hostPort);
+                    unresponsiveAddresses.add(hostPort);
+                }
+            }
+        })).collect(Collectors.toList());
 
         // Ждем завершения всех проверок
         CompletableFuture.allOf(checkFutures.toArray(new CompletableFuture[0])).join();
@@ -166,21 +195,19 @@ public class Testing {
         System.out.println("for delete: " + unresponsiveAddresses);
 
         // Нормализуем адреса для удаления
-        Set<String> normalizedAllAddresses = allAddresses.stream()
-                .map(this::extractHostPort)
-                .collect(Collectors.toSet());
+        Set<String> normalizedAllAddresses = allAddresses.stream().map(this::extractHostPort).collect(Collectors.toSet());
 
         // Удаляем неответившие узлы из общего списка
         normalizedAllAddresses.removeAll(unresponsiveAddresses);
         System.out.println("after: " + normalizedAllAddresses);
 
         // Удаляем файл с адресами
-        Mining.deleteFiles("C://"+Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
+        Mining.deleteFiles("C://" + Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
 
         // Перезаписываем оставшиеся адреса в файл
         normalizedAllAddresses.forEach(address -> {
             try {
-                UtilsAllAddresses.saveAllAddresses(address, "C://"+Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
+                UtilsAllAddresses.saveAllAddresses(address, "C://" + Seting.ORIGINAL_POOL_URL_ADDRESS_FILE);
             } catch (IOException | NoSuchAlgorithmException | SignatureException | InvalidKeySpecException |
                      NoSuchProviderException | InvalidKeyException e) {
                 throw new RuntimeException(e);
@@ -197,23 +224,21 @@ public class Testing {
         CountDownLatch latch = new CountDownLatch(nodesToWait);
 
         // Теперь ждем, пока неготовые узлы станут готовыми
-        List<CompletableFuture<Void>> waitFutures = availableHosts.stream()
-                .map(host -> CompletableFuture.runAsync(() -> {
-                    while (true) {
-                        try {
-                            String response = UtilUrl.readJsonFromUrl(host.getHost() + "/confirmReadiness", 2000);
-                            if ("ready".equals(response)) {
-                                latch.countDown();
-                                break;
-                            }
-                            Thread.sleep(1000); // Пауза перед следующей проверкой
-                        } catch (Exception e) {
-                            latch.countDown(); // Уменьшаем счетчик, если узел стал недоступен
-                            break;
-                        }
+        List<CompletableFuture<Void>> waitFutures = availableHosts.stream().map(host -> CompletableFuture.runAsync(() -> {
+            while (true) {
+                try {
+                    String response = UtilUrl.readJsonFromUrl(host.getHost() + "/confirmReadiness", 2000);
+                    if ("ready".equals(response)) {
+                        latch.countDown();
+                        break;
                     }
-                }))
-                .collect(Collectors.toList());
+                    Thread.sleep(1000); // Пауза перед следующей проверкой
+                } catch (Exception e) {
+                    latch.countDown(); // Уменьшаем счетчик, если узел стал недоступен
+                    break;
+                }
+            }
+        })).collect(Collectors.toList());
 
         try {
             // Ждем максимум 25 секунд
@@ -226,7 +251,8 @@ public class Testing {
     }
 
 
-    private DataShortBlockchainInformation fetchDataShortBlockchainInformation(String host) throws IOException, JSONException {
+    private DataShortBlockchainInformation fetchDataShortBlockchainInformation(String host) throws
+            IOException, JSONException {
         String jsonGlobalData = UtilUrl.readJsonFromUrl(host + "/datashort");
         System.out.println("jsonGlobalData: " + jsonGlobalData + " host: " + host);
         return UtilsJson.jsonToDataShortBlockchainInformation(jsonGlobalData);
@@ -236,14 +262,10 @@ public class Testing {
         Set<String> modifiedHosts = new HashSet<>(hosts);
         modifiedHosts.addAll(Seting.ORIGINAL_ADDRESSES);
 
-        Set<String> selectedHosts = modifiedHosts.stream()
-                .collect(Collectors.collectingAndThen(
-                        Collectors.toList(),
-                        listHost -> {
-                            Collections.shuffle(listHost);
-                            return listHost.stream().limit(RANDOM_HOSTS).collect(Collectors.toSet());
-                        }
-                ));
+        Set<String> selectedHosts = modifiedHosts.stream().collect(Collectors.collectingAndThen(Collectors.toList(), listHost -> {
+            Collections.shuffle(listHost);
+            return listHost.stream().limit(RANDOM_HOSTS).collect(Collectors.toSet());
+        }));
 
         List<CompletableFuture<HostEndDataShortB>> futures = new ArrayList<>();
         Set<String> unresponsiveAddresses = Collections.synchronizedSet(new HashSet<>());
@@ -270,12 +292,7 @@ public class Testing {
 
         CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 
-        CompletableFuture<List<HostEndDataShortB>> allComplete = allFutures.thenApplyAsync(result ->
-                futures.stream()
-                        .map(CompletableFuture::join)
-                        .filter(result1 -> result1 != null)
-                        .collect(Collectors.toList())
-        );
+        CompletableFuture<List<HostEndDataShortB>> allComplete = allFutures.thenApplyAsync(result -> futures.stream().map(CompletableFuture::join).filter(result1 -> result1 != null).collect(Collectors.toList()));
 
         List<HostEndDataShortB> resultList = allComplete.join();
         Collections.sort(resultList, new HostEndDataShortBComparator());
@@ -306,8 +323,7 @@ public class Testing {
 
     public List<DtoTransaction> getDuplicateTransactions(Block block) {
         Base base = new Base58();
-        Map<String, List<DtoTransaction>> groupedBySignature = block.getDtoTransactions().stream()
-                .collect(Collectors.groupingBy(t -> base.encode(t.getSign())));
+        Map<String, List<DtoTransaction>> groupedBySignature = block.getDtoTransactions().stream().collect(Collectors.groupingBy(t -> base.encode(t.getSign())));
 
         List<DtoTransaction> duplicates = new ArrayList<>();
 
@@ -319,28 +335,17 @@ public class Testing {
 
         return duplicates;
     }
+
     @Test
     public void dublicate() throws JsonProcessingException {
         Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.1818181818,\"digitalStockBalance\":0.1818181818,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIHWb5voJj8D5PgHAjhTbRR4NzjJ81e2qalfkIQRTSIeyAiEAsGRdj9UOcHP6AA769GxXbJzIAWxWCwRVzFb5hEhvO0M=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.375,\"digitalStockBalance\":0.375,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIB2Uk7VL0WbT3kIYmqpyY8TE/9+ttqt0yijMuxeLMSX7AiAAhdU9Ecd8i5PDDDb8BiBOL5MUaa7SwA1pPHLoMpjiow==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.3333333333,\"digitalStockBalance\":0.3333333333,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIBANj/gvJEXcib8mazHXHoabUPcJL2kYeIrLmvMCcteiAiBMSzYL5m1C5U1swKH8US3GzxSjplYz6c5hgxois5oBqg==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.2222222222,\"digitalStockBalance\":0.2222222222,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDmByNyAUmbslorqQHXxdaZ4uNIbGpISob9ZVZZWMFNGQIhAJ7x0fzEyY1TDYdk5yG5GfmLoEXchDqUljnzO34AgXx/\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.1428571429,\"digitalStockBalance\":0.1428571429,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQD7uAbvePL9AaxuO4CmmfY9uGkYQ5aS2YjHqOzMqjiqeQIhAMX/kaVP1UAOijyJZ59PlVwHH4+0S+ZbYXBhK+WoMh/U\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.125,\"digitalStockBalance\":0.125,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQD6oeNLSlXz5QKTsEamaIB/BAD1k/Iw6+NhsTdIKn0hJAIhALIrVxOfMS75gzYh13+UTR/HEyj16EuWCmjpN+ol7PVS\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.2,\"digitalStockBalance\":0.2,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDlnBFbOHXFGVRVT177ep4GdzmgImn4ZhYEHdlCDL+FqAIhAPbdWPk/V5tdaABDinqtgsgbvwRycfVvOluM0dEWobs9\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.3,\"digitalStockBalance\":0.3,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIF992QNkfmdQbbwpNtf5deRVrgnvdaU9g1CM36cYbNlyAiEAsmjZMotPwuHNyQE4oM66IXlVsxeUYA6mYXJBAZX8LiE=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.2857142857,\"digitalStockBalance\":0.2857142857,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCICO+dC/uAgKKAzG7yadYT8aVyD5XXGRemL687ESdZRetAiBa8jVuolOGAcIVKBSXxkm1gx1yueUxNqC2tVlbrC7YEQ==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.2222222222,\"digitalStockBalance\":0.2222222222,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQD27Am6Pj3oZjWomzgLXMHQatNpG7YJLRJmlJLG2n+Z2AIgGz/WzLT33FrkBDZutlnSCAB1mfXd1yrC8H1k07x46wI=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.125,\"digitalStockBalance\":0.125,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCngg4JsnXwYLvijt0mlQyuDLUuNsA4fhDDV+EIBVAURwIgfvO9LulhXjo4gyggCvWRxLQzAfnAoxrUV0jOBF7+w4o=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.2727272727,\"digitalStockBalance\":0.2727272727,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIB2Z6LKCQmV8eQXYsTzS6dDacJI+FP+AjgXRpZjRtgZdAiEAnuKAMdobl4AyKESR838WxmakXMiBNAWgJnXEDhMQxkE=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.2857142857,\"digitalStockBalance\":0.2857142857,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIAiDpHPK4+oTGbXO3aaeM0ShIRMVisJALU7aIxeCwA2aAiEAz0sBLWb/jLKJmTGnwM9zTuzVGLrfHpWekcZyV+jvx+c=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.1111111111,\"digitalStockBalance\":0.1111111111,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICT0CNS3u86jtyY8PwudsdMXludJrhqPEYVhfZyg1LfiAiEArCF+XBOSi0T/36BtHqS16KEWXNpZBerEkDod2puxwu4=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.3636363636,\"digitalStockBalance\":0.3636363636,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQC855htlhaOie87d3TEreB/pkrPfXkUyJwNik0K4VSRVgIhALpnoC8al0pzcghHYo83M8vPLQ3DjHNOFgvjqDfEJQw/\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":33.06,\"digitalStockBalance\":33.06,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICrSIQhI1qvxMRpRL/MTq8Ix0Fwfde6nlyWdB8oL0AZYAiEA3TMEaI5JzEDGpgiHaWnm98alpJOmJx4ewqGTrqlfOPc=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":330.6,\"digitalStockBalance\":330.6,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIA1b2EOkfwXqUa9WCb/IiCAMA3jtmRTwomvBab8WVP8RAiEAt65RTNPJeDEb9h5wb46L6zDmoBAxAfIioHDH5dqW550=\"}],\"previousHash\":\"a083d84224200809c12c94b8148cf3375008d110188811a9424a051129251302\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":5404319570533998,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1722276549000,\"index\":286893,\"hashBlock\":\"24cc51b8c8c4198102462741322100542800ee004c0165258918ee2190814106\"}");
         // Добавление дубликата (как в вашем оригинальном коде)
         DtoTransaction dublicate = block.getDtoTransactions().get(0);
-        DtoTransaction transaction = new DtoTransaction(dublicate.getSender(),
-                dublicate.getCustomer(),
-                dublicate.getDigitalDollar(),
-                dublicate.getDigitalStockBalance(),
-                dublicate.getLaws(),
-                dublicate.getBonusForMiner(),
-                dublicate.getVoteEnum());
+        DtoTransaction transaction = new DtoTransaction(dublicate.getSender(), dublicate.getCustomer(), dublicate.getDigitalDollar(), dublicate.getDigitalStockBalance(), dublicate.getLaws(), dublicate.getBonusForMiner(), dublicate.getVoteEnum());
         transaction.setSign(Arrays.copyOf(dublicate.getSign(), dublicate.getSign().length));
         block.getDtoTransactions().add(transaction);
 
-        DtoTransaction transaction2 = new DtoTransaction(dublicate.getSender(),
-                dublicate.getCustomer(),
-                dublicate.getDigitalDollar(),
-                dublicate.getDigitalStockBalance(),
-                dublicate.getLaws(),
-                dublicate.getBonusForMiner(),
-                dublicate.getVoteEnum());
+        DtoTransaction transaction2 = new DtoTransaction(dublicate.getSender(), dublicate.getCustomer(), dublicate.getDigitalDollar(), dublicate.getDigitalStockBalance(), dublicate.getLaws(), dublicate.getBonusForMiner(), dublicate.getVoteEnum());
         transaction2.setSign(Arrays.copyOf(dublicate.getSign(), dublicate.getSign().length));
         block.getDtoTransactions().add(transaction2);
 
@@ -353,8 +358,10 @@ public class Testing {
             System.out.println("dublicate: " + new Base58().encode(duplicate.getSign()));
         }
     }
+
     @Test
-    public void hash() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public void hash() throws
+            IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.1818181818,\"digitalStockBalance\":0.1818181818,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIHWb5voJj8D5PgHAjhTbRR4NzjJ81e2qalfkIQRTSIeyAiEAsGRdj9UOcHP6AA769GxXbJzIAWxWCwRVzFb5hEhvO0M=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.375,\"digitalStockBalance\":0.375,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIB2Uk7VL0WbT3kIYmqpyY8TE/9+ttqt0yijMuxeLMSX7AiAAhdU9Ecd8i5PDDDb8BiBOL5MUaa7SwA1pPHLoMpjiow==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.3333333333,\"digitalStockBalance\":0.3333333333,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIBANj/gvJEXcib8mazHXHoabUPcJL2kYeIrLmvMCcteiAiBMSzYL5m1C5U1swKH8US3GzxSjplYz6c5hgxois5oBqg==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.2222222222,\"digitalStockBalance\":0.2222222222,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDmByNyAUmbslorqQHXxdaZ4uNIbGpISob9ZVZZWMFNGQIhAJ7x0fzEyY1TDYdk5yG5GfmLoEXchDqUljnzO34AgXx/\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.1428571429,\"digitalStockBalance\":0.1428571429,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQD7uAbvePL9AaxuO4CmmfY9uGkYQ5aS2YjHqOzMqjiqeQIhAMX/kaVP1UAOijyJZ59PlVwHH4+0S+ZbYXBhK+WoMh/U\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"wCfTQCrCs37ZNEShPBzPyjkZa1LjMUwnWn27dLQ8bj6o\",\"digitalDollar\":0.125,\"digitalStockBalance\":0.125,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQD6oeNLSlXz5QKTsEamaIB/BAD1k/Iw6+NhsTdIKn0hJAIhALIrVxOfMS75gzYh13+UTR/HEyj16EuWCmjpN+ol7PVS\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.2,\"digitalStockBalance\":0.2,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDlnBFbOHXFGVRVT177ep4GdzmgImn4ZhYEHdlCDL+FqAIhAPbdWPk/V5tdaABDinqtgsgbvwRycfVvOluM0dEWobs9\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.3,\"digitalStockBalance\":0.3,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIF992QNkfmdQbbwpNtf5deRVrgnvdaU9g1CM36cYbNlyAiEAsmjZMotPwuHNyQE4oM66IXlVsxeUYA6mYXJBAZX8LiE=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.2857142857,\"digitalStockBalance\":0.2857142857,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCICO+dC/uAgKKAzG7yadYT8aVyD5XXGRemL687ESdZRetAiBa8jVuolOGAcIVKBSXxkm1gx1yueUxNqC2tVlbrC7YEQ==\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"m2iC2FBEcqNa4PPghE45AaAuXjeAC7f1SfanM4LMjQkM\",\"digitalDollar\":0.2222222222,\"digitalStockBalance\":0.2222222222,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQD27Am6Pj3oZjWomzgLXMHQatNpG7YJLRJmlJLG2n+Z2AIgGz/WzLT33FrkBDZutlnSCAB1mfXd1yrC8H1k07x46wI=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.125,\"digitalStockBalance\":0.125,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCngg4JsnXwYLvijt0mlQyuDLUuNsA4fhDDV+EIBVAURwIgfvO9LulhXjo4gyggCvWRxLQzAfnAoxrUV0jOBF7+w4o=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.2727272727,\"digitalStockBalance\":0.2727272727,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIB2Z6LKCQmV8eQXYsTzS6dDacJI+FP+AjgXRpZjRtgZdAiEAnuKAMdobl4AyKESR838WxmakXMiBNAWgJnXEDhMQxkE=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"274NjHBzcVSBYKHN6dmHVADJ3bjnfaDkYyrDT25aLig7m\",\"digitalDollar\":0.2857142857,\"digitalStockBalance\":0.2857142857,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIAiDpHPK4+oTGbXO3aaeM0ShIRMVisJALU7aIxeCwA2aAiEAz0sBLWb/jLKJmTGnwM9zTuzVGLrfHpWekcZyV+jvx+c=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"eHacKrkFscdJe4tVNwSQznotMv2dDY2iXsgRG1HVLHB7\",\"digitalDollar\":0.1111111111,\"digitalStockBalance\":0.1111111111,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICT0CNS3u86jtyY8PwudsdMXludJrhqPEYVhfZyg1LfiAiEArCF+XBOSi0T/36BtHqS16KEWXNpZBerEkDod2puxwu4=\"},{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":0.3636363636,\"digitalStockBalance\":0.3636363636,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQC855htlhaOie87d3TEreB/pkrPfXkUyJwNik0K4VSRVgIhALpnoC8al0pzcghHYo83M8vPLQ3DjHNOFgvjqDfEJQw/\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":33.06,\"digitalStockBalance\":33.06,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCICrSIQhI1qvxMRpRL/MTq8Ix0Fwfde6nlyWdB8oL0AZYAiEA3TMEaI5JzEDGpgiHaWnm98alpJOmJx4ewqGTrqlfOPc=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"digitalDollar\":330.6,\"digitalStockBalance\":330.6,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIA1b2EOkfwXqUa9WCb/IiCAMA3jtmRTwomvBab8WVP8RAiEAt65RTNPJeDEb9h5wb46L6zDmoBAxAfIioHDH5dqW550=\"}],\"previousHash\":\"a083d84224200809c12c94b8148cf3375008d110188811a9424a051129251302\",\"minerAddress\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":5404319570533998,\"minerRewards\":0.0,\"hashCompexity\":17,\"timestamp\":1722276549000,\"index\":286893,\"hashBlock\":\"24cc51b8c8c4198102462741322100542800ee004c0165258918ee2190814106\"}");
         String immutablePart = block.jsonString(); // Предположим, что jsonString() возвращает JSON без randomNumberProof
         String partialHash = DigestUtils.sha256Hex(immutablePart);
@@ -367,7 +374,7 @@ public class Testing {
     }
 
     @Test
-    public  void calculateScore(){
+    public void calculateScore() {
 
 
         double sumBalance = 1;
@@ -385,7 +392,7 @@ public class Testing {
 
         double sum = transactionCountPoints + transactionSumPoints;
         System.out.println("score: " + score);
-        result = (int) ( (result + (diff * 30)) + score + sum);
+        result = (int) ((result + (diff * 30)) + score + sum);
         System.out.println("result: " + result);
     }
 
@@ -393,18 +400,18 @@ public class Testing {
     public void test() throws IOException {
 
     }
+
     @Test
-    public void testReadHost() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public void testReadHost() throws
+            IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         String url = "E://resources/poolAddress/";
         Set<String> strings = UtilsAllAddresses.readLineObject(url);
         List<HostEndDataShortB> list = new ArrayList<>();
 
         System.out.println("before: " + strings);
-       strings = strings.stream().map(t->t.replaceAll("\"", "")).collect(Collectors.toSet());
+        strings = strings.stream().map(t -> t.replaceAll("\"", "")).collect(Collectors.toSet());
 
         System.out.println("after: " + strings);
-
-
 
 
         //сортировать здесь.
@@ -412,19 +419,20 @@ public class Testing {
 
 
     }
+
     @Test
-    public void testHost() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
-       String url = "http://localhost:8085/putNode";
-       Set<String> strings = BasisController.getNodes();
+    public void testHost() throws
+            IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
+        String url = "http://localhost:8085/putNode";
+        Set<String> strings = BasisController.getNodes();
         System.out.println(strings);
 
 
+        MyHost myHost = new MyHost("http://localhost:8083/putNode", "server", "key");
+        String json = UtilsJson.objToStringJson(myHost);
 
-       MyHost myHost = new MyHost("http://localhost:8083/putNode", "server", "key");
-       String json = UtilsJson.objToStringJson(myHost);
 
-
-        UtilUrl.sendPost(json, url );
+        UtilUrl.sendPost(json, url);
 
     }
 
@@ -452,6 +460,7 @@ public class Testing {
         System.out.println("after list: ");
         hostEndDataShortBS.forEach(System.out::println);
     }
+
     @Test
     public void random() throws JsonProcessingException {
         long score = 0;
@@ -465,8 +474,8 @@ public class Testing {
             blocks.get(0).setHashBlock("4111780951498215c031c98cc201b4690208828c3c844660104bacdc11040909");
             blocks.get(0).setPreviousHash("41c408c41718500200306b0200a10a040280e08f4d2844f30258a23eb9715490");
             Account miner = new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(1000));
-             number = UtilsUse.bigRandomWinner(blocks.get(0),  miner);
-             score = UtilsUse.calculateScore(5242881, 10);
+            number = UtilsUse.bigRandomWinner(blocks.get(0), miner);
+            score = UtilsUse.calculateScore(5242881, 10);
         }
 
         System.out.println("score: " + score);
@@ -501,19 +510,18 @@ public class Testing {
         System.out.println(numThreads);
         System.out.println(numThreads2);
     }
+
     public static void main(String[] args) throws JsonProcessingException {
         String actualJ = "{\"dtoTransactions\":[{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":138.0,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIDoHB7j6VJr3G6IOmZpVFd4DtouNNYgVB/Uhjx2Fwd5PAiEAyMu+wNd6y8wugT3Ki8BtLPmS5+93HfCb60p03L5dvTE=\"},{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":20.0,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":1.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIGhhp8zYarceDMl15uZGcggP8yR7PWduOkpA6PX5od8eAiAMB1LaXsNfxE/s9mccnb54Eon3JL26/1CeVtZSLcbYvQ==\"},{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":3.0,\"digitalStockBalance\":1.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":1.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDfCZ9t3s+cRtPSKj7yvBIj2G33sGnOKWlesm+Z9WuVKgIgfM/MfJ4r4B/zSfb6Ky/A+bTVo9s1G+Rb1LZQMFaexRA=\"},{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":1.0,\"digitalStockBalance\":1.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":1.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDZxb1O8Q+s9W90iZrWwSZiRhCIKik6/oaUAQ/EvpUO3wIhAPN0ZrZzuuTI3jyMXEWeYVHKarh75+kCwEgu6WDwNDcp\"},{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":1.0,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":1.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDbPQc4eN0RNwnJKsIKVUN7twNqD9DARORJKIyy/e2fcwIgVjaNcJlBPwlpaIWfGyUjZZkkSZgcV4yTUjHGtD3kyzo=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":13.0,\"digitalStockBalance\":13.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDDOJXTnc5Gg6EMpkeK6rqmK/53chJORZHZQ4yANboy7gIhAOlVnGwv4ylPF9wn8JUg6OUwDczgj2p64dXr870vMISG\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"BUDGET\",\"digitalDollar\":130.0,\"digitalStockBalance\":130.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":4.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQC8AJYMNWwko4ybq2rm2OrZHHgOai6Aze6VMiUsJ9eqkQIgdpRmZETcUlBwZc51UMUE/O/b0v94za+6tR2kbBPcvdo=\"}],\"previousHash\":\"00000777a26bed8b58d10f344d94bd3048348b66cce633223aff1b39efd204b7\",\"minerAddress\":\"BUDGET\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":515012,\"minerRewards\":8.0,\"hashCompexity\":1,\"timestamp\":1702731467000,\"index\":127488,\"hashBlock\":\"00000caf287b044cec2445d666528697af51a95e079bf09a8c8e4abf5813ee77\"}";
         String prevJ = "{\"dtoTransactions\":[{\"sender\":\"rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":145.0,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCTFqeYDMUThwkeM4D2tueoUc5Vz2PqoHt4wvSZHWJ7PgIhAO4kKiHYEcZcbbmZT54WVQ9GazDvovTdo3gtQFYX+GOb\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":13.0,\"digitalStockBalance\":13.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDfMGbzuDX/CzVlybjFgR48xpKKCg7NKj4SkayKiyQxxQIgCO1RDGyWBYAO61jk2cZ8tQweqtFTqvkYzBnQ62HSu+Y=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"BUDGET\",\"digitalDollar\":130.0,\"digitalStockBalance\":130.0,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCID8bfgSNZPlip+WSHSLrVB8VGlp81QWdTXgkXeUde8ikAiEAi2d7UjxFifMVA/uZvOigPvZ00HoSrvcp5sfL9AhMlYg=\"}],\"previousHash\":\"000005b2203e97829d6cfb01b36f4ae9e9fb50ff7a608d0532d4da702a968e7b\",\"minerAddress\":\"BUDGET\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":425566,\"minerRewards\":0.0,\"hashCompexity\":1,\"timestamp\":1702731065000,\"index\":127487,\"hashBlock\":\"00000777a26bed8b58d10f344d94bd3048348b66cce633223aff1b39efd204b7\"}";
         Block actual = UtilsJson.jsonToBLock(actualJ);
         Block prev = UtilsJson.jsonToBLock(prevJ);
-       double G =  UtilsUse.blocksReward(actual.getDtoTransactions(), prev.getDtoTransactions(), 20);
+        double G = UtilsUse.blocksReward(actual.getDtoTransactions(), prev.getDtoTransactions(), 20);
         System.out.println("G: " + G);
-        double reward = (5+G) * 26;
-        reward = reward/ DOLLAR;
+        double reward = (5 + G) * 26;
+        reward = reward / DOLLAR;
         System.out.println("Reward: " + reward);
     }
-
-
 
 
     private static volatile boolean blockFound = false;
@@ -555,7 +563,6 @@ public class Testing {
     }
 
 
-
     @Test
     public void allCoundDollar() {
         int reward = 5;
@@ -584,8 +591,7 @@ public class Testing {
             int step1 = index - V28;
             int step2 = reductionPeriod;
             int step3 = step1 / step2;
-            long money = (index - V28)
-                    / (576 * 14);
+            long money = (index - V28) / (576 * 14);
 
 
             System.out.println("step1: " + step1);
@@ -621,7 +627,6 @@ public class Testing {
 
         }
     }
-
 
 
     public static int countLeadingZeroBits(byte[] hash) {
@@ -674,7 +679,8 @@ public class Testing {
 
 
     @Test
-    public void testServer() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public void testServer() throws
+            IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         int finish = 0 + Seting.PORTION_DOWNLOAD;
         int start = 0;
 
@@ -722,14 +728,12 @@ public class Testing {
             if (prev == null) {
                 prev = subBlocks.get(i);
                 if (!prev.getHashBlock().equals(prev.hashForTransaction())) {
-                    System.out.printf("wrong hash genesis: index: %d, actual %s, expected %s\n"
-                            , prev.getIndex(), prev.getHashBlock(), prev.hashForTransaction());
+                    System.out.printf("wrong hash genesis: index: %d, actual %s, expected %s\n", prev.getIndex(), prev.getHashBlock(), prev.hashForTransaction());
                 }
                 continue;
             }
             if (!subBlocks.get(i).getHashBlock().equals(subBlocks.get(i).hashForTransaction())) {
-                System.out.printf("wrong hash: index: %d, actual %s, expected %s\n"
-                        , subBlocks.get(i).getIndex(), subBlocks.get(i).getHashBlock(), subBlocks.get(i).hashForTransaction());
+                System.out.printf("wrong hash: index: %d, actual %s, expected %s\n", subBlocks.get(i).getIndex(), subBlocks.get(i).getHashBlock(), subBlocks.get(i).hashForTransaction());
             }
             System.out.println();
         }
@@ -738,11 +742,10 @@ public class Testing {
     }
 
     @Test
-    public void entityBalance() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public void entityBalance() throws
+            IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        List<Account> accountList = balances.entrySet().stream()
-                .map(t -> t.getValue())
-                .collect(Collectors.toList());
+        List<Account> accountList = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
 
         List<EntityAccount> entityAccounts = UtilsAccountToEntityAccount.accountsToEntityAccounts(balances);
         List<Account> testAccount = UtilsAccountToEntityAccount.EntityAccountToAccount(entityAccounts);
@@ -802,7 +805,8 @@ public class Testing {
     }
 
     @Test
-    public void multipleFindHash() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public void multipleFindHash() throws
+            IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         System.out.println("find hash method");
         int randomNumberProofStatic = 0;
         int differrentNumber = 0;
@@ -913,7 +917,8 @@ public class Testing {
 
 
     @Test
-    public void testRollback() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public void testRollback() throws
+            IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.679999999999996,\"digitalStockBalance\":26.679999999999996,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIGUmscRx3/ry3+JCXEn5IUPvztkp8wssWVncXrboTT7WAiBzoushgN/njGCBu2giDT4BdPlt6lWk1ng6eDG3O6+10A==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\"digitalDollar\":266.79999999999995,\"digitalStockBalance\":266.79999999999995,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIHSBd0UTPOBcYLp8CgcK0GDLTNWdLQjKXoX7RDIjCP5cAiBkVtlG037xou6eTEK3EnbhdmpDDwClemoUGKB3c2CoJg==\"}],\"previousHash\":\"010568240909052200811b000a049ac25a8df8ee44204046e0070c38dc108608\",\"minerAddress\":\"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":5717820000077086321,\"minerRewards\":0.0,\"hashCompexity\":21,\"timestamp\":1718355281000,\"index\":268086,\"hashBlock\":\"08b04c22294ca9e3291d5168c2163ba000a0400900060e20452230480640909c\"}\n");
         Block block1 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.679999999999996,\"digitalStockBalance\":26.679999999999996,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIQCq3OPKoLDRTMn39QX0Dw3j5aHkMFyB8pqGLfhUaDrFhwIfFrLYsXiNAQJpB9B8N0EL5Ft40nkf9npaOqODMlo8jQ==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az\",\"digitalDollar\":266.79999999999995,\"digitalStockBalance\":266.79999999999995,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDmb7a4gSr4HA/xOxWDxfLlhrBeWKoxKDuKYWdw4HlfDwIgBEJ4RQjbg4XRIG4VoxNpkljQ+K0dy7WZVPxbcnONlFg=\"}],\"previousHash\":\"08b04c22294ca9e3291d5168c2163ba000a0400900060e20452230480640909c\",\"minerAddress\":\"28QDe5813uR6iFsPxVY5p4naQUcXL3Tv4dKF7i1J3b7Az\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":3602879713466940,\"minerRewards\":0.0,\"hashCompexity\":21,\"timestamp\":1718355436000,\"index\":268087,\"hashBlock\":\"c0811412a835915404c01202540128a201a0052518c06d460600225a7432963a\"}\n");
         Block block2 = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.679999999999996,\"digitalStockBalance\":26.679999999999996,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIEgT2vk/wOxjFlYJoADR8JtApy5pp28NrHRk4rDmD1kbAiEArjA9mpnk4LZJ2LqRBeq/kJwKanJJzqoX63CkmIws7UY=\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"s66m816Dakw1zs1MBXjJr5UuVABnAgA8ahPxvXNyAWyq\",\"digitalDollar\":266.79999999999995,\"digitalStockBalance\":266.79999999999995,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQCYGK9AwF24/oxhJsRRsu+GmkySWWtlBoqnUPsRpvYIJwIgGnOwcYPdq0UD+txIgM2B759XufOt7FjFGkE6qpqYz8w=\"}],\"previousHash\":\"c0811412a835915404c01202540128a201a0052518c06d460600225a7432963a\",\"minerAddress\":\"s66m816Dakw1zs1MBXjJr5UuVABnAgA8ahPxvXNyAWyq\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":17113678609889273,\"minerRewards\":0.0,\"hashCompexity\":21,\"timestamp\":1718355643000,\"index\":268088,\"hashBlock\":\"c8021823126b424287805002cb14ae4fb40022a8948842606592105218104040\"}\n");
@@ -948,7 +953,7 @@ public class Testing {
         double balance = balances.get("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43").getDigitalDollarBalance().doubleValue();
 
         System.out.printf("balance: %.16f", balance);
-        System.out.printf("round: %.16f" , round(balance, 10));
+        System.out.printf("round: %.16f", round(balance, 10));
 
     }
 
@@ -1018,7 +1023,6 @@ public class Testing {
     }
 
 
-
     @Test
     public void testLimitedMoney() {
         int block = 0;
@@ -1059,7 +1063,8 @@ public class Testing {
 
 
     @Test
-    public void testHashDifficulty() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+    public void testHashDifficulty() throws
+            IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         String hash = "8c41b1ddc22ba3402ed0489952ba45161b279abb3b3b8ebc6bede062a21f83ff";
 //        hash = bytesToBinary(hash.getBytes());
 //        int count = countLeadingZeros(hash);
@@ -1110,7 +1115,8 @@ public class Testing {
     }
 
     @Test
-    public void Account() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public void Account() throws
+            IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> originals = SaveBalances.readLineObject("C://strategy1/balance/");
         Account account = originals.get("hzhq1LUk3qCcNyrTGE5pSRrRsYf3HkdSmeu5jap1JUnx");
         System.out.println(account);
@@ -1128,7 +1134,8 @@ public class Testing {
 
 
     @Test
-    public  void testBalance() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public void testBalance() throws
+            IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         Map<String, Account> originals = SaveBalances.readLineObject("C://strategy1/balance/");
         Map<String, Account> forks = SaveBalances.readLineObject("C://strategy2/balance/");
         Map<String, Account> balance = SaveBalances.readLineObject("C://resources/balance/");
@@ -1271,7 +1278,8 @@ public class Testing {
 
 
     @Test
-    public void TestChangeDiff() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, InterruptedException {
+    public void TestChangeDiff() throws
+            IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, InterruptedException {
         Timestamp first = Timestamp.from(Instant.now());
         Thread.sleep(60000);
         Timestamp second = Timestamp.from(Instant.now());

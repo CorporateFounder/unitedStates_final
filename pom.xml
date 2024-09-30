@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.UNITED_STATES_CORPORATION_OF_HUMANITY</groupId>
 	<artifactId>unitedStates</artifactId>
-	<version>0.32.172-SNAPSHOT</version>
+	<version>0.32.174-SNAPSHOT</version>
 	<name>unitedStates</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -116,7 +116,11 @@
 			<version>1.3.164</version>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.9</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

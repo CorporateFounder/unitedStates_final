@@ -186,6 +186,7 @@ public class UtilsBalance {
         for (int j = 0; j < transactions.size(); j++) {
 
 
+
             //здесь идет проверка по подписи, сначала проверяется, была ли эта подпись в базе данных для
             //транзакции, если ее нет, то проверяется во временном списке, который был предоставлен
             //если нет, то в список добавляется эта подпись и продолжается процедура.
@@ -205,13 +206,22 @@ public class UtilsBalance {
                     }
                 }
             }
+
             if (transaction.getSender().startsWith(Seting.NAME_LAW_ADDRESS_START)) {
                 System.out.println("law balance cannot be sender");
                 continue;
             }
             Account sender = getBalance(transaction.getSender(), balances);
             Account customer = getBalance(transaction.getCustomer(), balances);
-            if (transaction.verify()) {
+            boolean verifyTransaction = transaction.verify();
+            if (verifyTransaction == false){
+                String json = UtilsJson.objToStringJson(transaction);
+                DtoTransaction tempTransaction = UtilsJson.jsonToDtoTransaction(json);
+                verifyTransaction = tempTransaction.verify();
+                MyLogger.saveLog("repeat Transaction: verify" + verifyTransaction + "json: " + json + " index: "  + block.getIndex());
+
+            }
+            if (verifyTransaction) {
                 //BASIS_ADDRESS это специальный адрес, который отправляет награду шахтеру и основателю в каждом
                 //блоке должна быть 1 транзакция награда шахтеру, и 1 основателю.
                 if (transaction.getSender().equals(Seting.BASIS_ADDRESS)) {
@@ -299,6 +309,7 @@ public class UtilsBalance {
                 }
 
             }
+
 
         }
 
