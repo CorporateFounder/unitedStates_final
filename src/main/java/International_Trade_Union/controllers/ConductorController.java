@@ -170,10 +170,12 @@ public class ConductorController {
             senderAccount = UtilsAccountToEntityAccount.entityAccountToAccount(blockService.findByAccount(sender));
 
         }catch (Exception e){
+            result.put("wrong balance", "FAILED: " + e);
             return result;
         }
         if(!"success".equals(UtilsUse.checkSendBalance(senderAccount, dtoTransaction))){
             String str = UtilsUse.checkSendBalance(senderAccount, dtoTransaction);
+            result.put("wrong balance", "FAILED: " + str);
             return result;
 
         }
@@ -195,7 +197,6 @@ public class ConductorController {
     }
 
     if (dtoTransaction.verify()) {
-
 
         List<String> corporateSeniorPositions = directors.getDirectors().stream()
                 .map(t -> t.getName()).collect(Collectors.toList());
