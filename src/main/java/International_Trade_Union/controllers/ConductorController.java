@@ -171,11 +171,13 @@ public class ConductorController {
 
         }catch (Exception e){
             result.put("wrong balance", "FAILED: " + e);
+            System.out.println(result);
             return result;
         }
         if(!"success".equals(UtilsUse.checkSendBalance(senderAccount, dtoTransaction))){
             String str = UtilsUse.checkSendBalance(senderAccount, dtoTransaction);
             result.put("wrong balance", "FAILED: " + str);
+            System.out.println(result);
             return result;
 
         }
