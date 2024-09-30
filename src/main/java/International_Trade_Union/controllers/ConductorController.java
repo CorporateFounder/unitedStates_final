@@ -197,7 +197,6 @@ public class ConductorController {
     if (dtoTransaction.verify()) {
 
 
-
         List<String> corporateSeniorPositions = directors.getDirectors().stream()
                 .map(t -> t.getName()).collect(Collectors.toList());
         System.out.println("LawsController: create_law: " + laws.getPacketLawName() + " contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));

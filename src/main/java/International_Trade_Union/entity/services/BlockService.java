@@ -125,6 +125,7 @@ public class BlockService {
         return (totalBalance != null) ? totalBalance : 0.0;
     }
 
+
     public EntityAccount findByAccount(String account) throws IOException {
         EntityAccount entityAccounts = null;
         try {

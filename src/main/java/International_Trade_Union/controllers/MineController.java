@@ -32,7 +32,6 @@ public class MineController {
     @Autowired
     BlockService blockService;
 
-
     /**
      * Отправляет в страницу майнинга.
      * Sends to the mining page.

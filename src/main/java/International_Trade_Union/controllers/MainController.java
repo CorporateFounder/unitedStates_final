@@ -401,7 +401,6 @@ public class MainController {
             }
 
 
-
             //если в названия закона совпадает с корпоративными должностями, то закон является действительным, только когда
             //отправитель совпадает с законом.
             //if the title of the law coincides with corporate positions, then the law is valid only when
