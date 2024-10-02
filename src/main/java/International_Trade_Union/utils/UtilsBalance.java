@@ -221,9 +221,6 @@ public class UtilsBalance {
                 MyLogger.saveLog("repeat Transaction: verify" + verifyTransaction + "json: " + json + " index: "  + block.getIndex());
 
             }
-            if(block.getIndex() > Seting.BALANCE_CHEKING){
-                verifyTransaction = true;
-            }
             if (verifyTransaction) {
                 //BASIS_ADDRESS это специальный адрес, который отправляет награду шахтеру и основателю в каждом
                 //блоке должна быть 1 транзакция награда шахтеру, и 1 основателю.

@@ -875,6 +875,8 @@ public class UtilsBlock {
             UtilsFileSaveRead.save("Blockchain is invalid, expected: " + recordedPrevHash + " actual: " + actualPrevHash, ERROR_FILE, true);
             UtilsFileSaveRead.save("expected: " + thisBlock.hashForTransaction(), ERROR_FILE, true);
             UtilsFileSaveRead.save("miner address: ", ERROR_FILE, true);
+            MyLogger.saveLog("invalid blockchain this block: " + thisBlock.getIndex());
+            MyLogger.saveLog("invalid blockchain prev block: " + previusblock.getIndex());
             UtilsFileSaveRead.save("************************************", ERROR_FILE, true);
 
             return false;
