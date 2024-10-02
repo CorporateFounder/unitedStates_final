@@ -799,6 +799,7 @@ public class UtilsBlock {
                         break finished;
                     }else if(thisBlock.getIndex() > Seting.CHECK_DUBLICATE_IN_DB_BLOCK && signs.contains(base.encode(transaction.getSign()))) {
                         MyLogger.saveLog("the transaction already exists in the blockchain: " + base.encode(transaction.getSign()) + " index: " + thisBlock.getIndex());
+                        MyLogger.saveLog("json tranaction wrong sign:  " + UtilsJson.objToStringJson(transaction) );
                         validated = false;
                         break  finished;
                     }

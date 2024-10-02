@@ -432,9 +432,13 @@ public class BasisController {
             }
 
             list = list.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+            list = list.stream().filter(UtilsUse.distinctByKey(Block::getIndex)).collect(Collectors.toList());
+
+
             balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
             tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
             DataShortBlockchainInformation temp = new DataShortBlockchainInformation();
+
             if (BasisController.getBlockchainSize() > 1){
                 Map<String, Account> balanceForValidation = UtilsUse.balancesClone(balances);
                 temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign, balanceForValidation, new ArrayList<>());

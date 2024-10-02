@@ -59,24 +59,24 @@ public class UtilsGovernment {
                 .collect(Collectors.toList());
 
         for (Block block : minersHaveMoreStock) {
+
             System.out.println("calculating board of shareholder: index:  " + block.getIndex());
             for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
                 boardAccounts.add(new Account(dtoTransaction.getSender(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO));
             }
-
         }
+
 
 
         List<Account> boardOfShareholders = balances.entrySet().stream()
                 .filter(t -> boardAccounts.contains(t.getValue()))
                 .map(t -> t.getValue()).collect(Collectors.toList());
 
-
         boardOfShareholders = boardOfShareholders
                 .stream()
                 .filter(t -> !t.getAccount().startsWith(Seting.NAME_LAW_ADDRESS_START))
-                .filter(t -> t.getDigitalStakingBalance().doubleValue() > 0)
-                .sorted(Comparator.comparing(Account::getDigitalStakingBalance).reversed())
+                .filter(t -> t.getDigitalDollarBalance().doubleValue() + t.getDigitalStakingBalance().doubleValue() > 0)
+                .sorted(Comparator.comparing(Account::getDigitalDollarBalance).reversed())
                 .collect(Collectors.toList());
 
         return boardOfShareholders;

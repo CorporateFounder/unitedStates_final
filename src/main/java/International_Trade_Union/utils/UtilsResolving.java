@@ -289,6 +289,8 @@ public class UtilsResolving {
                                         System.out.println("temp: " + temp);
                                     }
 
+                                    subBlocks = subBlocks.stream().filter(UtilsUse.distinctByKey(Block::getIndex)).collect(Collectors.toList());
+
                                     //записывает блоки в базу данных
                                     boolean save = addBlock3(subBlocks, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, new ArrayList<>());
                                     temp = Blockchain.checkFromFile(Seting.ORIGINAL_BLOCKCHAIN_FILE);
@@ -660,6 +662,7 @@ public class UtilsResolving {
             throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, SignatureException,
             InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         //TODO сначала найти блок откуда начинается ответление и докуда
+        subBlocks = subBlocks.stream().filter(UtilsUse.distinctByKey(Block::getIndex)).collect(Collectors.toList());
 
         Map<String, Account> tempBalance = UtilsUse.balancesClone(tempBalances);
 
@@ -758,6 +761,9 @@ public class UtilsResolving {
             //сортируем блоки по возрастанию
             different = different.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
             emptyList = emptyList.stream().sorted(Comparator.comparing(Block::getIndex)).collect(Collectors.toList());
+            different = different.stream().filter(UtilsUse.distinctByKey(Block::getIndex)).collect(Collectors.toList());
+            different = different.stream().filter(UtilsUse.distinctByKey(Block::getIndex)).collect(Collectors.toList());
+
             Block tempPrevBlock = UtilsBlockToEntityBlock.entityBlockToBlock(blockService.findBySpecialIndex(different.get(0).getIndex() - 1));
 
             //откатываем мета данные
@@ -1015,6 +1021,7 @@ public class UtilsResolving {
         Map<String, Account> tempBalances = UtilsUse.balancesClone(balances);
         long start = UtilsTime.getUniversalTimestamp();
 
+       originalBlocks = originalBlocks.stream().filter(UtilsUse.distinctByKey(Block::getIndex)).collect(Collectors.toList());
 
         for (Block block : originalBlocks) {
             System.out.println(" :BasisController: addBlock3: blockchain is being updated: index" + block.getIndex());

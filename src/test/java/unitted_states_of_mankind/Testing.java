@@ -53,6 +53,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class Testing {
 
+    @Test
+    public void testCount(){
+        Random deterministicRandom = new Random(21);
+        int result = deterministicRandom.nextInt(120);
+        System.out.println("resuslt: " + result);
+    }
+
     /**
      * if (this.index > Seting.NEW_ALGO_MINING) {
      * MerkleTree merkleTree = new MerkleTree(this.getDtoTransactions());
@@ -75,8 +82,8 @@ public class Testing {
             System.out.println(transactions.get(i).getSender());
             System.out.println(transactions.get(i).getCustomer());
         }
-        BigDecimal dollar = BigDecimal.valueOf(15);
-        BigDecimal stock = BigDecimal.valueOf(42);
+        BigDecimal dollar = BigDecimal.valueOf(79);
+        BigDecimal stock = BigDecimal.valueOf(79);
         Map<String, Account> balance = new HashMap<>();
         Account account1 = new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         Account account2 = new Account("21Qsp2EjJhYhqP1fnWm6UufnEtavocHXJbS8MhAV9UKwJ", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
@@ -92,6 +99,10 @@ public class Testing {
         int sizeAfter = UtilsUse.balanceTransaction(transactions, balance, block.getIndex()).size();
         System.out.println("size: " + size);
         System.out.println("sizeAfter: " + sizeAfter);
+
+
+        DtoTransaction dtoTransaction = UtilsJson.jsonToDtoTransaction("{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":3.9E-7,\"digitalStockBalance\":3.9E-7,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIFSkbTKa0fgXrOYPX6xYuodAAO6RdWomZ7lqAANez+3tAiAMTPwAUEMbrXivbxeok7jBnKkFhp3ylrbqPil5G3uaSQ==\"}\n");
+        System.out.println("verify: " + dtoTransaction.verify());
     }
 
     @Test
