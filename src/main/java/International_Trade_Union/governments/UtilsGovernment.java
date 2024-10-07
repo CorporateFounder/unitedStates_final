@@ -9,10 +9,10 @@ import International_Trade_Union.vote.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SignatureException;
+import java.math.RoundingMode;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -81,9 +81,127 @@ public class UtilsGovernment {
 
         return boardOfShareholders;
     }
+    //выбрать случайным образом limit избирателей.
+    public static List<Account> drawingOfLotsByVoters(List<Account> candidates, Block block, int limit) {
+        try {
+            // Sort candidates by account to ensure reproducibility
+            List<Account> sortedCandidates = new ArrayList<>(candidates);
+            sortedCandidates.sort(Comparator.comparing(Account::getAccount));
 
+            BigDecimal maxProbability = new BigDecimal("0.15"); // Max probability set to 15%
 
+            List<BigDecimal> balances = sortedCandidates.stream()
+                    .map(a -> a.getDigitalStakingBalance().add(a.getDigitalDollarBalance()))
+                    .collect(Collectors.toList());
 
+            BigDecimal totalBalance = balances.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal maxBalance = Collections.max(balances);
+            BigDecimal minBalance = Collections.min(balances);
+
+            // Calculate Gini coefficient
+            BigDecimal giniCoefficient = calculateGiniCoefficient(balances);
+
+            Map<Account, BigDecimal> weights = new LinkedHashMap<>();
+            BigDecimal totalWeight = BigDecimal.ZERO;
+
+            for (int i = 0; i < sortedCandidates.size(); i++) {
+                Account account = sortedCandidates.get(i);
+                BigDecimal balance = balances.get(i);
+
+                // Use logarithmic scaling to handle large numbers and prevent overflow
+                BigDecimal logBalance = BigDecimal.valueOf(Math.log1p(balance.doubleValue()));
+                BigDecimal logMaxBalance = BigDecimal.valueOf(Math.log1p(maxBalance.doubleValue()));
+
+                // Normalized log balance (between 0 and 1)
+                BigDecimal normalizedLogBalance = logBalance.divide(logMaxBalance, 10, RoundingMode.HALF_UP);
+
+                // Apply diminishing returns using a sigmoid-like function with better scaling
+                BigDecimal diminishingFactor = BigDecimal.ONE.divide(
+                        BigDecimal.ONE.add(BigDecimal.valueOf(Math.exp(normalizedLogBalance.doubleValue() * 5 - 2.5))),
+                        10, RoundingMode.HALF_UP
+                );
+
+                // Calculate "one account, one person" incentive with adjusted bell curve
+                BigDecimal oneAccountIncentive = calculateOneAccountIncentive(balance, minBalance, maxBalance, giniCoefficient);
+
+                // Combine factors
+                BigDecimal weight = diminishingFactor.multiply(oneAccountIncentive);
+
+                // Set minimum weight to ensure fairness
+                BigDecimal minWeight = new BigDecimal("0.001");
+                weight = weight.max(minWeight);
+
+                weights.put(account, weight);
+                totalWeight = totalWeight.add(weight);
+            }
+
+            // Normalize weights with maximum probability cap
+            BigDecimal normalizationFactor = BigDecimal.ONE.divide(totalWeight, 10, RoundingMode.HALF_UP)
+                    .multiply(new BigDecimal(limit))
+                    .min(maxProbability);
+            for (Account account : weights.keySet()) {
+                BigDecimal normalizedWeight = weights.get(account).multiply(normalizationFactor);
+                weights.put(account, normalizedWeight);
+            }
+
+            // Selection process with reproducible randomness
+            Set<Account> selectedAccounts = new LinkedHashSet<>();
+            for (int seat = 0; seat < limit && selectedAccounts.size() < sortedCandidates.size(); seat++) {
+                String combinedHash = block.getHashBlock() + seat;
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                byte[] digest = md.digest(combinedHash.getBytes(StandardCharsets.UTF_8));
+                ByteBuffer buffer = ByteBuffer.wrap(digest);
+                long seed = buffer.getLong();
+                Random deterministicRandom = new Random(seed);
+
+                BigDecimal randomValue = BigDecimal.valueOf(deterministicRandom.nextDouble());
+                BigDecimal cumulativeProbability = BigDecimal.ZERO;
+
+                for (Account account : weights.keySet()) {
+                    cumulativeProbability = cumulativeProbability.add(weights.get(account));
+                    if (cumulativeProbability.compareTo(randomValue) > 0) {
+                        if (!selectedAccounts.contains(account)) {
+                            selectedAccounts.add(account);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            return new ArrayList<>(selectedAccounts);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    private static BigDecimal calculateOneAccountIncentive(BigDecimal balance, BigDecimal minBalance, BigDecimal maxBalance, BigDecimal giniCoefficient) {
+        // Normalize balance to a value between 0 and 1
+        BigDecimal normalizedBalance = balance.subtract(minBalance).divide(maxBalance.subtract(minBalance), 10, RoundingMode.HALF_UP);
+
+        // Apply a broader bell curve function to favor a wider range of mid-range balances
+        BigDecimal bellCurve = BigDecimal.valueOf(Math.exp(-Math.pow(normalizedBalance.doubleValue() - 0.5, 2) / 0.1));
+
+        // Adjust incentive based on Gini coefficient to promote equality
+        BigDecimal giniAdjustment = BigDecimal.ONE.subtract(giniCoefficient);
+
+        return bellCurve.multiply(giniAdjustment).add(BigDecimal.valueOf(0.1));
+    }
+
+    private static BigDecimal calculateGiniCoefficient(List<BigDecimal> balances) {
+        Collections.sort(balances);
+        int n = balances.size();
+        BigDecimal sumOfDifferences = BigDecimal.ZERO;
+        BigDecimal sumOfBalances = balances.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        for (int i = 0; i < n; i++) {
+            sumOfDifferences = sumOfDifferences.add(
+                    new BigDecimal(2 * i - n + 1).multiply(balances.get(i))
+            );
+        }
+
+        return sumOfDifferences.divide(new BigDecimal(n * n).multiply(sumOfBalances), 10, RoundingMode.HALF_UP);
+    }
     /**Здесь происходит подсчет всех голосов за определенный период, за кандидатов и законы.
      * Here, all votes for a certain period, for candidates and laws are counted.*/
     public static List<CurrentLawVotesEndBalance> filtersVotes(

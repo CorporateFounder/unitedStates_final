@@ -5,7 +5,6 @@ import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.services.BlockService;
-
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.MyLogger;
 import International_Trade_Union.setings.Seting;
@@ -219,6 +218,14 @@ public class UtilsBalance {
                 DtoTransaction tempTransaction = UtilsJson.jsonToDtoTransaction(json);
                 verifyTransaction = tempTransaction.verify();
                 MyLogger.saveLog("repeat Transaction: verify" + verifyTransaction + "json: " + json + " index: "  + block.getIndex());
+                for (int k = 0; k < 5; k++) {
+                    json = UtilsJson.objToStringJson(transaction);
+                    tempTransaction = UtilsJson.jsonToDtoTransaction(json);
+                    verifyTransaction = tempTransaction.verify();
+                    MyLogger.saveLog("repeat Transaction: verify" + verifyTransaction + "json: " + json + " index: "  + block.getIndex() + "reate: " + k);
+                    if(verifyTransaction == true)
+                        break;
+                }
 
             }
             if (verifyTransaction) {
@@ -309,7 +316,20 @@ public class UtilsBalance {
                 }
 
             }
+            else {
+                MyLogger.saveLog("------------------------------------");
 
+                MyLogger.saveLog("wrong transaction calculateBalance: verify: " + verifyTransaction );
+                MyLogger.saveLog("wrong transaction calculateBalance: verify repeat: " + transaction.verify());
+                MyLogger.saveLog("wrong transaction calculateBalance: transaction: " + transaction);
+                MyLogger.saveLog("wrong transaction calculateBalance: transaction json: " + UtilsJson.objToStringJson(transaction));
+                MyLogger.saveLog("wrong transaction calculateBalance: block: " + block);
+                String json = UtilsJson.objToStringJson(transaction);
+                DtoTransaction transaction1 = UtilsJson.jsonToDtoTransaction(json);
+                MyLogger.saveLog("verify after json: " + transaction1.verify());
+                MyLogger.saveLog("verify after json: " + transaction1);
+                MyLogger.saveLog("------------------------------------");
+            }
 
         }
 

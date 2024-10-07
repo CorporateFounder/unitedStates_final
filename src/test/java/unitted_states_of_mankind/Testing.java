@@ -54,10 +54,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Testing {
 
     @Test
-    public void testCount(){
-        Random deterministicRandom = new Random(21);
-        int result = deterministicRandom.nextInt(120);
-        System.out.println("resuslt: " + result);
+    public void testCount() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+
+        DtoTransaction dtoTransaction = UtilsJson.jsonToDtoTransaction("{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.1,\"digitalStockBalance\":26.1,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIFcMiOLWoFJqEyW0zgC3EaMbiCoaLGt6azQXZa3NVF5bAiEA69NYuafL8T+ReygNgVbQR9Hw63eY2Wvc5J1wvaGmtKw=\"}");
+        System.out.println("verify: " + dtoTransaction.verify());
     }
 
     /**
