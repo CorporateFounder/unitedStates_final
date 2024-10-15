@@ -168,7 +168,15 @@ public class UtilsUse {
     }
 
     public static byte[] sha256(String text) {
-        return digest.digest(text.getBytes(StandardCharsets.UTF_8));
+        MessageDigest digestNew;
+
+        try {
+            digestNew = MessageDigest.getInstance("SHA-256");
+            return digestNew.digest(text.getBytes(StandardCharsets.UTF_8));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return new byte[32];
     }
 
     public static String sha256hash(String text) {

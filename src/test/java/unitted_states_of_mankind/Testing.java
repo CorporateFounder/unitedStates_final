@@ -47,6 +47,7 @@ import java.util.stream.Collectors;
 
 import static International_Trade_Union.setings.Seting.*;
 import static International_Trade_Union.utils.UtilsBalance.rollbackCalculateBalance;
+import static International_Trade_Union.vote.UtilsCurrentLaw.calculateBuletin;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -55,23 +56,69 @@ public class Testing {
 
     @Test
     public void testCount() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        Block prevBlock = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"25eJKtn8jPHi9DVSNLATPkiJNvdRBi1rmJcUm4qKLPBxZ\",\"digitalDollar\":255.2,\"digitalStockBalance\":255.2,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCICBG9/mFX/L13pS4dMBNqWXbOQBfs9qAglJJaPx2gy/pAiACtd3Kj2eQ+hzDtnmCcwpKruYXbgDj2D3Yf9AVUklMmA==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":25.52,\"digitalStockBalance\":25.52,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQCD1CpuVbuGFnHXMLVCLZOEwVeiHXHBM7qM+GCHGv8llwIhAMe/B+IsOkWjVmkQuQ0771wCZGGZaOjWuvFiM0arEfG0\"}],\"previousHash\":\"08250c5a94c810004058154061400950958fe2fc93b052a0a30068c1448840e0\",\"minerAddress\":\"25eJKtn8jPHi9DVSNLATPkiJNvdRBi1rmJcUm4qKLPBxZ\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":9007199256053986,\"minerRewards\":0.0,\"hashCompexity\":19,\"timestamp\":1728807320000,\"index\":314531,\"hashBlock\":\"8802a87c25483019c2a319c21f004721304d04c640b800d96383000341430040\"}");
+        Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":24.94,\"digitalStockBalance\":24.94,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIDhbQOydQLcJSLwDJHcnerK5OPKl7IcjB0pyk1OJMb3EAiB/Ch3Dh/DcUzG4CjW9UGTelAS5+F98bXKGZhdhEkVh5Q==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"243kiLx69wNtpBYh7NTimcJdqUzu6ZRAUf8KJuydhjEsi\",\"digitalDollar\":249.4,\"digitalStockBalance\":249.4,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQD+i1R6Bdv6Ne9LJz4qca5juNtn38BbHY/uKY5vYRJkvwIhAOSR37li8xquZFvuq4ek/DaoR0UyTY2eZF+7mXabxxUr\"}],\"previousHash\":\"8802a87c25483019c2a319c21f004721304d04c640b800d96383000341430040\",\"minerAddress\":\"243kiLx69wNtpBYh7NTimcJdqUzu6ZRAUf8KJuydhjEsi\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":900719928212845,\"minerRewards\":0.0,\"hashCompexity\":18,\"timestamp\":1728807483000,\"index\":314532,\"hashBlock\":\"50700a03707108419006d3780371819d259004a4183006001e21812c14c80886\"}\n");
 
-        DtoTransaction dtoTransaction = UtilsJson.jsonToDtoTransaction("{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":26.1,\"digitalStockBalance\":26.1,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIFcMiOLWoFJqEyW0zgC3EaMbiCoaLGt6azQXZa3NVF5bAiEA69NYuafL8T+ReygNgVbQR9Hw63eY2Wvc5J1wvaGmtKw=\"}");
-        System.out.println("verify: " + dtoTransaction.verify());
+        Map<String, Account> balances = new HashMap<>();
+        Account basis = new Account("faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+        Account founder = new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+        Account account1 = new Account("25eJKtn8jPHi9DVSNLATPkiJNvdRBi1rmJcUm4qKLPBxZ", BigDecimal.valueOf(100.0), BigDecimal.valueOf(100.0), BigDecimal.valueOf(100.0));
+        Account account2 = new Account("243kiLx69wNtpBYh7NTimcJdqUzu6ZRAUf8KJuydhjEsi", BigDecimal.valueOf(100.0), BigDecimal.valueOf(100.0), BigDecimal.valueOf(100.0));
+        Account sender1 = new Account("zjnJikV5vvDFVsmWyNWXCS4CpSnU4M3L9cfzyonx32TU", BigDecimal.valueOf(100.0), BigDecimal.valueOf(100.0), BigDecimal.valueOf(100.0));
+        Account sender2 = new Account("wJ7mk9JyqPzmYtqED3vGLkd8r4W7qdAmLGTMbgeAP12r", BigDecimal.valueOf(150.0), BigDecimal.valueOf(150.0), BigDecimal.valueOf(150.0));
+        balances.put(basis.getAccount(), basis);
+        balances.put(founder.getAccount(), founder);
+        balances.put(account1.getAccount(), account1);
+        balances.put(account2.getAccount(), account2);
+        balances.put(sender1.getAccount(), sender1);
+        balances.put(sender2.getAccount(), sender2);
+
+        Base base = new Base58();
+        // Set up the STAR Voting ballots
+        Laws buletin1 = new Laws();
+        buletin1.setPacketLawName(RCV_BULLETIN);
+        List<String> buletinList1 = new ArrayList<>();
+        buletinList1.add("A");
+        buletinList1.add("С");
+        buletinList1.add("B");
+        buletinList1.add("D");
+        buletinList1.add("F");
+        buletin1.setLaws(buletinList1);
+        DtoTransaction transaction1 = new DtoTransaction("zjnJikV5vvDFVsmWyNWXCS4CpSnU4M3L9cfzyonx32TU", "buletin1", 0.0, 0.0, buletin1, 0.0, VoteEnum.YES);
+
+        PrivateKey privateKeySend1 = UtilsSecurity.privateBytToPrivateKey(base.decode("3hupFSQNWwiJuQNc68HiWzPgyNpQA2yy9iiwhytMS7rZyYSEit4Ly92wdM5eWrX76SKT7xscugReWNMyMKatdGqXXeA1gXp1SCBumip6NnaBRcCUiUnvDREXrLzv2JGLSq25eAWpPF75SVLxxEyEyAZUwiSpeYNh9zXV9ccKgpSkatAJedkiqGUY6TZbZV1nB8EYG"));
+        byte[] privateKeySendSign1 = UtilsSecurity.sign(privateKeySend1, transaction1.toSign());
+        transaction1.setSign(privateKeySendSign1);
+        prevBlock.getDtoTransactions().add(transaction1);
+        Laws buletin2 = new Laws();
+        buletin2.setPacketLawName(RCV_BULLETIN);
+        List<String> buletinList2 = new ArrayList<>();
+        buletinList2.add("B");
+        buletinList2.add("G");
+        buletinList2.add("C");
+        buletinList2.add("F");
+        buletin2.setLaws(buletinList2);
+        DtoTransaction transaction2 = new DtoTransaction("wJ7mk9JyqPzmYtqED3vGLkd8r4W7qdAmLGTMbgeAP12r", "buletin2", 0.0, 0.0, buletin2, 0.0, VoteEnum.YES);
+        PrivateKey privateKeySend2 = UtilsSecurity.privateBytToPrivateKey(base.decode("3hupFSQNWwiJuQNc68HiWzPgyNpQA2yy9iiwhytMS7rZygZW5fqcsvhHDcMWG6Pv4EJmdHGBwbQqdSTboCQjzv8b7L1TmYmAhkghDpPx21zGy1dtcuDv7rqMcW242K4GpW4A8JRkbrhaeTUhj2TAehcxq7RCewp2qHo7Jge7UuQmGpqkhuUh7wka2RseCip6oNNgG"));
+        byte[] privateKeySendSign2 = UtilsSecurity.sign(privateKeySend2, transaction2.toSign());
+        transaction2.setSign(privateKeySendSign2);
+        block.getDtoTransactions().add(transaction2);
+
+        // Prepare for voting calculation
+        Map<String, BigDecimal> candidateVotes = new HashMap<>();
+        Set<String> processedSenders = new HashSet<>();
+        List<String> signs = new ArrayList<>();
+        List<String> winners = new ArrayList<>();
+
+        // Perform voting calculations for each block
+        calculateBuletin(balances, prevBlock, candidateVotes, processedSenders, signs, false, 3, winners);
+        calculateBuletin(balances, block, candidateVotes, processedSenders, signs, true, 3, winners);
+
+        // Output the winners
+        System.out.println("Winners: " + winners);
     }
 
-    /**
-     * if (this.index > Seting.NEW_ALGO_MINING) {
-     * MerkleTree merkleTree = new MerkleTree(this.getDtoTransactions());
-     * String hash = merkleTree.getRoot() + this.previousHash + this.minerAddress + this.founderAddress
-     * + this.randomNumberProof + this.minerRewards + this.hashCompexity + this.timestamp +
-     * this.index;
-     * return UtilsUse.sha256hash(hash);
-     * } else {
-     * return UtilsUse.sha256hash(jsonString());
-     * <p>
-     * }
-     */
+
     @Test
     public void getTransactionCountTest() throws IOException, JSONException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
        Block block = UtilsJson.jsonToBLock(

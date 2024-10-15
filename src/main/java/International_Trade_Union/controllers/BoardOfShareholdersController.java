@@ -1,11 +1,9 @@
 package International_Trade_Union.controllers;
 
-import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.UtilsGovernment;
-import International_Trade_Union.model.Mining;
 import International_Trade_Union.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 public class BoardOfShareholdersController {
@@ -49,7 +46,7 @@ public class BoardOfShareholdersController {
 
         List<Block> blocksList = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                 blockService.findBySpecialIndexBetween(
-                        BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE,
+                        BasisController.getBlockchainSize() - Seting.LAW_HALF_VOTE,
                         BasisController.getBlockchainSize() -1
                 )
         );

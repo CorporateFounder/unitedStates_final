@@ -215,18 +215,19 @@ public class UtilsBalance {
             boolean verifyTransaction = transaction.verify();
             if (verifyTransaction == false){
                 String json = UtilsJson.objToStringJson(transaction);
-                DtoTransaction tempTransaction = UtilsJson.jsonToDtoTransaction(json);
-                verifyTransaction = tempTransaction.verify();
-                MyLogger.saveLog("repeat Transaction: verify" + verifyTransaction + "json: " + json + " index: "  + block.getIndex());
-                for (int k = 0; k < 5; k++) {
-                    json = UtilsJson.objToStringJson(transaction);
-                    tempTransaction = UtilsJson.jsonToDtoTransaction(json);
-                    verifyTransaction = tempTransaction.verify();
-                    MyLogger.saveLog("repeat Transaction: verify" + verifyTransaction + "json: " + json + " index: "  + block.getIndex() + "reate: " + k);
-                    if(verifyTransaction == true)
-                        break;
-                }
-
+                MyLogger.saveLog("verifyTransaction failed" + verifyTransaction + "json: " + json + " index: "  + block.getIndex());
+//                DtoTransaction tempTransaction = UtilsJson.jsonToDtoTransaction(json);
+//                verifyTransaction = tempTransaction.verify();
+//                MyLogger.saveLog("repeat Transaction: verify" + verifyTransaction + "json: " + json + " index: "  + block.getIndex());
+//                for (int k = 0; k < 5; k++) {
+//                    json = UtilsJson.objToStringJson(transaction);
+//                    tempTransaction = UtilsJson.jsonToDtoTransaction(json);
+//                    verifyTransaction = tempTransaction.verify();
+//                    MyLogger.saveLog("repeat Transaction: verify" + verifyTransaction + "json: " + json + " index: "  + block.getIndex() + "reate: " + k);
+//                    if(verifyTransaction == true)
+//                        break;
+//                }
+//
             }
             if (verifyTransaction) {
                 //BASIS_ADDRESS это специальный адрес, который отправляет награду шахтеру и основателю в каждом

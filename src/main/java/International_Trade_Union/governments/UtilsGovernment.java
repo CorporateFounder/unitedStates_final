@@ -43,10 +43,7 @@ public class UtilsGovernment {
     }
 
 
-    /**Совет акционеров состоит из 1500 счетов с наибольшим количеством монет акций, но при этом в течение
-     * последнего года они совершали хотя бы одну транзакцию.
-     * The Board of Shareholders consists of 1,500 accounts with the largest number of share coins, but during
-     *       * they have made at least one transaction in the last year.*/
+    /**Отобрать счета которые были активны за последние n дней*/
     public static List<Account> findBoardOfShareholders(Map<String, Account> balances, List<Block> blocks, int limit) {
         List<Block> minersHaveMoreStock = null;
         if (blocks.size() > limit) {
@@ -75,12 +72,14 @@ public class UtilsGovernment {
         boardOfShareholders = boardOfShareholders
                 .stream()
                 .filter(t -> !t.getAccount().startsWith(Seting.NAME_LAW_ADDRESS_START))
-                .filter(t -> t.getDigitalDollarBalance().doubleValue() + t.getDigitalStakingBalance().doubleValue() > 0)
-                .sorted(Comparator.comparing(Account::getDigitalDollarBalance).reversed())
+                .filter(t -> t.getDigitalStockBalance().doubleValue()> 0)
+                .sorted(Comparator.comparing(Account::getDigitalStockBalance).reversed())
                 .collect(Collectors.toList());
 
         return boardOfShareholders;
     }
+
+
     //выбрать случайным образом limit избирателей.
     public static List<Account> drawingOfLotsByVoters(List<Account> candidates, Block block, int limit) {
         try {

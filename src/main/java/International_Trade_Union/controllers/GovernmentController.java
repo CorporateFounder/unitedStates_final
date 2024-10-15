@@ -1,6 +1,5 @@
 package International_Trade_Union.controllers;
 
-import International_Trade_Union.config.BlockchainFactoryEnum;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
@@ -9,7 +8,6 @@ import International_Trade_Union.governments.Director;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.model.FIndPositonHelperData;
-import International_Trade_Union.model.Mining;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
@@ -64,7 +62,7 @@ public class GovernmentController {
 
         List<Block> blocksList = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                 blockService.findBySpecialIndexBetween(
-                        BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE,
+                        BasisController.getBlockchainSize() - Seting.LAW_HALF_VOTE,
                         BasisController.getBlockchainSize() -1
                 )
         );
@@ -116,8 +114,8 @@ public class GovernmentController {
         long from = 0;
         long to = BasisController.getBlockchainSize();
 
-        if (BasisController.getBlockchainSize() > Seting.LAW_YEAR_VOTE) {
-            from = BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE;
+        if (BasisController.getBlockchainSize() > Seting.LAW_HALF_VOTE) {
+            from = BasisController.getBlockchainSize() - Seting.LAW_HALF_VOTE;
         }
         List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(from, to));
         for (Block block : list) {
@@ -259,7 +257,7 @@ public class GovernmentController {
 
         List<Block> blocks = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                 blockService.findBySpecialIndexBetween(
-                        BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE,
+                        BasisController.getBlockchainSize() - Seting.LAW_HALF_VOTE,
                         BasisController.getBlockchainSize() -1
                 )
         );
@@ -283,8 +281,8 @@ public class GovernmentController {
         long from = 0;
         long to = BasisController.getBlockchainSize();
 
-        if (BasisController.getBlockchainSize() > Seting.LAW_YEAR_VOTE) {
-            from = BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE;
+        if (BasisController.getBlockchainSize() > Seting.LAW_HALF_VOTE) {
+            from = BasisController.getBlockchainSize() - Seting.LAW_HALF_VOTE;
         }
         List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(from, to));
         for (Block block : list) {

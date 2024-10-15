@@ -143,13 +143,8 @@ public interface Seting {
     String ORIGINAL_CHARTER_CURRENT_ALL_CODE = "ORIGINAL_CHARTER_CURRENT_ALL_CODE";
 
 
-    //подсчет голосов для должности в годах, учитываются только те голоса
-    //которые не позже четырех лет для законов и должностей,
-    //голоса отданные за законы должны обновляться каждые четыре года
-    //как и за должности
-    int POSITION_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 2;
     //подсчет голосов для законов в годах
-    int LAW_YEAR_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR * 2;
+    int LAW_HALF_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR / 2;
 
     //используется для утверждения бюджета и эмиссии
     int LAW_MONTH_VOTE = (int) (FIFTEEN_DAYS * Seting.COUNT_BLOCK_IN_DAY);
@@ -211,30 +206,6 @@ public interface Seting {
 
     int SIZE_FILE_LIMIT = 2;
 
-    //папки файла для тестирования с сохранениям файла
-
-    String TEST_LAST_BLOCK = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/lastBlock/";
-    String INDEX_TEST = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/index/index.txt";
-    String TEST_BLOCKCHAIN_SAVED = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/network/";
-    String TEST_BLOCKCHAIN_BALANCES = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/balances/";
-    String TEST_FEDERAL_GOVERNMENT = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/federal government/federalGovernment.txt";
-    String TEST_FEDERAL_LAWS = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/laws/";
-    String TEST_CURRENT_LAWS = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/current laws/";
-    String TEST_FEDERAL_VOTE = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/vote/";
-    String TEST_ALL_FEDERAL_LAWS_WITH_BALANCE_FILE = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/allLawsWithBalance/";
-
-
-    //Временный блокчейн для тестирования
-    String TEST_LAST_BLOCK_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/lastBlock/";
-    String TEST_INDEX_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/index/index.txt";
-    String TEST_TEMPORARY_BLOCKCHAIN = "/src/testjava/unitted_states_of_mankind/resourceTestingFileWithoutSave/temporary blockchain/";
-    String TEST_BLOCKCHAIN_BALANCES_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/balances/";
-    String TEST_FEDERAL_GOVERNMENT_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/federal government/federalGovernment.txt";
-    String TEST_FEDERAL_LAWS_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/laws/";
-    String TEST_CURRENT_LAWS_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/current laws/";
-    String TEST_FEDERAL_VOTE_TEMPORARY = "/src/test/java/unitted_states_of_mankind/resourceTestingFileSaved/vote/";
-    String TEST_ALL_FEDERAL_LAWS_WITH_BALANCE_TEMPORARY = "/unitedStates/src/test/java/unitted_states_of_mankind/resourceTestingFileWithoutSave/allLawsWithBalance/";
-
     String TEST_FILE_WRITE_INFO = "/src/test/java/unitted_states_of_mankind/blockchainTwentyYearTest/";
     double DIGITAL_DOLLAR_REWARDS_BEFORE = 400.0;
     double DIGITAL_STOCK_REWARDS_BEFORE = 400.0;
@@ -292,6 +263,7 @@ public interface Seting {
     int STANDART_FOR_TARGET = 100;
     //деление для вычисление дохода основателя
     int DOLLAR = 10;
+
     int STOCK = 10;
     String MAX_TARGET = "00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
 
@@ -357,5 +329,8 @@ public interface Seting {
     int ONLY_SUM_BALANCE = 299845;
 
     int CHECK_DUBLICATE_IN_DB_BLOCK = 287773;
+
+    String RCV_BULLETIN = "RCV BULLETIN";
+    int VOTING_DAY = (int) (COUNT_BLOCK_IN_DAY * 14);
 }
 

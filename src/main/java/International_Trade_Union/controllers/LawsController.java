@@ -305,7 +305,7 @@ public class LawsController {
         //получает блоки из базы данных, за больший период (414720 блоков)
         List<Block> blocksList = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                 blockService.findBySpecialIndexBetween(
-                        BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE,
+                        BasisController.getBlockchainSize() - Seting.LAW_HALF_VOTE,
                         BasisController.getBlockchainSize() -1
                 )
         );
@@ -319,29 +319,9 @@ public class LawsController {
         List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
                 UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
-        //получить совет стэйкеров из файла
+        //получить активных участников за фиксированный период.
         List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blocksList, Seting.BOARDS_BLOCK);
 
-
-        //отфильтровать по типам голосов
-        Map<Director, FIndPositonHelperData> fIndPositonHelperDataMap = new HashMap<>();
-        for (Director higherSpecialPositions : directors.getDirectors()) {
-            if (higherSpecialPositions.isElectedByCEO()) {
-                fIndPositonHelperDataMap.put(higherSpecialPositions,
-                        new FIndPositonHelperData(higherSpecialPositions, false, false, true, false, false));
-            } else if (higherSpecialPositions.isElectedByBoardOfDirectors()) {
-                fIndPositonHelperDataMap.put(higherSpecialPositions,
-                        new FIndPositonHelperData(higherSpecialPositions, false, false, false, true, false));
-            } else if (higherSpecialPositions.isElectedByCorporateCouncilOfReferees()) {
-                fIndPositonHelperDataMap.put(higherSpecialPositions,
-                        new FIndPositonHelperData(higherSpecialPositions, false, false, false, false, true));
-            } else {
-                fIndPositonHelperDataMap.put(higherSpecialPositions,
-                        new FIndPositonHelperData(higherSpecialPositions, true, true, false, false, false));
-
-            }
-
-        }
 
         //подсчет происходит с блоками, полученными порциями из базы данных.
         Map<String, CurrentLawVotes> votesMap = new HashMap<>();
@@ -349,8 +329,8 @@ public class LawsController {
         long from = 0;
         long to = BasisController.getBlockchainSize();
 
-        if (BasisController.getBlockchainSize() > Seting.LAW_YEAR_VOTE) {
-            from = BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE;
+        if (BasisController.getBlockchainSize() > Seting.LAW_HALF_VOTE) {
+            from = BasisController.getBlockchainSize() - Seting.LAW_HALF_VOTE;
         }
         List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(from, to));
         for (Block block : list) {
@@ -597,7 +577,7 @@ public class LawsController {
 
         List<Block> blocksList = UtilsBlockToEntityBlock.entityBlocksToBlocks(
                 blockService.findBySpecialIndexBetween(
-                        BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE,
+                        BasisController.getBlockchainSize() - Seting.LAW_HALF_VOTE,
                         BasisController.getBlockchainSize() -1
                 )
         );
@@ -646,8 +626,8 @@ public class LawsController {
         long from = 0;
         long to = BasisController.getBlockchainSize();
 
-        if (BasisController.getBlockchainSize() > Seting.LAW_YEAR_VOTE) {
-            from = BasisController.getBlockchainSize() - Seting.LAW_YEAR_VOTE;
+        if (BasisController.getBlockchainSize() > Seting.LAW_HALF_VOTE) {
+            from = BasisController.getBlockchainSize() - Seting.LAW_HALF_VOTE;
         }
         List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(from, to));
         for (Block block : list) {
