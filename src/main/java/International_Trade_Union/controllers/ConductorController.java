@@ -138,9 +138,9 @@ public class ConductorController {
         reward = UtilsUse.truncateAndRound(BigDecimal.valueOf(reward)).doubleValue();
 
         reward = 0.0;
-    if (dollar == null || dollar <  Seting.MINIMUM) dollar = 0.0;
-    if (stock == null || stock <  Seting.MINIMUM) stock = 0.0;
-    if (reward == null || reward <  Seting.MINIMUM) reward = 0.0;
+    if (dollar == null || dollar <  Seting.MINIMUM_2) dollar = 0.0;
+    if (stock == null || stock <  Seting.MINIMUM_2) stock = 0.0;
+    if (reward == null || reward <  Seting.MINIMUM_2) reward = 0.0;
 
 
 

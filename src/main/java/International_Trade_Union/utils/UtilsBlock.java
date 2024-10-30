@@ -468,7 +468,7 @@ public class UtilsBlock {
                 if (!dtoTransaction.getCustomer().equals(BASIS_ADDRESS)) {
                     if (dtoTransaction.getDigitalDollar() < MINIMUM
                             && dtoTransaction.getDigitalStockBalance() < MINIMUM
-                    ) {
+                          && thisBlock.getIndex() < Seting.CHANGE_DECIMAL_2_INDEX) {
                         System.out.println("*************************************");
                         System.out.println("If a transaction is not a voting transaction, it cannot transfer less than 0.01 of both a dollar and shares at the same time.");
                         System.out.println("index: " + thisBlock.getIndex());
@@ -484,21 +484,47 @@ public class UtilsBlock {
                         validated = false;
                         return validated;
                     }
+
+                    if(dtoTransaction.getDigitalDollar() < MINIMUM_2
+                            && dtoTransaction.getDigitalStockBalance() < MINIMUM_2
+                            && thisBlock.getIndex() >= Seting.CHANGE_DECIMAL_2_INDEX){
+                        System.out.println("*************************************");
+                        System.out.println("If a transaction is not a voting transaction, it cannot transfer less than 0.01 of both a dollar and shares at the same time.");
+                        System.out.println("index: " + thisBlock.getIndex());
+                        System.out.println("transaction: " + dtoTransaction);
+                        System.out.println("*************************************");
+
+                        MyLogger.saveLog("************************************");
+                        MyLogger.saveLog("If a transaction is not a voting transaction, it cannot transfer less than 0.01 of both a dollar and shares at the same time.");
+                        MyLogger.saveLog("index: " + thisBlock.getIndex());
+                        MyLogger.saveLog("transaction: " + dtoTransaction);
+                        MyLogger.saveLog("************************************");
+
+                        validated = false;
+                        return validated;
+                    }
+
                     double digitalDollar = dtoTransaction.getDigitalDollar();
                     double digitalStock = dtoTransaction.getDigitalStockBalance();
                     double digitalBonus = dtoTransaction.getBonusForMiner();
-                    if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalDollar))) {
-                        System.out.println("the number dollar of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
+
+                    int decimal = SENDING_DECIMAL_PLACES;
+                    if(thisBlock.getIndex() >= CHANGE_DECIMAL_2_INDEX){
+                        decimal = SENDING_DECIMAL_PLACES_2;
+                    }
+                    if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalDollar), thisBlock.getIndex())) {
+
+                        System.out.println("the number dollar of decimal places exceeds ." + decimal);
                         validated = false;
                         return validated;
                     }
-                    if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalStock))) {
-                        System.out.println("the number stock of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
+                    if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalStock), thisBlock.getIndex())) {
+                        System.out.println("the number stock of decimal places exceeds ." + decimal);
                         validated = false;
                         return validated;
                     }
-                    if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalBonus))) {
-                        System.out.println("the number bonus of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
+                    if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalBonus), thisBlock.getIndex())) {
+                        System.out.println("the number bonus of decimal places exceeds ." + decimal);
                         validated = false;
                         return validated;
                     }
@@ -520,6 +546,7 @@ public class UtilsBlock {
             }
 
         }
+
         List<DtoTransaction> transactions = thisBlock.getDtoTransactions();
         transactions = transactions.stream().sorted(Comparator.comparing(t->base.encode(t.getSign()))).collect(Collectors.toList());
         finished:
@@ -581,14 +608,21 @@ public class UtilsBlock {
 
 
                     if (thisBlock.getIndex() > ALGORITM_MINING) {
-                        minerReward = UtilsUse.round(minerReward, SENDING_DECIMAL_PLACES);
-                        minerPowerReward = UtilsUse.round(minerPowerReward, SENDING_DECIMAL_PLACES);
+                        int decimal = SENDING_DECIMAL_PLACES;
+                        if(thisBlock.getIndex() >= CHANGE_DECIMAL_2_INDEX){
+                            decimal = SENDING_DECIMAL_PLACES_2;
+                        }
+                        minerReward = UtilsUse.round(minerReward, decimal);
+                        minerPowerReward = UtilsUse.round(minerPowerReward, decimal);
                     }
                 }
                 if (thisBlock.getIndex() == Seting.SPECIAL_BLOCK_FORK && thisBlock.getMinerAddress().equals(Seting.FORK_ADDRESS_SPECIAL)) {
                     minerReward = SPECIAL_FORK_BALANCE;
                     minerPowerReward = SPECIAL_FORK_BALANCE;
                 }
+                //фридман модель рост в 4%
+                minerReward = UtilsUse.calculateMinedMoneyFridman(thisBlock.getIndex(), minerReward);
+                minerPowerReward = UtilsUse.calculateMinedMoneyFridman(thisBlock.getIndex(), minerPowerReward);
 
                 if (transaction.getSender().equals(Seting.BASIS_ADDRESS) &&
                         transaction.getCustomer().equals(thisBlock.getMinerAddress()) && transaction.getDigitalDollar() > minerReward
@@ -673,8 +707,12 @@ public class UtilsBlock {
                             double actualStock = transaction.getDigitalStockBalance();
 
                             if (thisBlock.getIndex() > ALGORITM_MINING) {
-                                expectedDollar = UtilsUse.round(expectedDollar, SENDING_DECIMAL_PLACES);
-                                expectedStock = UtilsUse.round(expectedStock, SENDING_DECIMAL_PLACES);
+                                int decimal = SENDING_DECIMAL_PLACES;
+                                if(thisBlock.getIndex() >= CHANGE_DECIMAL_2_INDEX){
+                                    decimal = SENDING_DECIMAL_PLACES_2;
+                                }
+                                expectedDollar = UtilsUse.round(expectedDollar, decimal);
+                                expectedStock = UtilsUse.round(expectedStock, decimal);
                             }
 
                             if (Math.abs(expectedDollar - actualDollar) > epsilon) {

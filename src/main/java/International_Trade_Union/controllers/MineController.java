@@ -69,7 +69,7 @@ public class MineController {
         dollar = UtilsUse.truncateAndRound(BigDecimal.valueOf(dollar)).doubleValue();
         reward = UtilsUse.truncateAndRound(BigDecimal.valueOf(reward)).doubleValue();
         reward = 0.0;
-        if (dollar == null || dollar <  Seting.MINIMUM)
+        if (dollar == null || dollar <  Seting.MINIMUM_2)
             dollar = 0.0;
 
 
@@ -178,7 +178,7 @@ public class MineController {
         reward = UtilsUse.truncateAndRound(BigDecimal.valueOf(reward)).doubleValue();
 
         reward = 0.0;
-        if (dollar == null || dollar < Seting.MINIMUM)
+        if (dollar == null || dollar < Seting.MINIMUM_2)
             dollar = 0.0;
 
 

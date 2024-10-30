@@ -5,6 +5,7 @@ import International_Trade_Union.utils.MyHost;
 import International_Trade_Union.utils.UtilsUse;
 
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -316,6 +317,11 @@ public interface Seting {
 
     double MINIMUM = 0.00000001;
 
+    int SENDING_DECIMAL_PLACES_2 = 2;
+    double MINIMUM_2 = 0.01;
+    int CHANGE_DECIMAL_2_INDEX = 321739;
+
+
     int SLIDING_WINDOW_BALANCE = 25;
 
     int ALGORITM_MINING = 295316;
@@ -332,5 +338,10 @@ public interface Seting {
 
     String RCV_BULLETIN = "RCV BULLETIN";
     int VOTING_DAY = (int) (COUNT_BLOCK_IN_DAY * 14);
+
+    int MONEY_MILTON_FRIDMAN_INDEX = 326840;
+    double MONEY_MILTON_FRIDMAN = 20;
+    double PERCENT_MONEY_MILTON_FRIMDAN = 1.04;
+    int MILTON_MONEY_DAY = 400;
 }
 

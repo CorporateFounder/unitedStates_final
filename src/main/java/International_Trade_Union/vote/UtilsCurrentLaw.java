@@ -9,12 +9,14 @@ import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.FIndPositonHelperData;
 import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.UtilsJson;
 import International_Trade_Union.utils.UtilsUse;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -25,185 +27,396 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class UtilsCurrentLaw {
+    public static boolean isBuletinTrueLaws(Laws laws) throws IOException {
+        // Проверка, что объект laws и его поля не равны null
+        if (laws == null || laws.getPacketLawName() == null || laws.getHashLaw() == null || laws.getLaws() == null) {
+            return false;
+        }
 
-    public static void calculateBuletin(Map<String, Account> voters, Block block, Map<String, BigDecimal> candidateVotes, Set<String> processedSenders, List<String> signs, boolean isFinalCalculation, int numberOfDirectors, List<String> winners) {
-        Base base = new Base58();
-
-        // Process transactions in the given block
-        for (int i = 0; i < block.getDtoTransactions().size(); i++) {
-            DtoTransaction transaction = block.getDtoTransactions().get(i);
-
-            // Check if the signature has already been used
-            if (signs.contains(transaction.getSign())) {
-                System.out.println("This transaction signature has already been used and is not valid: sender: "
-                        + transaction.getSender() + " customer: " + transaction.getCustomer());
-                continue;
-            } else {
-                signs.add(base.encode(transaction.getSign()));
+        // Проверка, что в списке laws каждая строка содержит только pub key без пробелов
+        for (String lawEntry : laws.getLaws()) {
+            if (lawEntry == null || lawEntry.trim().isEmpty()) {
+                return false;
             }
-
-            // Check if the sender is a law balance
-            if (transaction.getSender().startsWith(Seting.NAME_LAW_ADDRESS_START)) {
-                System.out.println("Law balance cannot be sender");
-                continue;
-            }
-
-            // Check if the packet law name is RCV_BULLETIN
-            if (transaction.getLaws().getPacketLawName() != null &&
-                    !transaction.getLaws().getPacketLawName().isEmpty() &&
-                    transaction.getLaws().getPacketLawName().equals(Seting.RCV_BULLETIN)) {
-                // Only process transactions for senders that haven't been fully processed
-                if (!processedSenders.contains(transaction.getSender())) {
-                    processedSenders.add(transaction.getSender());
-                    Account voterAccount = voters.get(transaction.getSender());
-                    if (voterAccount == null) {
-                        System.out.println("Voter account not found for sender: " + transaction.getSender());
-                        continue;
-                    }
-
-                    BigDecimal voterBalance = voterAccount.getDigitalStakingBalance();
-                    List<String> candidateRatings = transaction.getLaws().getLaws();
-
-                    // Apply RCV voting where each line represents a candidate in order of preference
-                    for (int rank = 0; rank < candidateRatings.size(); rank++) {
-                        String candidate = candidateRatings.get(rank);
-                        BigDecimal weightedScore = voterBalance.divide(BigDecimal.valueOf(rank + 1), RoundingMode.HALF_UP);
-                        candidateVotes.put(candidate, candidateVotes.getOrDefault(candidate, BigDecimal.ZERO).add(weightedScore));
-                        System.out.println("Added " + weightedScore + " votes to candidate " + candidate);
-                    }
-                } else {
-                    System.out.println("Sender already processed: " + transaction.getSender());
-                }
-            } else {
-                System.out.println("Packet law name is not RCV_BULLETIN or is empty for sender: " + transaction.getSender());
+            if (lawEntry.contains(" ")) {
+                return false;
             }
         }
 
-        // If this is the final calculation, determine the winners using the revised RCV and Sainte-Laguë method
+        // Создание копии объекта laws без поля hashLaw для корректного вычисления хэша
+        Laws lawsForHash = new Laws();
+        lawsForHash.setPacketLawName(laws.getPacketLawName());
+        lawsForHash.setLaws(laws.getLaws());
+
+        // Вычисление ожидаемого хэша
+        String expectedHash = Seting.NAME_LAW_ADDRESS_START + UtilsUse.sha256hash(UtilsJson.objToStringJson(lawsForHash));
+
+        // Сравнение вычисленного хэша с хэшем объекта
+        if (!expectedHash.equals(laws.getHashLaw())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean isBuggetTrueLaws(Laws laws) throws IOException {
+        // Проверка, что объект laws и его поля не равны null
+        if (laws == null || laws.getPacketLawName() == null || laws.getHashLaw() == null || laws.getLaws() == null) {
+            return false;
+        }
+
+        // Проверка, что в списке laws каждая строка содержит pub key и сумму через пробел
+        for (String lawEntry : laws.getLaws()) {
+            if (lawEntry == null || lawEntry.trim().isEmpty()) {
+                return false;
+            }
+
+            String[] parts = lawEntry.split(" ");
+            if (parts.length != 2) {
+                return false;
+            }
+
+            String address = parts[0];
+            String amountStr = parts[1];
+
+            // Проверка, что адрес не пустой и не содержит пробелов
+            if (address.isEmpty() || address.contains(" ")) {
+                return false;
+            }
+
+            // Проверка, что сумма является корректным числом
+            BigDecimal amount;
+            try {
+                amount = new BigDecimal(amountStr);
+            } catch (NumberFormatException e) {
+                return false;
+            }
+
+            // Проверка, что сумма >= MINIMUM (0.00000001)
+            BigDecimal minimum = new BigDecimal("0.00000001");
+            if (amount.compareTo(minimum) < 0) {
+                return false;
+            }
+
+            // Проверка, что сумма имеет не меньше 8 десятичных знаков
+            if (amount.scale() < 8) {
+                return false;
+            }
+
+            // Проверка, что сумма учитывает только последние 8 знаков без округления
+            BigDecimal truncatedAmount = amount.setScale(8, BigDecimal.ROUND_DOWN);
+            if (amount.compareTo(truncatedAmount) != 0) {
+                return false;
+            }
+        }
+
+        // Создание копии объекта laws без поля hashLaw для корректного вычисления хэша
+        Laws lawsForHash = new Laws();
+        lawsForHash.setPacketLawName(laws.getPacketLawName());
+        lawsForHash.setLaws(laws.getLaws());
+
+        // Вычисление ожидаемого хэша
+        String expectedHash = Seting.NAME_LAW_ADDRESS_START + UtilsUse.sha256hash(UtilsJson.objToStringJson(lawsForHash));
+
+        // Сравнение вычисленного хэша с хэшем объекта
+        if (!expectedHash.equals(laws.getHashLaw())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    // Adjusted calculateBuletin method
+    public static void calculateBuletin(
+            Map<String, Account> voters,
+            Block block,
+            Map<String, List<Laws>> collectedBallots,
+            boolean isFinalCalculation,
+            int numberOfDirectors,
+            List<String> winners
+    ) {
+        if (block != null) {
+            // Process transactions in the given block
+            for (DtoTransaction transaction : block.getDtoTransactions()) {
+                String sender = transaction.getSender();
+                Laws laws = transaction.getLaws();
+
+                // Collect ballots from transactions
+                collectedBallots.computeIfAbsent(sender, k -> new ArrayList<>()).add(laws);
+                System.out.println("Collected ballot from sender: " + sender);
+            }
+        }
+
         if (isFinalCalculation) {
-            // Run multiple rounds until all director positions are filled
-            while (winners.size() < numberOfDirectors) {
-                // Select candidate with the most votes in the current round
-                Optional<Map.Entry<String, BigDecimal>> winnerEntry = candidateVotes.entrySet().stream()
-                        .filter(entry -> !winners.contains(entry.getKey()))
-                        .max(Map.Entry.comparingByValue());
+            // Process only the latest ballot from each sender
+            Map<String, Laws> latestBallots = new HashMap<>();
 
-                if (winnerEntry.isPresent()) {
-                    String winner = winnerEntry.get().getKey();
-                    winners.add(winner);
-                    System.out.println("Winner selected: " + winner);
+            for (Map.Entry<String, List<Laws>> entry : collectedBallots.entrySet()) {
+                String sender = entry.getKey();
+                List<Laws> ballotsList = entry.getValue();
+                // Get the latest ballot for the sender
+                Laws latestBallot = ballotsList.get(ballotsList.size() - 1);
+                latestBallots.put(sender, latestBallot);
+            }
 
-                    // Reduce the influence of votes for the next preferences in ballots where the winner was selected
-                    for (Map.Entry<String, Account> entry : voters.entrySet()) {
-                        Account voterAccount = entry.getValue();
-                        List<String> candidateRatings = new ArrayList<>();
-                        for (DtoTransaction transaction : block.getDtoTransactions()) {
-                            if (transaction.getSender().equals(entry.getKey()) && transaction.getLaws() != null
-                                    && transaction.getLaws().getPacketLawName() != null
-                                    && transaction.getLaws().getPacketLawName().equals(Seting.RCV_BULLETIN)) {
-                                candidateRatings = transaction.getLaws().getLaws();
-                                break;
-                            }
-                        }
+            // Now call performSTVCounting using the latestBallots
+            performSTVCounting(voters, latestBallots, numberOfDirectors, winners);
+        }
+    }
 
-                        BigDecimal voterBalance = voterAccount.getDigitalStakingBalance();
-                        boolean foundWinner = false;
-                        int divisor = 1; // Sainte-Laguë divisor starts from 1
+    // STV counting method with Droop quota and implementation of options a, b, and d
+    private static void performSTVCounting(Map<String, Account> balances, Map<String, Laws> ballots, int numberOfSeats, List<String> winners) {
+        Map<String, BigDecimal> candidateVotes = new HashMap<>();
+        Set<String> eliminatedCandidates = new HashSet<>();
+        Set<String> electedCandidates = new HashSet<>();
 
-                        for (int rank = 0; rank < candidateRatings.size(); rank++) {
-                            String candidate = candidateRatings.get(rank);
+        // Initialize candidate votes
+        Set<String> allCandidates = new HashSet<>();
+        for (Laws ballot : ballots.values()) {
+            allCandidates.addAll(ballot.getLaws());
+        }
+        for (String candidate : allCandidates) {
+            candidateVotes.put(candidate, BigDecimal.ZERO);
+        }
 
-                            if (candidate.equals(winner)) {
-                                // This candidate is the winner of the current round
-                                foundWinner = true;
-                                continue;
-                            }
+        int totalSeats = numberOfSeats;
+        BigDecimal totalVotes = balances.values().stream()
+                .map(Account::getDigitalStockBalance)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-                            BigDecimal weightedScore = voterBalance.divide(BigDecimal.valueOf(rank + 1), RoundingMode.HALF_UP);
+        // Calculate Droop quota
+        BigDecimal quota = totalVotes.divide(BigDecimal.valueOf(numberOfSeats + 1), MathContext.DECIMAL128).add(BigDecimal.ONE).setScale(0, RoundingMode.FLOOR);
+        System.out.println("Quota is: " + quota);
 
-                            // If we have already found a winner from this ballot, reduce the influence for the next candidate using Sainte-Laguë divisor
-                            if (foundWinner) {
-                                divisor += 2; // Increment divisor as per Sainte-Laguë method (1, 3, 5, ...)
-                                weightedScore = weightedScore.divide(BigDecimal.valueOf(divisor), RoundingMode.HALF_UP);
-                            }
+        // Copy of original balances to reset weights each round
+        Map<String, BigDecimal> originalBalances = new HashMap<>();
+        for (Map.Entry<String, Account> entry : balances.entrySet()) {
+            originalBalances.put(entry.getKey(), entry.getValue().getDigitalStockBalance());
+        }
 
-                            candidateVotes.put(candidate, candidateVotes.getOrDefault(candidate, BigDecimal.ZERO).add(weightedScore));
-                            System.out.println((foundWinner ? "Reduced " : "Full ") + "weight score for candidate " + candidate + " after winner selection with divisor " + divisor);
-                        }
+        while (electedCandidates.size() < totalSeats && !allCandidates.isEmpty()) {
+            // Reset candidate votes
+            for (String candidate : candidateVotes.keySet()) {
+                candidateVotes.put(candidate, BigDecimal.ZERO);
+            }
+
+            // Count votes based on current ballots
+            for (Map.Entry<String, Laws> entry : ballots.entrySet()) {
+                String sender = entry.getKey();
+                Laws ballot = entry.getValue();
+                BigDecimal weight = balances.get(sender).getDigitalStockBalance();
+
+                // Find the highest-ranked candidate who is not eliminated or elected
+                for (String preference : ballot.getLaws()) {
+                    if (!eliminatedCandidates.contains(preference) && !electedCandidates.contains(preference)) {
+                        candidateVotes.put(preference, candidateVotes.get(preference).add(weight));
+                        break;
+                    }
+                }
+            }
+
+            // Check if any candidate meets the quota
+            boolean candidateElectedThisRound = false;
+            for (String candidate : new HashSet<>(candidateVotes.keySet())) {
+                if (electedCandidates.contains(candidate) || eliminatedCandidates.contains(candidate)) {
+                    continue;
+                }
+                BigDecimal votes = candidateVotes.get(candidate);
+                System.out.println("Candidate " + candidate + " has " + votes + " votes.");
+                if (votes.compareTo(quota) >= 0) {
+                    System.out.println("Candidate " + candidate + " is elected.");
+                    electedCandidates.add(candidate);
+                    winners.add(candidate);
+                    candidateElectedThisRound = true;
+
+                    // Calculate surplus
+                    BigDecimal surplus = votes.subtract(quota);
+                    if (surplus.compareTo(BigDecimal.ZERO) > 0) {
+                        // Redistribute surplus votes
+                        redistributeSurplus(balances, ballots, candidate, surplus, votes, eliminatedCandidates, electedCandidates);
                     }
 
-                    // After determining a winner, re-evaluate remaining candidates based on next preferences to resolve ties
-                    resolveTies(candidateVotes, winners);
-                } else {
-                    System.out.println("No more candidates to select as winner.");
+                    // Remove the elected candidate from allCandidates
+                    allCandidates.remove(candidate);
+
+                    // Since a candidate was elected, restart the counting process
                     break;
                 }
             }
+
+            if (candidateElectedThisRound) {
+                continue; // Go back to counting with updated ballots
+            }
+
+            // Option a: If the number of remaining candidates equals the number of unfilled seats, declare them elected
+            int remainingCandidates = 0;
+            for (String candidate : allCandidates) {
+                if (!electedCandidates.contains(candidate) && !eliminatedCandidates.contains(candidate)) {
+                    remainingCandidates++;
+                }
+            }
+            int remainingSeats = totalSeats - electedCandidates.size();
+            if (remainingCandidates == remainingSeats) {
+                System.out.println("The number of remaining candidates equals the number of unfilled seats. Electing remaining candidates:");
+                for (String candidate : allCandidates) {
+                    if (!electedCandidates.contains(candidate) && !eliminatedCandidates.contains(candidate)) {
+                        System.out.println("Candidate " + candidate + " is elected automatically.");
+                        electedCandidates.add(candidate);
+                        winners.add(candidate);
+                    }
+                }
+                break; // All seats are filled
+            }
+
+            // Option b: Exclude the candidate with the least votes
+            String candidateToEliminate = null;
+            BigDecimal leastVotes = null;
+            for (String candidate : candidateVotes.keySet()) {
+                if (eliminatedCandidates.contains(candidate) || electedCandidates.contains(candidate)) {
+                    continue;
+                }
+                BigDecimal votes = candidateVotes.get(candidate);
+                if (leastVotes == null || votes.compareTo(leastVotes) < 0) {
+                    leastVotes = votes;
+                    candidateToEliminate = candidate;
+                }
+            }
+            if (candidateToEliminate != null) {
+                System.out.println("Eliminating candidate " + candidateToEliminate + " with " + leastVotes + " votes.");
+                eliminatedCandidates.add(candidateToEliminate);
+                allCandidates.remove(candidateToEliminate);
+
+                // Redistribute votes of the eliminated candidate
+                redistributeEliminatedCandidateVotes(balances, ballots, candidateToEliminate, eliminatedCandidates, electedCandidates, candidateVotes);
+            } else {
+                // Option d: If no candidates can be eliminated, elect candidates with the highest votes
+                System.out.println("No more candidates can be eliminated. Electing candidates with highest votes.");
+                List<Map.Entry<String, BigDecimal>> remainingCandidatesList = new ArrayList<>();
+                for (Map.Entry<String, BigDecimal> entry : candidateVotes.entrySet()) {
+                    String candidate = entry.getKey();
+                    if (!electedCandidates.contains(candidate) && !eliminatedCandidates.contains(candidate)) {
+                        remainingCandidatesList.add(entry);
+                    }
+                }
+                // Sort candidates by votes descending
+                remainingCandidatesList.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+                for (Map.Entry<String, BigDecimal> entry : remainingCandidatesList) {
+                    if (electedCandidates.size() < totalSeats) {
+                        String candidate = entry.getKey();
+                        System.out.println("Candidate " + candidate + " is elected based on highest votes.");
+                        electedCandidates.add(candidate);
+                        winners.add(candidate);
+                    } else {
+                        break;
+                    }
+                }
+                break; // All seats are filled
+            }
+        }
+
+        // Reset balances to original after counting
+        for (Map.Entry<String, Account> entry : balances.entrySet()) {
+            entry.getValue().setDigitalStockBalance(originalBalances.get(entry.getKey()));
         }
     }
 
-    private static void resolveTies(Map<String, BigDecimal> candidateVotes, List<String> winners) {
-        // Find candidates with tied votes
-        List<Map.Entry<String, BigDecimal>> tiedCandidates = candidateVotes.entrySet().stream()
-                .filter(entry -> !winners.contains(entry.getKey()))
-                .collect(Collectors.groupingBy(Map.Entry::getValue))
-                .values().stream()
-                .filter(list -> list.size() > 1)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
+    // Method to redistribute surplus votes proportionally
+    private static void redistributeSurplus(Map<String, Account> balances, Map<String, Laws> ballots, String electedCandidate, BigDecimal surplus, BigDecimal totalVotesForCandidate, Set<String> eliminatedCandidates, Set<String> electedCandidates) {
+        // Map to store each voter's contribution to the elected candidate
+        Map<String, BigDecimal> voterContributions = new HashMap<>();
 
-        // Resolve ties using next preferences
-        for (Map.Entry<String, BigDecimal> candidate : tiedCandidates) {
-            // Logic to determine the candidate with the next highest preference in tied situations
-            // Currently selects based on the highest remaining preference in ballots where a tie exists
-            BigDecimal adjustedVote = candidate.getValue().add(BigDecimal.ONE); // Adjust for the tie-breaker
-            candidateVotes.put(candidate.getKey(), adjustedVote);
-            System.out.println("Adjusted vote for candidate " + candidate.getKey() + " to resolve tie.");
+        // Calculate each voter's contribution
+        for (Map.Entry<String, Laws> entry : ballots.entrySet()) {
+            String sender = entry.getKey();
+            Laws ballot = entry.getValue();
+            Account voterAccount = balances.get(sender);
+            BigDecimal weight = voterAccount.getDigitalStockBalance();
+
+            // Check if this ballot contributed to the elected candidate
+            boolean contributed = false;
+            for (String preference : ballot.getLaws()) {
+                if (!eliminatedCandidates.contains(preference)) {
+                    if (preference.equals(electedCandidate)) {
+                        contributed = true;
+                    }
+                    break; // Stop at the first non-eliminated candidate
+                }
+            }
+
+            if (contributed) {
+                voterContributions.put(sender, weight);
+            }
+        }
+
+        // Calculate transfer value (proportional)
+        BigDecimal transferValue = surplus.divide(totalVotesForCandidate, MathContext.DECIMAL128);
+
+        // Adjust the weights of the contributing voters
+        for (Map.Entry<String, BigDecimal> entry : voterContributions.entrySet()) {
+            String sender = entry.getKey();
+            BigDecimal weight = entry.getValue();
+            Account voterAccount = balances.get(sender);
+
+            // Calculate the surplus portion to subtract
+            BigDecimal surplusPortion = weight.multiply(transferValue);
+
+            // Update the voter's weight
+            BigDecimal newWeight = voterAccount.getDigitalStockBalance().subtract(surplusPortion);
+            voterAccount.setDigitalStockBalance(newWeight);
+
+            // Ensure weight doesn't go negative
+            if (voterAccount.getDigitalStockBalance().compareTo(BigDecimal.ZERO) < 0) {
+                voterAccount.setDigitalStockBalance(BigDecimal.ZERO);
+            }
         }
     }
 
-    /*
-     * Voting Procedure for Director Election with Incremental Block Processing and RCV Voting
-     *
-     * 1. Data Collection:
-     *    - Blocks are processed one at a time.
-     *    - Transactions from each block are processed incrementally and votes are counted accordingly.
-     *    - Only unique signatures are considered valid, to prevent duplicate voting.
-     *    - Transactions originating from law balance accounts are ignored.
-     *    - Only transactions with a law packet name of RCV_BULLETIN are considered for voting.
-     *
-     * 2. Candidate Identification:
-     *    - The system extracts the candidates for each valid transaction and keeps track of the latest transactions for each sender.
-     *    - Processed senders are tracked in `processedSenders` to avoid reprocessing the same sender.
-     *
-     * 3. Vote Initialization and Accumulation (RCV Voting):
-     *    - Votes are accumulated incrementally as blocks are processed.
-     *    - Each candidate is ranked in order of preference by the voter.
-     *    - The voter's staking balance is divided by the rank to calculate the weighted vote for each candidate.
-     *
-     * 4. Final Calculation (Optional):
-     *    - When `isFinalCalculation` is set to `true`, the system runs multiple voting rounds to fill all director positions.
-     *    - In each round, the candidate with the most votes is selected as a winner.
-     *    - Once a candidate wins, subsequent candidates in the voter's ballot are given reduced voting power using the Sainte-Laguë method.
-     *    - This ensures that the influence of voters whose candidates have already won is reduced in subsequent rounds, creating a more proportional distribution.
-     *
-     * 5. Vote Redistribution:
-     *    - For voters whose preferred candidate won a round, the votes for subsequent candidates are reduced using a decreasing divisor (1, 3, 5, etc.).
-     *    - This redistribution continues until all director positions are filled.
-     *
-     * 6. Tie Resolution:
-     *    - If there are candidates with tied votes, the system will re-evaluate the next preferences in the ballots to resolve the ties.
-     *    - Adjusts the tied candidate's votes slightly to resolve the tie based on preference ranking.
-     *
-     * 7. Final Winner Selection:
-     *    - Once the number of directors to be elected is reached, the system stops.
-     *    - The winning candidates are collected and returned as a list of accounts.
-     *
-     * Summary:
-     * - This voting system combines elements of RCV Voting and the Sainte-Laguë method to ensure a fair and proportional distribution of director positions.
-     * - Votes are initially given full weight, but reduced in subsequent rounds if a voter's higher-ranked candidate has already won.
-     * - This ensures that the influence of voters is balanced, preventing any single voter from having disproportionate influence over multiple positions.
-     */
+    // Method to redistribute votes from an eliminated candidate
+    private static void redistributeEliminatedCandidateVotes(Map<String, Account> balances, Map<String, Laws> ballots, String eliminatedCandidate, Set<String> eliminatedCandidates, Set<String> electedCandidates, Map<String, BigDecimal> candidateVotes) {
+        // Collect voters who voted for the eliminated candidate
+        for (Map.Entry<String, Laws> entry : ballots.entrySet()) {
+            String sender = entry.getKey();
+            Laws ballot = entry.getValue();
+            Account voterAccount = balances.get(sender);
+            BigDecimal weight = voterAccount.getDigitalStockBalance();
+
+            // Check if this ballot's next preference is the eliminated candidate
+            boolean foundEliminatedCandidate = false;
+            for (String preference : ballot.getLaws()) {
+                if (electedCandidates.contains(preference)) {
+                    continue;
+                }
+                if (eliminatedCandidates.contains(preference)) {
+                    if (preference.equals(eliminatedCandidate)) {
+                        foundEliminatedCandidate = true;
+                    }
+                    continue;
+                }
+                if (foundEliminatedCandidate) {
+                    // Transfer voter's weight to the next preference
+                    candidateVotes.put(preference, candidateVotes.getOrDefault(preference, BigDecimal.ZERO).add(weight));
+                    break;
+                }
+                if (preference.equals(eliminatedCandidate)) {
+                    foundEliminatedCandidate = true;
+                }
+            }
+        }
+    }
+
+    // Method to rollback the latest ballots from specific senders
+    public static void rollbackBuletin(Set<String> sendersToRollback, Map<String, List<Laws>> collectedBallots) {
+        for (String sender : sendersToRollback) {
+            List<Laws> ballotsList = collectedBallots.get(sender);
+            if (ballotsList != null && !ballotsList.isEmpty()) {
+                // Remove the latest ballot
+                ballotsList.remove(ballotsList.size() - 1);
+                System.out.println("Rolled back latest ballot from sender: " + sender);
+            }
+        }
+    }
+
+
     //подсчет по штучно баланса
     public static Map<String, CurrentLawVotes> calculateVote(Map<String, CurrentLawVotes> votes, List<Account> voters, Block block) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
         Base base = new Base58();

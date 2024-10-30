@@ -83,8 +83,6 @@ public class Mining {
         //start test
 
 
-
-
         balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
         if (balances == null) {
             balances = new HashMap<>();
@@ -122,7 +120,7 @@ public class Mining {
         //получение транзакций с сети
         List<DtoTransaction> listTransactions = transactionList;
         Base base = new Base58();
-        transactionList = transactionList.stream().sorted(Comparator.comparing(t->base.encode(t.getSign()))).collect(Collectors.toList());
+        transactionList = transactionList.stream().sorted(Comparator.comparing(t -> base.encode(t.getSign()))).collect(Collectors.toList());
         //определение валидных транзакций
         List<DtoTransaction> forAdd = new ArrayList<>();
 
@@ -142,16 +140,20 @@ public class Mining {
                         double digitalDollar = transaction.getDigitalDollar();
                         double digitalStock = transaction.getDigitalStockBalance();
                         double digitalBonus = transaction.getBonusForMiner();
-                        if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalDollar))) {
-                            System.out.println("the number dollar of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
+                        int decimal = Seting.SENDING_DECIMAL_PLACES;
+                        if (index >= CHANGE_DECIMAL_2_INDEX) {
+                            decimal = SENDING_DECIMAL_PLACES_2;
+                        }
+                        if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalDollar), index)) {
+                            System.out.println("the number dollar of decimal places exceeds ." + decimal);
                             continue;
                         }
-                        if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalStock))) {
-                            System.out.println("the number stock of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
+                        if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalStock), index)) {
+                            System.out.println("the number stock of decimal places exceeds ." + decimal);
                             continue;
                         }
-                        if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalBonus))) {
-                            System.out.println("the number bonus of decimal places exceeds ." + Seting.SENDING_DECIMAL_PLACES);
+                        if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalBonus), index)) {
+                            System.out.println("the number bonus of decimal places exceeds ." + decimal);
                             continue;
                         }
                     }
@@ -268,7 +270,7 @@ public class Mining {
             money = money < 1 ? 1 : money;
             double moneyFromDif = 0;
             double G = UtilsUse.blocksReward(forAdd, prevBlock.getDtoTransactions(), index);
-            if (index > Seting.ALGORITM_MINING ) {
+            if (index > Seting.ALGORITM_MINING) {
                 moneyFromDif = (difficulty - DIFFICULT_MONEY) / 2;
                 moneyFromDif = moneyFromDif > 0 ? moneyFromDif : 0;
             }
@@ -276,10 +278,14 @@ public class Mining {
             minerRewards = (Seting.V28_REWARD + G + (difficulty * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
             digitalReputationForMiner = (Seting.V28_REWARD + G + (difficulty * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
 
-            if(index > ALGORITM_MINING_2){
+            if (index > ALGORITM_MINING_2) {
                 minerRewards += moneyFromDif * (MULT + G);
                 digitalReputationForMiner += moneyFromDif * (MULT + G);
             }
+
+            //фридман модель рост в 4%
+            minerRewards = UtilsUse.calculateMinedMoneyFridman(index, minerRewards);
+            digitalReputationForMiner = UtilsUse.calculateMinedMoneyFridman(index, digitalReputationForMiner);
 
             founderReward = minerRewards / Seting.DOLLAR;
             founderDigigtalReputationReward = digitalReputationForMiner / Seting.STOCK;
@@ -292,10 +298,19 @@ public class Mining {
                 founderDigigtalReputationReward = UtilsUse.round(founderDigigtalReputationReward, Seting.DECIMAL_PLACES);
             }
             if (index > ALGORITM_MINING) {
-                minerRewards = UtilsUse.round(minerRewards, SENDING_DECIMAL_PLACES);
-                digitalReputationForMiner = UtilsUse.round(digitalReputationForMiner, SENDING_DECIMAL_PLACES);
-                founderReward = UtilsUse.round(founderReward, SENDING_DECIMAL_PLACES);
-                founderDigigtalReputationReward = UtilsUse.round(founderDigigtalReputationReward, SENDING_DECIMAL_PLACES);
+                int decimal = SENDING_DECIMAL_PLACES;
+
+                if (index >= CHANGE_DECIMAL_2_INDEX) {
+                    decimal = SENDING_DECIMAL_PLACES_2;
+                }
+
+                minerRewards = UtilsUse.round(minerRewards, decimal);
+                digitalReputationForMiner = UtilsUse.round(digitalReputationForMiner, decimal);
+                founderReward = UtilsUse.round(founderReward, decimal);
+                founderDigigtalReputationReward = UtilsUse.round(founderDigigtalReputationReward, decimal);
+
+
+
             }
         }
 
@@ -303,8 +318,6 @@ public class Mining {
         //суммирует все вознаграждения майнеров
         PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(Seting.BASIS_PASSWORD));
         double sumRewards = forAdd.stream().collect(Collectors.summingDouble(DtoTransaction::getBonusForMiner));
-
-
 
 
         String addressFounrder = Blockchain.indexFromFile(0, Seting.ORIGINAL_BLOCKCHAIN_FILE).getFounderAddress();
@@ -355,7 +368,7 @@ public class Mining {
         })).collect(Collectors.toList());
 
         forAdd = forAdd.stream().filter(t -> t != null).collect(Collectors.toList());
-        forAdd = forAdd.stream().sorted(Comparator.comparing(t->base.encode(t.getSign()))).collect(Collectors.toList());
+        forAdd = forAdd.stream().sorted(Comparator.comparing(t -> base.encode(t.getSign()))).collect(Collectors.toList());
         Block block = new Block(forAdd, prevBlock.getHashBlock(), minner.getAccount(), addressFounrder, difficulty, index);
 
 

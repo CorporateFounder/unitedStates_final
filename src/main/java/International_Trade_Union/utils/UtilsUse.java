@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static International_Trade_Union.setings.Seting.SENDING_DECIMAL_PLACES;
+import static International_Trade_Union.setings.Seting.SENDING_DECIMAL_PLACES_2;
 
 public class UtilsUse {
     private static MessageDigest digest;
@@ -590,7 +591,7 @@ public class UtilsUse {
     }
 
     public static BigDecimal truncateAndRound(BigDecimal value) {
-        return value.setScale(SENDING_DECIMAL_PLACES, RoundingMode.DOWN);
+        return value.setScale(SENDING_DECIMAL_PLACES_2, RoundingMode.DOWN);
     }
 
     public static double round(double value, int places) {
@@ -626,6 +627,7 @@ public class UtilsUse {
         boolean result = true;
         List<String> laws = transaction.getLaws().getLaws();
         String name = transaction.getLaws().getPacketLawName();
+
         boolean money = transaction.getDigitalDollar() < Seting.MINIMUM &&
                 transaction.getDigitalStockBalance() < Seting.MINIMUM &&
                 transaction.getBonusForMiner() < Seting.MINIMUM;
@@ -670,14 +672,14 @@ public class UtilsUse {
                 Account customer = balances.get(transaction.getCustomer());
 
 
-                if(customer == null){
+                if (customer == null) {
                     customer = new Account(transaction.getCustomer(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
                 }
                 balances.put(customer.getAccount(), customer);
                 basis.put(customer.getAccount(), customer);
 
                 if (sender == null || customer == null) {
-                    MyLogger.saveLog("balanceTransaction:transaction: null: " + transaction );
+                    MyLogger.saveLog("balanceTransaction:transaction: null: " + transaction);
                     MyLogger.saveLog("balanceTransaction: sender or customer null: " + sender + ": " + customer);
                     continue;
                 }
@@ -755,15 +757,18 @@ public class UtilsUse {
     }
 
     //определяет количество знаков после запятой и не пропускает транзакции с большим количеством знаков.
-    public static boolean isTransactionValid(BigDecimal value) {
-        return value.scale() <= SENDING_DECIMAL_PLACES;
+    public static boolean isTransactionValid(BigDecimal value, long index) {
+        if (index < Seting.CHANGE_DECIMAL_2_INDEX)
+            return value.scale() <= SENDING_DECIMAL_PLACES;
+        else
+            return value.scale() <= SENDING_DECIMAL_PLACES_2;
     }
 
     //метод тестирования баланса, достаточно ли денег для отправки.
-    public static String checkSendBalance(Account sender, DtoTransaction dtoTransaction){
+    public static String checkSendBalance(Account sender, DtoTransaction dtoTransaction) {
 
 
-        if(dtoTransaction.getVoteEnum().equals(VoteEnum.YES) ||dtoTransaction.getVoteEnum().equals(VoteEnum.NO) || dtoTransaction.getVoteEnum().equals(VoteEnum.STAKING)){
+        if (dtoTransaction.getVoteEnum().equals(VoteEnum.YES) || dtoTransaction.getVoteEnum().equals(VoteEnum.NO) || dtoTransaction.getVoteEnum().equals(VoteEnum.STAKING)) {
             BigDecimal dollarBD = BigDecimal.valueOf(dtoTransaction.getDigitalDollar());
             BigDecimal stockBD = BigDecimal.valueOf(dtoTransaction.getDigitalStockBalance());
             if (dollarBD.compareTo(sender.getDigitalDollarBalance()) > 0 || stockBD.compareTo(sender.getDigitalStockBalance()) > 0) {
@@ -771,14 +776,59 @@ public class UtilsUse {
                 return "wrong transaction, less dollar or less stock balance";
             }
         }
-        if(dtoTransaction.getVoteEnum().equals(VoteEnum.UNSTAKING) ){
+        if (dtoTransaction.getVoteEnum().equals(VoteEnum.UNSTAKING)) {
             BigDecimal dollarBD = BigDecimal.valueOf(dtoTransaction.getDigitalDollar());
 
-            if (dollarBD.compareTo(sender.getDigitalStakingBalance()) > 0 ) {
+            if (dollarBD.compareTo(sender.getDigitalStakingBalance()) > 0) {
 
                 return "wrong transaction, less staking balance";
             }
         }
         return "success";
     }
+    /**
+     * Рассчитывает награду за данный блок с учетом ежегодного увеличения на 4%.
+     *
+     * @param index Индекс текущего блока.
+     * @return Награда за блок с двумя знаками после запятой.
+     */
+    /**
+     * Рассчитывает награду за данный блок с учетом ежегодного увеличения на 4%.
+     * Если индекс блока меньше порогового, возвращает переданную текущую награду.
+     * Иначе, суммирует текущую награду с новой наградой и округляет результат до двух знаков.
+     *
+     * @param index          Индекс текущего блока.
+     * @param currentReward  Текущая сумма наград.
+     * @return Обновленная сумма наград с двумя знаками после запятой.
+     */
+    public static double calculateMinedMoneyFridman(long index, double currentReward) {
+        // Проверяем, активирован ли механизм увеличения награды
+        if (index < Seting.MONEY_MILTON_FRIDMAN_INDEX) {
+            return currentReward;
+        }
+
+        // Рассчитываем количество блоков в году
+        long blocksPerYear = (long) Seting.MILTON_MONEY_DAY * Seting.YEAR;
+
+        // Вычисляем количество блоков, прошедших с начала отсчета
+        long blocksSinceStart = index - Seting.MONEY_MILTON_FRIDMAN_INDEX;
+
+        // Определяем количество полных лет, прошедших с начала отсчета
+        int yearsPassed = (int) (blocksSinceStart / blocksPerYear);
+
+        // Рассчитываем награду за блок с учетом ежегодного увеличения
+        double newBlockReward = Seting.MONEY_MILTON_FRIDMAN * Math.pow(Seting.PERCENT_MONEY_MILTON_FRIMDAN, yearsPassed);
+
+        // Округляем новую награду до двух знаков после запятой
+        newBlockReward = round(newBlockReward, 2);
+
+        // Суммируем текущую награду с новой наградой
+        double updatedReward = currentReward + newBlockReward;
+
+        // Округляем итоговую награду до двух знаков после запятой
+        updatedReward = round(updatedReward, 2);
+
+        return updatedReward;
+    }
+
 }

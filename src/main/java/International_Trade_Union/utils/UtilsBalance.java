@@ -12,6 +12,7 @@ import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.LawEligibleForParliamentaryApproval;
 import International_Trade_Union.vote.Laws;
+import International_Trade_Union.vote.UtilsCurrentLaw;
 import International_Trade_Union.vote.VoteEnum;
 
 import java.io.IOException;
@@ -24,8 +25,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static International_Trade_Union.setings.Seting.CHECK_DUBLICATE_IN_DB_BLOCK;
-import static International_Trade_Union.setings.Seting.SPECIAL_FORK_BALANCE;
+import static International_Trade_Union.setings.Seting.*;
 //wallet
 
 public class UtilsBalance {
@@ -106,7 +106,7 @@ public class UtilsBalance {
 
 
                 if (sender.getAccount().equals(Seting.BASIS_ADDRESS)) {
-                    if (i > 1 && (transaction.getDigitalDollar() > minerRewards || transaction.getDigitalStockBalance() > digitalReputationForMiner)) {
+                    if (i > 1 && (transaction.getDigitalDollar() > minerRewards || transaction.getDigitalStockBalance() > digitalReputationForMiner) && block.getIndex() < MONEY_MILTON_FRIDMAN_INDEX) {
                         System.out.println("rewards cannot be upper than " + minerRewards);
                         System.out.println("rewards cannot be upper than " + digitalReputationForMiner);
                         System.out.println("rewards dollar: " + transaction.getDigitalDollar());
@@ -216,17 +216,17 @@ public class UtilsBalance {
             if (verifyTransaction == false){
                 String json = UtilsJson.objToStringJson(transaction);
                 MyLogger.saveLog("verifyTransaction failed" + verifyTransaction + "json: " + json + " index: "  + block.getIndex());
-//                DtoTransaction tempTransaction = UtilsJson.jsonToDtoTransaction(json);
-//                verifyTransaction = tempTransaction.verify();
-//                MyLogger.saveLog("repeat Transaction: verify" + verifyTransaction + "json: " + json + " index: "  + block.getIndex());
-//                for (int k = 0; k < 5; k++) {
-//                    json = UtilsJson.objToStringJson(transaction);
-//                    tempTransaction = UtilsJson.jsonToDtoTransaction(json);
-//                    verifyTransaction = tempTransaction.verify();
-//                    MyLogger.saveLog("repeat Transaction: verify" + verifyTransaction + "json: " + json + " index: "  + block.getIndex() + "reate: " + k);
-//                    if(verifyTransaction == true)
-//                        break;
-//                }
+                DtoTransaction tempTransaction = UtilsJson.jsonToDtoTransaction(json);
+                verifyTransaction = tempTransaction.verify();
+                MyLogger.saveLog("repeat Transaction: verify" + verifyTransaction + "json: " + json + " index: "  + block.getIndex());
+                for (int k = 0; k < 5; k++) {
+                    json = UtilsJson.objToStringJson(transaction);
+                    tempTransaction = UtilsJson.jsonToDtoTransaction(json);
+                    verifyTransaction = tempTransaction.verify();
+                    MyLogger.saveLog("repeat Transaction: verify" + verifyTransaction + "json: " + json + " index: "  + block.getIndex() + "reate: " + k);
+                    if(verifyTransaction == true)
+                        break;
+                }
 //
             }
             if (verifyTransaction) {
@@ -273,7 +273,7 @@ public class UtilsBalance {
 
 
                 if (sender.getAccount().equals(Seting.BASIS_ADDRESS)) {
-                    if (i > 1 && (transaction.getDigitalDollar() > minerRewards || transaction.getDigitalStockBalance() > digitalReputationForMiner)) {
+                    if (i > 1 && (transaction.getDigitalDollar() > minerRewards || transaction.getDigitalStockBalance() > digitalReputationForMiner) && block.getIndex() < MONEY_MILTON_FRIDMAN_INDEX) {
                         MyLogger.saveLog("rewards cannot be upper than " + minerRewards);
                         MyLogger.saveLog("rewards dollar: " + transaction.getDigitalDollar());
                         MyLogger.saveLog("rewards stock: " + transaction.getDigitalStockBalance());
@@ -365,19 +365,6 @@ public class UtilsBalance {
         }
     }
 
-
-    public static Account findAccount(Blockchain blockList, String address) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        Map<String, Account> accountMap = calculateBalances(blockList.getBlockchainList());
-        Account account = accountMap.get(address);
-        return account != null ? account : new Account(address, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
-    }
-
-    public static boolean sendMoney(Account senderAddress, Account recipientAddress, double digitalDollar, double digitalReputation, double minerRewards, long index) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
-
-        return sendMoney(senderAddress, recipientAddress, BigDecimal.valueOf(digitalDollar), BigDecimal.valueOf(digitalReputation), BigDecimal.valueOf(minerRewards), VoteEnum.YES);
-
-
-    }
 
     /**
      * Переписывает баланс, от отправителя к получателю
@@ -519,8 +506,163 @@ public class UtilsBalance {
         return sendTrue;
     }
 
+    public static boolean sendFromBudget(Laws budgetLaw, Map<String, Account> balances, Account budget){
+        System.out.println("Sending money from budget");
+        List<String> temp = budgetLaw.getLaws();
+        BigDecimal totalAmount = BigDecimal.ZERO;
 
+        // First, validate all entries
+        for (String s : temp) {
+            String[] send = s.split(" ");
 
+            // Check if the entry has exactly two parts: address and amount
+            if (send.length != 2) {
+                System.out.println("Invalid format: " + s + ". Expected 'address amount'.");
+                return false;
+            }
+
+            String address = send[0];
+            String amountStr = send[1];
+
+            // Check if the address exists in balances
+            if (!balances.containsKey(address)) {
+                System.out.println("Invalid address: " + address);
+                return false;
+            }
+
+            // Check if the amount is a valid number
+            BigDecimal amount;
+            try {
+                amount = new BigDecimal(amountStr);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid amount: " + amountStr + " for address: " + address);
+                return false;
+            }
+
+            // Check if the amount is positive
+            if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+                System.out.println("Invalid amount: " + amountStr + " for address: " + address + ". Amount must be positive.");
+                return false;
+            }
+
+            // Accumulate the total amount to be sent
+            totalAmount = totalAmount.add(amount);
+        }
+
+        // Check if the total amount exceeds the budget's balance
+        if (totalAmount.compareTo(budget.getDigitalDollarBalance()) > 0){
+            System.out.println("Total amount to send (" + totalAmount + ") exceeds budget balance (" + budget.getDigitalDollarBalance() + ").");
+            return false;
+        }
+
+        // All validations passed, perform the transfers
+        for (String s : temp) {
+            String[] send = s.split(" ");
+            String address = send[0];
+            BigDecimal amount = new BigDecimal(send[1]);
+
+            Account account = balances.get(address);
+            System.out.println("-----------------------");
+            System.out.println("Account before send: " + account);
+
+            // Update the recipient's balance
+            account.setDigitalDollarBalance(account.getDigitalDollarBalance().add(amount));
+
+            // Update the budget's balance
+            budget.setDigitalDollarBalance(budget.getDigitalDollarBalance().subtract(amount));
+
+            System.out.println("Account after send: " + account);
+            System.out.println("-----------------------");
+        }
+
+        return true;
+    }
+    public static boolean rollbackFromBudget(Laws budgetLaw, Map<String, Account> balances, Account budget) {
+        System.out.println("Rolling back money to budget");
+        List<String> temp = budgetLaw.getLaws();
+        BigDecimal totalAmount = BigDecimal.ZERO;
+
+        // Сначала валидируем все записи
+        for (String s : temp) {
+            String[] send = s.split(" ");
+
+            // Проверка, что запись содержит ровно два элемента: адрес и сумма
+            if (send.length != 2) {
+                System.out.println("Invalid format: " + s + ". Expected 'address amount'.");
+                return false;
+            }
+
+            String address = send[0];
+            String amountStr = send[1];
+
+            // Проверка, что адрес существует в балансах
+            if (!balances.containsKey(address)) {
+                System.out.println("Invalid address: " + address);
+                return false;
+            }
+
+            // Проверка, что сумма является валидным числом
+            BigDecimal amount;
+            try {
+                amount = new BigDecimal(amountStr);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid amount: " + amountStr + " for address: " + address);
+                return false;
+            }
+
+            // Проверка, что сумма положительная
+            if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+                System.out.println("Invalid amount: " + amountStr + " for address: " + address + ". Amount must be positive.");
+                return false;
+            }
+
+            // Проверка, что сумма имеет не меньше 8 десятичных знаков
+            if (amount.scale() < 8) {
+                System.out.println("Invalid amount: " + amountStr + " for address: " + address + ". Amount must have at least 8 decimal places.");
+                return false;
+            }
+
+            // Проверка, что сумма учитывает только последние 8 знаков без округления
+            BigDecimal truncatedAmount = amount.setScale(8, BigDecimal.ROUND_DOWN);
+            if (amount.compareTo(truncatedAmount) != 0) {
+                System.out.println("Invalid amount: " + amountStr + " for address: " + address + ". Amount must have exactly 8 decimal places without rounding.");
+                return false;
+            }
+
+            // Проверка, что у аккаунта достаточно средств для снятия
+            Account account = balances.get(address);
+            if (account.getDigitalDollarBalance().compareTo(amount) < 0) {
+                System.out.println("Insufficient funds: " + address + " has " + account.getDigitalDollarBalance() + ", attempted to withdraw " + amount);
+                return false;
+            }
+
+            // Накопление общей суммы для проверки после валидации всех записей
+            totalAmount = totalAmount.add(amount);
+        }
+
+        // Все проверки пройдены, выполняем откат транзакций
+        for (String s : temp) {
+            String[] send = s.split(" ");
+            String address = send[0];
+            BigDecimal amount = new BigDecimal(send[1]);
+
+            Account account = balances.get(address);
+            System.out.println("-----------------------");
+            System.out.println("Account before rollback: " + account);
+
+            // Снятие средств с аккаунта
+            account.setDigitalDollarBalance(account.getDigitalDollarBalance().subtract(amount));
+
+            // Добавление средств в бюджет
+            budget.setDigitalDollarBalance(budget.getDigitalDollarBalance().add(amount));
+
+            System.out.println("Account after rollback: " + account);
+            System.out.println("Budget after rollback: " + budget);
+            System.out.println("-----------------------");
+        }
+
+        return true;
+    }
 
 
 }

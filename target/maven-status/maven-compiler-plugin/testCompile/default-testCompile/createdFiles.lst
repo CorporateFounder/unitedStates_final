@@ -6,6 +6,7 @@ unitted_states_of_mankind\TestedBlock.class
 unitted_states_of_mankind\DAADifficultyAdjustement2.class
 unitted_states_of_mankind\utilsTest\BitcoinTarget.class
 unitted_states_of_mankind\utilsTest\UtilsBalanceTest.class
+unitted_states_of_mankind\votingTest\VotingTest.class
 unitted_states_of_mankind\Difficulty.class
 unitted_states_of_mankind\TestConductorController.class
 unitted_states_of_mankind\UnitedStatesApplicationTests.class

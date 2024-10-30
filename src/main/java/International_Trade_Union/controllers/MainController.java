@@ -344,10 +344,10 @@ public class MainController {
         stock = UtilsUse.truncateAndRound(BigDecimal.valueOf(stock)).doubleValue();
         reward = UtilsUse.truncateAndRound(BigDecimal.valueOf(reward)).doubleValue();
         reward = 0.0;
-        if(dollar == null || dollar < Seting.MINIMUM)
+        if(dollar == null || dollar < Seting.MINIMUM_2)
             dollar = 0.0;
 
-        if(stock == null || stock <  Seting.MINIMUM)
+        if(stock == null || stock <  Seting.MINIMUM_2)
             stock = 0.0;
 
 
