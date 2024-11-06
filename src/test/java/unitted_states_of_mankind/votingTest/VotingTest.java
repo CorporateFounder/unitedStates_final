@@ -504,7 +504,7 @@ public class VotingTest {
             System.out.println("Votes YES: " + votesEntry.getValue().getYES().size());
             System.out.println("Votes NO: " + votesEntry.getValue().getNO().size());
 
-            if (votesEntry.getValue().getYES().size() > votesEntry.getValue().getNO().size()) {
+            if (votesEntry.getValue().getYES().size() > 3) {
                 if (budgets.containsKey(votesEntry.getKey())) {
                     boolean success = sendFromBudget(budgets.get(votesEntry.getKey()), balances, budget);
                     if (success) {

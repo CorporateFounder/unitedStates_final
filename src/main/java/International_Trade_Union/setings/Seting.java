@@ -340,8 +340,8 @@ public interface Seting {
     int VOTING_DAY = (int) (COUNT_BLOCK_IN_DAY * 14);
 
     int MONEY_MILTON_FRIDMAN_INDEX = 326840;
-    double MONEY_MILTON_FRIDMAN = 20;
-    double PERCENT_MONEY_MILTON_FRIMDAN = 1.04;
-    int MILTON_MONEY_DAY = 400;
+    double MONEY_MILTON_FRIDMAN = 24;
+    double PERCENT_MONEY_MILTON_FRIMDAN = 1.02;
+    int MILTON_MONEY_DAY = 432;
 }
 

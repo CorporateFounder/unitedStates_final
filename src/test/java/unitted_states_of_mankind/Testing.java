@@ -48,15 +48,84 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class Testing {
+    @Test
+    public void bonusFomHash() throws JsonProcessingException {
+        Random random = new Random();
+        String hash = "f1c500830435a0715004a6009c6503a17200884126030121c1818088035481d2";
+        BigInteger hashAsNumber = new BigInteger(hash, 16);
+
+        int bonus = random.nextInt(150);
+        System.out.println("bonus: " + bonus);
+        int diffcult = 22 * 25;
+        int staking = 23;
+        System.out.println("difficult: " + diffcult);
+        System.out.println("staking: " + staking);
+        System.out.println("big randon: " + (bonus + diffcult + staking));
+
+        Block block = UtilsJson.jsonToBLock("{\n" +
+                "    \"dtoTransactions\": [\n" +
+                "        {\n" +
+                "            \"sender\": \"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\n" +
+                "            \"customer\": \"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\n" +
+                "            \"digitalDollar\": 272.6,\n" +
+                "            \"digitalStockBalance\": 272.6,\n" +
+                "            \"laws\": {\n" +
+                "                \"packetLawName\": null,\n" +
+                "                \"laws\": null,\n" +
+                "                \"hashLaw\": null\n" +
+                "            },\n" +
+                "            \"bonusForMiner\": 0.0,\n" +
+                "            \"voteEnum\": \"YES\",\n" +
+                "            \"sign\": \"MEQCIHDqAHN8HVTgbGznql4w11bYEx2qwXQcD7Ue8cguS70EAiAcBVKIvJ2mCQPumlrFXV9L/k9oFLqNw7H7vzvcKvdCzg==\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"sender\": \"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\n" +
+                "            \"customer\": \"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\n" +
+                "            \"digitalDollar\": 27.26,\n" +
+                "            \"digitalStockBalance\": 27.26,\n" +
+                "            \"laws\": {\n" +
+                "                \"packetLawName\": null,\n" +
+                "                \"laws\": null,\n" +
+                "                \"hashLaw\": null\n" +
+                "            },\n" +
+                "            \"bonusForMiner\": 0.0,\n" +
+                "            \"voteEnum\": \"YES\",\n" +
+                "            \"sign\": \"MEUCIQDujfSUWhm3jztAjkklwMh0/ptp/DGu7cIkEy7VXfOTEwIgQNUkl11iPKFwbT/0WxlARkQt9yiP7ieJnruE4yUhDqI=\"\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"previousHash\": \"1101414fc9141c36000c228912b485254500d104434a14988200201465891a4a\",\n" +
+                "    \"minerAddress\": \"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\n" +
+                "    \"founderAddress\": \"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\n" +
+                "    \"randomNumberProof\": 14000188467521,\n" +
+                "    \"minerRewards\": 0.0,\n" +
+                "    \"hashCompexity\": 22,\n" +
+                "    \"timestamp\": \"2024-11-02T09:45:12.000+00:00\",\n" +
+                "    \"index\": 323035,\n" +
+                "    \"hashBlock\": \"f1c500830435a0715004a6009c6503a17200884126030121c1818088035481d2\"\n" +
+                "}");
+        Account miner = new Account("2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL", BigDecimal.valueOf(11000000),BigDecimal.valueOf(11000000), BigDecimal.valueOf(4400000));
+
+       int bigRandom =  UtilsUse.bigRandomWinner(block, miner);
+        System.out.println("big random: " + bigRandom);
+    }
 
     @Test
     public void miltonMoney(){
         int index = 321815;
-        index += 144000;
+        for (int i = 0; i < 1; i++) {
+            index += 144000;
+        }
 
-        double reward = 100;
-        double money = UtilsUse.calculateMinedMoneyFridman(index, reward);
+
+        double reward = 0;
+
+
+        double money = UtilsUse.calculateMinedMoneyFridman(index, reward, 23, 3/4);
+        double money2 = UtilsUse.calculateMinedMoneyFridman(index, reward, 23, 3/4);
+        double money3 = UtilsUse.calculateMinedMoneyFridman(index, reward, 22, 0);
         System.out.println(money);
+        System.out.println(money2);
+        System.out.println(money3);
     }
 
     @Test
@@ -408,6 +477,7 @@ public class Testing {
         System.out.println("score: " + score);
         result = (int) ((result + (diff * 30)) + score + sum);
         System.out.println("result: " + result);
+
     }
 
     @Test

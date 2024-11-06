@@ -793,7 +793,7 @@ public class UtilsUse {
      * @return Награда за блок с двумя знаками после запятой.
      */
     /**
-     * Рассчитывает награду за данный блок с учетом ежегодного увеличения на 4%.
+     * Рассчитывает награду за данный блок с учетом ежегодного увеличения на 2%.
      * Если индекс блока меньше порогового, возвращает переданную текущую награду.
      * Иначе, суммирует текущую награду с новой наградой и округляет результат до двух знаков.
      *
@@ -801,11 +801,14 @@ public class UtilsUse {
      * @param currentReward  Текущая сумма наград.
      * @return Обновленная сумма наград с двумя знаками после запятой.
      */
-    public static double calculateMinedMoneyFridman(long index, double currentReward) {
+    public static double calculateMinedMoneyFridman(long index, double currentReward, double diffMoney, double G) {
         // Проверяем, активирован ли механизм увеличения награды
         if (index < Seting.MONEY_MILTON_FRIDMAN_INDEX) {
             return currentReward;
         }
+        diffMoney = (diffMoney - 22) / 4;
+        if(diffMoney < 0) diffMoney = 0;
+        double result = (G / 4) + diffMoney;
 
         // Рассчитываем количество блоков в году
         long blocksPerYear = (long) Seting.MILTON_MONEY_DAY * Seting.YEAR;
@@ -817,7 +820,7 @@ public class UtilsUse {
         int yearsPassed = (int) (blocksSinceStart / blocksPerYear);
 
         // Рассчитываем награду за блок с учетом ежегодного увеличения
-        double newBlockReward = Seting.MONEY_MILTON_FRIDMAN * Math.pow(Seting.PERCENT_MONEY_MILTON_FRIMDAN, yearsPassed);
+        double newBlockReward = (Seting.MONEY_MILTON_FRIDMAN + result)* Math.pow(Seting.PERCENT_MONEY_MILTON_FRIMDAN, yearsPassed);
 
         // Округляем новую награду до двух знаков после запятой
         newBlockReward = round(newBlockReward, 2);

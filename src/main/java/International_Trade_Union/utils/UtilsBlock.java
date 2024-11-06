@@ -578,6 +578,7 @@ public class UtilsBlock {
                     minerPowerReward = (Seting.V28_REWARD + G) * money;
 
                 }
+                double G = 0;
                 if (thisBlock.getIndex() > Seting.V34_NEW_ALGO) {
                     long money = (thisBlock.getIndex() - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
                             / (576 * Seting.YEAR);
@@ -585,7 +586,7 @@ public class UtilsBlock {
                     money = money < 1 ? 1 : money;
 
                     double moneyFromDif = 0;
-                    double G = UtilsUse.blocksReward(thisBlock.getDtoTransactions(), previusblock.getDtoTransactions(), thisBlock.getIndex());
+                    G = UtilsUse.blocksReward(thisBlock.getDtoTransactions(), previusblock.getDtoTransactions(), thisBlock.getIndex());
 
                     if (thisBlock.getIndex() > Seting.ALGORITM_MINING) {
                         moneyFromDif = (thisBlock.getHashCompexity() - DIFFICULT_MONEY) / 2;
@@ -615,14 +616,17 @@ public class UtilsBlock {
                         minerReward = UtilsUse.round(minerReward, decimal);
                         minerPowerReward = UtilsUse.round(minerPowerReward, decimal);
                     }
+
+
                 }
                 if (thisBlock.getIndex() == Seting.SPECIAL_BLOCK_FORK && thisBlock.getMinerAddress().equals(Seting.FORK_ADDRESS_SPECIAL)) {
                     minerReward = SPECIAL_FORK_BALANCE;
                     minerPowerReward = SPECIAL_FORK_BALANCE;
                 }
+
                 //фридман модель рост в 4%
-                minerReward = UtilsUse.calculateMinedMoneyFridman(thisBlock.getIndex(), minerReward);
-                minerPowerReward = UtilsUse.calculateMinedMoneyFridman(thisBlock.getIndex(), minerPowerReward);
+                minerReward = UtilsUse.calculateMinedMoneyFridman(thisBlock.getIndex(), minerReward, thisBlock.getHashCompexity(), G);
+                minerPowerReward = UtilsUse.calculateMinedMoneyFridman(thisBlock.getIndex(), minerPowerReward, thisBlock.getHashCompexity(), G);
 
                 if (transaction.getSender().equals(Seting.BASIS_ADDRESS) &&
                         transaction.getCustomer().equals(thisBlock.getMinerAddress()) && transaction.getDigitalDollar() > minerReward

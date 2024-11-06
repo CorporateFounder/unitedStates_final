@@ -66,7 +66,11 @@ public class ConductorController {
      * (update local from global node)*/
     @GetMapping("/updating")
     @ResponseBody
-    public Integer updating() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    public synchronized Integer updating() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        if(BasisController.isUpdating()){
+            return -2;
+        }
+
         return utilsResolving.resolve3();
     }
 

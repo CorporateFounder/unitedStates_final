@@ -357,8 +357,6 @@ public class BasisController {
     public synchronized int resolve_conflicts() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, JSONException {
         System.out.println(":resolve_conflicts");
 
-
-//        int result = resovle2();
         int result = utilsResolving.resolve3();
         while (true) {
             result = utilsResolving.resolve3();
