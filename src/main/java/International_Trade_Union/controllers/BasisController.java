@@ -907,16 +907,7 @@ public class BasisController {
                     UtilsBlock.saveBLock(blockchain1.genesisBlock(), Seting.ORIGINAL_BLOCKCHAIN_FILE);
                 }
 
-//                //получить список балансов из файла. get a list of balances from a file.
-//                List<String> signs = new ArrayList<>();
-//                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
-//                balances = miningS.getBalances(Seting.ORIGINAL_BALANCE_FILE, blockchain1, balances, signs);
-//                //удалить старые файлы баланса. delete old balance files.
-//                Mining.deleteFiles(Seting.ORIGINAL_BALANCE_FILE);
-//
-//                //сохранить балансы. maintain balances.
-//                SaveBalances.saveBalances(balances, Seting.ORIGINAL_BALANCE_FILE);
-//
+
 
             }
             //скачать список балансов из файла. download a list of balances from a file.

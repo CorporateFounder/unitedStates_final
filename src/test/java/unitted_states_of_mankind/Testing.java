@@ -36,6 +36,7 @@ import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -48,6 +49,42 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class Testing {
+    @Test
+    public void deleteNode(){
+        String s = "C:\\resources\\pooAddressBlocked\\";
+        Mining.deleteFiles(s);
+        while (true){
+            long timestamp = UtilsTime.getUniversalTimestamp() / 1000;
+
+
+            //TODO удаляет заблокированные хосты, каждые 500 секунд. Возможно
+            //TODO хост уже работает правильно
+            if (timestamp % 1000 == 0) {
+                Mining.deleteFiles(s);
+            }
+        }
+
+    }
+    @Test
+    public void testSendNode(){
+        String s = "http://194.87.236.238:82";
+        MyHost myHost = new MyHost();
+        myHost.setHost("http://38.180.214.233:82");
+            try{
+                String hostStr = s;
+                if(s.contains("\""))
+                    hostStr = s.replaceAll("\"", "");
+                System.out.println("hostStr: " + hostStr);
+                UtilUrl.sendPost(UtilsJson.objToStringJson(myHost), hostStr + "/putNode");
+            }catch (Exception e){
+//                e.printStackTrace();
+                System.out.println("error send to host: " + s);
+
+            }
+
+    }
+
+
     @Test
     public void bonusFomHash() throws JsonProcessingException {
         Random random = new Random();
@@ -154,8 +191,10 @@ public class Testing {
             System.out.println(transactions.get(i).getSender());
             System.out.println(transactions.get(i).getCustomer());
         }
-        BigDecimal dollar = BigDecimal.valueOf(79);
-        BigDecimal stock = BigDecimal.valueOf(79);
+        List list = new CopyOnWriteArrayList();
+        list.addAll(block.getDtoTransactions());
+        BigDecimal dollar = BigDecimal.valueOf(200);
+        BigDecimal stock = BigDecimal.valueOf(200);
         Map<String, Account> balance = new HashMap<>();
         Account account1 = new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         Account account2 = new Account("21Qsp2EjJhYhqP1fnWm6UufnEtavocHXJbS8MhAV9UKwJ", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
@@ -168,13 +207,16 @@ public class Testing {
         balance.put(account4.getAccount(), account4);
         balance.put(account5.getAccount(), account5);
         int size = transactions.size();
-        int sizeAfter = UtilsUse.balanceTransaction(transactions, balance, block.getIndex()).size();
+        List fromBalance = UtilsUse.balanceTransaction(transactions, balance, block.getIndex());
+        int sizeAfter = fromBalance.size();
         System.out.println("size: " + size);
         System.out.println("sizeAfter: " + sizeAfter);
-
+        list.clear();
+        list.addAll(fromBalance);
 
         DtoTransaction dtoTransaction = UtilsJson.jsonToDtoTransaction("{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":3.9E-7,\"digitalStockBalance\":3.9E-7,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIFSkbTKa0fgXrOYPX6xYuodAAO6RdWomZ7lqAANez+3tAiAMTPwAUEMbrXivbxeok7jBnKkFhp3ylrbqPil5G3uaSQ==\"}\n");
         System.out.println("verify: " + dtoTransaction.verify());
+        System.out.println("list: size: "+ list.size());
     }
 
     @Test

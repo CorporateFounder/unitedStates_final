@@ -12,6 +12,7 @@ import International_Trade_Union.model.Account;
 import International_Trade_Union.utils.UtilsBlockToEntityBlock;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
+import International_Trade_Union.vote.VoteEnum;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -143,7 +144,7 @@ public class BlockService {
     public List<EntityAccount> findBYAccountString(List<String> accounts) throws IOException {
         List<EntityAccount> entityAccounts = new ArrayList<>();
         try {
-            accounts = accounts.stream().filter(t->t != null).collect(Collectors.toList());
+            accounts = accounts.stream().filter(t -> t != null).collect(Collectors.toList());
             entityAccounts = entityAccountRepository.findByAccountIn(accounts);
 
         } catch (Exception e) {
@@ -285,6 +286,7 @@ public class BlockService {
         }
 
     }
+
     private boolean accountsAreEqual(EntityAccount existingAccount, EntityAccount newAccount) {
         if (existingAccount == null || newAccount == null) {
             return false;
@@ -570,7 +572,7 @@ public class BlockService {
 
     @Transactional(readOnly = true)
     public List<EntityBlock> findBlocksByTransactionSign(String sign) throws IOException {
-        List<EntityBlock> entityBlocks =  new ArrayList<>();
+        List<EntityBlock> entityBlocks = new ArrayList<>();
         try {
             entityBlocks = entityBlockRepository.findBlocksByTransactionSign(sign);
         } catch (Exception e) {

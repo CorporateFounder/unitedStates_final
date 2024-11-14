@@ -1,6 +1,7 @@
 package International_Trade_Union.entity.repository;
 
 import International_Trade_Union.entity.entities.EntityBlock;
+import International_Trade_Union.vote.VoteEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
