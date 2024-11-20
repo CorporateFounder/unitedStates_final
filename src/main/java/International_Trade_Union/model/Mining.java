@@ -294,7 +294,6 @@ public class Mining {
                 digitalReputationForMiner += moneyFromDif * (MULT + G);
             }
 
-
             //фридман модель рост в 4%
             minerRewards = UtilsUse.calculateMinedMoneyFridman(index, minerRewards, difficulty, G);
             digitalReputationForMiner = UtilsUse.calculateMinedMoneyFridman(index, digitalReputationForMiner, difficulty, G);
