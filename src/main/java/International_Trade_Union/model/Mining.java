@@ -120,14 +120,19 @@ public class Mining {
         //получение транзакций с сети
         List<DtoTransaction> listTransactions = transactionList;
         Base base = new Base58();
-        transactionList = transactionList.stream().sorted(Comparator.comparing(t -> base.encode(t.getSign()))).collect(Collectors.toList());
+        transactionList = transactionList.stream()
+                .filter(t->t.getSign() != null &&!base.encode(t.getSign()).isEmpty()).sorted(Comparator.comparing(t -> base.encode(t.getSign()))).collect(Collectors.toList());
         //определение валидных транзакций
         List<DtoTransaction> forAdd = new ArrayList<>();
 
         //проверяет целостность транзакции, что они подписаны правильно
         cicle:
         for (DtoTransaction transaction : listTransactions) {
-            try {
+
+                if(transaction.getSign() == null || base.encode(transaction.getSign()).isEmpty()){
+                    System.out.println("sign empty or wrong");
+                    continue;
+                }
                 if (transaction.verify()) {
 
                     Account account = balances.get(transaction.getSender());
@@ -144,6 +149,14 @@ public class Mining {
                         if (index >= CHANGE_DECIMAL_2_INDEX) {
                             decimal = SENDING_DECIMAL_PLACES_2;
                         }
+                        if(transaction.getSender() == null || transaction.getSender().isEmpty()){
+                            System.out.println("sender is empty or null");
+                            continue;
+                        }if(transaction.getCustomer() == null || transaction.getCustomer().isEmpty()){
+                            System.out.println("sender is empty or null");
+                            continue;
+                        }
+
                         if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalDollar), index)) {
                             System.out.println("the number dollar of decimal places exceeds ." + decimal);
                             continue;
@@ -213,10 +226,7 @@ public class Mining {
                     }
 
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                continue;
-            }
+
         }
 
         long difficulty = UtilsBlock.difficulty(blockchain, blockGenerationInterval, DIFFICULTY_ADJUSTMENT_INTERVAL);

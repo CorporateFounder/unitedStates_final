@@ -17,9 +17,11 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.security.PrivateKey;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,24 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class VotingTest {
 
-    //распределение денег по местам которые они получили
-    public static Map<Integer, BigDecimal> distributeFunds(BigDecimal totalFunds) {
-        Map<Integer, BigDecimal> distribution = new HashMap<>();
-        BigDecimal[] percentages = {
-                new BigDecimal("0.3"), // 1st place
-                new BigDecimal("0.25"), // 2nd place
-                new BigDecimal("0.2"), // 3rd place
-                new BigDecimal("0.15"), // 4th place
-                new BigDecimal("0.1") // 5th place
-        };
 
-        for (int i = 0; i < percentages.length; i++) {
-            BigDecimal allocated = totalFunds.multiply(percentages[i]);
-            distribution.put(i + 1, allocated);
-        }
-
-        return distribution;
-    }
 
     public static boolean isBuletinTrueLaws(Laws laws) throws IOException {
         // Проверка, что объект laws и его поля не равны null
@@ -370,6 +355,7 @@ public class VotingTest {
         );
         byte[] updatedTransactionSign = UtilsSecurity.sign(sender3PrivateKey, updatedTransaction.toSign());
         updatedTransaction.setSign(updatedTransactionSign);
+
 
         // Создание нового блока и добавление обновлённой транзакции
         Block updatedBlock = new Block();
@@ -856,9 +842,6 @@ public class VotingTest {
         assertFalse(result);
         System.out.println("Test send exceeds balance: " + result);
     }
-
-
-
 
 
     // Adjusted calculateBuletin method

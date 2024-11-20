@@ -1,6 +1,7 @@
 package International_Trade_Union.entity.DtoTransaction;
 
 import International_Trade_Union.controllers.BasisController;
+import International_Trade_Union.model.MyLogger;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.UtilsJson;
@@ -50,7 +51,7 @@ public class DtoTransaction implements Comparable<DtoTransaction>{
     }
 
     //TODO возможно стоит перевести проверку подписи в отдельный utils, под вопросом!!
-    public boolean verify() throws IOException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+    public boolean verify()  {
         Base base = new Base58();
         byte[] pub = base.decode(sender);
         BCECPublicKey publicKey = (BCECPublicKey) UtilsSecurity.decodeKey(pub);
@@ -63,7 +64,24 @@ public class DtoTransaction implements Comparable<DtoTransaction>{
         }
         if(Seting.BASIS_ADDRESS.equals(publicKey))
             return true;
-        return UtilsSecurity.verify(sha, sign, publicKey);
+        try {
+            return UtilsSecurity.verify(sha, sign, publicKey);
+        } catch (NoSuchAlgorithmException e) {
+            MyLogger.saveLog("NoSuchAlgorithmException dto.verify");
+            return false;
+
+        } catch (NoSuchProviderException e) {
+            MyLogger.saveLog("NoSuchProviderException dto.verify");
+            return false;
+
+        } catch (InvalidKeyException e) {
+            MyLogger.saveLog("InvalidKeyException dto.verify");
+            return false;
+
+        } catch (SignatureException e) {
+            MyLogger.saveLog("InvalidKeyException dto.verify");
+            return false;
+        }
     }
 
     public String toSign(){

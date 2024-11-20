@@ -36,11 +36,13 @@ public class AllTransactions {
         //считываем с пула транзакции из дисковери.
         for (String s : Seting.ORIGINAL_ADDRESSES) {
             try {
+                Base base = new Base58();
                 System.out.println("get transactions from server: " + s + "its time 45 seconds");
                 String json = UtilUrl.readJsonFromUrl(s + "/getTransactions");
                 List<DtoTransaction> list;
                 if(!json.isEmpty()){
                     list= UtilsJson.jsonToDtoTransactionList(json);
+                    list = list.stream().filter(t->t.getSign() != null &&!base.encode(t.getSign()).isEmpty()).collect(Collectors.toList());
                     instance.addAll(list);
                 }else {
                     list = new ArrayList<>();

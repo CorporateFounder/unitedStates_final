@@ -14,6 +14,7 @@ unitted_states_of_mankind\utilsTest\UtilsUseTest.class
 unitted_states_of_mankind\TestAlgorithm.class
 unitted_states_of_mankind\TestResolving.class
 unitted_states_of_mankind\data\DtoTransactionTest.class
+unitted_states_of_mankind\votingTest\AssemblyTest.class
 unitted_states_of_mankind\Mavenproject1.class
 unitted_states_of_mankind\entityTest\blockchainTest\GenerateBlockchainFileTest.class
 unitted_states_of_mankind\utilsTest\UtilsAccountTest.class
