@@ -52,17 +52,6 @@ Article 1: General Provisions
 
 - [short description](../documentationEng/preambleEng.md)
 - [active url](../documentationEng/active-urlEng.md)
-- [how to install the application](../documentationEng/installEng.md)
-- [how to open an account](../documentationEng/create-accountEng.md)
-- [how to change account on local server](../documentationEng/change-accountEng.md)
-- [how to get the block](../documentationEng/%20mineEng.md)
-- [transactions](../documentationEng/transactionsEng.md)
-- [apply for position](../documentationEng/managmentEng.md)
-- [how network rules are created](../documentationEng/create-lawEng.md)
-- [how voting works in the network](../documentationEng/voting-in-networkEng.md)
-- [post creation](../documentationEng/create-positionEng.md)
-- [resolve problems](../documentationEng/solving-common-problems.md)
-- [statistic](../documentationEng/statistics.md)
 
 
 [//]: # (- [create fraction]&#40;../documentationEng/create-fractionEng.md&#41;)

@@ -1,69 +1,286 @@
-URL:
-use the host from which you want to receive data (official host http://194.87.236.238:82) All methods are contained in the BassisController class. 1. /winnerList returns a list of Blocks that should be included in the tournament. public String winnerList()
-2. /allwinners returns a listLiteVersionWinerwho participated in the last tournament (Means that this tournament is completed). public String allWinners()
-3. /bigRandomWiner shows the winner of the last tournamentLiteVersionWiner public String bigRandomWiner()
-4. /datashort returns meta data, {"size":265671,"hashCount":3489676,"staking":816578.0250480324,"transactions":617581,"bigRandomNumber":56872082,"validation":true} size: height of this node hashCount: the total amount of difficulty from the entire blockchain. staking: total staking amount for all blocks divided by 100000 bigRandomNumber: the total sum of all bigRandoms validation: if true, then the blockchain is intact and has the correct order of hashes and blocks (but this does not mean that the blockchain is completely correct and for detailed verification, you need to follow the instructions http://citucorp.com/how_to_install_server public DataShortBlockchainInformation dataShortBlockchainInformation()
-5. /status returns the status of the blockchain, blockFromDb and blockFromFile must match and have the same index and hash. If one of them is null or they are different, then there has been corruption either in the h2 database or in the file, then delete the corrupted version and use the fallback. public String status()
-6. /allAccounts returns the total number of accounts that are recorded in a given node and a given blockchain. public long accounts()
-7. /totalDollars returns the total dollar amount on a given node, taking into account onlydigitalDollarBalanceThus, money transferred to staking will not be taken into account, and therefore the total amount of dollars may decrease as they are transferred to staking. And similarly increase. public double getTotalDollars()
-8. /totalTransactionsDay returns the total number of transactions completed per day since the server was launched. Every 576 blocks, the number resets to zero. public int getTotalTransactionsDays()
-9. /totalTransactionsSum returns the total amount of transactions per day, since the server was launched. Every 576 blocks, the number resets to zero. public double getTotalTransactionsSumDllar()
-10. /multiplier this is a multiplier, described in more detail http://citucorp.com/how_to_mining public long multiplier()
-11. /dayReduce number of blocks left before reduction multiplierper unit. http://citucorp.com/how_to_mining public long daysReduce()
-12. /size returns the height of the block. public Integer sizeBlockchain()
-13. /sub-blocks returns a list of Blocks, fromstartup to finish, inclusive finish. That is, if you call start=0, finish=500. Then it will return as a list which includes block 0 and 500 too. public List<Block> subBlocks(@RequestBody SubBlockchainEntity entity)
-14. /version returns the version, if the version of the wallet and the server is different, then the server does not will accept its blocks (practically not used in version 201) public double version()
-15. /block returns the Block type by index. @Async("threadPoolTaskExecutor")public Block getBlock(@RequestBody Integer index)
-16. /isSaveFile used for the interior, blocks taking blocks, during dubbing. It returns the status of whether blocking is currently occurring or not. public boolean isSaveFile()
-17. /balance returns the balances of a given account public Account getBalance(@RequestParam String address) accepts pubkey as input public Account getBalance(@RequestParam String address)
-18. /prevBlock returns the last block that is in the blockchain, may also match the last winner of the tournament. public Block getPrevBlock()
-19. /nodes/resolve_from_to_block adds a block or blocks to the tournament after verification, and also distributes this block to other nodes. public synchronized ResponseEntity<String> resolve_conflict(@RequestBody SendBlocksEndInfo sendBlocksEndInfo)
-20. /difficultyBlockchain returns difficulty information, returns as total and final complexity. public InfoDificultyBlockchain dificultyBlockchain()
-21. /senderTransactions returns a list of transactions, from and to the sender. That is, all transactions where this address is sent to senders for a certain period. public List<DtoTransaction> senderTransactions
-22. /customerTransactions similar/senderTransactions, with that The only difference is where the address is already the recipient. public List<DtoTransaction> customerTransactions
-23. /senderCountDto returns the number of transactions sent, from this address. public long countSenderTransaction( @RequestParam String address)
-24. /customerCountDto similar/senderCountDtobut returns quantity transactions where this account was the recipient. public long countCustomerTransaction( @RequestParam String address)
-25. /addresses returns the entire list of addresses public Map<String, Account> addresses()
-    26./getNodes returns a list of nodes public Set<String> getAllNodes()
-    Controller from classConductorController 1./account Returns the balances of a given account public Account account(@RequestParam String address)
-    2./dollar Returns the dollar balance of a given account public Double dollar(@RequestParam String address)
-    3./stock Returns the stock balance of a given account public Double stock(@RequestParam String address)
-    4./isTransactionAdd Returns the result whether the given signature has been added to the blockchain or not public Boolean isTransactionGet(@RequestParam String sign)
-    5./blockHash Returns Block based on the hash of the block, thereby making it clear whether this block exists in this blockchain. public Block blockFromHash(@RequestParam String hash)
-    6./conductorBlock Returns a block by index, which is often used to understand whether a given block has been added to the blockchain. public Block block(@RequestParam Integer index)
-    7./conductorHashTran Returns the transaction by hash. public DtoTransaction transaction(@RequestParam String hash)
-    Controller in classNodesController 1./putNode adds a host and port to this server./putNode public void addNode(@RequestBody MyHost host)
-    Controller in classTransactionController 1./addTransaction Adds a transaction to the list of transactions waiting to be added to the blockchain. public void add(@RequestBody DtoTransaction data) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException
-    2./getTransactions Returns a list of transactions to be added to
-    Wallet controllers that are accessed through localhost:8082The methods below are in the BasisController class
-1. http://localhost:8082/getNodes returns a list of hosts that are stored on the wallet. public Set<String> getAllNodes()
-2. http://localhost:8082/chain returns the size of the blockchain all blocks. PS IT IS NOT RECOMMENDED TO USE AS THE SIZE OF THE BLOCKS CAN BE BIGGER THAN THE RAM MEMORY AND THIS CAN FAIL THE CHAIN. public EntityChain full_chain()
-3. http://localhost:8082/size returns the height of the local blockchain. public Integer sizeBlockchain()
-4. http://localhost:8082/sub-blocksreturns a list of blocks from start to finish, but no more than 500 blocks at a time. Also finish is included in the list. public List<Block> subBlocks(@RequestBody SubBlockchainEntity entity)
-5. http://localhost:8082/nodes/resolveconfigured for a specific server and either downloads missing blocks from there, or deletes only blocks to synchronize your blockchain with the server. public synchronized int resolve_conflicts()
-6. http://localhost:8082/resolvingcausespublic synchronized int resolve_conflicts() and similar to it. public String resolving()
-7. http://localhost:8082/addBlockOUTDATED AND NOT USED, STRICTLY DO NOT CALL SO AS NOT TO BREAK THE BLOCKCHAIN. Previously used to restore balance and other meta data from a blockchain file, but after implementing the h2 database, it does not work correctly. public ResponseEntity getBLock()
-8. http://localhost:8082/miningblock http://localhost:8082/process-mining Mines one block, calls a method that mines the block only once. public synchronized ResponseEntity minings() public synchronized String processMining(Model model, Integer number)
-9. http://localhost:8082/nodes/register registers the host in the wallet. public static synchronized void register_node(@RequestBody AddressUrl urlAddrress)
-10. http://localhost:8082/moreMiningcontinues mining for 2000 attempts. public void moreMining() mainly used for testing
-11. http://localhost:8082/constantMiningwhen you mine through the get a block tab, this is what is called. Mining continues until the stop button is pressed. public String alwaysMining() throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException PS All mining methods call this method inside their methods. public synchronized String mining()
-12. http://localhost:8082/stopMiningstops mining in the method http://localhost:8082/constantMining public String stopMining(RedirectAttributes model)
-13. http://localhost:8082/testCalculate used to check the integrity of the balance on the wallet and server. If everything is correct, then you should not see a list of Accounts in the console whose balance is different from the server. If this still appears, perhaps the server or wallet has a damaged file details are described herehttp://citucorp.com/how_to_install_server public String testResolving()
-14. http://localhost:8082/statuschecks the status of whether the blocks are written correctly; if the block recorded in the file and in the database are different or one of them is null, then perhaps you should replace it with a backup version or download it from scratch. public String status()
-    Class in the walletpublic class BlockchainCheckController controllers. 1.http://localhost:8082/checkValidation checks the integrity of the blockchain from files located in the blockchain folder public boolean checkValidation()
-    In a wallet in class public class ConductorControlle 1.http://localhost:8082HYPERLINK "http://localhost:8082/status"/keys Creates a new pair, public key, private key. public Map<String, String> keys()
-    2.http://localhost:8082/updating Updates the local blockchain on the wallet. public Integer updating()
-    3.http://localhost:8082/account Gets the full balance from a given wallet, for a given address. public Account account(@RequestParam String address)
-    4.http://localhost:8082/dollar Returns the dollar balance for a given address. public Double dollar(@RequestParam String address)
-    5.http://localhost:8082/stock Returns the stock balance for a given address. public Double stock(@RequestParam String address)
-    6.http://localhost:8082/sendCoin This method takes as input the address of the sender, the recipient, the amount that we want to transfer in dollars and shares, also the miner's reward (at the moment, the mechanism to reward the miner for the transaction and the password are disabled. The method locally signs and creates a transaction using this data and already then sends it to 7 random nodes, calling them/addTransaction public String send(@RequestParam String sender, @RequestParam String recipient, @RequestParam Double dollar, @RequestParam Double stock, @RequestParam Double reward, @RequestParam String password)
-    7.http://localhost:8082/isTransactionAdd Determines by signature whether a given transaction has been added to the local blockchain or not. public Boolean isTransactionGet(@RequestParam String sign)
-    8.http://localhost:8082/blockHash By block hash, returns a block if this block is in the local blockchain. public Block blockFromHash(@RequestParam String hash)
-    9.http://localhost:8082/conductorBlock Returns a block by its index if this index with the block is in the local blockchain. public Block block(@RequestParam Integer index)
-    10.http://localhost:8082/conductorHashTran Returns the transaction by hash (not the signature, but the hash) public DtoTransaction transaction(@RequestParam String hash)
-    Methods in classMineController 1.http://localhost:8082/staking Adds dollars to staking. at the entrance your address, the amount you want to transfer to staking and your password. It locally creates a transaction object and signs it, after which it already sends this object to 7 random nodes. public String staking(@RequestParam String miner, Double dollar, String password, RedirectAttributes redirectAttrs)
-    2.http://localhost:8082/unstaking Similar to the /staking method, only it removes your money from staking and returns it into the dollar balance. public String unstaking(@RequestParam String miner, Double dollar, String password, RedirectAttributes redirectAttrs)
-    More details about the transaction 1. A transaction object is created and initialized International_Trade_Union.entity.DtoTransaction 2. Then toSign is called on this object This is how we sign PrivateKey privateKey = UtilsSecurity.privateBytToPrivateKey(base.decode(password));byte[] sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign()); 3. Your transaction is already initialized with a signature dtoTransaction.setSign(sign); After which this transaction can be sent. The choice of states for your transaction is like this public enum VoteEnum { YES, NO, REMOVE_YOUR_VOICE, STAKING, UNSTAKING}
-    Classpublic class ServerController 1.http://localhost:8082/server This is how you change on your wallet which server you want to tune into. public String server(@RequestParam String host)
+# Документация API
 
+## Node API
+
+### GET /datashort
+Возвращает метаданные блокчейна, включая высоту, hashCount, стейкинг, транзакции, bigRandomNumber и валидацию.
+
+`http://{{host}}:{{port}}/datashort`
+
+### GET /prevBlock
+Возвращает последний блок.
+
+`http://{{host}}:{{port}}/prevBlock`
+
+### GET /conductorBlock
+Возвращает блок с указанным индексом. Обратите внимание: генезис-блок имеет индекс 1.
+
+`http://{{host}}:{{port}}/conductorBlock?index=263899`
+
+### GET /status
+Возвращает текущий статус узла.
+
+`http://{{host}}:{{port}}/status`
+
+### GET /addresses
+Возвращает список всех адресов с их учетными записями. Не рекомендуется из-за большого размера.
+
+`http://{{host}}:{{port}}/addresses`
+
+### GET /totalDollars
+Возвращает сумму всех долларов в системе.
+
+`http://{{host}}:{{port}}/totalDollars`
+
+### GET /size
+Возвращает высоту блокчейна.
+
+`http://{{host}}:{{port}}/size`
+
+### GET /version
+Возвращает специальную версию, отличающуюся от Github.
+
+`http://{{host}}:{{port}}/version`
+
+### GET /difficultyBlockchain
+Возвращает сложность последнего блока и сумму всех сложностей в этом блокчейне.
+
+`http://{{host}}:{{port}}/difficultyBlockchain`
+
+### POST /sub-blocks
+Возвращает список блоков от начального до конечного индекса включительно.
+
+`http://{{host}}:{{port}}/sub-blocks`
+
+Тело запроса:
+```json
+{
+    "start": 0,
+    "finish": 10
+}
+```
+
+### GET /getTransactions
+Возвращает список транзакций, которые еще не добавлены в блокчейн.
+
+`http://{{host}}:{{port}}/getTransactions`
+
+### GET /senderTransactions
+Возвращает все отправленные транзакции указанного адреса в заданном диапазоне блоков.
+
+`http://{{host}}:{{port}}/senderTransactions?address=nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43&from=0&to=10`
+
+### GET /customerTransactions
+Возвращает все полученные транзакции указанного адреса в заданном диапазоне блоков.
+
+`http://{{host}}:{{port}}/customerTransactions?address=nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43&from=0&to=10`
+
+### GET /senderCountDto
+Возвращает сумму всех транзакций, отправленных с данного адреса.
+
+`http://{{host}}:{{port}}/senderCountDto?address=nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43`
+
+### GET /isSaveFile
+Проверяет, сохранен ли файл.
+
+`http://{{host}}:{{port}}/isSaveFile`
+
+### POST /isTransactionAddBase64
+Определяет, добавлена ли данная транзакция в блокчейн, используя base64-подпись.
+
+`http://{{host}}:{{port}}/isTransactionAddBase64`
+
+Тело запроса:
+```json
+{
+    "sign": "MEUCIQCikyqSQ+/chwaQlqx0MAU6yKM9hBqDIKsn9Dudg/F37AIgUpbfRPt+nGlHLYuL0FStgsm5epJ8Jr1TsIeYKxXEkMg="
+}
+```
+
+### POST /TransactionAddBase64
+Возвращает транзакцию по ее base64-подписи, если она находится в блокчейне.
+
+`http://{{host}}:{{port}}/TransactionAddBase64`
+
+Тело запроса:
+```json
+{
+    "sign": "MEUCIQCikyqSQ+/chwaQlqx0MAU6yKM9hBqDIKsn9Dudg/F37AIgUpbfRPt+nGlHLYuL0FStgsm5epJ8Jr1TsIeYKxXEkMg="
+}
+```
+
+### GET /account
+Возвращает баланс учетной записи (доллары, промоакции, стейкинг).
+
+`http://{{host}}:{{port}}/account?address=tiwnwfxx3JjKaDi6ZmRihH9PNE5GZXcLNYqGrm7Rwxjg`
+
+### GET /customerCountDto
+Возвращает сумму всех транзакций, полученных этим адресом.
+
+`http://{{host}}:{{port}}/customerCountDto?address=nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43`
+
+### GET /allwinners
+Возвращает список кандидатов на блок, участвовавших в последнем турнире.
+
+`http://{{host}}:{{port}}/allwinners`
+
+### GET /bigRandomWiner
+Возвращает победителя последнего турнира.
+
+`http://{{host}}:{{port}}/bigRandomWiner`
+
+### GET /winnerList
+Возвращает самого сильного кандидата из списка блоков, которые еще не вошли в турнир.
+
+`http://{{host}}:{{port}}/winnerList`
+
+### POST /isTransactionAdd
+Возвращает true или false, если транзакция добавлена в блокчейн. Принимает base58 в качестве входных данных.
+
+`http://{{host}}:{{port}}/isTransactionAdd`
+
+Тело запроса:
+```json
+{
+    "sign": "381yXZJ8ERboZbDj9nf2pZkvjLeMTZAeuhzMgfipCP9minvaLfdbBy6LWr8X7wpKPy6pBCUH2HUGu2TeK9hqGs5ZiVcFhKSo"
+}
+```
+
+### POST /TransactionAddBase
+Возвращает объект транзакции, если транзакция была добавлена в блокчейн, иначе null. Принимает base58 в качестве входных данных.
+
+`http://{{host}}:{{port}}/TransactionAddBase`
+
+Тело запроса:
+```json
+{
+    "sign": "381yXZJ8ERboZbDj9nf2pZkvjLeMTZAeuhzMgfipCP9minvaLfdbBy6LWr8X7wpKPy6pBCUH2HUGu2TeK9hqGs5ZiVcFhKSo"
+}
+```
+
+### POST /findBlocksFromSign58
+Возвращает список блоков, если эта транзакция присутствует в блокчейне, иначе пустой список. Принимает base58 в качестве входных данных.
+
+`http://{{host}}:{{port}}/findBlocksFromSign58`
+
+Тело запроса:
+```json
+{
+    "sign": "381yXZJ8ERboZbDj9nf2pZkvjLeMTZAeuhzMgfipCP9minvaLfdbBy6LWr8X7wpKPy6pBCUH2HUGu2TeK9hqGs5ZiVcFhKSo"
+}
+```
+
+### POST /findBlocksFromSign64
+Возвращает список блоков, если эта транзакция присутствует в блокчейне, иначе пустой список. Принимает base64 в качестве входных данных.
+
+`http://{{host}}:{{port}}/findBlocksFromSign64`
+
+Тело запроса:
+```json
+{
+    "sign": "MEYCIQCFc+Jzdf/qDO43BefYb4TbMmQk3MpwEH4y14ScL8M4GQIhALse6+GyeG9YnHmihIUgJI3Z4L6S9syFL4Bxyu1hDrjT"
+}
+```
+
+### POST /statusTransaction58
+Возвращает статус транзакции по base58-подписи.
+
+`http://{{host}}:{{port}}/statusTransaction58`
+
+Тело запроса:
+```json
+{
+    "sign": "381yXZJ8ERboZbDj9nf2pZkvjLeMTZAeuhzMgfipCP9minvaLfdbBy6LWr8X7wpKPy6pBCUH2HUGu2TeK9hqGs5ZiVcFhKSo"
+}
+```
+Значения статуса:
+1. Обновление информации
+2. Неверная подпись
+3. Успешно добавлено
+4. Ожидает добавления
+5. Отсутствует
+
+### POST /statusTransaction64
+Возвращает статус транзакции по base64-подписи.
+
+`http://{{host}}:{{port}}/statusTransaction64`
+
+Тело запроса:
+```json
+{
+    "sign": "MEYCIQCFc+Jzdf/qDO43BefYb4TbMmQk3MpwEH4y14ScL8M4GQIhALse6+GyeG9YnHmihIUgJI3Z4L6S9syFL4Bxyu1hDrjT"
+}
+```
+Значения статуса:
+1. Обновление информации
+2. Неверная подпись
+3. Успешно добавлено
+4. Ожидает добавления
+5. Отсутствует
+
+## Wallet API
+
+### GET /keys
+Возвращает открытый ключ и закрытый ключ (пароль).
+
+`localhost:8082/keys`
+
+### GET /account
+Возвращает баланс учетной записи (доллары, промоакции, стейкинг).
+
+`localhost:8082/account?address=tiwnwfxx3JjKaDi6ZmRihH9PNE5GZXcLNYqGrm7Rwxjg`
+
+### GET /dollar
+Возвращает только баланс в долларах.
+
+`localhost:8082/dollar?address=tiwnwfxx3JjKaDi6ZmRihH9PNE5GZXcLNYqGrm7Rwxjg`
+
+### GET /sendCoin
+Отправляет монеты с одного адреса на другой.
+
+`localhost:8082/sendCoin?sender=tiwnwfxx3JjKaDi6ZmRihH9PNE5GZXcLNYqGrm7Rwxjg&recipient=rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM&dollar=1&stock=2.0&reward=0.0&password=`
+
+### GET /stock
+Возвращает баланс акций.
+
+`localhost:8082/stock?address=tiwnwfxx3JjKaDi6ZmRihH9PNE5GZXcLNYqGrm7Rwxjg`
+
+### POST /isTransactionAddBase64
+Определяет, добавлена ли данная транзакция в блокчейн по base64-подписи.
+
+`localhost:8082/isTransactionAddBase64`
+
+Тело запроса:
+```json
+{
+    "sign": "MEUCIQCikyqSQ+/chwaQlqx0MAU6yKM9hBqDIKsn9Dudg/F37AIgUpbfRPt+nGlHLYuL0FStgsm5epJ8Jr1TsIeYKxXEkMg="
+}
+```
+
+### POST /TransactionAddBase64
+Возвращает транзакцию по ее base64-подписи, если она находится в блокчейне.
+
+`localhost:8082/TransactionAddBase64`
+
+Тело запроса:
+```json
+{
+    "sign": "MEUCIQCikyqSQ+/chwaQlqx0MAU6yKM9hBqDIKsn9Dudg/F37AIgUpbfRPt+nGlHLYuL0FStgsm5epJ8Jr1TsIeYKxXEkMg="
+}
+```
+
+### GET /senderCountDto
+Возвращает сумму всех транзакций, отправленных с данного адреса.
+
+`localhost:8082/senderCountDto?address=nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43`
+
+### GET /senderTransactions
+Возвращает все отправленные транзакции указанного адреса в заданном диапазоне блоков. Ограничение: параметр `to` не может быть больше `from` более чем на 500 блоков.
+
+`localhost:8082/senderTransactions?address=nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43&from=0&to=10`
+
+### GET /customerTransactions
+Возвращает все полученные транзакции указанного адреса в заданном диапазоне блоков. Ограничение: параметр `to` не может быть больше `from` более чем на 500 блоков.
+
+`localhost:8082/customerTransactio
 [Возврат на главную](./documentationRus.md)

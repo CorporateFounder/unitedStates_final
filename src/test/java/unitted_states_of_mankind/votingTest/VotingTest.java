@@ -319,6 +319,7 @@ public class VotingTest {
                     0.0,
                     VoteEnum.YES
             );
+
             byte[] transactionSign = UtilsSecurity.sign(senderPrivateKey, transaction.toSign());
             transaction.setSign(transactionSign);
 

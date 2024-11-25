@@ -50,20 +50,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class Testing {
     @Test
-    public void deleteNode(){
-        String s = "C:\\resources\\pooAddressBlocked\\";
-        Mining.deleteFiles(s);
-        while (true){
-            long timestamp = UtilsTime.getUniversalTimestamp() / 1000;
-
-
-            //TODO удаляет заблокированные хосты, каждые 500 секунд. Возможно
-            //TODO хост уже работает правильно
-            if (timestamp % 1000 == 0) {
-                Mining.deleteFiles(s);
-            }
-        }
-
+    public void deleteNode() throws JsonProcessingException {
+        DtoTransaction dtoTransaction = UtilsJson.jsonToDtoTransaction("{\"sender\":\"28eNM7pFKzTgYb8WyUHgttJK9v9oV3TH4jYMxB1xXAK4o\",\"customer\":\"godbhyHbMhP9roufrtvdDS99LffHyqoT3RvGnkvYgBQh\",\"digitalDollar\":123.45,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"XnkwP90pEbkRJMrau5x9y5yVPUIvEOf0IerW0WX6l7z56UT19VOQhFQfJxIyY8mt/Rgw2ocnXIyyFqaUXfaFFw==\"}");
+        System.out.println("dto: " + dtoTransaction.verify());
     }
     @Test
     public void testSendNode(){

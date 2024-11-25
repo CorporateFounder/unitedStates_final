@@ -49,17 +49,6 @@ https://bitcointalk.org/index.php?topic=5459876.new#new
 ## СОДЕРЖАНИЕ
 - [краткое описание](../documentation/preamble.md)
 - [активные url](../documentation/active-url.md)
-- [как установить приложение](../documentation/install.md)
-- [как открыть счет](../documentation/create-account.md)
-- [как сменить счет на локальном сервере](../documentation/change-account.md)
-- [как добыть блок](../documentation/mine.md)
-- [транзакции](../documentation/transactions.md)
-- [подать на должность](../documentation/management.md)
-- [как создаются правила сети](../documentation/create-law.md)
-- [как происходит голосование в сети](../documentation/voting-in-network.md)
-- [создание должности](../documentation/create-postion.md)
-- [Решения проблем](../documentation/solving-common-problems.md)
-- [статистика](../documentation/statistics.md)
 
 
 Документация апи кошелька

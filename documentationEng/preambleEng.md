@@ -1,5 +1,128 @@
-Summary and Benefits
-Preamble: This cryptocurrency aims to create a single international currency that is resistant to high volatility. Our coin was initially designed in such a way that the value of the coin increased, but decreased slightly over time. I crisis situations. The organizational structure of this coin functions as an independent corporation, where solutions to improve the cryptocurrency divided between several positions. 1. The charter is mainly approved by the founder of this cryptocurrency 2. Code improvements, within the framework of the charter and financing of other related projects, is carried out by a board of directors of 7 elected by the network participants. 3. Implements decisions made by the board of directors, the general director elected by the board of directors. 4. Controversial decisions, or the ability to veto decisions of the board of directors, are dealt with Council of Corporate Judges of 7 members. 5. The Council of Corporate Judges is also elected by the network. 6. Every approximately 100 seconds, a block is approved in the network. 7. The reward for each block is calculated using this formula: (5+ coefficient + (difficulty * 0.2)) * multiplier. multiplier: initially in the first year it has a value of 29, but each year it decreases by one until it reaches one. coefficient: can be 3 or 0, if your block that you are trying to add has a sum of transactions and the number of transactions is greater than in the previous block, then 3, otherwise 0. coefficient: But transactions rewarding the founder and rewarding the miner are not taken into account. difficulty: difficulty can be from 17 to 100, each participant sets the difficulty himself before mining. complexity: we take the hash of the block, and count the number of ones in the hash bits, the hash must be lower than or equal to the target goal: the goal is 100 minus the difficulty set by the miner. mining: uses sha256 for hashing Elections: Each network member can vote for a candidate. Each participant has three ways to vote FOR, AGAINST or WITHDRAW VOTE. The vote of a network participant is equal to the amount of staking on his account. That is, if you have 100 coins reserved, you can vote for several candidates, and if you vote AGAINST (NO), then the candidate receives minus 100, if FOR (YES) plus 100. As a result, for each candidate his YES-NO rating is calculated, Thus, seven candidates for the Board of Directors, and the 7 highest ranked candidates for the Council of Corporate Judges are in office. Each network participant can change their vote at any time. Only votes cast in the last two years are counted. Board of Directors: Can approve network decisions, for example, can create a project by approving a decision where participants will voluntarily send money to an approved address. Example: Let's imagine that the board of directors has created a package, where the first line is the address and the amount separated by a space. The second line is a description, and the third is contact information. Moreover, the amount and address do not necessarily have to be in this coin, the board of directors can approve the decision in other currencies, then after the amount, separated by a space you need to register the type of usdt coin or other currency. 1. rDqx8hhZRzNm6xxvL1GL5aWyYoQRKVdjEHqDo5PY2nbM 10000 2. For the development of the project and the acquisition of new servers, you need to collect ten thousand coins 3. citucorp.com According to the decision of the Board of Directors: Each director has a vote equal to his rating share relative to the other directors. Let's imagine that we have 7 directors, 1. First, we will sum up the ratings of all these 7 directors. For example, it turned out to be 200. But director A has a rating of 40, that is, his share is 20% Therefore, for a resolution to be adopted, the resolution must receive a vote of 57% or more from the Directors. If the director has a very high rating, then he can make decisions alone; if he has a low rating, then he will have to get the support of other directors. Similarly, the Board of Directors elects the General Director. Council of Corporate Judges: The Board of Corporate Judges is elected in the same way as the Board of Directors, but it performs several functions 1. Resolves disputes that arise between network participants, creating a precedent. 2. May veto a decision of the Board of Directors if this decision contradicts the Charter or other current decisions. Each Judge has one vote, each Judge can vote YES, NO or abstain, as well as remove their previous vote. For each decision, the votes of the judges are calculated using the following formula: YES - NO. If the number falls below 0, then the decision is VETOed. Powers of the founder; only the founder can approve the new charter. also the property of a corporation belongs to the corporation, but to manage this property Board of Directors (Member accounts are not the property of the corporation). The Board of Directors can finance new projects by collecting money from voluntary contributions, or from sales of goods and services of the corporation, as well as from voluntary membership fees. The merger of this corporation with other corporations can only be carried out after approval by the Founder. Board of Directors, the board of directors is appointed for the management of this corporation within the framework of the charter. General Director: General Director, implements decisions made by the Board of Directors. 1. Board of Directors (7 participants): Can approve decisions for the network, such as creating projects and raising funds for their implementation. Approves decisions by a majority vote, where the weight of the director's vote depends on his rating relative to other directors. Elects the General Director. May not act contrary to the Charter or decisions imposed by the Council of Corporate Judges. 2. Council of Corporate Judges (7 participants): Resolves disputes between network participants by creating precedents. Can veto decisions of the Board of Directors if they contradict the Charter or other current decisions. Each judge has one vote, decisions are made by majority vote (YES - NO > 0). Cannot make decisions that contradict the Charter approved by the Founder. 3. General Director: Implements decisions made by the Board of Directors. Does not have the authority to make independent decisions, except for the execution of decisions of the Board of Directors. It should be noted that one person can hold several elected positions at the same time, for example, be a member of the Board of Directors and the Council of Corporate Judges. However, in this case, when voting on decisions, his votes will be counted separately for each position in accordance with the established rules.
+# Block Reward Distribution Mechanism and Mining Model of Cryptocurrency in the Context of Monetarism, Austrian School, and Libertarianism
+
+## Introduction
+
+This article examines the block reward calculation mechanism and the mining model of a cryptocurrency based on principles of self-regulating money supply. We will analyze how the use of economic theories from monetarism, the Austrian school, and libertarianism helps create a stable and effective economic system that supports the stable development of the cryptocurrency market. Special attention will be given to how these principles ensure the stability of the cryptocurrency's value and stimulate economic growth.
+
+Currently, there are about 150 million coins in circulation, and the rate of increase is relatively small compared to other cryptocurrencies, such as Bitcoin and Dogecoin. While each Bitcoin can be divided into 100 million parts and each Dogecoin can also be divided into 100 million parts, our cryptocurrency can only be divided into 100 parts (2 decimal places). Lower divisibility means lower liquidity in the market, as overall liquidity is reduced. Each coin can only be divided into 100 pieces, which creates a scarcity in the market, whereas Dogecoin can be divided into 100 million parts, making it more flexible for trading. We assume that the issuance volume of our cryptocurrency is 100 times smaller, which will allow the value to increase. This makes one Dogecoin a million times more liquid compared to our coin. Moreover, Dogecoin releases 10,000 coins per block, while the current block reward in our network does not exceed 300 coins. A smaller reward means that less money enters circulation, making each coin more valuable. Dogecoin's reward is 10,000 coins per block, whereas ours is significantly smaller, which helps increase the value of our coins. This is due to the gradual reduction of the multiplier each year and the application of Milton Friedman's model to the additional 24 coins, increasing by 2%. This percentage is based on Milton Friedman's monetarist theory, which states that the money supply should grow between 2% and 5%, with the growth rate correlated with GDP. Thus, the overall volume of coin issuance remains stable and does not grow too quickly, contributing to maintaining a stable value and preventing inflation.
+
+## Block Reward Calculation
+
+The block reward is calculated in three stages, each of which considers different economic factors and encourages network participants.
+
+### Stage 1
+
+```
+Reward = (5 + coefficient + (difficulty × 0.2) + additional) × multiplier
+```
+
+- **Coefficient**: Takes a value of 3 or 0. A value of 3 is assigned if the number and sum of transactions in the current block exceed those in the previous block. This encourages miners to include more transactions, increasing liquidity and reflecting the growing demand for cryptocurrency.
+- **Difficulty**: Each participant can set a value between 17 and 100. Difficulty defines the target for the block hash:
+    - **Target** = 100 - difficulty
+    - The target represents the number of ones in the SHA-256 hash, where the number of ones must be less than or equal to the target. That is, if the difficulty is 20, the number of ones in the bits must be ≤ 100 - 20. When the target is 100 minus the difficulty, if the difficulty reaches 100, the hash must have 0 ones, which is impossible. This makes the mining process more predictable and transparent, as the difficulty limits the achievement of such a target.
+- **Multiplier**: Initial value is 29, decreasing by one every one and a half years, but cannot be lower than 1. To maintain the same level of reward, participants need to increase the difficulty. The purpose of the multiplier is to reward early participants, gradually decreasing linearly, thus requiring constant difficulty increases to maintain the level of rewards. The time period is defined as the number of blocks 576 × 360 (days multiplied by the number of days in a year).
+
+### Stage 2
+
+An additional reward is added to compensate for increased difficulty:
+
+```
+Additional = (difficulty - 22) / 2
+```
+
+If the result is negative, it takes the value 0. This measure encourages miners to work with higher difficulty, compensating their costs and incentivizing maintaining higher difficulty, which helps prevent excessive growth in the money supply.
+
+Updated reward:
+
+```
+Reward_2 = Reward + (additional × (coefficient + 6))
+```
+
+### Stage 3
+
+Starting from index 326840, an adjustment based on Milton Friedman's model is introduced to ensure stable money supply growth:
+
+```
+blocksSinceStart = current index - 326840
+year = blocksSinceStart / (432 × 360)
+difficultyV2 = max(difficulty - 22, 0)
+
+Result = (24 + (coefficient / 4) + (difficultyV2 / 4)) × (1.02) ^ year
+Reward_3 = Reward_2 + Result
+```
+
+Rounded to two decimal places.
+
+## Mechanism Explanation
+
+### Coefficient
+
+- **Encouraging activity**: Encouraging miners to include more transactions increases network efficiency.
+- **Regulating liquidity**: As the number of transactions grows, the money supply increases, preventing excessive price growth and providing stability, which aligns with the monetarist principles of controlling the money supply.
+
+### Difficulty
+
+- **Demand indicator**: Increasing difficulty signals a rise in demand for cryptocurrency, enabling the network to adapt to changes in market activity.
+- **Self-regulation**: This approach aligns with the Austrian school, which advocates for the market to find equilibrium independently, without external interference.
+
+### Multiplier
+
+- **Emission control**: The gradual reduction of the multiplier helps prevent hyperinflation, ensuring stable and controlled growth in the money supply, which reflects monetarist principles.
+
+## Mining Model
+
+A hybrid Proof-of-Work (PoW) and Proof-of-Stake (PoS) model with an element of randomness is used.
+
+### Block selection process
+
+Every 100 seconds, nodes exchange the best blocks. The block with the highest score is selected.
+
+### Score calculation
+
+```
+Score = (difficulty × 25) + (random number from 0 to 150) + staking points + transaction points
+```
+
+- **Staking points**: An exponential increase in coins is required for staking to gain additional points.
+    - 1st point: 1.1 coins
+    - 2nd point: 2.1 coins
+    - 3rd point: 4.1 coins
+    - And so on.
+
+This encourages long-term holding of coins, which aligns with libertarian ideas of freedom and personal responsibility.
+
+### Transaction points
+
+- The sum of transactions from unique senders is considered.
+- **Point cost**:
+    - 1st point: 0.11 coins
+    - 2nd point: 0.21 coins
+    - 3rd point: 0.41 coins
+    - And so on.
+
+The total number of points for transactions cannot exceed the sum of staking points + diffLimit × 3, where:
+- **diffLimit** = difficulty - 19
+
+If diffLimit is less than 0, it takes the value 0.
+
+## Reasons for Using a Complex Mechanism
+
+### Self-regulation and Maintaining Liquidity
+
+The reward mechanism described above is based on the idea that the market should self-regulate. This idea is consistent with the theoretical foundations of the Austrian school of economics. According to the Austrian school, the best way to ensure economic growth and stability is to allow the free market to determine the value of goods and services. Maintaining liquidity and the flexibility of new coin issuance help avoid large fluctuations in value.
+
+This approach also resonates with the monetarist principles of Milton Friedman. The 2% increase in coin issuance annually as the number of blocks grows is a classic example of adaptive monetary policy. This percentage is chosen in accordance with Milton Friedman's monetarist theory, where the money supply should grow between 2% and 5%, correlated with GDP growth, which matches the average rate of economic growth. In real economies, Friedman emphasized the importance of predictable money supply growth, which helps avoid inflationary spikes and supports sustainable economic growth.
+
+### Balance Between Mining and Staking
+
+Mining and staking in this system are closely related and provide a natural balance between liquidity and stability. The PoW model ensures network security and stability, while PoS elements encourage long-term coin holding. This approach is similar to the gold standard, where gold reserves incentivized countries to maintain certain reserves, providing currency stability. Here, staking serves as an analog to holding gold reserves, preventing excessive liquidity in the market.
+
+## Conclusion
+
+Integrating the economic theories of monetarism, the Austrian school, and libertarianism into the technical basis of a cryptocurrency helps create a sustainable and self-regulating economic system. The considered block reward mechanism and hybrid mining model contribute to value stabilization, encourage participant activity, and reflect fundamental economic principles. Sustainable money supply management, balance between liquidity and stability, and limited divisibility make this cryptocurrency attractive to both miners and investors. All of this ensures the efficient functioning of the cryptocurrency and contributes to long-term market development, creating conditions for sustainable economic growth and increased prosperity of network participants.
+
+This model can serve as an example of how modern technology and economic theories can work together to create innovative solutions that not only provide financial stability but also promote economic freedom. Ultimately, the proposed cryptocurrency is capable of becoming a reliable financial instrument that provides decentralization, protects against inflation, and stimulates economic activity, which distinguishes it favorably from traditional monetary systems.
+
 
 ### contacts 
 discord: https://discord.gg/MqkvC3SGHH
