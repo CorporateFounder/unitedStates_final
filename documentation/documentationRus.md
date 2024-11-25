@@ -49,6 +49,7 @@ https://bitcointalk.org/index.php?topic=5459876.new#new
 ## СОДЕРЖАНИЕ
 - [краткое описание](../documentation/preamble.md)
 - [активные url](../documentation/active-url.md)
+- [installEng](../documentation/install.md)
 
 
 Документация апи кошелька
