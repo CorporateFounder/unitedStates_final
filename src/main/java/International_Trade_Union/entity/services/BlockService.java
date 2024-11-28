@@ -584,4 +584,18 @@ public class BlockService {
         }
 
     }
+
+    public List<EntityBlock> findBlocksBySpecialIndexRangeAndSender(long from, long to, String sender){
+        if (to - from > 20) {
+            to = from + 20;
+        }
+        return entityBlockRepository.findBlocksBySpecialIndexRangeAndSender(from, to, sender);
+    }
+
+    public List<EntityBlock> findBlocksBySpecialIndexRangeAndCustomer(long from, long to, String customer){
+        if (to - from > 20) {
+            to = from + 20;
+        }
+        return entityBlockRepository.findBlocksBySpecialIndexRangeAndCustomer(from, to, customer);
+    }
 }

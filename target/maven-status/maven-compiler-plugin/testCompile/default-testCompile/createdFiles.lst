@@ -24,6 +24,8 @@ unitted_states_of_mankind\networkTest\TransactionsTest.class
 unitted_states_of_mankind\TestDifficulty.class
 unitted_states_of_mankind\utilsTest\UtilsJsonTest.class
 unitted_states_of_mankind\utilsTest\UtilsSecurityTest.class
+unitted_states_of_mankind\votingTest\HybridTest.class
 unitted_states_of_mankind\BitcoinAlgo.class
 unitted_states_of_mankind\MultiThreadExample.class
+unitted_states_of_mankind\votingTest\ApprovalVoting.class
 unitted_states_of_mankind\DAADifficultyAdjustement.class

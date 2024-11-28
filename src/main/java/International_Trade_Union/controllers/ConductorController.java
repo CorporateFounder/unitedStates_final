@@ -22,7 +22,9 @@ import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.Laws;
 import International_Trade_Union.vote.VoteEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -499,5 +501,29 @@ public class ConductorController {
     }
 
 
+    @GetMapping("/getBlocksBySenderInRange")
+    public List<EntityBlock> getBlocksBySender(
+            @RequestParam long from,
+            @RequestParam long to,
+            @RequestParam String sender) {
+        try {
+            return blockService.findBlocksBySpecialIndexRangeAndSender(from, to, sender);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
 
+    @GetMapping("/findBlocksBySenderInRange")
+    public List<EntityBlock> getBlocksByCustomer(
+            @RequestParam long from,
+            @RequestParam long to,
+            @RequestParam String customer) {
+        try {
+            return blockService.findBlocksBySpecialIndexRangeAndCustomer(from, to, customer);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
 }
