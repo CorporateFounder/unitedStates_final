@@ -683,15 +683,16 @@ public class BasisController {
 
         List<HostEndDataShortB> sortPriorityHost = utilsResolving.sortPriorityHost(nodesAll);
         String s = "";
+        for (String s1 : Seting.ORIGINAL_ADDRESSES) {
+            s = s1;
+        }
         String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
         if (!server.isBlank() || !server.isEmpty()) {
             Seting.ORIGINAL_ADDRESSES.removeAll(Seting.ORIGINAL_ADDRESSES);
             Seting.ORIGINAL_ADDRESSES.add(server);
             s = server;
         }
-        for (String s1 : Seting.ORIGINAL_ADDRESSES) {
-            s = s1;
-        }
+
         getNodes().stream().forEach(System.out::println);
 
 
