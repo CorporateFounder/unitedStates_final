@@ -122,15 +122,18 @@ public class UtilUrl {
 
     }
 
+    public static int sendPost(String jsonObject, String requstStr) throws IOException {
+        return sendPost(jsonObject, requstStr, 25000, 25000);
+    }
 
-    public static int sendPost(String jsonObject, String requestStr) throws IOException {
+    public static int sendPost(String jsonObject, String requestStr, int timeRead,int timeConnect) throws IOException {
         int response;
 
         URL url = new URL(requestStr);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 //        conn.connect();
-        conn.setReadTimeout(25000);
-        conn.setConnectTimeout(25000);
+        conn.setReadTimeout(timeRead);
+        conn.setConnectTimeout(timeConnect);
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/json; utf-8");
         conn.setRequestProperty("Accept", "application/json");

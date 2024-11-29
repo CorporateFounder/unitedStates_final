@@ -49,6 +49,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static International_Trade_Union.utils.UtilsBalance.*;
@@ -57,6 +59,7 @@ import static International_Trade_Union.utils.UtilsBalance.*;
 public class BasisController {
 
     private BlockService blockService;
+
     @Autowired
     public BasisController(BlockService blockService) {
         this.blockService = blockService;
@@ -65,7 +68,6 @@ public class BasisController {
         UtilsBlock.setBlockService(blockService);
         initializeBlockchain();
     }
-
 
 
     @Autowired
@@ -297,7 +299,7 @@ public class BasisController {
             blockchainValid = shortDataBlockchain.isValidation();
             prevBlock = Blockchain.indexFromFile(blockchainSize - 1, Seting.ORIGINAL_BLOCKCHAIN_FILE);
 
-        } catch ( IOException  e) {
+        } catch (IOException e) {
             MyLogger.saveLog("initializeBlockchain: ", e);
             throw new RuntimeException(e);
         }
@@ -374,7 +376,6 @@ public class BasisController {
     }
 
 
-
     /**
      * Если вы предполагаете что некоторые файлы повреждены, то после вызова данного метода, происходить
      * перерасчет всех файлов для всего блокчейна.
@@ -433,7 +434,7 @@ public class BasisController {
             balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
             tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
             DataShortBlockchainInformation temp = new DataShortBlockchainInformation();
-            if (BasisController.getBlockchainSize() > 1){
+            if (BasisController.getBlockchainSize() > 1) {
                 Map<String, Account> balanceForValidation = UtilsUse.balancesClone(balances);
                 temp = Blockchain.shortCheck(BasisController.getPrevBlock(), list, BasisController.getShortDataBlockchain(), lastDiff, tempBalances, sign, balanceForValidation, new ArrayList<>());
 
@@ -450,7 +451,7 @@ public class BasisController {
                     UtilsFileSaveRead.save(json, Seting.TEMPORARY_BLOCKCHAIN_FILE, false);
 
                 }
-            }else {
+            } else {
                 boolean result = utilsResolving.addBlock3(list, balances, Seting.ORIGINAL_BLOCKCHAIN_FILE, new ArrayList<>());
                 balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
                 tempBalances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(list, blockService));
@@ -681,97 +682,93 @@ public class BasisController {
         Set<String> nodesAll = getNodes();
 
         List<HostEndDataShortB> sortPriorityHost = utilsResolving.sortPriorityHost(nodesAll);
-
+        String s = "";
+        String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
+        if (!server.isBlank() || !server.isEmpty()) {
+            Seting.ORIGINAL_ADDRESSES.removeAll(Seting.ORIGINAL_ADDRESSES);
+            Seting.ORIGINAL_ADDRESSES.add(server);
+            s = server;
+        }
+        for (String s1 : Seting.ORIGINAL_ADDRESSES) {
+            s = s1;
+        }
         getNodes().stream().forEach(System.out::println);
-        for (HostEndDataShortB hostEndDataShortB : sortPriorityHost) {
-            String s = hostEndDataShortB.getHost();
-            String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
-            if (!server.isBlank() || !server.isEmpty()) {
-                Seting.ORIGINAL_ADDRESSES.removeAll(Seting.ORIGINAL_ADDRESSES);
-                Seting.ORIGINAL_ADDRESSES.add(server);
-                s = server;
+
+
+        System.out.println(":trying to connect to the server send block: " + s + ": timeout 45 seconds");
+
+        if (BasisController.getExcludedAddresses().contains(s)) {
+            System.out.println(":its your address or excluded address: " + s);
+        }
+
+        try {
+            System.out.println(":BasisController:resolve conflicts: address: " + s + "/size");
+            String sizeStr = UtilUrl.readJsonFromUrl(s + "/size");
+            Integer size = 0;
+            if (Integer.valueOf(sizeStr) > 0)
+                size = Integer.valueOf(sizeStr);
+            System.out.println(":BasisController: send: local size: " + blocks_current_size + " global size: " + size);
+            if (size > blocks_current_size) {
+                System.out.println(":your local chain less: current: " + blocks_current_size + " global: " + size);
+                return -1;
             }
-            for (String s1 : Seting.ORIGINAL_ADDRESSES) {
-                s = s1;
-            }
-
-
-            System.out.println(":trying to connect to the server send block: " + s + ": timeout 45 seconds");
-
-            if (BasisController.getExcludedAddresses().contains(s)) {
-                System.out.println(":its your address or excluded address: " + s);
-                continue;
-            }
-
-            try {
-                System.out.println(":BasisController:resolve conflicts: address: " + s + "/size");
-                String sizeStr = UtilUrl.readJsonFromUrl(s + "/size");
-                Integer size = 0;
-                if (Integer.valueOf(sizeStr) > 0)
-                    size = Integer.valueOf(sizeStr);
-                System.out.println(":BasisController: send: local size: " + blocks_current_size + " global size: " + size);
-                if (size > blocks_current_size) {
-                    System.out.println(":your local chain less: current: " + blocks_current_size + " global: " + size);
-                    return -1;
-                }
 //                List<Block> fromToTempBlock = blocks.subList(size, blocks_current_size);
-                List<Block> fromToTempBlock = new ArrayList<>();
-                fromToTempBlock.addAll(blocks);
-                SendBlocksEndInfo infoBlocks = new SendBlocksEndInfo(Seting.VERSION, fromToTempBlock);
-                String jsonFromTo = UtilsJson.objToStringJson(infoBlocks);
-                //if the current blockchain is larger than the storage, then
-                //send current blockchain send to storage
-                //если блокчейн текущей больше чем в хранилище, то
-                //отправить текущий блокчейн отправить в хранилище
-                if (size < blocks_current_size) {
-                    if (bigsize < size) {
-                        bigsize = size;
-                    }
-                    int response = -1;
-                    //Test start algorithm
-                    String originalF = s;
-                    System.out.println(":send resolve_from_to_block");
-                    String urlFrom = s + "/nodes/resolve_from_to_block";
-                    try {
-                        response = UtilUrl.sendPost(jsonFromTo, urlFrom);
-                        System.out.println(":CONFLICT TREE, IN GLOBAL DIFFERENT TREE " + HttpStatus.CONFLICT.value());
-                        System.out.println(":GOOD: SUCCESS  " + HttpStatus.OK.value());
-                        System.out.println(":FAIL BAD BLOCKCHAIN: " + HttpStatus.EXPECTATION_FAILED.value());
-                        System.out.println(":CONFLICT VERSION: " + HttpStatus.FAILED_DEPENDENCY.value());
-                        System.out.println(":response: " + response + " address: " + s);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        System.out.println(":exception resolve_from_to_block: " + originalF);
-                        continue;
-                    }
-                    System.out.println(":CONFLICT TREE, IN GLOBAL DIFFERENT TREE: " + HttpStatus.CONFLICT.value());
-                    System.out.println(":GOOD SUCCESS: " + HttpStatus.OK.value());
-                    System.out.println(":FAIL BAD BLOCKHAIN: " + HttpStatus.EXPECTATION_FAILED.value());
+            List<Block> fromToTempBlock = new ArrayList<>();
+            fromToTempBlock.addAll(blocks);
+            SendBlocksEndInfo infoBlocks = new SendBlocksEndInfo(Seting.VERSION, fromToTempBlock);
+            String jsonFromTo = UtilsJson.objToStringJson(infoBlocks);
+            //if the current blockchain is larger than the storage, then
+            //send current blockchain send to storage
+            //если блокчейн текущей больше чем в хранилище, то
+            //отправить текущий блокчейн отправить в хранилище
+            if (size < blocks_current_size) {
+                if (bigsize < size) {
+                    bigsize = size;
+                }
+                int response = -1;
+                //Test start algorithm
+                String originalF = s;
+                System.out.println(":send resolve_from_to_block");
+                String urlFrom = s + "/nodes/resolve_from_to_block";
+                try {
+                    response = UtilUrl.sendPost(jsonFromTo, urlFrom, 9000, 9000);
+                    System.out.println(":CONFLICT TREE, IN GLOBAL DIFFERENT TREE " + HttpStatus.CONFLICT.value());
+                    System.out.println(":GOOD: SUCCESS  " + HttpStatus.OK.value());
+                    System.out.println(":FAIL BAD BLOCKCHAIN: " + HttpStatus.EXPECTATION_FAILED.value());
                     System.out.println(":CONFLICT VERSION: " + HttpStatus.FAILED_DEPENDENCY.value());
-                    System.out.println(":NAME CONFLICT: " + HttpStatus.NOT_ACCEPTABLE.value());
-                    System.out.println("two miner addresses cannot be consecutive: " + HttpStatus.NOT_ACCEPTABLE.value());
-                    System.out.println("PARITY ERROR" + HttpStatus.LOCKED);
-                    System.out.println("Test version: If the index is even, then the stock balance must also be even; if the index is not even, all can mining"
-                            + HttpStatus.LOCKED.value());
-                    System.out.println("BLOCK HAS CHEATER ADDRESS: " + HttpStatus.SEE_OTHER);
                     System.out.println(":response: " + response + " address: " + s);
-
-                    System.out.println(":BasisController: sendAllBlocksStorage: response: " + response + " address: " + s);
-
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println(":exception resolve_from_to_block: " + originalF + " address: " + s);
 
                 }
+                System.out.println(":CONFLICT TREE, IN GLOBAL DIFFERENT TREE: " + HttpStatus.CONFLICT.value());
+                System.out.println(":GOOD SUCCESS: " + HttpStatus.OK.value());
+                System.out.println(":FAIL BAD BLOCKHAIN: " + HttpStatus.EXPECTATION_FAILED.value());
+                System.out.println(":CONFLICT VERSION: " + HttpStatus.FAILED_DEPENDENCY.value());
+                System.out.println(":NAME CONFLICT: " + HttpStatus.NOT_ACCEPTABLE.value());
+                System.out.println("two miner addresses cannot be consecutive: " + HttpStatus.NOT_ACCEPTABLE.value());
+                System.out.println("PARITY ERROR" + HttpStatus.LOCKED);
+                System.out.println("Test version: If the index is even, then the stock balance must also be even; if the index is not even, all can mining"
+                        + HttpStatus.LOCKED.value());
+                System.out.println("BLOCK HAS CHEATER ADDRESS: " + HttpStatus.SEE_OTHER);
+                System.out.println(":response: " + response + " address: " + s);
+
+                System.out.println(":BasisController: sendAllBlocksStorage: response: " + response + " address: " + s);
 
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-                continue;
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                continue;
             }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            e.printStackTrace();
 
         }
+
+
         if (blockchainSize > bigsize) {
             return 1;
         } else if (blockchainSize < bigsize) {
@@ -841,10 +838,10 @@ public class BasisController {
             Map<String, Account> balances = new HashMap<>();
 
             EntityAccount entityAccount = blockService.findByAccount(User.getUserAddress());
-            if(entityAccount == null){
+            if (entityAccount == null) {
                 entityAccount = new EntityAccount(User.getUserAddress(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
             }
-            Account miner =UtilsAccountToEntityAccount.entityAccountToAccount(entityAccount);
+            Account miner = UtilsAccountToEntityAccount.entityAccountToAccount(entityAccount);
             minerShow = miner;
 
             String address = "http://194.87.236.238:80";
@@ -908,7 +905,6 @@ public class BasisController {
                 }
 
 
-
             }
             //скачать список балансов из файла. download a list of balances from a file.
             System.out.println("BasisController: minining: read list balance");
@@ -918,7 +914,7 @@ public class BasisController {
             //получить счет майнера. get the miner's account.
 
             EntityAccount tempAccount = blockService.findByAccount(User.getUserAddress());
-            if(tempAccount == null){
+            if (tempAccount == null) {
                 tempAccount = new EntityAccount(User.getUserAddress(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
             }
             miner = UtilsAccountToEntityAccount.entityAccountToAccount(tempAccount);
@@ -1026,7 +1022,7 @@ public class BasisController {
             List<Block> blocks = new ArrayList<>();
             blocks.add(prevBlock);
             blocks.add(block);
-            Map<String,Account> balance = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(blocks, blockService));
+            Map<String, Account> balance = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(UtilsUse.accounts(blocks, blockService));
 
             List<String> signs = new ArrayList<>();
             if (testingValidationsBlock.size() > 1) {
@@ -1206,9 +1202,9 @@ public class BasisController {
 
 
         System.out.println("=========================================");
-        System.out.println("all balance in local "+balances.size());
+        System.out.println("all balance in local " + balances.size());
         System.out.println("=========================================");
-        System.out.println("all balance in server "+accounts.size());
+        System.out.println("all balance in server " + accounts.size());
 
         System.out.println("=========================================");
         System.out.println("=========================================");
@@ -1224,7 +1220,7 @@ public class BasisController {
         System.out.println("wrong account: " + result.size());
         System.out.println(result);
         System.out.println("=========================================");
-        balances =  balances.entrySet().stream()
+        balances = balances.entrySet().stream()
                 .filter(t -> t.getValue().getDigitalStakingBalance() != null
                         && t.getValue().getDigitalStockBalance() != null
                         && t.getValue().getDigitalDollarBalance() != null
@@ -1281,16 +1277,17 @@ public class BasisController {
 
 
         System.out.println("=========================================");
-        System.out.println("all balance in server "+balances.size());
-        balances.entrySet().stream().forEach(t-> System.out.println(t.getValue()));
+        System.out.println("all balance in server " + balances.size());
+        balances.entrySet().stream().forEach(t -> System.out.println(t.getValue()));
         System.out.println("=========================================");
-        System.out.println("all balance in local "+accounts.size());
-        accounts.entrySet().stream().forEach(t-> System.out.println(t.getValue()));
+        System.out.println("all balance in local " + accounts.size());
+        accounts.entrySet().stream().forEach(t -> System.out.println(t.getValue()));
         maps.add(balances);
         maps.add(accounts);
 
         return maps;
     }
+
     @GetMapping("/status")
     @ResponseBody
     public String status() {
