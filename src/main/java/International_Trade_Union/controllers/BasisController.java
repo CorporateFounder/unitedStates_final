@@ -742,6 +742,7 @@ public class BasisController {
                     System.out.println(":exception resolve_from_to_block: " + originalF + " address: " + s);
 
                 }
+
                 System.out.println(":CONFLICT TREE, IN GLOBAL DIFFERENT TREE: " + HttpStatus.CONFLICT.value());
                 System.out.println(":GOOD SUCCESS: " + HttpStatus.OK.value());
                 System.out.println(":FAIL BAD BLOCKHAIN: " + HttpStatus.EXPECTATION_FAILED.value());
