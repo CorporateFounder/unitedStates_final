@@ -731,6 +731,7 @@ public class BasisController {
                 String originalF = s;
                 System.out.println(":send resolve_from_to_block");
                 String urlFrom = s + "/nodes/resolve_from_to_block";
+
                 try {
                     response = UtilUrl.sendPost(jsonFromTo, urlFrom, 9000, 9000);
                     System.out.println(":CONFLICT TREE, IN GLOBAL DIFFERENT TREE " + HttpStatus.CONFLICT.value());
