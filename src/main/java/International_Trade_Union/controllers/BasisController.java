@@ -679,9 +679,7 @@ public class BasisController {
         int blocks_current_size = (int) blocks.get(blocks.size() - 1).getIndex() + 1;
         //отправка блокчейна на хранилище блокчейна
         System.out.println(":BasisController: sendAllBlocksToStorage: ");
-        Set<String> nodesAll = getNodes();
 
-        List<HostEndDataShortB> sortPriorityHost = utilsResolving.sortPriorityHost(nodesAll);
         String s = "";
         for (String s1 : Seting.ORIGINAL_ADDRESSES) {
             s = s1;
