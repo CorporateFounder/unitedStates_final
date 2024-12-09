@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public interface Seting {
-    boolean IS_TEST = false;
+    boolean IS_TEST = true;
     boolean IS_SECURITY = true;
 
     int HUNDRED_PERCENT = 100;
@@ -261,6 +261,7 @@ public interface Seting {
 
     //мультипликатор
     int MULTIPLIER = 29;
+    int MULTIPLIER2 = 65;
     int STANDART_FOR_TARGET = 100;
     //деление для вычисление дохода основателя
     int DOLLAR = 10;
@@ -341,7 +342,12 @@ public interface Seting {
 
     int MONEY_MILTON_FRIDMAN_INDEX = 326840;
     double MONEY_MILTON_FRIDMAN = 24;
+    double MONEY_MILTON_FRIDMAN2 = 3;
     double PERCENT_MONEY_MILTON_FRIMDAN = 1.02;
+    double PERCENT_MONEY_MILTON_FRIMDAN2 = 1.005;
     int MILTON_MONEY_DAY = 432;
+
+    int OPTIMAL_SCORE_INDEX = 342201;
+
 }
 

@@ -302,6 +302,16 @@ public class BasisController {
         } catch (IOException e) {
             MyLogger.saveLog("initializeBlockchain: ", e);
             throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        } catch (SignatureException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchProviderException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -1318,10 +1328,10 @@ public class BasisController {
         return result;
     }
 
-    @GetMapping("/testJson")
+    @GetMapping("/mode")
     @ResponseBody
-    public String testJson() throws IOException {
-        return "";
+    public String testJson(@RequestParam int index) throws IOException {
+        return Long.toString(blockService.findModeHashComplexityInRange(index));
     }
 }
 

@@ -42,6 +42,11 @@ public class MineController {
             return "redirect:/processUpdating";
         }
 
+        long mode = 0;
+        if(BasisController.getBlockchainSize() -1 > Seting.OPTIMAL_SCORE_INDEX){
+            mode = blockService.findModeHashComplexityInRange(BasisController.getBlockchainSize()-1);
+        }
+        model.addAttribute("mode", mode);
         model.addAttribute("title", "Corporation International Trade Union.");
         model.addAttribute("customDiff", Mining.getCustomDiff());
         return "mining";

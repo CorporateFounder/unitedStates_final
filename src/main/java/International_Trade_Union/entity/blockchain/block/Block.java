@@ -529,6 +529,7 @@ public final class Block implements Cloneable {
 
 //                          System.out.println("!!>>"+generateJsonWithProof(jsonParts, k));
                             this.randomNumberProof = k;
+
                         }
                     }
                 }

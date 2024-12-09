@@ -1,5 +1,6 @@
 package International_Trade_Union.entity.blockchain;
 
+import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.services.BlockService;
@@ -194,7 +195,11 @@ public class Blockchain implements Cloneable {
                 System.out.println("shortCheck miner: " + miner);
 
                 staking = staking.add(stakingForDataShort(miner.getDigitalStakingBalance()));
-                bigRandomNumber += UtilsUse.bigRandomWinner(block, miner);
+
+                int M = 0;
+                if (block.getIndex() > Seting.OPTIMAL_SCORE_INDEX)
+                    M = Math.toIntExact(blockService.findModeHashComplexityInRange(block.getIndex(), blocks));
+                bigRandomNumber += UtilsUse.bigRandomWinner(block, miner, M);
                 System.out.println("shortCheck: size: " + block.getIndex() + " validation: " + validation + " size: " + size);
 
                 transactions += block.getDtoTransactions().size();
@@ -218,7 +223,7 @@ public class Blockchain implements Cloneable {
 
 
     public static DataShortBlockchainInformation checkFromFile(
-            String filename)  {
+            String filename) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         boolean valid = true;
         File folder = new File(filename);
         Block prevBlock = null;
@@ -250,6 +255,9 @@ public class Blockchain implements Cloneable {
             } else {
                 System.out.println("file name: " + fileEntry.getName());
                 List<String> list = UtilsFileSaveRead.reads(fileEntry.getAbsolutePath());
+                List<Block> blocks = new ArrayList<>();
+                if (BasisController.getBlockchainSize() - 1 > Seting.OPTIMAL_SCORE_INDEX)
+                     blocks = UtilsBlock.readLineObject(fileEntry.getAbsolutePath());
                 for (String s : list) {
                     size += 1;
                     index += 1;
@@ -305,7 +313,11 @@ public class Blockchain implements Cloneable {
 
                     staking = staking.add(stakingForDataShort(miner.getDigitalStakingBalance()));
                     transactions += block.getDtoTransactions().size();
-                    bigRandomNumber += UtilsUse.bigRandomWinner(block, miner);
+                    int M = 0;
+                    if (block.getIndex() > Seting.OPTIMAL_SCORE_INDEX)
+                        M = Math.toIntExact(blockService.findModeHashComplexityInRange(block.getIndex(), blocks));
+
+                    bigRandomNumber += UtilsUse.bigRandomWinner(block, miner, M);
 
                     if (size < Seting.V34_NEW_ALGO) {
                         tempList.add(prevBlock);
@@ -756,7 +768,10 @@ public class Blockchain implements Cloneable {
             staking = staking.subtract(stakingForDataShort(balances.get(blocks.get(i).getMinerAddress()).getDigitalStakingBalance()));
 
             transactions -= blocks.get(i).getDtoTransactions().size();
-            bigRandomNumber -= UtilsUse.bigRandomWinner(blocks.get(i), balances.get(blocks.get(i).getMinerAddress()));
+            int M = 0;
+            if (blocks.get(i).getIndex() > Seting.OPTIMAL_SCORE_INDEX)
+                M = Math.toIntExact(blockService.findModeHashComplexityInRange(blocks.get(i).getIndex(), blocks));
+            bigRandomNumber -= UtilsUse.bigRandomWinner(blocks.get(i), balances.get(blocks.get(i).getMinerAddress()), M);
             balances = UtilsBalance.rollbackCalculateBalance(balances, blocks.get(i));
         }
 

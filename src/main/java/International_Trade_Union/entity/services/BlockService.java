@@ -1,6 +1,7 @@
 package International_Trade_Union.entity.services;
 
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
+import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.entities.EntityBlock;
 import International_Trade_Union.entity.entities.EntityDtoTransaction;
@@ -9,7 +10,11 @@ import International_Trade_Union.entity.repository.EntityBlockRepository;
 import International_Trade_Union.entity.repository.EntityDtoTransactionRepository;
 import International_Trade_Union.entity.repository.EntityLawsRepository;
 import International_Trade_Union.model.Account;
+import International_Trade_Union.model.MyLogger;
+import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.MyHost;
 import International_Trade_Union.utils.UtilsBlockToEntityBlock;
+import International_Trade_Union.utils.UtilsUse;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
 import International_Trade_Union.vote.VoteEnum;
@@ -24,12 +29,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.RoundingMode;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static International_Trade_Union.setings.Seting.OPTIMAL_SCORE_INDEX;
 
 @Component
 public class BlockService {
@@ -598,4 +603,81 @@ public class BlockService {
         }
         return entityBlockRepository.findBlocksBySpecialIndexRangeAndCustomer(from, to, customer);
     }
+
+
+    public long findModeHashComplexityInRange(long index, List<Block> blocks) {
+        long endRange = index - 30;
+        long startRange = endRange - 30;
+
+        if (startRange < 0) {
+            throw new IllegalArgumentException("Index out of range. Start range cannot be negative.");
+        }
+
+        // Собираем индексы блоков, которые уже в памяти
+        Set<Long> inMemoryIndices = blocks.stream()
+                .map(Block::getIndex)
+                .collect(Collectors.toSet());
+
+        // Извлекаем значения hashComplexity из базы, исключая дубликаты
+        List<Long> dbHashComplexities = entityBlockRepository.findHashComplexitiesInRange(startRange, endRange)
+                .stream()
+                .filter(hashComplexity -> !inMemoryIndices.contains(hashComplexity))
+                .collect(Collectors.toList());
+
+        // Собираем значения hashComplexity из blocks
+        List<Long> inMemoryHashComplexities = blocks.stream()
+                .filter(block -> block.getIndex() >= startRange && block.getIndex() <= endRange)
+                .map(Block::getHashCompexity)
+                .collect(Collectors.toList());
+
+        // Объединяем значения из базы и памяти
+        List<Long> allHashComplexities = new ArrayList<>();
+        allHashComplexities.addAll(dbHashComplexities);
+        allHashComplexities.addAll(inMemoryHashComplexities);
+
+        if (allHashComplexities.isEmpty()) {
+            throw new IllegalStateException("No hash complexities found in the specified range. start: " + startRange + ", end: " + endRange);
+        }
+
+        // Преобразуем значения hashComplexity в Integer для метода mode
+        List<Integer> hashComplexitiesAsIntegers = allHashComplexities.stream()
+                .map(Long::intValue)
+                .collect(Collectors.toList());
+
+        // Возвращаем моду
+        return UtilsUse.mode(hashComplexitiesAsIntegers);
+    }
+
+    public Long findModeHashComplexityInRange(long index) {
+        // Вычисляем конечный диапазон
+        long endRange = index - 30;
+        long startRange = endRange - 30;
+
+        if (startRange < 0) {
+            throw new IllegalArgumentException("Index out of range. Start range cannot be negative.");
+        }
+
+        // Получение моды hashComplexity через запрос JPA по полю specialIndex
+        List<Object[]> hashComplexityCounts = entityBlockRepository.findHashComplexityModeInRange(startRange, endRange);
+
+        if (hashComplexityCounts.isEmpty()) {
+            MyLogger.saveLog("No data found in the specified range. start: " + startRange + " endRange: " + endRange);
+            throw new IllegalStateException("No data found in the specified range. start: " + startRange + " endRange: " + endRange);
+
+        }
+
+        // Извлечение наименьшей моды
+        return hashComplexityCounts.stream()
+                .min((o1, o2) -> {
+                    Long frequency1 = (Long) o1[1];
+                    Long frequency2 = (Long) o2[1];
+                    if (frequency1.equals(frequency2)) {
+                        return Long.compare((Long) o1[0], (Long) o2[0]);
+                    }
+                    return Long.compare(frequency2, frequency1);
+                })
+                .map(o -> (Long) o[0])
+                .orElse(null);
+    }
+
 }

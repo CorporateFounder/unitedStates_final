@@ -42,7 +42,9 @@ public class EntityDtoTransaction {
 
     private String sender;
     private String customer;
+
     private double digitalDollar;
+
     private double digitalStockBalance;
 
     @OneToOne(mappedBy = "entityDtoTransaction", cascade = CascadeType.ALL,  orphanRemoval = true, fetch = FetchType.EAGER)

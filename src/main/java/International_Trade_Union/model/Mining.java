@@ -275,12 +275,24 @@ public class Mining {
             founderDigigtalReputationReward = digitalReputationForMiner / Seting.STOCK;
         }
         if (index >= Seting.V34_NEW_ALGO) {
+
+            int day = 576;
+            int period = YEAR;
+            int mulptipleperiod = MULTIPLIER;
+            if(index > OPTIMAL_SCORE_INDEX){
+                day = 432;
+                period = 120;
+                mulptipleperiod = MULTIPLIER2;
+            }
+
             long money = (index - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
-                    / (576 * Seting.YEAR);
-            money = (long) (Seting.MULTIPLIER - money);
+                    / (day *period);
+            money = (long) (mulptipleperiod - money);
             money = money < 1 ? 1 : money;
+
             double moneyFromDif = 0;
             double G = UtilsUse.blocksReward(forAdd, prevBlock.getDtoTransactions(), index);
+
             if (index > Seting.ALGORITM_MINING) {
                 moneyFromDif = (difficulty - DIFFICULT_MONEY) / 2;
                 moneyFromDif = moneyFromDif > 0 ? moneyFromDif : 0;
@@ -294,9 +306,22 @@ public class Mining {
                 digitalReputationForMiner += moneyFromDif * (MULT + G);
             }
 
-            //фридман модель рост в 4%
+            int multiplier = 0;
+            if(index > OPTIMAL_SCORE_INDEX){
+                minerRewards = 0;
+                digitalReputationForMiner = 0;
+                multiplier = (int) money;
+            }
+            //фридман модель рост в 0.005%
             minerRewards = UtilsUse.calculateMinedMoneyFridman(index, minerRewards, difficulty, G);
             digitalReputationForMiner = UtilsUse.calculateMinedMoneyFridman(index, digitalReputationForMiner, difficulty, G);
+
+            if(index > OPTIMAL_SCORE_INDEX){
+                minerRewards *= multiplier;
+                digitalReputationForMiner *= multiplier;
+            }
+
+
 
             founderReward = minerRewards / Seting.DOLLAR;
             founderDigigtalReputationReward = digitalReputationForMiner / Seting.STOCK;

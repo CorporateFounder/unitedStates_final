@@ -23,10 +23,13 @@
 
 <div class="container mt-5">
     <h3 th:text="${title}"/>
+    <h3 th:text="'mode: '+${mode}"/>
 
     <form action="/constantMining" class="container mt-1">
         <button type="submit" class="btn btn-success">start</button>
     </form>
+
+
 
     <h3 th:text="'acutal custom diff: '+${customDiff}"/>
     <form action="/customDiff" class="container mt-1" method="post">

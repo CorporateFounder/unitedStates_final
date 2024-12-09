@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static International_Trade_Union.setings.Seting.SENDING_DECIMAL_PLACES;
 import static International_Trade_Union.setings.Seting.SENDING_DECIMAL_PLACES_2;
@@ -162,6 +163,18 @@ public class UtilsUse {
                 hm.put(array.get(i), 1);
         }
         return temp;
+    }
+
+    //так же найти моду из сложности блоков
+    private List<Object[]> calculateModeFromBlocks(List<Block> blocks, long startRange, long endRange) {
+        return blocks.stream()
+                .filter(block -> block.getIndex() >= startRange && block.getIndex() <= endRange)
+                .collect(Collectors.groupingBy(Block::getHashCompexity, Collectors.counting()))
+                .entrySet().stream()
+                .sorted(Map.Entry.<Long, Long>comparingByValue().reversed()
+                        .thenComparing(Map.Entry.comparingByKey()))
+                .map(entry -> new Object[] {entry.getKey(), entry.getValue()})
+                .collect(Collectors.toList());
     }
 
     public static BigDecimal percentDifferent(BigDecimal first, BigDecimal second) {
@@ -380,7 +393,7 @@ public class UtilsUse {
      * Вычисляет случайное число на основе предыдущего хэша и текущего и чем выше число, тем выше
      * значимость.
      */
-    public static int bigRandomWinner(Block actual, Account miner) {
+    public static int bigRandomWinner(Block actual, Account miner, int M) {
         // Конкатенация двух хешей
         String combinedHash = actual.getHashBlock();
 
@@ -414,7 +427,9 @@ public class UtilsUse {
             limit = 150;
         }
         // Генерация случайного числа в диапазоне от 0 до 150
-        int result = deterministicRandom.nextInt(limit);
+        int result = deterministicRandom.nextInt(limit);;
+
+
         if (actual.getIndex() > Seting.NEW_ALGO_MINING) {
             // Получаем количество уникальных отправителей транзакций
             long transactionCount = actual.getDtoTransactions().stream()
@@ -433,6 +448,9 @@ public class UtilsUse {
 
             // Очки за стейкинг
             long mineScore = calculateScore(miner.getDigitalStakingBalance().doubleValue(), number);
+
+
+
 
             int diffLimit = (int) (actual.getHashCompexity() - 19);
             diffLimit = diffLimit >= 0 ? diffLimit : 0;
@@ -455,6 +473,29 @@ public class UtilsUse {
             // Ограничиваем баллы за транзакции новым максимумом
             transactionPoints = Math.min(transactionPoints, maxTransactionPoints);
 
+
+            //новая модель подсчета баллов
+            //TODO проверить работоспособность.
+            int range = 0;
+            int X = 0;
+            int diffPoint = 0;
+            if (actual.getIndex() > Seting.OPTIMAL_SCORE_INDEX) {
+                diffPoint = getPoints(M, (int) actual.getHashCompexity());
+                X = getX(M, (int) actual.getHashCompexity());
+                transactionSumPoints = calculateScore(transactionSum, 0.1);
+
+                // Ограничиваем transactionPoints до mineScore
+                transactionPoints = Math.min(transactionPoints, mineScore);
+
+                //диапазон
+                range = (int) (X - (mineScore + transactionSumPoints));
+                int random = deterministicRandom.nextInt(range + 1);
+
+                //результат
+                result = (int) (diffPoint + random + transactionPoints + mineScore);
+            }
+
+
             // Финальный результат
             result = (int) (result + (actual.getHashCompexity() * waight) + mineScore + transactionPoints);
         } else {
@@ -466,12 +507,13 @@ public class UtilsUse {
 
     }
 
+
     public static long calculateScore(double x, double x0) {
         if (x <= 0) {
             return 0;
         }
         double score = Math.ceil(Math.log(x / x0) / Math.log(2));
-        return Math.min(400, (long) score);
+        return Math.min(30, (long) score);
     }
 
     public static long calculateScore(BigDecimal x, BigDecimal x0) {
@@ -480,7 +522,7 @@ public class UtilsUse {
         }
         BigDecimal log2 = new BigDecimal(Math.log(2));
         BigDecimal score = BigDecimal.valueOf(Math.ceil(Math.log(x.divide(x0, RoundingMode.HALF_UP).doubleValue()) / log2.doubleValue()));
-        return Math.min(400, score.longValue());
+        return Math.min(30, score.longValue());
     }
 
     //позволяет получить список балансов, если баланс до калькуляции в addBlock отличается от
@@ -577,17 +619,13 @@ public class UtilsUse {
 
 
     public static List<EntityAccount> accounts(List<Block> blocks, BlockService blockService) throws IOException {
-        List<String> accounts = new ArrayList<>();
-        for (Block block : blocks) {
-            for (DtoTransaction transaction : block.getDtoTransactions()) {
-                if (transaction.getSender() != null && !transaction.getSender().isBlank())
-                    accounts.add(transaction.getSender());
+        Set<String> accountSet = blocks.stream()
+                .flatMap(block -> block.getDtoTransactions().stream())
+                .flatMap(transaction -> Stream.of(transaction.getSender(), transaction.getCustomer()))
+                .filter(account -> account != null && !account.isBlank())
+                .collect(Collectors.toSet()); // Используем Set для устранения дубликатов
 
-                if (transaction.getCustomer() != null && !transaction.getCustomer().isBlank())
-                    accounts.add(transaction.getCustomer());
-            }
-        }
-        return blockService.findBYAccountString(accounts);
+        return blockService.findBYAccountString(new ArrayList<>(accountSet));
     }
 
     public static BigDecimal truncateAndRound(BigDecimal value) {
@@ -797,8 +835,8 @@ public class UtilsUse {
      * Если индекс блока меньше порогового, возвращает переданную текущую награду.
      * Иначе, суммирует текущую награду с новой наградой и округляет результат до двух знаков.
      *
-     * @param index          Индекс текущего блока.
-     * @param currentReward  Текущая сумма наград.
+     * @param index         Индекс текущего блока.
+     * @param currentReward Текущая сумма наград.
      * @return Обновленная сумма наград с двумя знаками после запятой.
      */
     public static double calculateMinedMoneyFridman(long index, double currentReward, double diffMoney, double G) {
@@ -806,9 +844,20 @@ public class UtilsUse {
         if (index < Seting.MONEY_MILTON_FRIDMAN_INDEX) {
             return currentReward;
         }
-        diffMoney = (diffMoney - 22) / 4;
-        if(diffMoney < 0) diffMoney = 0;
-        double result = (G / 4) + diffMoney;
+
+        double percentMoneyMiltonFrimdan = Seting.PERCENT_MONEY_MILTON_FRIMDAN;
+        double moneyFridman = Seting.MONEY_MILTON_FRIDMAN;
+        int divider = 4;
+        if(index > Seting.OPTIMAL_SCORE_INDEX){
+            percentMoneyMiltonFrimdan = Seting.PERCENT_MONEY_MILTON_FRIMDAN2;
+            moneyFridman = Seting.MONEY_MILTON_FRIDMAN2;
+
+        }
+
+
+        diffMoney = (diffMoney - 22) / divider;
+        if (diffMoney < 0) diffMoney = 0;
+        double result = (G / divider) + diffMoney;
 
         // Рассчитываем количество блоков в году
         long blocksPerYear = (long) Seting.MILTON_MONEY_DAY * Seting.YEAR;
@@ -819,8 +868,10 @@ public class UtilsUse {
         // Определяем количество полных лет, прошедших с начала отсчета
         int yearsPassed = (int) (blocksSinceStart / blocksPerYear);
 
+
+
         // Рассчитываем награду за блок с учетом ежегодного увеличения
-        double newBlockReward = (Seting.MONEY_MILTON_FRIDMAN + result)* Math.pow(Seting.PERCENT_MONEY_MILTON_FRIMDAN, yearsPassed);
+        double newBlockReward = (moneyFridman + result) * Math.pow(percentMoneyMiltonFrimdan, yearsPassed);
 
         // Округляем новую награду до двух знаков после запятой
         newBlockReward = round(newBlockReward, 2);
@@ -834,4 +885,66 @@ public class UtilsUse {
         return updatedReward;
     }
 
+
+    //балы от сложности
+    public static int getPoints(int M, int difficulty) {
+        int difference = difficulty - M;
+
+        switch (difference) {
+            case 0:
+                return 20; // M
+            case 1:
+                return 25; // M+1
+            case -1:
+                return 20; // M-1
+            case 2:
+                return 15; // M+2
+            case -2:
+                return 15; // M-2
+            case 3:
+                return 10; // M+3
+            case -3:
+                return 10; // M-3
+            case 4:
+                return 5;  // M+4
+            case -4:
+                return 5;  // M-4
+            case 5:
+            case -5:
+                return 0;  // M+5 или M-5
+            default:
+                return 0;  // За пределами диапазона
+        }
+    }
+
+    //возвращает X диапазон
+    public static int getX(int M, int difficulty) {
+        int difference = difficulty - M;
+
+        switch (difference) {
+            case 0:
+                return 126; // M
+            case 1:
+                return 131; // M+1
+            case -1:
+                return 120; // M-1
+            case 2:
+                return 115; // M+2
+            case -2:
+                return 97;  // M-2
+            case 3:
+                return 110; // M+3
+            case -3:
+                return 84;  // M-3
+            case 4:
+                return 100; // M+4
+            case -4:
+                return 72;  // M-4
+            case 5:
+            case -5:
+                return 64;   // M+5 или M-5
+            default:
+                return 62;   // За пределами диапазона
+        }
+    }
 }

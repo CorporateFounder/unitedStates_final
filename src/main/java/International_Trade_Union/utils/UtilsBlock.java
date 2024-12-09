@@ -579,10 +579,22 @@ public class UtilsBlock {
 
                 }
                 double G = 0;
+                long index = thisBlock.getIndex();
+                int multiplier = 0;
                 if (thisBlock.getIndex() > Seting.V34_NEW_ALGO) {
-                    long money = (thisBlock.getIndex() - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
-                            / (576 * Seting.YEAR);
-                    money = (long) (Seting.MULTIPLIER - money);
+
+                    int day = 576;
+                    int period = YEAR;
+                    int mulptipleperiod = MULTIPLIER;
+                    if(index > OPTIMAL_SCORE_INDEX){
+                        day = 432;
+                        period = 120;
+                        mulptipleperiod = MULTIPLIER2;
+                    }
+
+                    long money = (index - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
+                            / (day *period);
+                    money = (long) (mulptipleperiod - money);
                     money = money < 1 ? 1 : money;
 
                     double moneyFromDif = 0;
@@ -602,10 +614,17 @@ public class UtilsBlock {
                     }
 
 
+                    if(index > OPTIMAL_SCORE_INDEX){
+                        minerReward = 0;
+                        minerPowerReward = 0;
+                        multiplier = (int) money;
+                    }
+
                     if (thisBlock.getIndex() > Seting.START_BLOCK_DECIMAL_PLACES && thisBlock.getIndex() <= ALGORITM_MINING) {
                         minerReward = UtilsUse.round(minerReward, Seting.DECIMAL_PLACES);
                         minerPowerReward = UtilsUse.round(minerPowerReward, Seting.DECIMAL_PLACES);
                     }
+
 
 
                     if (thisBlock.getIndex() > ALGORITM_MINING) {
@@ -624,9 +643,14 @@ public class UtilsBlock {
                     minerPowerReward = SPECIAL_FORK_BALANCE;
                 }
 
-                //фридман модель рост в 4%
+                //фридман модель рост в 2 после будет 0.005%
                 minerReward = UtilsUse.calculateMinedMoneyFridman(thisBlock.getIndex(), minerReward, thisBlock.getHashCompexity(), G);
                 minerPowerReward = UtilsUse.calculateMinedMoneyFridman(thisBlock.getIndex(), minerPowerReward, thisBlock.getHashCompexity(), G);
+
+                if(index > OPTIMAL_SCORE_INDEX){
+                    minerReward *= multiplier;
+                    minerPowerReward *= multiplier;
+                }
 
                 if (transaction.getSender().equals(Seting.BASIS_ADDRESS) &&
                         transaction.getCustomer().equals(thisBlock.getMinerAddress()) && transaction.getDigitalDollar() > minerReward

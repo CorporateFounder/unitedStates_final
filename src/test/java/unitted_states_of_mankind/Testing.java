@@ -49,27 +49,127 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class Testing {
+
+    public double reward(double G, int difficulty, int MULTIPLIER, int index) {
+        double minerRewards = 0;
+        if (index >= Seting.V34_NEW_ALGO) {
+            long money = (index - Seting.V28_CHANGE_ALGORITH_DIFF_INDEX)
+                    / (576 * Seting.YEAR);
+            money = (long) (MULTIPLIER);
+            money = money < 1 ? 1 : money;
+            double moneyFromDif = 0;
+
+            if (index > Seting.ALGORITM_MINING) {
+                moneyFromDif = (difficulty - DIFFICULT_MONEY) / 2;
+                moneyFromDif = moneyFromDif > 0 ? moneyFromDif : 0;
+            }
+
+            minerRewards = (Seting.V28_REWARD + G + (difficulty * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
+            double digitalReputationForMiner = (Seting.V28_REWARD + G + (difficulty * Seting.V34_MINING_REWARD) + moneyFromDif) * money;
+
+            if (index > ALGORITM_MINING_2) {
+                minerRewards += moneyFromDif * (MULT + G);
+                digitalReputationForMiner += moneyFromDif * (MULT + G);
+            }
+
+            //фридман модель рост в 4%
+            minerRewards = UtilsUse.calculateMinedMoneyFridman(index, minerRewards, difficulty, G);
+            digitalReputationForMiner = UtilsUse.calculateMinedMoneyFridman(index, digitalReputationForMiner, difficulty, G);
+
+
+            if (BasisController.getBlockchainSize() > Seting.START_BLOCK_DECIMAL_PLACES && index <= ALGORITM_MINING) {
+                minerRewards = UtilsUse.round(minerRewards, Seting.DECIMAL_PLACES);
+                digitalReputationForMiner = UtilsUse.round(digitalReputationForMiner, Seting.DECIMAL_PLACES);
+
+            }
+            if (index > ALGORITM_MINING) {
+                int decimal = SENDING_DECIMAL_PLACES;
+
+                if (index >= CHANGE_DECIMAL_2_INDEX) {
+                    decimal = SENDING_DECIMAL_PLACES_2;
+                }
+
+                minerRewards = UtilsUse.round(minerRewards, decimal);
+
+
+            }
+        }
+        return minerRewards;
+
+
+    }
+
+    @Test
+    public void testRew() {
+        int index = 336625;
+        double fridman = UtilsUse.calculateMinedMoneyFridman(index, 100, 29, 0);
+        double reward1 = reward(0, 22, 29, index);
+        index = 336625 * 5;
+        double fridman1 = UtilsUse.calculateMinedMoneyFridman(index, 100, 29, 0);
+        double reward2 = reward(0, 22, 29, index);
+
+        System.out.println("reward1: " + reward1);
+        System.out.println("reward2: " + reward2);
+        System.out.println("fridman: " + fridman);
+        System.out.println("fridman1: " + fridman1);
+
+    }
+
+    @Test
+    public void testRewards() throws IOException {
+        int index = 336625;
+        int diff = 24;
+
+            double fridman = reward(0, diff, 29, index);
+            double fridman1 = reward(0, diff, 29, index * 2);
+            double fridman2 = reward(0, diff, 28, index * 3);
+            double fridman3 = reward(0, diff, 28, index * 4);
+            double fridman4 = reward(0, diff, 27, index * 5);
+            double fridman5 = reward(0, diff, 27, index * 6);
+
+        System.out.println("fridman: " + fridman);
+        System.out.println("fridman1: " + fridman1);
+        System.out.println("fridman2: " + fridman2);
+        System.out.println("fridman3: " + fridman3);
+        System.out.println("fridman4: " + fridman4);
+        System.out.println("fridman5: " + fridman);
+
+
+
+
+    }
+
     @Test
     public void deleteNode() throws JsonProcessingException {
         DtoTransaction dtoTransaction = UtilsJson.jsonToDtoTransaction("{\"sender\":\"28eNM7pFKzTgYb8WyUHgttJK9v9oV3TH4jYMxB1xXAK4o\",\"customer\":\"godbhyHbMhP9roufrtvdDS99LffHyqoT3RvGnkvYgBQh\",\"digitalDollar\":123.45,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"XnkwP90pEbkRJMrau5x9y5yVPUIvEOf0IerW0WX6l7z56UT19VOQhFQfJxIyY8mt/Rgw2ocnXIyyFqaUXfaFFw==\"}");
         System.out.println("dto: " + dtoTransaction.verify());
     }
+
     @Test
-    public void testSendNode(){
+    public void jsonBlock() throws JsonProcessingException {
+        String jsonOriginal = "{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":38.44,\"digitalStockBalance\":38.44,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIA3coM0cNGSrLiulalsxPPHlaqA+Fa7uM0VQKUedqBsuAiAOcbAN3862HxwpN2SQjuW2gmkCW6jkBCQjLxc98loFRA==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"243kiLx69wNtpBYh7NTimcJdqUzu6ZRAUf8KJuydhjEsi\",\"digitalDollar\":384.35,\"digitalStockBalance\":384.35,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIEljO7MKPfL+D3UGqsOX5rc5EOt87T0YNNRR0xLXyTrjAiEA6ffsPe5V0CXzSg6f6JDIVhWRPcR+fSR87LEKI40bwYE=\"},{\"sender\":\"jjnUUJkqDFPFEDEVCd4TfBdeMTzCxAYLMi2ovv9MDhhG\",\"customer\":\"2B44h9Bpdcn9QAyKyEYdVHNZFM8NtnS2TUNvxkqJ2C8qQ\",\"digitalDollar\":267.6,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEYCIQDG2tqMQQUZA/pXk0vPWOcKmpp6qdlWgvWgmN4A7zGaZQIhAPFkRRR/azhFsZPzP2TT/4iE+J/RzdpXXxD9WLAJs3av\"}],\"previousHash\":\"06334449a122d485005081e09118c018090144802c52c08c0170902da14386b0\",\"minerAddress\":\"243kiLx69wNtpBYh7NTimcJdqUzu6ZRAUf8KJuydhjEsi\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":12610078985579413,\"minerRewards\":0.0,\"hashCompexity\":22,\"timestamp\":1733330624000,\"index\":336625,\"hashBlock\":\"2d410264e6061d0c08160428006a0180805889167094c80308113123895a6024\"}";
+        String jsonSuprTrupr = "";
+        Block original = UtilsJson.jsonToBLock(jsonOriginal);
+        System.out.println("original: " + jsonOriginal);
+        System.out.println("********************************");
+        System.out.println("suprtrupr: " + jsonSuprTrupr);
+    }
+    @Test
+    public void testSendNode() {
         String s = "http://194.87.236.238:82";
         MyHost myHost = new MyHost();
         myHost.setHost("http://38.180.214.233:82");
-            try{
-                String hostStr = s;
-                if(s.contains("\""))
-                    hostStr = s.replaceAll("\"", "");
-                System.out.println("hostStr: " + hostStr);
-                UtilUrl.sendPost(UtilsJson.objToStringJson(myHost), hostStr + "/putNode");
-            }catch (Exception e){
+        try {
+            String hostStr = s;
+            if (s.contains("\""))
+                hostStr = s.replaceAll("\"", "");
+            System.out.println("hostStr: " + hostStr);
+            UtilUrl.sendPost(UtilsJson.objToStringJson(myHost), hostStr + "/putNode");
+        } catch (Exception e) {
 //                e.printStackTrace();
-                System.out.println("error send to host: " + s);
+            System.out.println("error send to host: " + s);
 
-            }
+        }
 
     }
 
@@ -129,14 +229,14 @@ public class Testing {
                 "    \"index\": 323035,\n" +
                 "    \"hashBlock\": \"f1c500830435a0715004a6009c6503a17200884126030121c1818088035481d2\"\n" +
                 "}");
-        Account miner = new Account("2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL", BigDecimal.valueOf(11000000),BigDecimal.valueOf(11000000), BigDecimal.valueOf(4400000));
+        Account miner = new Account("2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL", BigDecimal.valueOf(11000000), BigDecimal.valueOf(11000000), BigDecimal.valueOf(4400000));
 
-       int bigRandom =  UtilsUse.bigRandomWinner(block, miner);
+        int bigRandom = UtilsUse.bigRandomWinner(block, miner, 0);
         System.out.println("big random: " + bigRandom);
     }
 
     @Test
-    public void miltonMoney(){
+    public void miltonMoney() {
         int index = 321815;
         for (int i = 0; i < 1; i++) {
             index += 144000;
@@ -146,8 +246,8 @@ public class Testing {
         double reward = 0;
 
 
-        double money = UtilsUse.calculateMinedMoneyFridman(index, reward, 23, 3/4);
-        double money2 = UtilsUse.calculateMinedMoneyFridman(index, reward, 23, 3/4);
+        double money = UtilsUse.calculateMinedMoneyFridman(index, reward, 23, 3 / 4);
+        double money2 = UtilsUse.calculateMinedMoneyFridman(index, reward, 23, 3 / 4);
         double money3 = UtilsUse.calculateMinedMoneyFridman(index, reward, 22, 0);
         System.out.println(money);
         System.out.println(money2);
@@ -156,9 +256,9 @@ public class Testing {
 
     @Test
     public void block() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        BigDecimal money =BigDecimal.valueOf(200);
+        BigDecimal money = BigDecimal.valueOf(200);
         Block block = UtilsJson.jsonToBLock("{\"dtoTransactions\":[{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"digitalDollar\":35.38,\"digitalStockBalance\":35.38,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIAVpifvnWhOx+7878Ry5adN1dhmOfwkmddRROrs++DjbAiBcwXQVaDa3QY/MkaXJt3EkPTUHNwZRN8z9nSECFEqFkw==\"},{\"sender\":\"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\"customer\":\"243kiLx69wNtpBYh7NTimcJdqUzu6ZRAUf8KJuydhjEsi\",\"digitalDollar\":353.8,\"digitalStockBalance\":353.8,\"laws\":{\"packetLawName\":null,\"laws\":null,\"hashLaw\":null},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIHICM/fhkvx+rQEsZ6bt88kvuwbH9F4Q49B4E9LTZ0ksAiAQp2Cq3Qv1aSZDVS0xk3W1Sds3J+F5hvc6DZRN1uFtYA==\"},{\"sender\":\"jcqrb3nW1kYLAEYcuzfKFrCeoX2WCTnXq4sH2Rr3fQrE\",\"customer\":\"bZyM2pkbTHNUDbV9Z53u9rWu8TChhPkppdGWg3up7JSg\",\"digitalDollar\":1.111,\"digitalStockBalance\":0.0,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEUCIQDCCt6i5vEk8wxrCVS4OICbfv+fF6X3QImjB4sB4g+3xwIgAhWHz7vOx/VPbefGNnQ5+gLlsrWgKB78yrrdjam1qc4=\"}],\"previousHash\":\"0d05ca4c80440002c0c369ac05448903983c0d88064b48c4080808120d64180c\",\"minerAddress\":\"243kiLx69wNtpBYh7NTimcJdqUzu6ZRAUf8KJuydhjEsi\",\"founderAddress\":\"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\"randomNumberProof\":2702159802066160,\"minerRewards\":0.0,\"hashCompexity\":21,\"timestamp\":1730195015000,\"index\":321433,\"hashBlock\":\"4e260ae0242b49832155061602083084c4005074955844040230c1192001208b\"}\n");
-        Account sender = new Account("jcqrb3nW1kYLAEYcuzfKFrCeoX2WCTnXq4sH2Rr3fQrE", money, money, money );
+        Account sender = new Account("jcqrb3nW1kYLAEYcuzfKFrCeoX2WCTnXq4sH2Rr3fQrE", money, money, money);
         Account Customer = new Account("bZyM2pkbTHNUDbV9Z53u9rWu8TChhPkppdGWg3up7JSg", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         Account miner = new Account("243kiLx69wNtpBYh7NTimcJdqUzu6ZRAUf8KJuydhjEsi", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         Map<String, Account> balances = new HashMap<>();
@@ -205,7 +305,7 @@ public class Testing {
 
         DtoTransaction dtoTransaction = UtilsJson.jsonToDtoTransaction("{\"sender\":\"h392yDGLyzh4Bk3A8hfGvi8qiGK84X4TWWTSTe55jMM4\",\"customer\":\"gC49xWaTVtQVKamqM7Neq3F7UGyqma3aXHJ5ep6WwcdY\",\"digitalDollar\":3.9E-7,\"digitalStockBalance\":3.9E-7,\"laws\":{\"packetLawName\":\"\",\"laws\":[],\"hashLaw\":\"\"},\"bonusForMiner\":0.0,\"voteEnum\":\"YES\",\"sign\":\"MEQCIFSkbTKa0fgXrOYPX6xYuodAAO6RdWomZ7lqAANez+3tAiAMTPwAUEMbrXivbxeok7jBnKkFhp3ylrbqPil5G3uaSQ==\"}\n");
         System.out.println("verify: " + dtoTransaction.verify());
-        System.out.println("list: size: "+ list.size());
+        System.out.println("list: size: " + list.size());
     }
 
     @Test
@@ -589,7 +689,7 @@ public class Testing {
             blocks.get(0).setHashBlock("4111780951498215c031c98cc201b4690208828c3c844660104bacdc11040909");
             blocks.get(0).setPreviousHash("41c408c41718500200306b0200a10a040280e08f4d2844f30258a23eb9715490");
             Account miner = new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(1000));
-            number = UtilsUse.bigRandomWinner(blocks.get(0), miner);
+            number = UtilsUse.bigRandomWinner(blocks.get(0), miner, 0);
             score = UtilsUse.calculateScore(5242881, 10);
         }
 
