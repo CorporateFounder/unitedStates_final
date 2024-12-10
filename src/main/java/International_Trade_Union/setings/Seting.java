@@ -261,7 +261,7 @@ public interface Seting {
 
     //мультипликатор
     int MULTIPLIER = 29;
-    int MULTIPLIER2 = 65;
+    int MULTIPLIER2 = 35;
     int STANDART_FOR_TARGET = 100;
     //деление для вычисление дохода основателя
     int DOLLAR = 10;
