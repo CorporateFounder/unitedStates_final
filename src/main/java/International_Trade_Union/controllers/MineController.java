@@ -70,7 +70,6 @@ public class MineController {
         System.out.println("start post /miningTransaction");
         Base base = new Base58();
 
-
         dollar = UtilsUse.truncateAndRound(BigDecimal.valueOf(dollar)).doubleValue();
         reward = UtilsUse.truncateAndRound(BigDecimal.valueOf(reward)).doubleValue();
         reward = 0.0;
