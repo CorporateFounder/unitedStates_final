@@ -77,6 +77,7 @@ public class MineController {
             dollar = 0.0;
 
 
+
         Laws laws = new Laws();
         laws.setLaws(new ArrayList<>());
         laws.setHashLaw("");
