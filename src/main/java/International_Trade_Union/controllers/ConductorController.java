@@ -128,23 +128,142 @@ public class ConductorController {
     @ResponseBody
     public Double stock(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 //        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
+        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
-
-        EntityAccount entityAccount  = new EntityAccount();
-        try {
-            entityAccount = blockService.findByAccount(address);
-        }catch (Exception e){
-            MyLogger.saveLog("account address: " + e.getMessage());
-            return Double.valueOf(-1);
-        }
-//        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
-
-        Account account = UtilsAccountToEntityAccount.entityAccountToAccount(entityAccount);
-
-
-        return UtilsUse.round(account.getDigitalStockBalance(), Seting.SENDING_DECIMAL_PLACES).doubleValue();
+        Account account = UtilsBalance.getBalance(address, balances);
+        return account.getDigitalStockBalance().doubleValue();
     }
 
+    /**
+     * send dollar or stock (if return wrong-its not sending, if return sign its success)
+     * (send to global node)
+     */
+    @GetMapping("/sendCoin")
+    @ResponseBody
+    public SendCoinResult send(@RequestParam String sender,
+                           @RequestParam String recipient,
+                           @RequestParam(defaultValue = "0.0") Double dollar,
+                           @RequestParam(defaultValue = "0.0") Double stock,
+                           @RequestParam(defaultValue = "0.0") Double reward,
+                           @RequestParam String password) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
+    Base base = new Base58();
+    SendCoinResult result = new SendCoinResult(); // Initialize the result
+        // Check if the password contains only valid Base58 characters
+        if (!password.matches("[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+")) {
+            System.out.println("Password contains invalid Base58 characters");
+            return result;
+        }
+        dollar = UtilsUse.truncateAndRound(BigDecimal.valueOf(dollar)).doubleValue();
+        stock = UtilsUse.truncateAndRound(BigDecimal.valueOf(stock)).doubleValue();
+        reward = UtilsUse.truncateAndRound(BigDecimal.valueOf(reward)).doubleValue();
+
+        reward = 0.0;
+    if (dollar == null || dollar <  Seting.MINIMUM_2) dollar = 0.0;
+    if (stock == null || stock <  Seting.MINIMUM_2) stock = 0.0;
+    if (reward == null || reward <  Seting.MINIMUM_2) reward = 0.0;
+
+
+
+        Laws laws = new Laws();
+    laws.setLaws(new ArrayList<>());
+    laws.setHashLaw("");
+    laws.setPacketLawName("");
+    DtoTransaction dtoTransaction = new DtoTransaction(
+            sender,
+            recipient,
+            dollar,
+            stock,
+            laws,
+            reward,
+            VoteEnum.YES);
+        PrivateKey privateKey;
+        byte[] sign ;
+    try {
+        privateKey= UtilsSecurity.privateBytToPrivateKey(base.decode(password));
+        sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
+    }catch (IOException e){
+        return result;
+    }
+
+        Account senderAccount = null;
+        try{
+            senderAccount = UtilsAccountToEntityAccount.entityAccountToAccount(blockService.findByAccount(sender));
+
+        }catch (Exception e){
+            result.put("wrong balance", "FAILED: " + e);
+            System.out.println(result);
+            return result;
+        }
+        if(!"success".equals(UtilsUse.checkSendBalance(senderAccount, dtoTransaction))){
+            String str = UtilsUse.checkSendBalance(senderAccount, dtoTransaction);
+            result.put("wrong balance", "FAILED: " + str);
+            System.out.println(result);
+            return result;
+
+        }
+    System.out.println("Main Controller: new transaction: vote: " + VoteEnum.YES);
+    dtoTransaction.setSign(sign);
+    Directors directors = new Directors();
+    System.out.println("sender: " + sender);
+    System.out.println("recipient: " + recipient);
+    System.out.println("dollar: " + dollar + ": class: " + dollar.getClass());
+    System.out.println("stock: " + stock + ": class: " + stock.getClass());
+    System.out.println("reward: " + reward + ": class: " + reward.getClass());
+    System.out.println("password: " + password);
+    try {
+        System.out.println("sign: " + base.encode(dtoTransaction.getSign()));
+        System.out.println("verify: " + dtoTransaction.verify());
+
+    }catch (Exception e){
+        return result;
+    }
+
+    if (dtoTransaction.verify()) {
+
+        List<String> corporateSeniorPositions = directors.getDirectors().stream()
+                .map(t -> t.getName()).collect(Collectors.toList());
+        System.out.println("LawsController: create_law: " + laws.getPacketLawName() + " contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
+        if (corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(sender, laws)) {
+            System.out.println("sending wrong transaction: Position to be equals with send");
+            return result;
+        }
+        try {
+            result.setSign(base.encode(dtoTransaction.getSign()));
+            result.setDtoTransaction(dtoTransaction);
+
+        }catch (Exception e){
+            return new SendCoinResult();
+        }
+
+        String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
+        Set<String> nodesAll = getNodes();
+        List<HostEndDataShortB> sortPriorityHost = utilsResolving.sortPriorityHost(nodesAll);
+
+        for (HostEndDataShortB hostEndDataShortB : sortPriorityHost) {
+            String original = hostEndDataShortB.getHost();
+            String url = hostEndDataShortB.getHost() + "/addTransaction";
+            if (BasisController.getExcludedAddresses().contains(url)) {
+                System.out.println("MainController: its your address or excluded address: " + url);
+                continue;
+            }
+            try {
+                // Send to network
+                int responseCode = UtilUrl.sendPost(jsonDto, url);
+                if (responseCode == 200) {
+                    result.put(hostEndDataShortB.getHost(), "SENDED");
+                } else {
+                    result.put(hostEndDataShortB.getHost(), "FAILED: " + responseCode);
+                }
+            } catch (Exception e) {
+                System.out.println("exception discover: " + original);
+                result.put(hostEndDataShortB.getHost(), "SERVER DID NOT RESPOND");
+            }
+        }
+    } else {
+        return result;
+    }
+    return result;
+}
 
 
     /**
