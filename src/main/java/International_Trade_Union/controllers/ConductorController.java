@@ -3,17 +3,11 @@ package International_Trade_Union.controllers;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
-import International_Trade_Union.entity.entities.EntityBlock;
-import International_Trade_Union.entity.entities.EntityDtoTransaction;
-import International_Trade_Union.entity.entities.SendCoinResult;
-import International_Trade_Union.entity.entities.SignRequest;
+import International_Trade_Union.entity.entities.*;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Directors;
 import International_Trade_Union.governments.UtilsGovernment;
-import International_Trade_Union.model.Account;
-import International_Trade_Union.model.CreateAccount;
-import International_Trade_Union.model.HostEndDataShortB;
-import International_Trade_Union.model.SlidingWindowManager;
+import International_Trade_Union.model.*;
 import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
@@ -85,9 +79,18 @@ public class ConductorController {
     @ResponseBody
     public Account account(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 //        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
-        Account account = UtilsBalance.getBalance(address, balances);
+
+        EntityAccount entityAccount  = new EntityAccount();
+        try {
+            entityAccount = blockService.findByAccount(address);
+        }catch (Exception e){
+            MyLogger.saveLog("account address: " + e.getMessage());
+            return new Account();
+        }
+//        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+
+        Account account = UtilsAccountToEntityAccount.entityAccountToAccount(entityAccount);
 
         return account;
     }
@@ -100,10 +103,21 @@ public class ConductorController {
     @ResponseBody
     public Double dollar(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 //        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
-        Account account = UtilsBalance.getBalance(address, balances);
-        return account.getDigitalDollarBalance().doubleValue();
+
+        EntityAccount entityAccount  = new EntityAccount();
+        try {
+            entityAccount = blockService.findByAccount(address);
+        }catch (Exception e){
+            MyLogger.saveLog("account address: " + e.getMessage());
+            return Double.valueOf(-1);
+        }
+//        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+
+        Account account = UtilsAccountToEntityAccount.entityAccountToAccount(entityAccount);
+
+
+        return UtilsUse.round(account.getDigitalDollarBalance(), Seting.SENDING_DECIMAL_PLACES).doubleValue();
     }
 
     /**
@@ -114,142 +128,23 @@ public class ConductorController {
     @ResponseBody
     public Double stock(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 //        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
-
-        Account account = UtilsBalance.getBalance(address, balances);
-        return account.getDigitalStockBalance().doubleValue();
-    }
-
-    /**
-     * send dollar or stock (if return wrong-its not sending, if return sign its success)
-     * (send to global node)
-     */
-    @GetMapping("/sendCoin")
-    @ResponseBody
-    public SendCoinResult send(@RequestParam String sender,
-                           @RequestParam String recipient,
-                           @RequestParam(defaultValue = "0.0") Double dollar,
-                           @RequestParam(defaultValue = "0.0") Double stock,
-                           @RequestParam(defaultValue = "0.0") Double reward,
-                           @RequestParam String password) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, IOException, SignatureException, InvalidKeyException {
-    Base base = new Base58();
-    SendCoinResult result = new SendCoinResult(); // Initialize the result
-        // Check if the password contains only valid Base58 characters
-        if (!password.matches("[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+")) {
-            System.out.println("Password contains invalid Base58 characters");
-            return result;
-        }
-        dollar = UtilsUse.truncateAndRound(BigDecimal.valueOf(dollar)).doubleValue();
-        stock = UtilsUse.truncateAndRound(BigDecimal.valueOf(stock)).doubleValue();
-        reward = UtilsUse.truncateAndRound(BigDecimal.valueOf(reward)).doubleValue();
-
-        reward = 0.0;
-    if (dollar == null || dollar <  Seting.MINIMUM_2) dollar = 0.0;
-    if (stock == null || stock <  Seting.MINIMUM_2) stock = 0.0;
-    if (reward == null || reward <  Seting.MINIMUM_2) reward = 0.0;
 
 
-
-        Laws laws = new Laws();
-    laws.setLaws(new ArrayList<>());
-    laws.setHashLaw("");
-    laws.setPacketLawName("");
-    DtoTransaction dtoTransaction = new DtoTransaction(
-            sender,
-            recipient,
-            dollar,
-            stock,
-            laws,
-            reward,
-            VoteEnum.YES);
-        PrivateKey privateKey;
-        byte[] sign ;
-    try {
-        privateKey= UtilsSecurity.privateBytToPrivateKey(base.decode(password));
-        sign = UtilsSecurity.sign(privateKey, dtoTransaction.toSign());
-    }catch (IOException e){
-        return result;
-    }
-
-        Account senderAccount = null;
-        try{
-            senderAccount = UtilsAccountToEntityAccount.entityAccountToAccount(blockService.findByAccount(sender));
-
-        }catch (Exception e){
-            result.put("wrong balance", "FAILED: " + e);
-            System.out.println(result);
-            return result;
-        }
-        if(!"success".equals(UtilsUse.checkSendBalance(senderAccount, dtoTransaction))){
-            String str = UtilsUse.checkSendBalance(senderAccount, dtoTransaction);
-            result.put("wrong balance", "FAILED: " + str);
-            System.out.println(result);
-            return result;
-
-        }
-    System.out.println("Main Controller: new transaction: vote: " + VoteEnum.YES);
-    dtoTransaction.setSign(sign);
-    Directors directors = new Directors();
-    System.out.println("sender: " + sender);
-    System.out.println("recipient: " + recipient);
-    System.out.println("dollar: " + dollar + ": class: " + dollar.getClass());
-    System.out.println("stock: " + stock + ": class: " + stock.getClass());
-    System.out.println("reward: " + reward + ": class: " + reward.getClass());
-    System.out.println("password: " + password);
-    try {
-        System.out.println("sign: " + base.encode(dtoTransaction.getSign()));
-        System.out.println("verify: " + dtoTransaction.verify());
-
-    }catch (Exception e){
-        return result;
-    }
-
-    if (dtoTransaction.verify()) {
-
-        List<String> corporateSeniorPositions = directors.getDirectors().stream()
-                .map(t -> t.getName()).collect(Collectors.toList());
-        System.out.println("LawsController: create_law: " + laws.getPacketLawName() + " contains: " + corporateSeniorPositions.contains(laws.getPacketLawName()));
-        if (corporateSeniorPositions.contains(laws.getPacketLawName()) && !UtilsGovernment.checkPostionSenderEqualsLaw(sender, laws)) {
-            System.out.println("sending wrong transaction: Position to be equals with send");
-            return result;
-        }
+        EntityAccount entityAccount  = new EntityAccount();
         try {
-            result.setSign(base.encode(dtoTransaction.getSign()));
-            result.setDtoTransaction(dtoTransaction);
-
+            entityAccount = blockService.findByAccount(address);
         }catch (Exception e){
-            return new SendCoinResult();
+            MyLogger.saveLog("account address: " + e.getMessage());
+            return Double.valueOf(-1);
         }
+//        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
-        String jsonDto = UtilsJson.objToStringJson(dtoTransaction);
-        Set<String> nodesAll = getNodes();
-        List<HostEndDataShortB> sortPriorityHost = utilsResolving.sortPriorityHost(nodesAll);
+        Account account = UtilsAccountToEntityAccount.entityAccountToAccount(entityAccount);
 
-        for (HostEndDataShortB hostEndDataShortB : sortPriorityHost) {
-            String original = hostEndDataShortB.getHost();
-            String url = hostEndDataShortB.getHost() + "/addTransaction";
-            if (BasisController.getExcludedAddresses().contains(url)) {
-                System.out.println("MainController: its your address or excluded address: " + url);
-                continue;
-            }
-            try {
-                // Send to network
-                int responseCode = UtilUrl.sendPost(jsonDto, url);
-                if (responseCode == 200) {
-                    result.put(hostEndDataShortB.getHost(), "SENDED");
-                } else {
-                    result.put(hostEndDataShortB.getHost(), "FAILED: " + responseCode);
-                }
-            } catch (Exception e) {
-                System.out.println("exception discover: " + original);
-                result.put(hostEndDataShortB.getHost(), "SERVER DID NOT RESPOND");
-            }
-        }
-    } else {
-        return result;
+
+        return UtilsUse.round(account.getDigitalStockBalance(), Seting.SENDING_DECIMAL_PLACES).doubleValue();
     }
-    return result;
-}
+
 
 
     /**
@@ -268,6 +163,7 @@ public class ConductorController {
     @PostMapping("/TransactionAddBase")
     public DtoTransaction TransactionGetBase(@RequestBody SignRequest request) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         try {
+
             // Удаление всех пробелов из строки Base64
             String sanitizedSign = request.getSign().replaceAll("\\s+", "");
             // Декодирование строки Base64 в байты
@@ -288,6 +184,7 @@ public class ConductorController {
     @PostMapping("/isTransactionAddBase64")
     public Boolean isTransactionGetBase64(@RequestBody SignRequest request) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         try {
+
             // Удаление всех пробелов из строки Base64
             String sanitizedSign = request.getSign().replaceAll("\\s+", "");
             // Декодирование строки Base64 в байты
@@ -306,6 +203,7 @@ public class ConductorController {
     @PostMapping("/TransactionAddBase64")
     public DtoTransaction TransactionGetBase64(@RequestBody SignRequest request) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         try {
+
             // Удаление всех пробелов из строки Base64
             String sanitizedSign = request.getSign().replaceAll("\\s+", "");
             // Декодирование строки Base64 в байты
@@ -322,11 +220,14 @@ public class ConductorController {
         }
     }
 
+
     /**find block from hash
      * (from local host)*/
     @GetMapping("/blockHash")
     @ResponseBody
     public Block blockFromHash(@RequestParam String hash) throws IOException {
+
+
 //        return Blockchain.hashFromFile(hash, Seting.ORIGINAL_BLOCKCHAIN_FILE);
         Block block = UtilsBlockToEntityBlock.entityBlockToBlock(
                 blockService.findByHashBlock(hash)
@@ -368,6 +269,8 @@ public class ConductorController {
     @GetMapping("/conductorBlock")
     @ResponseBody
     public Block  block(@RequestParam Integer index) throws IOException {
+
+
         if(index < 0 ){
             index = 0;
         }
@@ -387,6 +290,7 @@ public class ConductorController {
     @GetMapping("/conductorHashTran")
     @ResponseBody
     public DtoTransaction transaction(@RequestParam String hash) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
+
         List<EntityDtoTransaction> entityDtoTransactions =
                 blockService.findAllDto();
         EntityDtoTransaction entityDtoTransaction = null;
@@ -413,6 +317,11 @@ public class ConductorController {
             @RequestParam int to
     ) {
         try {
+
+
+            if (to - from > 500) {
+                to = from + 500;
+            }
             return blockService.findBySender(address, from, to);
         } catch (Exception e) {
             e.printStackTrace();
@@ -432,13 +341,16 @@ public class ConductorController {
             @RequestParam int to
     ) {
         try {
+
+            if (to - from > 500) {
+                to = from + 500;
+            }
             return blockService.findByCustomer(address, from, to);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
-
     /**
      * количество отправленных транзакций от данного адреса
      */
@@ -448,6 +360,7 @@ public class ConductorController {
             @RequestParam String address
     ) {
         try {
+
             return blockService.countSenderTransaction(address);
 
         } catch (Exception e) {
@@ -466,6 +379,7 @@ public class ConductorController {
             @RequestParam String address
     ) {
         try {
+
             return blockService.countCustomerTransaction(address);
 
         } catch (Exception e) {
@@ -483,6 +397,7 @@ public class ConductorController {
     public Map<String, Account> addresses() {
         Map<String, Account> accountMap = new HashMap<>();
         try {
+
             accountMap = UtilsAccountToEntityAccount
                     .entityAccountsToMapAccounts(blockService.findAllAccounts());
         } catch (Exception e) {
