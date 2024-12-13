@@ -415,7 +415,6 @@ public class ConductorController {
         return balance.toString() + " : " + balance.size();
     }
 
-
     @GetMapping("/getBlocksBySenderInRange")
     public List<EntityBlock> getBlocksBySender(
             @RequestParam long from,
