@@ -127,11 +127,20 @@ public class ConductorController {
     @GetMapping("/stock")
     @ResponseBody
     public Double stock(@RequestParam String address) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-//        Map<String, Account> balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+        EntityAccount entityAccount  = new EntityAccount();
+        try {
+            entityAccount = blockService.findByAccount(address);
+        }catch (Exception e){
+            MyLogger.saveLog("account address: " + e.getMessage());
+            return Double.valueOf(-1);
+        }
+//        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
-        Account account = UtilsBalance.getBalance(address, balances);
-        return account.getDigitalStockBalance().doubleValue();
+        Account account = UtilsAccountToEntityAccount.entityAccountToAccount(entityAccount);
+
+
+        return UtilsUse.round(account.getDigitalStockBalance(), Seting.SENDING_DECIMAL_PLACES).doubleValue();
+
     }
 
     /**
