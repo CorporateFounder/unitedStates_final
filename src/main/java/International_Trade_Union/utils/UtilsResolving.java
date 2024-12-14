@@ -37,6 +37,9 @@ import java.security.spec.InvalidKeySpecException;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -1104,74 +1107,60 @@ public class UtilsResolving {
      * Записывает Блоки и баланс во временный файл.
      */
     public List<HostEndDataShortB> sortPriorityHost(Set<String> hosts) {
-
-        // Добавляем ORIGINAL_ADDRESSES к входящему набору хостов
         Set<String> modifiedHosts = new HashSet<>(hosts);
         modifiedHosts.addAll(Seting.ORIGINAL_ADDRESSES);
 
-        // Отбираем случайные 10 хостов
-        Set<String> selectedHosts = modifiedHosts.stream()
+
+
+        // Выбираем случайные 7 хостов, исключая собственный
+        List<String> selectedHosts = modifiedHosts.stream()
                 .collect(Collectors.collectingAndThen(
                         Collectors.toList(),
-                        listHost -> {
-                            Collections.shuffle(listHost);
-                            return listHost.stream().limit(RANDOM_HOSTS).collect(Collectors.toSet());
+                        list -> {
+                            Collections.shuffle(list);
+                            return list.stream().limit(RANDOM_HOSTS).toList();
                         }
                 ));
 
+        // Пул потоков для управления параллельными задачами
+        ExecutorService executor = Executors.newFixedThreadPool(Math.min(selectedHosts.size(), 10));
 
-        List<CompletableFuture<HostEndDataShortB>> futures = new ArrayList<>(); // Список для хранения CompletableFuture
-
-        // Вывод информации о начале метода
-        System.out.println("start: sortPriorityHost: " + selectedHosts);
-
-        // Перебираем все хосты
-        for (String host : selectedHosts) {
-            // Создаем CompletableFuture для каждого хоста
-            CompletableFuture<HostEndDataShortB> future = CompletableFuture.supplyAsync(() -> {
-                try {
-                    // Вызов метода для получения данных из источника
-                    DataShortBlockchainInformation global = fetchDataShortBlockchainInformation(host);
-                    // Если данные действительны, создаем объект HostEndDataShortB
-                    if (global != null && global.isValidation()) {
-                        return new HostEndDataShortB(host, global);
+        List<CompletableFuture<HostEndDataShortB>> futures = selectedHosts.stream()
+                .map(host -> CompletableFuture.supplyAsync(() -> {
+                    try {
+                        DataShortBlockchainInformation global = fetchDataShortBlockchainInformation(host);
+                        if (global != null && global.isValidation()) {
+                            return new HostEndDataShortB(host, global);
+                        }
+                    } catch (IOException | JSONException e) {
+                        logError("Error while retrieving data for host: " + host, e);
                     }
-                } catch (IOException | JSONException e) {
-                    // Перехват и логирование ошибки
-                    logError("Error while retrieving data for host: " + host, e);
+                    return null;
+                }, executor))
+                .toList();
 
-                }
-                return null;
-            });
+        try {
+            // Ждём завершения всех задач
+            List<HostEndDataShortB> resultList = futures.stream()
+                    .map(future -> {
+                        try {
+                            return future.get(36, TimeUnit.SECONDS); // Таймаут для каждой задачи
+                        } catch (Exception e) {
+                            logError("Timeout or error for future", e);
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull) // Убираем null-результаты
+                    .filter(UtilsUse.distinctByKey(HostEndDataShortB::getHost)) // Фильтрация уникальных
+                    .sorted(new HostEndDataShortBComparator()) // Сортировка
+                    .toList();
 
-            // Добавление CompletableFuture в список
-            futures.add(future);
+            System.out.println("finish: sortPriorityHost: " + resultList);
+
+            return resultList;
+        } finally {
+            executor.shutdown(); // Завершаем пул потоков
         }
-
-        // Получение CompletableFuture, которые будут завершены
-        CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
-
-        // Создание CompletableFuture для обработки завершенных результатов
-        CompletableFuture<List<HostEndDataShortB>> allComplete = allFutures.thenApplyAsync(result -> {
-            // Получение результатов из CompletableFuture, фильтрация недействительных результатов и сборка в список
-            return futures.stream()
-                    .map(CompletableFuture::join)
-                    .filter(result1 -> result1 != null)
-                    .collect(Collectors.toList());
-        });
-
-        // Получение итогового списка
-        List<HostEndDataShortB> resultList = allComplete.join();
-
-        // Сортировка списка по приоритету
-        Collections.sort(resultList, new HostEndDataShortBComparator());
-
-        // Вывод информации о завершении метода
-        System.out.println("finish: sortPriorityHost: " + resultList);
-
-        resultList = resultList.stream().filter(UtilsUse.distinctByKey(HostEndDataShortB::getHost)).collect(Collectors.toList());
-        // Возвращение итогового списка
-        return resultList;
     }
 
     // Метод для получения данных из источника
