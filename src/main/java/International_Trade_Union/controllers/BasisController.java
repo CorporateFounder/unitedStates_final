@@ -1331,7 +1331,7 @@ public class BasisController {
     @GetMapping("/mode")
     @ResponseBody
     public String testJson(@RequestParam int index) throws IOException {
-        return Long.toString(blockService.findModeHashComplexityInRange(index));
+        return Long.toString(blockService.findUnifiedModeHashComplexityFromDB(index));
     }
 }
 

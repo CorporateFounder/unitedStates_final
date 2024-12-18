@@ -515,16 +515,19 @@ public class UtilsBlock {
                     if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalDollar), thisBlock.getIndex())) {
 
                         System.out.println("the number dollar of decimal places exceeds ." + decimal);
+                        MyLogger.saveLog("the number dollar of decimal places exceeds ." + decimal);
                         validated = false;
                         return validated;
                     }
                     if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalStock), thisBlock.getIndex())) {
                         System.out.println("the number stock of decimal places exceeds ." + decimal);
+                        MyLogger.saveLog("the number stock of decimal places exceeds ." + decimal);
                         validated = false;
                         return validated;
                     }
                     if (!UtilsUse.isTransactionValid(BigDecimal.valueOf(digitalBonus), thisBlock.getIndex())) {
                         System.out.println("the number bonus of decimal places exceeds ." + decimal);
+                        MyLogger.saveLog("the number bonus of decimal places exceeds ." + decimal);
                         validated = false;
                         return validated;
                     }

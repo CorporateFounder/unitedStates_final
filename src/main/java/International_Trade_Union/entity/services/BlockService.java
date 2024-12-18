@@ -605,32 +605,33 @@ public class BlockService {
     }
 
 
-    public long findModeHashComplexityInRange(long index, List<Block> blocks) {
-        long endRange = index - 30;
+    public long findUnifiedModeHashComplexityInRange(long index, List<Block> blocks) {
+        long endRange = index - 600;
         long startRange = endRange - 30;
 
         if (startRange < 0) {
             throw new IllegalArgumentException("Index out of range. Start range cannot be negative.");
         }
 
-        // Собираем индексы блоков, которые уже в памяти
+        // Извлечение уникальных индексов из оперативной памяти
         Set<Long> inMemoryIndices = blocks.stream()
                 .map(Block::getIndex)
                 .collect(Collectors.toSet());
 
-        // Извлекаем значения hashComplexity из базы, исключая дубликаты
+        // Выборка из базы данных
         List<Long> dbHashComplexities = entityBlockRepository.findHashComplexitiesInRange(startRange, endRange)
                 .stream()
-                .filter(hashComplexity -> !inMemoryIndices.contains(hashComplexity))
+                .filter(hashComplexity -> !inMemoryIndices.contains(hashComplexity)) // Исключаем дубли
                 .collect(Collectors.toList());
 
-        // Собираем значения hashComplexity из blocks
+        // Выборка из оперативной памяти
         List<Long> inMemoryHashComplexities = blocks.stream()
                 .filter(block -> block.getIndex() >= startRange && block.getIndex() <= endRange)
                 .map(Block::getHashCompexity)
+                .distinct() // Удаляем дубли
                 .collect(Collectors.toList());
 
-        // Объединяем значения из базы и памяти
+        // Объединяем данные
         List<Long> allHashComplexities = new ArrayList<>();
         allHashComplexities.addAll(dbHashComplexities);
         allHashComplexities.addAll(inMemoryHashComplexities);
@@ -639,34 +640,38 @@ public class BlockService {
             throw new IllegalStateException("No hash complexities found in the specified range. start: " + startRange + ", end: " + endRange);
         }
 
-        // Преобразуем значения hashComplexity в Integer для метода mode
-        List<Integer> hashComplexitiesAsIntegers = allHashComplexities.stream()
-                .map(Long::intValue)
-                .collect(Collectors.toList());
+        // Подсчёт частот
+        Map<Long, Long> frequencyMap = allHashComplexities.stream()
+                .collect(Collectors.groupingBy(hashComplexity -> hashComplexity, Collectors.counting()));
 
-        // Возвращаем моду
-        return UtilsUse.mode(hashComplexitiesAsIntegers);
+        // Поиск моды
+        return frequencyMap.entrySet().stream()
+                .min((e1, e2) -> {
+                    int freqCompare = e2.getValue().compareTo(e1.getValue()); // Сравниваем частоту (обратный порядок)
+                    return freqCompare != 0 ? freqCompare : e1.getKey().compareTo(e2.getKey()); // При равной частоте выбираем минимальный ключ
+                })
+                .map(Map.Entry::getKey)
+                .orElseThrow(() -> new IllegalStateException("No mode found"));
     }
 
-    public Long findModeHashComplexityInRange(long index) {
-        // Вычисляем конечный диапазон
-        long endRange = index - 30;
+
+
+    public Long findUnifiedModeHashComplexityFromDB(long index) {
+        long endRange = index - 600;
         long startRange = endRange - 30;
 
         if (startRange < 0) {
             throw new IllegalArgumentException("Index out of range. Start range cannot be negative.");
         }
 
-        // Получение моды hashComplexity через запрос JPA по полю specialIndex
+        // Получение данных через JPA
         List<Object[]> hashComplexityCounts = entityBlockRepository.findHashComplexityModeInRange(startRange, endRange);
 
         if (hashComplexityCounts.isEmpty()) {
-            MyLogger.saveLog("No data found in the specified range. start: " + startRange + " endRange: " + endRange);
-            throw new IllegalStateException("No data found in the specified range. start: " + startRange + " endRange: " + endRange);
-
+            throw new IllegalStateException("No data found in the specified range. start: " + startRange + ", end: " + endRange);
         }
 
-        // Извлечение наименьшей моды
+        // Выбор моды
         return hashComplexityCounts.stream()
                 .min((o1, o2) -> {
                     Long frequency1 = (Long) o1[1];
@@ -677,7 +682,7 @@ public class BlockService {
                     return Long.compare(frequency2, frequency1);
                 })
                 .map(o -> (Long) o[0])
-                .orElse(null);
+                .orElseThrow(() -> new IllegalStateException("No mode found"));
     }
 
 }

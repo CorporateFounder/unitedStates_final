@@ -44,7 +44,7 @@ public class MineController {
 
         long mode = 0;
         if(BasisController.getBlockchainSize() -1 > Seting.OPTIMAL_SCORE_INDEX){
-            mode = blockService.findModeHashComplexityInRange(BasisController.getBlockchainSize()-1);
+            mode = blockService.findUnifiedModeHashComplexityFromDB(BasisController.getBlockchainSize()-1);
         }
         model.addAttribute("mode", mode);
         model.addAttribute("title", "Corporation International Trade Union.");

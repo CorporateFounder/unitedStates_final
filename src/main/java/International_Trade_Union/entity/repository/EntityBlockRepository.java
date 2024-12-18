@@ -47,6 +47,7 @@ public interface EntityBlockRepository extends JpaRepository<EntityBlock, Long> 
         List<Object[]> findHashComplexityModeInRange(@Param("startRange") long startRange, @Param("endRange") long endRange);
 
 
+
         @Query("SELECT b.hashCompexity FROM EntityBlock b WHERE b.id BETWEEN :startRange AND :endRange")
         List<Long> findHashComplexitiesInRange(@Param("startRange") long startRange, @Param("endRange") long endRange);
 

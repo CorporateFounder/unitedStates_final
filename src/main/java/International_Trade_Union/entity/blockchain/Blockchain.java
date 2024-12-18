@@ -197,8 +197,11 @@ public class Blockchain implements Cloneable {
                 staking = staking.add(stakingForDataShort(miner.getDigitalStakingBalance()));
 
                 int M = 0;
-                if (block.getIndex() > Seting.OPTIMAL_SCORE_INDEX)
-                    M = Math.toIntExact(blockService.findModeHashComplexityInRange(block.getIndex(), blocks));
+                if (block.getIndex() > Seting.OPTIMAL_SCORE_INDEX){
+                    M = Math.toIntExact(blockService.findUnifiedModeHashComplexityInRange(block.getIndex(), blocks));
+//                    M = (int) prevBlock.getHashCompexity();
+
+                }
                 bigRandomNumber += UtilsUse.bigRandomWinner(block, miner, M);
                 System.out.println("shortCheck: size: " + block.getIndex() + " validation: " + validation + " size: " + size);
 
@@ -314,10 +317,13 @@ public class Blockchain implements Cloneable {
                     staking = staking.add(stakingForDataShort(miner.getDigitalStakingBalance()));
                     transactions += block.getDtoTransactions().size();
                     int M = 0;
-                    if (block.getIndex() > Seting.OPTIMAL_SCORE_INDEX)
-                        M = Math.toIntExact(blockService.findModeHashComplexityInRange(block.getIndex(), blocks));
+                    if (block.getIndex() > Seting.OPTIMAL_SCORE_INDEX){
+//                        M = (int) prevBlock.getHashCompexity();
+                        M = Math.toIntExact(blockService.findUnifiedModeHashComplexityInRange(block.getIndex(), blocks));
 
+                    }
                     bigRandomNumber += UtilsUse.bigRandomWinner(block, miner, M);
+
 
                     if (size < Seting.V34_NEW_ALGO) {
                         tempList.add(prevBlock);
@@ -769,8 +775,10 @@ public class Blockchain implements Cloneable {
 
             transactions -= blocks.get(i).getDtoTransactions().size();
             int M = 0;
-            if (blocks.get(i).getIndex() > Seting.OPTIMAL_SCORE_INDEX)
-                M = Math.toIntExact(blockService.findModeHashComplexityInRange(blocks.get(i).getIndex(), blocks));
+            if (blocks.get(i).getIndex() > Seting.OPTIMAL_SCORE_INDEX){
+                M = Math.toIntExact(blockService.findUnifiedModeHashComplexityInRange(blocks.get(i).getIndex(), blocks));
+//                M = (int) blocks.get(i-1).getHashCompexity();
+            }
             bigRandomNumber -= UtilsUse.bigRandomWinner(blocks.get(i), balances.get(blocks.get(i).getMinerAddress()), M);
             balances = UtilsBalance.rollbackCalculateBalance(balances, blocks.get(i));
         }

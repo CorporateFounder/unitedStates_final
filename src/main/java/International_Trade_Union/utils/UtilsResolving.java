@@ -864,7 +864,8 @@ public class UtilsResolving {
             }
 
 
-        } else if (BasisController.getShortDataBlockchain().getSize() > 1 && temp.isValidation()) {
+        }
+        else if (BasisController.getShortDataBlockchain().getSize() > 1 && temp.isValidation()) {
             //вызывает методы, для сохранения списка блоков в текущий блокчейн,
             //так же записывает в базу h2, делает перерасчет всех балансов,
             //и так же их записывает, а так же записывает другие данные.
