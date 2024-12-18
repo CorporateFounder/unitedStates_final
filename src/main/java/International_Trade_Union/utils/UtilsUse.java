@@ -493,6 +493,7 @@ public class UtilsUse {
 
                 //результат
                 result = (int) (diffPoint + random + transactionPoints + mineScore);
+                return result;
             }
 
 
