@@ -454,9 +454,6 @@ public class UtilsUse {
             // Очки за стейкинг
             long mineScore = calculateScore(miner.getDigitalStakingBalance().doubleValue(), number);
 
-
-
-
             int diffLimit = (int) (actual.getHashCompexity() - 19);
             diffLimit = diffLimit >= 0 ? diffLimit : 0;
             // Рассчитываем очки за количество транзакций
