@@ -478,11 +478,11 @@ public class UtilsUse {
 
             //новая модель подсчета баллов
             //TODO проверить работоспособность.
-            int range = 0;
+
             int X = 0;
             int diffPoint = 0;
             if (actual.getIndex() > Seting.OPTIMAL_SCORE_INDEX) {
-                diffPoint = (int) (actual.getHashCompexity() * 25);
+                diffPoint = (int) (actual.getHashCompexity() * 15);
                 X = getX( (int) actual.getHashCompexity());
 
                 transactionPoints = calculateScore(transactionSum, 0.1);
@@ -491,8 +491,8 @@ public class UtilsUse {
                 transactionPoints = Math.min(transactionPoints, mineScore);
 
                 //диапазон
-                range = (int) (X + mineScore );
-                int random = deterministicRandom.nextInt(range );
+
+                int random = deterministicRandom.nextInt(X);
 
                 //результат
                 result = (int) (diffPoint + random + transactionPoints + mineScore);
@@ -897,7 +897,7 @@ public class UtilsUse {
         int baseValue = 170;
 
         // Рассчитываем значение по формуле
-        return baseValue + (difficulty - baseLevel) * 15;
+        return baseValue + (difficulty - baseLevel) * 10;
     }
 
 }
