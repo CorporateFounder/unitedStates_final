@@ -231,7 +231,7 @@ public class Testing {
                 "}");
         Account miner = new Account("2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL", BigDecimal.valueOf(11000000), BigDecimal.valueOf(11000000), BigDecimal.valueOf(4400000));
 
-        int bigRandom = UtilsUse.bigRandomWinner(block, miner, 0);
+        int bigRandom = UtilsUse.bigRandomWinner(block, miner);
         System.out.println("big random: " + bigRandom);
     }
 
@@ -689,7 +689,7 @@ public class Testing {
             blocks.get(0).setHashBlock("4111780951498215c031c98cc201b4690208828c3c844660104bacdc11040909");
             blocks.get(0).setPreviousHash("41c408c41718500200306b0200a10a040280e08f4d2844f30258a23eb9715490");
             Account miner = new Account("nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(1000));
-            number = UtilsUse.bigRandomWinner(blocks.get(0), miner, 0);
+            number = UtilsUse.bigRandomWinner(blocks.get(0), miner);
             score = UtilsUse.calculateScore(5242881, 10);
         }
 

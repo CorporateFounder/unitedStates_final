@@ -393,7 +393,7 @@ public class UtilsUse {
      * Вычисляет случайное число на основе предыдущего хэша и текущего и чем выше число, тем выше
      * значимость.
      */
-    public static int bigRandomWinner(Block actual, Account miner, int M) {
+    public static int bigRandomWinner(Block actual, Account miner) {
         // Конкатенация двух хешей
         String combinedHash = actual.getHashBlock();
 
@@ -431,6 +431,11 @@ public class UtilsUse {
 
 
         if (actual.getIndex() > Seting.NEW_ALGO_MINING) {
+
+
+
+
+
             // Получаем количество уникальных отправителей транзакций
             long transactionCount = actual.getDtoTransactions().stream()
                     .filter(UtilsUse.distinctByKey(DtoTransaction::getSender))
@@ -480,16 +485,17 @@ public class UtilsUse {
             int X = 0;
             int diffPoint = 0;
             if (actual.getIndex() > Seting.OPTIMAL_SCORE_INDEX) {
-                diffPoint = getPoints(M, (int) actual.getHashCompexity());
-                X = getX(M, (int) actual.getHashCompexity());
-                transactionSumPoints = calculateScore(transactionSum, 0.1);
+                diffPoint = (int) (actual.getHashCompexity() * 25);
+                X = getX( (int) actual.getHashCompexity());
+
+                transactionPoints = calculateScore(transactionSum, 0.1);
 
                 // Ограничиваем transactionPoints до mineScore
                 transactionPoints = Math.min(transactionPoints, mineScore);
 
                 //диапазон
-                range = (int) (X - (mineScore + transactionSumPoints));
-                int random = deterministicRandom.nextInt(range + 1);
+                range = (int) (X + mineScore );
+                int random = deterministicRandom.nextInt(range );
 
                 //результат
                 result = (int) (diffPoint + random + transactionPoints + mineScore);
@@ -887,65 +893,14 @@ public class UtilsUse {
     }
 
 
-    //балы от сложности
-    public static int getPoints(int M, int difficulty) {
-        int difference = difficulty - M;
-
-        switch (difference) {
-            case 0:
-                return 20; // M
-            case 1:
-                return 25; // M+1
-            case -1:
-                return 20; // M-1
-            case 2:
-                return 15; // M+2
-            case -2:
-                return 15; // M-2
-            case 3:
-                return 10; // M+3
-            case -3:
-                return 10; // M-3
-            case 4:
-                return 5;  // M+4
-            case -4:
-                return 5;  // M-4
-            case 5:
-            case -5:
-                return 0;  // M+5 или M-5
-            default:
-                return 0;  // За пределами диапазона
-        }
-    }
-
     //возвращает X диапазон
-    public static int getX(int M, int difficulty) {
-        int difference = difficulty - M;
+    public static int getX(int difficulty) {
+        // Стартовая точка для уровня сложности 17
+        int baseLevel = 17;
+        int baseValue = 170;
 
-        switch (difference) {
-            case 0:
-                return 126; // M
-            case 1:
-                return 131; // M+1
-            case -1:
-                return 120; // M-1
-            case 2:
-                return 115; // M+2
-            case -2:
-                return 97;  // M-2
-            case 3:
-                return 110; // M+3
-            case -3:
-                return 84;  // M-3
-            case 4:
-                return 100; // M+4
-            case -4:
-                return 72;  // M-4
-            case 5:
-            case -5:
-                return 64;   // M+5 или M-5
-            default:
-                return 62;   // За пределами диапазона
-        }
+        // Рассчитываем значение по формуле
+        return baseValue + (difficulty - baseLevel) * 15;
     }
+
 }
