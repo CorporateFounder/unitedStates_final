@@ -195,8 +195,6 @@ public class Blockchain implements Cloneable {
                 System.out.println("shortCheck miner: " + miner);
 
                 staking = staking.add(stakingForDataShort(miner.getDigitalStakingBalance()));
-
-
                 bigRandomNumber += UtilsUse.bigRandomWinner(block, miner);
                 System.out.println("shortCheck: size: " + block.getIndex() + " validation: " + validation + " size: " + size);
 
@@ -253,9 +251,6 @@ public class Blockchain implements Cloneable {
             } else {
                 System.out.println("file name: " + fileEntry.getName());
                 List<String> list = UtilsFileSaveRead.reads(fileEntry.getAbsolutePath());
-                List<Block> blocks = new ArrayList<>();
-                if (BasisController.getBlockchainSize() - 1 > Seting.OPTIMAL_SCORE_INDEX)
-                     blocks = UtilsBlock.readLineObject(fileEntry.getAbsolutePath());
                 for (String s : list) {
                     size += 1;
                     index += 1;
@@ -311,9 +306,7 @@ public class Blockchain implements Cloneable {
 
                     staking = staking.add(stakingForDataShort(miner.getDigitalStakingBalance()));
                     transactions += block.getDtoTransactions().size();
-
                     bigRandomNumber += UtilsUse.bigRandomWinner(block, miner);
-
 
                     if (size < Seting.V34_NEW_ALGO) {
                         tempList.add(prevBlock);
@@ -764,14 +757,12 @@ public class Blockchain implements Cloneable {
             staking = staking.subtract(stakingForDataShort(balances.get(blocks.get(i).getMinerAddress()).getDigitalStakingBalance()));
 
             transactions -= blocks.get(i).getDtoTransactions().size();
-
             bigRandomNumber -= UtilsUse.bigRandomWinner(blocks.get(i), balances.get(blocks.get(i).getMinerAddress()));
             balances = UtilsBalance.rollbackCalculateBalance(balances, blocks.get(i));
         }
 
         return new DataShortBlockchainInformation(size, validation, hashcount, staking, transactions, bigRandomNumber);
     }
-
 
 
 }

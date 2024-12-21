@@ -1328,11 +1328,6 @@ public class BasisController {
         return result;
     }
 
-    @GetMapping("/mode")
-    @ResponseBody
-    public String testJson(@RequestParam int index) throws IOException {
-        return Long.toString(blockService.findUnifiedModeHashComplexityFromDB(index));
-    }
 }
 
 
