@@ -461,7 +461,6 @@ public class BlockService {
         return entityBlockRepository.findAllByIdBetween(from, to);
     }
 
-
     public List<EntityBlock> findBySpecialIndexBetween(long from, long to) throws IOException {
         List<EntityBlock> entityBlocks = null;
         try {
@@ -470,6 +469,8 @@ public class BlockService {
             e.printStackTrace();
             throw new IOException("findBySpecialIndexBetween: error: save: ", e);
 
+        }finally {
+            entityManager.clear();
         }
         return entityBlocks;
 

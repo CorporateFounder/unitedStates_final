@@ -44,12 +44,6 @@ public class BoardOfShareholdersController {
         }
 
 
-        List<Block> blocksList = UtilsBlockToEntityBlock.entityBlocksToBlocks(
-                blockService.findBySpecialIndexBetween(
-                        BasisController.getBlockchainSize() - Seting.LAW_HALF_VOTE,
-                        BasisController.getBlockchainSize() -1
-                )
-        );
 
         //Получение баланса.
         //Get the balance.
@@ -58,7 +52,7 @@ public class BoardOfShareholdersController {
         balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
 
         List<Account> boardOfShareholders = new ArrayList<>();
-        boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blocksList, Seting.BOARDS_BLOCK);
+        boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blockService, Seting.BOARDS_BLOCK);
 
         model.addAttribute("title", "All stakers and their amounts:  quantity: " + boardOfShareholders.size());
         model.addAttribute("boardOfShareholders", boardOfShareholders);

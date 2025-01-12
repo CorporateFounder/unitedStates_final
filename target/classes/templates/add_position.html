@@ -1,54 +1,238 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${title}"/>
-    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
-    <link rel="stylesheet" href="type/css" th:href="style.css">
+    <title th:text="${title}">Create a new position</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+    <style>
+        .error-message {
+            color: red;
+            display: none;
+        }
+        .char-counter {
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-top: 4px;
+            display: block;
+            text-align: right;
+        }
+    </style>
 </head>
 <body>
 
 <header th:insert="blocks/header :: header"></header>
-<div class="container mt 5">
-    <h1 th:text="${title}"></h1>
+<div class="container mt-5">
+    <h1 th:text="${title}">Create a new position</h1>
+    <h3>Details are described in the charter.</h3>
+    <h3>Reward always zero.</h3>
+
+    <form id="addPositionForm" action="/add_position" method="post" onsubmit="return validateForm()">
+        <!-- Скрытое поле для отправителя -->
+        <input type="hidden" name="sender" th:value="${sender}">
+
+        <!-- Отображение поля sender (только для чтения) -->
+        <div class="mb-3">
+            <label for="senderDisplay" class="form-label">Sender Address</label>
+            <input type="text" id="senderDisplay" name="senderDisplay"
+                   th:value="${sender}" class="form-control" readonly>
+        </div>
+
+        <!-- Скрытое поле награды -->
+        <input type="hidden" name="reward" value="0">
+
+        <!-- Поле названия пакета законов -->
+        <div class="mb-3">
+            <label for="nameLaw" class="form-label">Name of the Package of Laws</label>
+            <input type="text" id="nameLaw" name="nameLaw" placeholder="Enter the name of the package of laws"
+                   th:value="${nameLaw}" class="form-control" required>
+        </div>
+
+        <!-- Поле пароля -->
+        <div class="mb-3">
+            <label for="password" class="form-label">Password (Private Key)</label>
+            <textarea id="password" name="password" placeholder="Enter password (private key)"
+                      class="form-control" rows="4" required></textarea>
+        </div>
+
+        <!-- Поля для законов -->
+        <div class="mb-3">
+            <label class="form-label">Laws</label>
+            <div id="lawsContainer">
+                <!-- Инициализируем с одним полем -->
+                <div class="input-group mb-2 law-field">
+                    <div class="d-flex w-100">
+                        <input type="text" name="laws" placeholder="Enter job title"
+                               class="form-control me-2" required maxlength="30">
+                        <button type="button" class="btn btn-danger remove-law" onclick="removeLaw(this)">Remove</button>
+                    </div>
+                    <span class="char-counter">30 characters left</span>
+                </div>
+            </div>
+            <button type="button" id="addLawButton" class="btn btn-secondary" onclick="addLaw()">Add Law</button>
+            <div id="charCount" class="mt-2">
+                Total Characters: <span id="totalChars">0</span>/1000
+            </div>
+            <div id="charLimitError" class="error-message">
+                Total number of characters in laws must not exceed 1000.
+            </div>
+        </div>
+
+        <!-- Кнопка отправки формы -->
+        <button type="submit" class="btn btn-success">Submit Created Position</button>
+    </form>
 </div>
-<h3>details are described in the charter.</h3>
-<h3>reward always zero.</h3>
-
-
-<form action="/add_position" method="post">
-    <input type="text" name="sender" placeholder="enter the sender's address" class="form-control"><br>
-
-
-    <input type="text" name="reward" placeholder="enter miner reward" class="form-control"><br>
-    <input type="text" name="nameLaw" placeholder="enter the name of the package of laws" class="form-control"><br>
-    <textarea name="password" placeholder="enter password (private key)" th:rows="8" th:cols="120"></textarea><br>
-    <button type="submit" class="btn btn-success" name="action" value="/send">Submit Created position</button><br>
-
-    <input type="text" name="laws" placeholder="enter job title" class="form-control"><br>
-    <input type="text" name="laws" placeholder="enter job title" class="form-control"><br>
-    <input type="text" name="laws" placeholder="enter job title" class="form-control"><br>
-    <input type="text" name="laws" placeholder="enter job title" class="form-control"><br>
-    <input type="text" name="laws" placeholder="enter job title" class="form-control"><br>
-    <input type="text" name="laws" placeholder="enter job title" class="form-control"><br>
-    <input type="text" name="laws" placeholder="enter job title" class="form-control"><br>
-    <input type="text" name="laws" placeholder="enter job title" class="form-control"><br>
-    <input type="text" name="laws" placeholder="enter job title" class="form-control"><br>
-    <input type="text" name="laws" placeholder="enter job title" class="form-control"><br>
-    <input type="text" name="laws" placeholder="enter job title" class="form-control"><br>
-    <input type="text" name="laws" placeholder="enter job title" class="form-control"><br>
-    <input type="text" name="laws" placeholder="enter job title" class="form-control"><br>
-
-
-
-
-</form>
-
-
-</div>
-
 
 <footer th:insert="blocks/footer :: footer"></footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const maxLaws = 25;
+    const minLaws = 1;
+    const maxChars = 1000;
+    const maxCharsPerLaw = 30;
+
+    function addLaw() {
+        const lawsContainer = document.getElementById('lawsContainer');
+        const currentLaws = lawsContainer.getElementsByClassName('law-field').length;
+
+        if (currentLaws >= maxLaws) {
+            alert('You can only add up to 25 laws.');
+            return;
+        }
+
+        const newLawDiv = document.createElement('div');
+        newLawDiv.className = 'input-group mb-2 law-field';
+
+        const innerDiv = document.createElement('div');
+        innerDiv.className = 'd-flex w-100';
+
+        const newInput = document.createElement('input');
+        newInput.type = 'text';
+        newInput.name = 'laws';
+        newInput.placeholder = 'Enter job title';
+        newInput.className = 'form-control me-2';
+        newInput.required = true;
+        newInput.maxLength = maxCharsPerLaw; // Ограничение до 30 символов
+
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'btn btn-danger remove-law';
+        removeButton.innerText = 'Remove';
+        removeButton.onclick = function() { removeLaw(this); };
+
+        innerDiv.appendChild(newInput);
+        innerDiv.appendChild(removeButton);
+
+        const counterSpan = document.createElement('span');
+        counterSpan.className = 'char-counter';
+        counterSpan.textContent = `${maxCharsPerLaw} characters left`;
+
+        newLawDiv.appendChild(innerDiv);
+        newLawDiv.appendChild(counterSpan);
+
+        lawsContainer.appendChild(newLawDiv);
+        updateCharCount();
+
+        // Инициализация счетчика символов для нового поля
+        addIndividualCharCounter(newInput);
+    }
+
+    function removeLaw(button) {
+        const lawsContainer = document.getElementById('lawsContainer');
+        const currentLaws = lawsContainer.getElementsByClassName('law-field').length;
+
+        if (currentLaws <= minLaws) {
+            alert(`You must have at least ${minLaws} law.`);
+            return;
+        }
+
+        const lawDiv = button.closest('.law-field');
+        lawsContainer.removeChild(lawDiv);
+        updateCharCount();
+    }
+
+    function updateCharCount() {
+        const lawInputs = document.querySelectorAll('input[name="laws"]');
+        let totalChars = 0;
+
+        lawInputs.forEach(input => {
+            totalChars += input.value.length;
+        });
+
+        document.getElementById('totalChars').innerText = totalChars;
+
+        if (totalChars > maxChars) {
+            document.getElementById('charLimitError').style.display = 'block';
+        } else {
+            document.getElementById('charLimitError').style.display = 'none';
+        }
+    }
+
+    // Инициализация счётчика символов при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCharCount();
+
+        // Обновление счётчика при вводе
+        document.getElementById('lawsContainer').addEventListener('input', function(e) {
+            if (e.target && e.target.name === 'laws') {
+                updateCharCount();
+                updateIndividualCharCount(e.target);
+            }
+        });
+
+        // Инициализация индивидуальных счетчиков для уже существующих полей
+        const initialLawInputs = document.querySelectorAll('input[name="laws"]');
+        initialLawInputs.forEach(input => {
+            addIndividualCharCounter(input);
+        });
+    });
+
+    function updateIndividualCharCount(input) {
+        const lawDiv = input.closest('.law-field');
+        const counterSpan = lawDiv.querySelector('.char-counter');
+
+        if (counterSpan) {
+            const remaining = maxCharsPerLaw - input.value.length;
+            counterSpan.textContent = `${remaining} characters left`;
+        }
+    }
+
+    function addIndividualCharCounter(input) {
+        const lawDiv = input.closest('.law-field');
+        const counterSpan = lawDiv.querySelector('.char-counter');
+
+        if (counterSpan) {
+            const remaining = maxCharsPerLaw - input.value.length;
+            counterSpan.textContent = `${remaining} characters left`;
+        }
+    }
+
+    // Валидация формы перед отправкой
+    function validateForm() {
+        const totalChars = parseInt(document.getElementById('totalChars').innerText);
+        if (totalChars > maxChars) {
+            alert('Total number of characters in laws must not exceed 1000.');
+            return false;
+        }
+
+        // Проверка минимального количества законов
+        const currentLaws = document.getElementsByName('laws').length;
+        if (currentLaws < minLaws) {
+            alert(`You must have at least ${minLaws} law.`);
+            return false;
+        }
+
+        // Проверка максимального количества символов в каждом законе
+        const lawInputs = document.querySelectorAll('input[name="laws"]');
+        for (let i = 0; i < lawInputs.length; i++) {
+            if (lawInputs[i].value.length > maxCharsPerLaw) {
+                alert(`Law ${i + 1} exceeds the maximum of ${maxCharsPerLaw} characters.`);
+                return false;
+            }
+        }
+
+        return true;
+    }
+</script>
 </body>
 </html>

@@ -1,16 +1,13 @@
 package unitted_states_of_mankind.utilsTest;
 
-import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
-import International_Trade_Union.model.MyLogger;
 import International_Trade_Union.model.SlidingWindowManager;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import International_Trade_Union.entity.blockchain.block.Block;
@@ -753,7 +750,7 @@ public class UtilsBalanceTest {
     public void testSizeWindows() throws CloneNotSupportedException, IOException {
 //        Map<Long, Map<String, Account>> windows = UtilsUse.slideWindow();
 
-        SlidingWindowManager windowManager = SlidingWindowManager.loadInstance("C://strategy3/test/" + Seting.SLIDING_WINDOWS_BALANCE);
+        SlidingWindowManager windowManager = SlidingWindowManager.loadInstance("C://strategy3/test/" + Seting.SLIDING_WINDOWS_VOTING);
 //        Map<Long, Map<String, Account>> windows = UtilsJson.loadWindowsFromFile("C://strategy3" + Seting.SLIDING_WINDOWS_BALANCE);
         Map<String, Account> balance = new HashMap<>();
         Account account = new Account("sender", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);

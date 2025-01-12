@@ -115,7 +115,7 @@ public class Mining {
 
 
     public static Block miningDay(Account minner, List<Block> blockchain, long blockGenerationInterval, int DIFFICULTY_ADJUSTMENT_INTERVAL, List<DtoTransaction> transactionList, Map<String, Account> balances, long index) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        Directors directors = new Directors();
+
         System.out.println("index: " + index);
         //получение транзакций с сети
         List<DtoTransaction> listTransactions = transactionList;
@@ -216,6 +216,10 @@ public class Mining {
                             }
                         }
 
+                        if(transaction.getDigitalStockBalance() <= 0 && transaction.getDigitalDollar() <= 0){
+                            System.out.println("transaction can not send both dollar and stocks at the same time send 0 or lower " + Seting.SENDING_DECIMAL_PLACES);
+                            continue;
+                        }
                         BigDecimal transactionDigitalStockBalance = BigDecimal.valueOf(transaction.getDigitalStockBalance());
                         if (account.getDigitalStockBalance().compareTo(transactionDigitalStockBalance) < 0) {
                             System.out.println("sender don't have digital reputation: " + account.getAccount() + " balance: " + account.getDigitalStockBalance());

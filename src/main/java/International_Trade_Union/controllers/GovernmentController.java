@@ -50,95 +50,26 @@ public class GovernmentController {
      * Displays a list of current positions in the browser*/
     @GetMapping("/governments")
     public String corporateSeniorpositions(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException, CloneNotSupportedException {
-        if(BasisController.isUpdating() || BasisController.isMining()){
+        if (BasisController.isUpdating() || BasisController.isMining()) {
             return "redirect:/processUpdating";
         }
 
-
         Directors directors = new Directors();
-//        Blockchain blockchain = Mining.getBlockchain(
-//                Seting.ORIGINAL_BLOCKCHAIN_FILE,
-//                BlockchainFactoryEnum.ORIGINAL);
-
-        List<Block> blocksList = UtilsBlockToEntityBlock.entityBlocksToBlocks(
-                blockService.findBySpecialIndexBetween(
-                        BasisController.getBlockchainSize() - Seting.LAW_HALF_VOTE,
-                        BasisController.getBlockchainSize() -1
-                )
-        );
-
-        Map<String, Account> balances = new HashMap<>();
-        //считывать баланс
-//        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
-        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
-
-
-        //Считывает из файла идентификационный номер закона, а так же его баланс. Закон так же может
-        //выглядеть как баланс.
-        //Reads the law identification number from the file, as well as its balance. The law can also
-        //look like balance.
+        Map<String, Account> balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
         List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
                 UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
-
-        //получить совет акционеров из файла.
-        //obtain shareholder advice from file.
-        List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blocksList, Seting.BOARDS_BLOCK);
-
-        //фильтрует должности по типам голосования и как их избирают.
-        //filters positions by voting type and how they are elected.
-        Map<Director, FIndPositonHelperData> fIndPositonHelperDataMap = new HashMap<>();
-        for (Director higherSpecialPositions : directors.getDirectors()) {
-            if (higherSpecialPositions.isElectedByCEO()) {
-                fIndPositonHelperDataMap.put(higherSpecialPositions,
-                        new FIndPositonHelperData(higherSpecialPositions, false, false, true, false, false));
-            } else if (higherSpecialPositions.isElectedByBoardOfDirectors()) {
-                fIndPositonHelperDataMap.put(higherSpecialPositions,
-                        new FIndPositonHelperData(higherSpecialPositions, false, false, false, true, false));
-            } else if (higherSpecialPositions.isElectedByCorporateCouncilOfReferees()) {
-                fIndPositonHelperDataMap.put(higherSpecialPositions,
-                        new FIndPositonHelperData(higherSpecialPositions, false, false, false, false, true));
-            } else {
-                fIndPositonHelperDataMap.put(higherSpecialPositions,
-                        new FIndPositonHelperData(higherSpecialPositions, true, true, false, false, false));
-
-            }
-
-        }
-
-        //Для каждого пакета включая должности, отбирает список всех адресов которые полосовали за или против,
-        //за определенный период LAW_YEAR_VOTE.
-        //For each package including positions, selects a list of all addresses that were striped for or against,
-        //for a certain period LAW_YEAR_VOTE.
+        List<Account> boardOfShareholders = new ArrayList<>();
         Map<String, CurrentLawVotes> votesMap = new HashMap<>();
-        List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
-        long from = 0;
-        long to = BasisController.getBlockchainSize();
+        List<Account> accounts = balances.values().stream().toList();
+        UtilsCurrentLaw.processBlocks(votesMap, accounts, BasisController.getBlockchainSize(), blockService);
 
-        if (BasisController.getBlockchainSize() > Seting.LAW_HALF_VOTE) {
-            from = BasisController.getBlockchainSize() - Seting.LAW_HALF_VOTE;
-        }
-        List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(from, to));
-        for (Block block : list) {
-            UtilsCurrentLaw.calculateVote(votesMap, accounts, block);
-        }
-//        for (long i = from; i < to; i += 10000) {
-//            List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(i, Math.min(to, i + 1000)));
-//            for (Block block : list) {
-//                votesMap = UtilsCurrentLaw.calculateVote(votesMap, accounts, block);
-//            }
-//        }
-        //подсчитывает голоса для каждого закона или кандидата.
-        //counts votes for each law or candidate.
         List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
                 lawEligibleForParliamentaryApprovals,
                 balances,
                 boardOfShareholders,
                 votesMap);
 
-
-
-        //здесь утверждается действующий совет директоров.
-        //the current board of directors is approved here.
+        // Утверждение совета директоров
         List<CurrentLawVotesEndBalance> electedByStockBoardOfDirectors = current.stream()
                 .filter(t -> directors.isElectedByStocks(t.getPackageName()))
                 .filter(t -> t.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString()))
@@ -147,10 +78,7 @@ public class GovernmentController {
                 .limit(directors.getDirector(NamePOSITION.BOARD_OF_DIRECTORS.toString()).getCount())
                 .collect(Collectors.toList());
 
-
-
-        //здесь утверждается совет корпоративных судей.
-        //the council of corporate judges is approved here.
+        // Утверждение совета судей
         List<CurrentLawVotesEndBalance> electedByStockCorporateCouncilOfReferees = current.stream()
                 .filter(t -> directors.isElectedByStocks(t.getPackageName()))
                 .filter(t -> t.getPackageName().equals(NamePOSITION.CORPORATE_COUNCIL_OF_REFEREES.toString()))
@@ -159,91 +87,60 @@ public class GovernmentController {
                 .limit(directors.getDirector(NamePOSITION.CORPORATE_COUNCIL_OF_REFEREES.toString()).getCount())
                 .collect(Collectors.toList());
 
-
-
-        //здесь утверждаются новые должности, которые назначаются советом директоров.
-        //new positions are approved here and appointed by the board of directors.
+        // Утверждение новых должностей
         List<CurrentLawVotesEndBalance> createdByBoardOfDirectors = current.stream()
                 .filter(t -> t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
-                .filter(t -> t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT
-                        && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES
-                       )
+                .filter(t -> {
+                    double totalFractionsRating = t.getFractionsRaiting().values().stream()
+                            .mapToDouble(Double::doubleValue)
+                            .sum();
+                    return t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT
+                            || (t.getVotes() / totalFractionsRating) * Seting.HUNDRED_PERCENT
+                            >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT;
+                })
                 .collect(Collectors.toList());
-        //добавляются новые должности, которые были утверждены советом директоров.
-        //new positions are added that have been approved by the board of directors.
         for (CurrentLawVotesEndBalance currentLawVotesEndBalance : createdByBoardOfDirectors) {
             directors.addAllByBoardOfDirectors(currentLawVotesEndBalance.getLaws());
         }
 
-        //Эти должности назначаются советом директоров, если же основатель наложил вето, то должен так же утвердить
-        //совет корпоративных судей.
-        //These positions are appointed by the board of directors, but if the founder vetoes, he must also approve
-        //council of corporate judges.
+        // Назначение должностей советом директоров и судей
         List<CurrentLawVotesEndBalance> electedByBoardOfShareholders = current.stream()
                 .filter(t -> directors.isElectedByFractions(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
-                .filter(t -> t.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT
-                        && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES
-                )
+                .filter(t -> {
+                    double totalFractionsRating = t.getFractionsRaiting().values().stream()
+                            .mapToDouble(Double::doubleValue)
+                            .sum();
+                    return t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT
+                            || (t.getVotes() / totalFractionsRating) * Seting.HUNDRED_PERCENT
+                            >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT;
+                })
                 .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
                 .collect(Collectors.toList());
 
-
-        //группируем по списку. //group by list.
+        // Группировка результатов
         Map<String, List<CurrentLawVotesEndBalance>> group = electedByBoardOfShareholders.stream()
                 .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));
-
         Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();
-
-        //оставляем то количество которое описано в данной должности.
-        //we leave the quantity described in this post.
-        for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {
-            List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();
-            temporary = temporary.stream()
+        for (Map.Entry<String, List<CurrentLawVotesEndBalance>> entry : group.entrySet()) {
+            List<CurrentLawVotesEndBalance> temporary = entry.getValue().stream()
                     .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))
-                    .limit(directors.getDirector(stringListEntry.getKey()).getCount())
+                    .limit(directors.getDirector(entry.getKey()).getCount())
                     .collect(Collectors.toList());
-            original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);
+            original_group.put(directors.getDirector(entry.getKey()), temporary);
         }
 
-
-
-        //позиции избираемые советом корпоративных верховных судей.
-        //positions elected by the council of corporate supreme judges.
-        List<CurrentLawVotesEndBalance> electedByCorporateCouncilOfReferees = current.stream()
-                .filter(t -> directors.isElectedBYCorporateCouncilOfReferees(t.getPackageName()))
-                .filter(t -> t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES)
-                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotesCorporateCouncilOfReferees)).collect(Collectors.toList());
-
-
-        //добавляет законы, которые создают новые должности утверждается советом директоров.
-        //adds laws that create new positions approved by the board of directors.
-        List<CurrentLawVotesEndBalance> addDirectors = current.stream()
-                .filter(t->t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
-                .filter(t->t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT
-                        && t.getVotesCorporateCouncilOfReferees() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_CORPORATE_COUNCIL_OF_REFEREES
-                       )
-                .collect(Collectors.toList());
-
-
-        for (Map.Entry<Director, List<CurrentLawVotesEndBalance>> higherSpecialPositionsListMap : original_group.entrySet()) {
-            current.addAll(higherSpecialPositionsListMap.getValue());
-        }
-
-
+        // Итоговое объединение результатов
         current = new ArrayList<>();
-        current.addAll(addDirectors);
+        current.addAll(createdByBoardOfDirectors);
         current.addAll(electedByStockBoardOfDirectors);
         current.addAll(electedByStockCorporateCouncilOfReferees);
         current.addAll(electedByBoardOfShareholders);
-        current.addAll(electedByCorporateCouncilOfReferees);
         current = current.stream()
                 .filter(UtilsUse.distinctByKey(CurrentLawVotesEndBalance::getAddressLaw))
-                .filter(t->directors.contains(t.getPackageName()))
+                .filter(t -> directors.contains(t.getPackageName()))
                 .collect(Collectors.toList());
 
-
-        model.addAttribute("title", "How the current laws are made is described in the charter." +
-                " ");
+        model.addAttribute("title", "Corporate senior positions and approvals.");
         model.addAttribute("currentLaw", current);
 
         return "governments";
@@ -255,12 +152,7 @@ public class GovernmentController {
     @GetMapping("/create-position")
     public String createPositionShow(Model model) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
-        List<Block> blocks = UtilsBlockToEntityBlock.entityBlocksToBlocks(
-                blockService.findBySpecialIndexBetween(
-                        BasisController.getBlockchainSize() - Seting.LAW_HALF_VOTE,
-                        BasisController.getBlockchainSize() -1
-                )
-        );
+
         Map<String, Account> balances = new HashMap<>();
         //считывать баланс
 //        balances = SaveBalances.readLineObject(Seting.ORIGINAL_BALANCE_FILE);
@@ -273,28 +165,14 @@ public class GovernmentController {
                 UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
 
 
-        List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blocks, Seting.BOARDS_BLOCK);
+//        List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blockService, Seting.BOARDS_BLOCK);
+        List<Account> boardOfShareholders = new ArrayList<>();
 
         //подсчет происходит с базы данных, таким образом вычисления происходят быст
         Map<String, CurrentLawVotes> votesMap = new HashMap<>();
         List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
-        long from = 0;
-        long to = BasisController.getBlockchainSize();
+        UtilsCurrentLaw.processBlocks(votesMap, accounts, BasisController.getBlockchainSize(), blockService);
 
-        if (BasisController.getBlockchainSize() > Seting.LAW_HALF_VOTE) {
-            from = BasisController.getBlockchainSize() - Seting.LAW_HALF_VOTE;
-        }
-        List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(from, to));
-        for (Block block : list) {
-            UtilsCurrentLaw.calculateVote(votesMap, accounts, block);
-        }
-
-//        for (long i = from; i < to; i += 10000) {
-//            List<Block> list = UtilsBlockToEntityBlock.entityBlocksToBlocks(blockService.findBySpecialIndexBetween(i, Math.min(to, i + 1000)));
-//            for (Block block : list) {
-//                votesMap = UtilsCurrentLaw.calculateVote(votesMap, accounts, block);
-//            }
-//        }
 
         //подсчитать голоса за все проголосованные законы.
         //count the votes for all voted laws.
@@ -359,7 +237,7 @@ public class GovernmentController {
         redirectAttrs.addFlashAttribute("sender", sender);
 
         redirectAttrs.addFlashAttribute("recipient", law.getHashLaw());
-        redirectAttrs.addFlashAttribute("dollar", 0.0);
+        redirectAttrs.addFlashAttribute("dollar", Seting.MIN_SENDING_FOR_LAW);
         redirectAttrs.addFlashAttribute("stock", 0.0);
         redirectAttrs.addFlashAttribute("reward", rewardD);
         redirectAttrs.addFlashAttribute("vote", "YES");

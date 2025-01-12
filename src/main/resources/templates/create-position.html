@@ -1,43 +1,310 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${title}"/>
-    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
-    <link rel="stylesheet" href="type/css" th:href="style.css">
+    <title th:text="${title}">Create Law</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+    <style>
+        .error-message {
+            color: red;
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
 <header th:insert="blocks/header :: header"></header>
-<div class="container mt 5">
-    <h1 th:text="${title}"></h1>
+<div class="container mt-5">
+    <h1 th:text="${title}">Create Law</h1>
+    <h5>Details are described in the charter.</h5>
+
+    <form id="createLawForm" action="/create-law" method="post" onsubmit="return validateForm()">
+        <!-- Скрытое поле для отправителя -->
+        <input type="hidden" name="sender" th:value="${sender}">
+
+        <!-- Скрытое поле для награды -->
+        <input type="hidden" name="reward" value="0">
+
+        <!-- Скрытое поле для роли -->
+        <input type="hidden" id="role" name="role" th:value="${role}"/>
+
+        <!-- Поле для выбора должности (если role не задан) -->
+        <div class="mb-3" th:if="${role == null}">
+            <label for="nameLaw" class="form-label">Name of the Package of Laws</label>
+            <select name="nameLaw" class="form-select" id="nameLawSelect" required>
+                <option value="" disabled selected>Choose a Position</option>
+                <option th:each="position : ${positions}"
+                        th:value="${position}"
+                        th:text="${position}"></option>
+            </select>
+        </div>
+
+        <!-- Поле для названия закона (если role задан) -->
+        <div class="mb-3" th:if="${role != null}">
+            <label for="nameLaw" class="form-label">Name of the Package of Laws</label>
+            <input type="text" id="nameLaw" name="nameLaw"
+                   th:value="${role}"
+                   class="form-control" readonly>
+        </div>
+
+        <!-- Поле для пароля -->
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <textarea id="password" name="password" placeholder="Enter password"
+                      class="form-control" rows="4" required></textarea>
+        </div>
+
+        <!-- Поля для законов -->
+        <div class="mb-3">
+            <label class="form-label">Laws</label>
+            <div id="lawsContainer">
+                <!-- Если роль выбрана, первая строка заполнена и readonly -->
+                <div class="input-group mb-2 law-field" th:if="${role != null}">
+                    <input type="text" name="laws" placeholder="Enter the law" class="form-control"
+                           th:value="${sender}" readonly required>
+                    <!-- Удаление первой строки запрещено для заданной роли -->
+                </div>
+                <!-- Если роль не задана, добавляем две пустые строки -->
+                <div th:unless="${role != null}">
+                    <div class="input-group mb-2 law-field">
+                        <input type="text" name="laws" placeholder="Enter the law" class="form-control" required>
+                        <button type="button" class="btn btn-danger remove-law" onclick="removeLaw(this)">Remove</button>
+                    </div>
+                    <div class="input-group mb-2 law-field">
+                        <input type="text" name="laws" placeholder="Enter the law" class="form-control" required>
+                        <button type="button" class="btn btn-danger remove-law" onclick="removeLaw(this)">Remove</button>
+                    </div>
+                </div>
+                <!-- Если роль выбрана, добавляем ещё одну строку для минимум 1 закона -->
+                <div class="input-group mb-2 law-field" th:if="${role != null}">
+                    <input type="text" name="laws" placeholder="Enter the law" class="form-control" required>
+                    <button type="button" class="btn btn-danger remove-law" onclick="removeLaw(this)">Remove</button>
+                </div>
+            </div>
+            <button type="button" id="addLawButton" class="btn btn-secondary" onclick="addLaw()">Add Law</button>
+            <div id="charCount" class="mt-2">
+                Total Characters: <span id="totalChars">0</span>/3000
+            </div>
+            <div id="charLimitError" class="error-message">
+                Total number of characters in laws must not exceed 3000.
+            </div>
+        </div>
+
+        <!-- Отображение поля sender -->
+        <div class="mb-3">
+            <label for="senderDisplay" class="form-label">Sender Address</label>
+            <input type="text" id="senderDisplay" name="senderDisplay"
+                   th:value="${sender}" class="form-control" readonly>
+        </div>
+
+        <!-- Кнопка отправки формы -->
+        <button type="submit" class="btn btn-success">Submit Law</button>
+    </form>
 </div>
-<h3>reward always zero</h3>
-
-
-
-<form action="/create-law" method="post">
-    <input type="text" name="sender" placeholder="input address sender" class="form-control"><br>
-
-    <input type="text" name="reward" placeholder="send reward for miner" class="form-control"><br>
-    <select  name="nameLaw" class="form-control">
-        <option  th:each="position: ${positions}"
-        th:value="${position}" th:text="${position}"></option>
-    </select><br>
-    <textarea name="password" placeholder="input password" th:rows="8" th:cols="120"></textarea><br>
-    <button type="submit" class="btn btn-success" name="action" value="/send">Send Law</button><br>
-    <input type="text" name="laws" placeholder="input address sender" class="form-control"><br>
-    <input type="text" name="laws" placeholder="you can enter contact details or personal details, (If you want)" class="form-control"><br>
-
-
-
-</form>
-
-
-</div>
-
 
 <footer th:insert="blocks/footer :: footer"></footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Передача senderMatchPositions из модели в JavaScript -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const senderMatchPositions = /*[[${senderMatchPositions}]]*/ [];
+    /*]]>*/
+</script>
+<script>
+    const maxLaws = 5;
+    const maxChars = 3000;
+
+    function addLaw() {
+        const lawsContainer = document.getElementById('lawsContainer');
+        const currentLaws = lawsContainer.getElementsByClassName('law-field').length;
+
+        // Получаем роль
+        const roleHiddenField = document.getElementById('role');
+        const role = roleHiddenField ? roleHiddenField.value.trim() : '';
+
+        const requiresSenderMatch = senderMatchPositions.includes(role);
+
+        let effectiveMinLaws = requiresSenderMatch ? 1 : 2;
+
+        if (currentLaws >= maxLaws) {
+            alert('You can only add up to 5 laws.');
+            return;
+        }
+
+        const newLawDiv = document.createElement('div');
+        newLawDiv.className = 'input-group mb-2 law-field';
+
+        const newInput = document.createElement('input');
+        newInput.type = 'text';
+        newInput.name = 'laws';
+        newInput.placeholder = 'Enter the law';
+        newInput.className = 'form-control';
+        newInput.required = true;
+
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'btn btn-danger remove-law';
+        removeButton.innerText = 'Remove';
+        removeButton.onclick = function() { removeLaw(this); };
+
+        newLawDiv.appendChild(newInput);
+        newLawDiv.appendChild(removeButton);
+
+        lawsContainer.appendChild(newLawDiv);
+        updateCharCount();
+    }
+
+    function removeLaw(button) {
+        const lawsContainer = document.getElementById('lawsContainer');
+        const currentLaws = lawsContainer.getElementsByClassName('law-field').length;
+
+        // Получаем роль
+        const roleHiddenField = document.getElementById('role');
+        const role = roleHiddenField ? roleHiddenField.value.trim() : '';
+
+        const requiresSenderMatch = senderMatchPositions.includes(role);
+
+        let effectiveMinLaws = requiresSenderMatch ? 1 : 2;
+
+        if (currentLaws <= effectiveMinLaws) {
+            alert(`You must have at least ${effectiveMinLaws} laws.`);
+            return;
+        }
+
+        const lawDiv = button.parentElement;
+        lawsContainer.removeChild(lawDiv);
+        updateCharCount();
+    }
+
+    function updateCharCount() {
+        const lawInputs = document.querySelectorAll('input[name="laws"]');
+        let totalChars = 0;
+
+        lawInputs.forEach(input => {
+            totalChars += input.value.length;
+        });
+
+        document.getElementById('totalChars').innerText = totalChars;
+
+        if (totalChars > maxChars) {
+            document.getElementById('charLimitError').style.display = 'block';
+        } else {
+            document.getElementById('charLimitError').style.display = 'none';
+        }
+    }
+
+    // Обновление формы на основе выбранной должности
+    function onPositionChange() {
+        const positionSelect = document.getElementById('nameLawSelect');
+        const selectedPosition = positionSelect ? positionSelect.value.trim() : '';
+
+        const requiresSenderMatch = senderMatchPositions.includes(selectedPosition);
+
+        const roleHiddenField = document.getElementById('role');
+        if (roleHiddenField) {
+            roleHiddenField.value = selectedPosition;
+        }
+
+        const lawsContainer = document.getElementById('lawsContainer');
+
+        // Удаляем все текущие поля для законов
+        lawsContainer.innerHTML = '';
+
+        if (requiresSenderMatch) {
+            // Добавляем первую строку с sender address и readonly
+            const initialLawDiv = document.createElement('div');
+            initialLawDiv.className = 'input-group mb-2 law-field';
+
+            const initialInput = document.createElement('input');
+            initialInput.type = 'text';
+            initialInput.name = 'laws';
+            initialInput.placeholder = 'Enter the law';
+            initialInput.className = 'form-control';
+            initialInput.required = true;
+            initialInput.readOnly = true;
+            initialInput.value = document.getElementById('senderDisplay').value.trim();
+
+            initialLawDiv.appendChild(initialInput);
+            lawsContainer.appendChild(initialLawDiv);
+        }
+
+        // Добавляем минимально необходимое количество полей для законов
+        const minLaws = requiresSenderMatch ? 1 : 2;
+        for (let i = 0; i < minLaws; i++) {
+            const lawDiv = document.createElement('div');
+            lawDiv.className = 'input-group mb-2 law-field';
+
+            const lawInput = document.createElement('input');
+            lawInput.type = 'text';
+            lawInput.name = 'laws';
+            lawInput.placeholder = 'Enter the law';
+            lawInput.className = 'form-control';
+            lawInput.required = true;
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'btn btn-danger remove-law';
+            removeButton.innerText = 'Remove';
+            removeButton.onclick = function() { removeLaw(this); };
+
+            lawDiv.appendChild(lawInput);
+            lawDiv.appendChild(removeButton);
+            lawsContainer.appendChild(lawDiv);
+        }
+
+        updateCharCount();
+    }
+
+    // Добавить обработчик событий для выбора должности
+    document.addEventListener('DOMContentLoaded', function() {
+        const positionSelect = document.getElementById('nameLawSelect');
+        if (positionSelect) {
+            positionSelect.addEventListener('change', onPositionChange);
+        }
+
+        // Инициализация на основе начального выбора
+        if (positionSelect && positionSelect.value) {
+            onPositionChange();
+        }
+
+        // Инициализация начального счётчика символов
+        updateCharCount();
+    });
+
+    // Обновление счётчика символов при вводе
+    document.getElementById('lawsContainer').addEventListener('input', function(e) {
+        if (e.target && e.target.name === 'laws') {
+            updateCharCount();
+        }
+    });
+
+    // Валидация формы перед отправкой
+    function validateForm() {
+        const totalChars = parseInt(document.getElementById('totalChars').innerText);
+        if (totalChars > maxChars) {
+            alert('Total number of characters in laws must not exceed 3000.');
+            return false;
+        }
+
+        const roleHiddenField = document.getElementById('role');
+        const role = roleHiddenField ? roleHiddenField.value.trim() : '';
+
+        const requiresSenderMatch = senderMatchPositions.includes(role);
+
+        if (requiresSenderMatch) {
+            const sender = document.getElementById('senderDisplay').value.trim();
+            const firstLawInput = document.querySelector('input[name="laws"]');
+            const firstLaw = firstLawInput ? firstLawInput.value.trim() : '';
+
+            if (sender !== firstLaw) {
+                alert('Sender address must match the first law entry for the selected position.');
+                return false;
+            }
+        }
+
+        return true;
+    }
+</script>
 </body>
 </html>

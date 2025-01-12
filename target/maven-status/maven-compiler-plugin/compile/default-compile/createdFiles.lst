@@ -38,7 +38,7 @@ International_Trade_Union\utils\UtilsBlock$4.class
 International_Trade_Union\statistics\UtilsStatistics.class
 International_Trade_Union\model\Keys.class
 International_Trade_Union\setings\originalCorporateCharter\OriginalCHARTER.class
-International_Trade_Union\governments\CompareObject.class
+International_Trade_Union\vote\UserVote.class
 International_Trade_Union\utils\UtilsSecurity.class
 International_Trade_Union\model\SlidingWindowManager.class
 International_Trade_Union\setings\originalCorporateCharter\OriginalPreamble.class
@@ -49,6 +49,7 @@ International_Trade_Union\config\BLockchainFactory$1.class
 International_Trade_Union\controllers\StatisticsController.class
 International_Trade_Union\vote\Vote.class
 International_Trade_Union\controllers\WebController\WebBasisController.class
+International_Trade_Union\vote\VoteMapAndLastIndex.class
 International_Trade_Union\entity\blockchain\Blockchain.class
 International_Trade_Union\model\SlidingWindowManager$1.class
 International_Trade_Union\controllers\LawsController.class

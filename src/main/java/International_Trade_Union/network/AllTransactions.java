@@ -42,7 +42,10 @@ public class AllTransactions {
                 List<DtoTransaction> list;
                 if(!json.isEmpty()){
                     list= UtilsJson.jsonToDtoTransactionList(json);
-                    list = list.stream().filter(t->t.getSign() != null &&!base.encode(t.getSign()).isEmpty()).collect(Collectors.toList());
+                    list = list.stream()
+                            .filter(t->t.getSign() != null &&!base.encode(t.getSign()).isEmpty())
+                            .filter(t->t.getDigitalDollar() > 0 || t.getDigitalStockBalance() > 0)
+                            .collect(Collectors.toList());
                     instance.addAll(list);
                 }else {
                     list = new ArrayList<>();

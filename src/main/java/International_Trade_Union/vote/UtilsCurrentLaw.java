@@ -3,12 +3,15 @@ package International_Trade_Union.vote;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.Director;
 import International_Trade_Union.governments.Directors;
+import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.model.FIndPositonHelperData;
 import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.UtilsBlockToEntityBlock;
 import International_Trade_Union.utils.UtilsJson;
 import International_Trade_Union.utils.UtilsUse;
 import International_Trade_Union.utils.base.Base;
@@ -451,19 +454,21 @@ public class UtilsCurrentLaw {
                         if (currentLawVotes == null) {
                             currentLawVotes = new CurrentLawVotes();
                             currentLawVotes.setAddressLaw(transaction.getCustomer());
-                            currentLawVotes.setYES(new HashSet<>());
-                            currentLawVotes.setNO(new HashSet<>());
+                            currentLawVotes.setYES(new HashMap<>());
+                            currentLawVotes.setNO(new HashMap<>());
+                            currentLawVotes.setIndexCreateLaw(block.getIndex());
+                            currentLawVotes.setWhoCreate(transaction.getSender());
 
                             votes.put(transaction.getCustomer(), currentLawVotes);
                         }
 
                         if (transaction.getVoteEnum().equals(VoteEnum.YES)) {
 
-                            currentLawVotes.getYES().add(transaction.getSender());
+                            currentLawVotes.getYES().put(transaction.getSender(), block.getIndex());
                             currentLawVotes.getNO().remove(transaction.getSender());
 
                         } else if (transaction.getVoteEnum().equals(VoteEnum.NO)) {
-                            currentLawVotes.getNO().add(transaction.getSender());
+                            currentLawVotes.getNO().put(transaction.getSender(), block.getIndex());
                             currentLawVotes.getYES().remove(transaction.getSender());
                         } else if (transaction.getVoteEnum().equals(VoteEnum.REMOVE_YOUR_VOICE)) {
                             currentLawVotes.getNO().remove(transaction.getSender());
@@ -501,13 +506,13 @@ public class UtilsCurrentLaw {
     public static Map<String, Integer> calculateAverageVotesYes(Map<String, CurrentLawVotes> votesMap) {
         Map<String, Integer> voteAverage = new HashMap<>();
         for (Map.Entry<String, CurrentLawVotes> current : votesMap.entrySet()) {
-            for (String yesVoteAddress : current.getValue().getYES()) {
+            for (Map.Entry<String, Long> yesVoteAddress : current.getValue().getYES().entrySet()) {
                 if (voteAverage.containsKey(yesVoteAddress)) {
                     int count = voteAverage.get(yesVoteAddress);
-                    voteAverage.put(yesVoteAddress, count + 1);
+                    voteAverage.put(yesVoteAddress.getKey(), count + 1);
                 } else {
                     int count = 1;
-                    voteAverage.put(yesVoteAddress, count);
+                    voteAverage.put(yesVoteAddress.getKey(), count);
                 }
             }
 
@@ -519,19 +524,122 @@ public class UtilsCurrentLaw {
     public static Map<String, Integer> calculateAverageVotesNo(Map<String, CurrentLawVotes> votesMap) {
         Map<String, Integer> voteAverage = new HashMap<>();
         for (Map.Entry<String, CurrentLawVotes> current : votesMap.entrySet()) {
-            for (String yesVoteAddress : current.getValue().getNO()) {
+            for (Map.Entry<String, Long> yesVoteAddress : current.getValue().getNO().entrySet()) {
                 if (voteAverage.containsKey(yesVoteAddress)) {
                     int count = voteAverage.get(yesVoteAddress);
-                    voteAverage.put(yesVoteAddress, count + 1);
+                    voteAverage.put(yesVoteAddress.getKey(), count + 1);
                 } else {
                     int count = 1;
-                    voteAverage.put(yesVoteAddress, count);
+                    voteAverage.put(yesVoteAddress.getKey(), count);
                 }
             }
 
         }
         return voteAverage;
     }
+    public static VoteMapAndLastIndex processBlocksWithWindow(
+            VoteMapAndLastIndex state,
+            List<Account> voters,
+            long size,
+            BlockService blockService
+    ) throws IOException {
+        long newFrom = Math.max(0, size - Seting.LAW_HALF_VOTE);
+        long oldFrom = state.getStartIndex();
+        long oldTo = state.getFinishIndex();
+        Map<String, CurrentLawVotes> votesMap = state.getVotesMap();
+
+        // 1) Если новое "from" > старого, удаляем голоса из блоков, чей индекс < newFrom
+        if (newFrom > oldFrom) {
+            for (Map.Entry<String, CurrentLawVotes> e : votesMap.entrySet()) {
+                CurrentLawVotes clv = e.getValue();
+                // Убираем из YES / NO все записи, у которых номер блока < newFrom
+                clv.getYES().entrySet().removeIf(x -> x.getValue() < newFrom);
+                clv.getNO().entrySet().removeIf(x -> x.getValue() < newFrom);
+            }
+        }
+
+        // 2) Обрабатываем новые блоки, если старый finishIndex меньше size
+        long startIndexForNewBlocks = Math.max(newFrom, oldTo + 1);
+        if (startIndexForNewBlocks < size) {
+            final int BATCH_SIZE = 500;
+            Runtime runtime = Runtime.getRuntime();
+            for (long currentFrom = startIndexForNewBlocks; currentFrom < size; currentFrom += BATCH_SIZE) {
+                long currentTo = Math.min(currentFrom + BATCH_SIZE, size);
+                long beforeMemory = runtime.totalMemory() - runtime.freeMemory();
+                List<Block> batchBlocks = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                        blockService.findBySpecialIndexBetween(currentFrom, currentTo)
+                );
+                for (Block block : batchBlocks) {
+                    try {
+                        UtilsCurrentLaw.calculateVote(votesMap, voters, block);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                long afterMemory = runtime.totalMemory() - runtime.freeMemory();
+                System.out.println("Blocks processed up to: " + currentTo
+                        + ", memory used: " + (afterMemory - beforeMemory) / 1024 + " KB");
+            }
+        }
+
+        // 3) Обновляем состояние
+        state.setVotesMap(votesMap);
+        state.setStartIndex(newFrom);
+        state.setFinishIndex(size - 1);
+
+        return state;
+    }
 
 
+    //механизм для подсчета
+    public static void processBlocks(Map<String, CurrentLawVotes> votesMap, List<Account> voters, long size, BlockService blockService) {
+        long from = Math.max(0, size - Seting.LAW_HALF_VOTE);
+        final int BATCH_SIZE = 500;
+        Runtime runtime = Runtime.getRuntime();
+
+        for (long currentFrom = from; currentFrom < size; currentFrom += BATCH_SIZE) {
+            long currentTo = Math.min(currentFrom + BATCH_SIZE, size);
+            try {
+                // Измеряем память до операции
+                long beforeMemory = runtime.totalMemory() - runtime.freeMemory();
+
+                // Извлечение и обработка блоков
+                List<Block> batchBlocks = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                        blockService.findBySpecialIndexBetween(currentFrom, currentTo)
+                );
+
+                batchBlocks.forEach(block -> {
+                    try {
+                        UtilsCurrentLaw.calculateVote(votesMap, voters, block);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    } catch (NoSuchAlgorithmException e) {
+                        throw new RuntimeException(e);
+                    } catch (SignatureException e) {
+                        throw new RuntimeException(e);
+                    } catch (InvalidKeySpecException e) {
+                        throw new RuntimeException(e);
+                    } catch (NoSuchProviderException e) {
+                        throw new RuntimeException(e);
+                    } catch (InvalidKeyException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                // Измеряем память после операции
+                long afterMemory = runtime.totalMemory() - runtime.freeMemory();
+
+                // Логируем использование памяти
+                System.out.println("Blocks processed to index: " + currentFrom +
+                        ", Memory used: " + (afterMemory - beforeMemory) / 1024 + " KB");
+                System.out.println("processBlocks: votesMap.size: " + votesMap.size() + " voters.size: " + voters.size() );
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+
+        System.out.println("Обработка блоков завершена.");
+    }
 }

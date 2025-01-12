@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${title}"/>
+    <title th:text="${title}">Current Package</title>
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
 </head>
@@ -9,27 +9,79 @@
 <header th:insert="blocks/header :: header"></header>
 
 <div class="container mt-5">
-    <h3 th:text="${title}"/>
+    <h3 th:text="${title}">Current Package</h3>
 
-    <div th:each="el : ${currentLaw}" class="alert alert-info mt-2">
-        <h4 th:text="'address package law: '+${el.addressLaw}"/>
-        <p th:text="'staking votes raiting: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
-        <p th:text="'votesCorporateCouncilOfReferees raiting: '+${el.votesCorporateCouncilOfReferees}"/>
-<!--        <p th:text="'votes board of directiors raitng: '+${el.votesBoardOfDirectors}"/>-->
-        <p th:text="'votes BoardOfShareholders raiting: '+${el.votesBoardOfShareholders}"/>
-        <p th:text="'voteGeneral Executive Director: '+${el.voteGeneralExecutiveDirector}"/>
-        <p th:text="'founderVote: '+${el.founderVote}"/>
-        <p th:text="'voting directors: '+${#numbers.formatDecimal(el.fractionVote, 1, 'COMMA', 16, 'POINT')}"/>
+    <div class="mb-4">
+        <a href="/create-law" class="btn btn-primary">create a decision or rule</a>
+        <a href="/add_position" class="btn btn-primary">Create position</a>
+    </div>
+    <!-- Форма для выбора роли -->
+    <div class="mb-4">
+        <form action="/create-law" method="get" class="d-flex align-items-center">
+            <div class="input-group me-2" style="max-width: 300px;">
+                <select name="role" class="form-select" required>
+                    <option value="" disabled selected>Select a Position</option>
+                    <option th:each="position : ${positions}"
+                            th:value="${position}"
+                            th:text="${position}"></option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Apply for Position</button>
+        </form>
+    </div>
+
+    <!-- Существующий список законов -->
+    <div th:each="el : ${currentLaw}" th:classappend="${el.isValid} ? 'alert-success' : 'alert-danger'" class="alert mt-2">
+        <!-- Отображение статуса голосования пользователя -->
+        <!-- Отображение статуса голосования пользователя -->
+        <div class="vote-status">
+            <span th:if="${userVotesMap[el.addressLaw].vote == 'YES'}">
+                <span class="checkmark">&#10004;</span>
+                <span th:text="'Index: ' + ${userVotesMap[el.addressLaw].index}"></span>
+            </span>
+            <span th:if="${userVotesMap[el.addressLaw].vote == 'NO'}">
+                <span class="cross">&#10006;</span>
+                <span th:text="'Index: ' + ${userVotesMap[el.addressLaw].index}"></span>
+            </span>
+            <span th:if="${userVotesMap[el.addressLaw].vote == 'NONE'}">
+                <span th:text="'Not voted'"></span>
+            </span>
+        </div>
+
+
+
+        <h4 th:text="'Address Package : ' + ${el.addressLaw}"></h4>
+        <p th:text="'Package : ' + (${el.isPosition} ? 'POSITION' : 'SOLUTION/RULE')"></p>
+        <p th:text="'who create Package : ' + ${el.whoCreate}"></p>
+        <p th:text="'when create Package : ' + ${el.indexCreateLaw}"></p>
+        <p th:text="'Balance Votes Rating: ' + ${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"></p>
+        <p th:text="'Balance Votes Rating Percent: ' + ${#numbers.formatDecimal(el.percentDirectDemocracy, 1, 'COMMA', 16, 'POINT')}"></p>
+        <p th:text="'Sum Rating Directors: ' + ${#numbers.formatDecimal(el.sum, 1, 'COMMA', 16, 'POINT')}"></p>
+        <p th:text="'Voting Directors: ' + ${#numbers.formatDecimal(el.fractionVote, 1, 'COMMA', 16, 'POINT')}"></p>
+        <p th:text="'The judges voted YES: ' + ${el.votesCorporateCouncilOfRefereesYes}"></p>
+        <p th:text="'The judges voted NO: ' + ${el.votesCorporateCouncilOfRefereesNo}"></p>
+
         <div th:each="director : ${el.directorsVote}" class="mt-1">
             <span th:text="'Director: ' + ${director.address}"></span>
             <span th:text="'Vote: ' + ${director.vote}"></span>
         </div>
-        <p th:text="'Name of the package of laws: '+${el.packageName}"/>
 
-        <a th:href="'/detail-laws-current/' + ${el.addressLaw}" class="btn btn-warning">View in detail the list of laws in the package</a>
+        <p th:text="'Vote General Executive Director: ' + ${el.voteGeneralExecutiveDirector}"></p>
+        <p th:text="'Founder Vote: ' + ${el.founderVote}"></p>
+        <p th:text="'Name of the Package : ' + ${el.packageName}"></p>
+
+        <!-- Кнопки для голосования непосредственно со страницы -->
+        <div class="btn-group" role="group">
+            <a class="btn btn-success" th:href="@{/voting(addressLaw=${el.addressLaw}, vote='YES')}">YES</a>
+            <a class="btn btn-danger" th:href="@{/voting(addressLaw=${el.addressLaw}, vote='NO')}">NO</a>
+            <a class="btn btn-secondary" th:href="@{/voting(addressLaw=${el.addressLaw}, vote='REMOVE_YOUR_VOICE')}">Remove Voice</a>
+        </div>
+
+        <br><br>
+        <a th:href="'/detail-laws-current/' + ${el.addressLaw}" class="btn btn-warning">View in Detail the List of Laws in the Package</a>
     </div>
-
 </div>
+
 <footer th:insert="blocks/footer :: footer"></footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

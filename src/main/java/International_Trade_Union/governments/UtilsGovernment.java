@@ -1,10 +1,13 @@
 package International_Trade_Union.governments;
 
 
+import International_Trade_Union.controllers.BasisController;
 import International_Trade_Union.entity.DtoTransaction.DtoTransaction;
 import International_Trade_Union.entity.blockchain.block.Block;
+import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.setings.Seting;
+import International_Trade_Union.utils.UtilsBlockToEntityBlock;
 import International_Trade_Union.vote.*;
 
 import java.io.IOException;
@@ -19,7 +22,8 @@ import java.util.stream.Collectors;
 
 public class UtilsGovernment {
 
-    /**чтобы pubkey был зарегистрирован в качестве кандидата, нужно чтобы адрес отправителя,
+    /**
+     * чтобы pubkey был зарегистрирован в качестве кандидата, нужно чтобы адрес отправителя,
      * совпадал с первой строкой созданного им пакета законов. Данный метод проверяет это.
      * In order for pubkey to be registered as a candidate, the sender's address must be
      *       * coincided with the first line of the package of laws he created.
@@ -43,42 +47,88 @@ public class UtilsGovernment {
     }
 
 
-    /**Отобрать счета которые были активны за последние n дней*/
-    public static List<Account> findBoardOfShareholders(Map<String, Account> balances, List<Block> blocks, int limit) {
-        List<Block> minersHaveMoreStock = null;
-        if (blocks.size() > limit) {
-            minersHaveMoreStock = blocks.subList(blocks.size() - limit, blocks.size());
-        } else {
-            minersHaveMoreStock = blocks;
+    /**
+     * Отобрать счета которые были активны за последние n дней
+     */
+    /**
+     * Отбирает счета, которые были активны за последние n блоков, обрабатывая блоки партиями по 500 штук.
+     *
+     * @param balances     карта балансов аккаунтов
+     * @param blockService сервис для доступа к блокам
+     * @param limit        максимальное количество блоков для обработки (например, 800000)
+     * @return список акционеров
+     * @throws IOException если произошла ошибка при обработке блоков
+     */
+    public static List<Account> findBoardOfShareholders(Map<String, Account> balances, BlockService blockService, int limit) throws IOException {
+        // Инициализация набора для хранения уникальных адресов
+        Set<String> boardAccountAddresses = new HashSet<>();
+
+        // Определение диапазона блоков для обработки
+        long blockchainSize = BasisController.getBlockchainSize();
+        long from = 0;
+        long to = blockchainSize - 1; // Предполагаем, что индексация блоков начинается с 0
+
+        if (blockchainSize > Seting.LAW_HALF_VOTE) {
+            from = blockchainSize - Seting.LAW_HALF_VOTE;
         }
-        List<Account> boardAccounts = minersHaveMoreStock.stream().map(
-                        t -> new Account(t.getMinerAddress(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO))
-                .collect(Collectors.toList());
 
-        for (Block block : minersHaveMoreStock) {
+        final int BATCH_SIZE = 500;
+        long currentFrom = from;
+        long currentTo;
 
-            System.out.println("calculating board of shareholder: index:  " + block.getIndex());
-            for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
-                boardAccounts.add(new Account(dtoTransaction.getSender(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO));
+        long processedBlocks = 0;
+
+        while (currentFrom <= to && processedBlocks < limit) {
+            try {
+                // Вычисляем конец текущей партии
+                currentTo = Math.min(currentFrom + BATCH_SIZE - 1, to);
+
+                // Извлекаем текущую партию блоков из базы данных
+                List<Block> batchBlocks = UtilsBlockToEntityBlock.entityBlocksToBlocks(
+                        blockService.findBySpecialIndexBetween(currentFrom, currentTo)
+                );
+
+                for (Block block : batchBlocks) {
+                    // Добавляем адрес майнера блока
+                    boardAccountAddresses.add(block.getMinerAddress());
+
+                    // Добавляем адреса отправителей транзакций блока
+                    for (DtoTransaction dtoTransaction : block.getDtoTransactions()) {
+                        boardAccountAddresses.add(dtoTransaction.getSender());
+                    }
+
+                    processedBlocks++;
+
+                    // Проверка достижения лимита
+                    if (processedBlocks >= limit) {
+                        break;
+                    }
+                }
+
+                // Обновляем индексы для следующей партии
+                currentFrom += BATCH_SIZE;
+
+                // Логирование прогресса (опционально)
+                System.out.println("Извлечено блоков до индекса: " + currentTo + ". Обработано блоков: " + processedBlocks);
+            } catch (Exception e) {
+                // Логирование ошибки и прекращение обработки
+                System.err.println("Ошибка при извлечении блоков с " + currentFrom + " по " + (currentFrom + BATCH_SIZE - 1));
+                e.printStackTrace();
+                throw new IOException("Ошибка при обработке блоков.", e);
             }
         }
 
-
-
-        List<Account> boardOfShareholders = balances.entrySet().stream()
-                .filter(t -> boardAccounts.contains(t.getValue()))
-                .map(t -> t.getValue()).collect(Collectors.toList());
-
-        boardOfShareholders = boardOfShareholders
-                .stream()
-                .filter(t -> !t.getAccount().startsWith(Seting.NAME_LAW_ADDRESS_START))
-                .filter(t -> t.getDigitalStockBalance().doubleValue()> 0)
+        // Фильтрация балансов на основе собранных адресов
+        List<Account> boardOfShareholders = balances.values().stream()
+                .filter(account -> boardAccountAddresses.contains(account.getAccount()))
+                .filter(account -> !account.getAccount().startsWith(Seting.NAME_LAW_ADDRESS_START))
+                .filter(account -> account.getDigitalStockBalance().doubleValue() > 0)
                 .sorted(Comparator.comparing(Account::getDigitalStockBalance).reversed())
+                .limit(Seting.BOARD_OF_SHAREHOLDERS)
                 .collect(Collectors.toList());
 
         return boardOfShareholders;
     }
-
 
     //выбрать случайным образом limit избирателей.
     public static List<Account> drawingOfLotsByVoters(List<Account> candidates, Block block, int limit) {
@@ -201,8 +251,11 @@ public class UtilsGovernment {
 
         return sumOfDifferences.divide(new BigDecimal(n * n).multiply(sumOfBalances), 10, RoundingMode.HALF_UP);
     }
-    /**Здесь происходит подсчет всех голосов за определенный период, за кандидатов и законы.
-     * Here, all votes for a certain period, for candidates and laws are counted.*/
+
+    /**
+     * Здесь происходит подсчет всех голосов за определенный период, за кандидатов и законы.
+     * Here, all votes for a certain period, for candidates and laws are counted.
+     */
     public static List<CurrentLawVotesEndBalance> filtersVotes(
             List<LawEligibleForParliamentaryApproval> approvalList,
             Map<String, Account> balances,
@@ -222,7 +275,7 @@ public class UtilsGovernment {
         int index = 0;
         //подсчитываем голоса для для обычных законов и законов позиций
         for (LawEligibleForParliamentaryApproval lawEligibleForParliamentaryApproval : approvalList) {
-            System.out.println("calculate governments: index: " + index );
+            System.out.println("calculate governments: index: " + index);
             index++;
 
             if (votesMap.containsKey(lawEligibleForParliamentaryApproval.getLaws().getHashLaw())) {
@@ -237,13 +290,24 @@ public class UtilsGovernment {
                 int hightJudgesVotes = 0;
                 int founderVote = 0;
                 double fraction = 0;
+                boolean isValid = false;
                 List<Vote> directorsVote = new ArrayList<>();
+                Map<String, Double> fractionsRaiting = new HashMap<>();
+                double sum = 0;
+                double percentDirectDemocracy  = 0;
+                int votesCorporateCouncilOfRefereesYes = 0;
 
                 //для законов подсчитываем специальные голоса
                 vote = votesMap.get(lawEligibleForParliamentaryApproval.getLaws().getHashLaw()).votesLaw(balances, yesAverage, noAverage);
                 List<String> boardOfShareholdersAddress = BoardOfShareholders.stream().map(t -> t.getAccount()).collect(Collectors.toList());
                 boafdOfShareholderVotes = votesMap.get(lawEligibleForParliamentaryApproval.getLaws().getHashLaw()).voteGovernment(balances, boardOfShareholdersAddress);
 
+                String whoCreate = "";
+                Long indexCreateLaw = 0L;
+                if(votesMap.containsKey(address)){
+                    indexCreateLaw = votesMap.get(address).getIndexCreateLaw();
+                    whoCreate = votesMap.get(address).getWhoCreate();
+                }
                 List<String> founder = List.of(Seting.ADDRESS_FOUNDER);
                 founderVote = votesMap.get(lawEligibleForParliamentaryApproval.getLaws().getHashLaw()).voteGovernment(balances, founder);
                 CurrentLawVotesEndBalance currentLawVotesEndBalance = new CurrentLawVotesEndBalance(
@@ -258,7 +322,14 @@ public class UtilsGovernment {
                         founderVote,
                         fraction,
                         laws,
-                        directorsVote);
+                        directorsVote,
+                        fractionsRaiting,
+                        isValid,
+                        sum,
+                        percentDirectDemocracy,
+                        indexCreateLaw,
+                        whoCreate,
+                        votesCorporateCouncilOfRefereesYes);
                 current.add(currentLawVotesEndBalance);
 
             }
@@ -298,19 +369,27 @@ public class UtilsGovernment {
 
 
                 double vote = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).votesLaw(balances, yesAverage, noAverage);
-                int supremeVotes  = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteGovernment(balances, corporateCouncilOfReferees);
+                int supremeVotes  = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteGovernmentNo(balances, corporateCouncilOfReferees);
+                int votesCorporateCouncilOfRefereesYes = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteGovernmentYes(balances, corporateCouncilOfReferees);
                 int boardOfDirectorsVotes = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteDirector(balances, boardOfDirectors);
                 double boardOfDirectorsVotesPR = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).voteFractions(fractions);
                 List<Vote> directorsVote = votesMap.get(currentLawVotesEndBalance.getAddressLaw()).directorsVote(fractions);
                 currentLawVotesEndBalance.setVotes(vote);
                 currentLawVotesEndBalance.setVotesBoardOfDirectors(boardOfDirectorsVotes);
-                currentLawVotesEndBalance.setVotesCorporateCouncilOfReferees(supremeVotes);
+                currentLawVotesEndBalance.setVotesCorporateCouncilOfRefereesNo(supremeVotes);
                 currentLawVotesEndBalance.setFractionVote(boardOfDirectorsVotesPR);
                 currentLawVotesEndBalance.setDirectorsVote(directorsVote);
+                currentLawVotesEndBalance.setFractionsRaiting(fractions);
+                currentLawVotesEndBalance.setVotesCorporateCouncilOfRefereesYes(votesCorporateCouncilOfRefereesYes);
+                double sum = fractions.entrySet().stream()
+                        .map(t->t.getValue())
+                        .collect(Collectors.toList())
+                        .stream().reduce(0.0, Double::sum);
+                currentLawVotesEndBalance.setSum(sum);
+                currentLawVotesEndBalance.setPercentDirectDemocracy(currentLawVotesEndBalance.getVotes() / sum * Seting.HUNDRED_PERCENT);
+
 
             }
-            System.out.println("UtilsGovernment: currentLawVotesEndBalance: " + currentLawVotesEndBalance);
-
         }
 
         //избирается Генеральный исполнительный директор
@@ -320,7 +399,7 @@ public class UtilsGovernment {
             if(currentLawVotesEndBalance.getPackageName().equals(NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString())){
                 if(currentLawVotesEndBalance.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT
                  ||
-                        currentLawVotesEndBalance.getVotesBoardOfDirectors() > Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_VOTE
+                        currentLawVotesEndBalance.getVotesBoardOfDirectors() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_VOTE
 
                 ){
                     primeMinister.add(currentLawVotesEndBalance.getLaws().get(0));
@@ -343,106 +422,4 @@ public class UtilsGovernment {
 
     }
 
-
-
-
-
-    /**TODO устарела и не используется.
-     * TODO is obsolete and no longer used. */
-    public static List<CurrentLawVotesEndBalance> filters(List<LawEligibleForParliamentaryApproval> approvalList, Map<String, Account> balances,
-                                                          List<Account> BoardOfShareholders, List<Block> blocks, int limitBlocks) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
-        //действующие законы чьи голоса больше ORIGINAL_LIMIT_MIN_VOTE
-        List<CurrentLawVotesEndBalance> current = new ArrayList<>();
-        Map<String, CurrentLawVotes> votesMap = null;
-        List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
-        if (blocks.size() > limitBlocks) {
-            votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks.subList(blocks.size() - limitBlocks, blocks.size()));
-        } else {
-            votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks);
-        }
-
-        //подсчитать средннее количество раз сколько он проголосовал за
-        Map<String, Integer> yesAverage = UtilsCurrentLaw.calculateAverageVotesYes(votesMap);
-        //подсчитать среднее количество раз сколько он проголосовал против
-        Map<String, Integer> noAverage = UtilsCurrentLaw.calculateAverageVotesNo(votesMap);
-
-        for (LawEligibleForParliamentaryApproval lawEligibleForParliamentaryApproval : approvalList) {
-            if (votesMap.containsKey(lawEligibleForParliamentaryApproval.getLaws().getHashLaw())) {
-                String address = lawEligibleForParliamentaryApproval.getLaws().getHashLaw();
-                String packageName = lawEligibleForParliamentaryApproval.getLaws().getPacketLawName();
-                List<String> laws = lawEligibleForParliamentaryApproval.getLaws().getLaws();
-                double vote = votesMap.get(lawEligibleForParliamentaryApproval.getLaws().getHashLaw()).votes(balances, yesAverage, noAverage);
-
-                CurrentLawVotesEndBalance currentLawVotesEndBalance = new CurrentLawVotesEndBalance(address, packageName, vote, 0, 0, 0, 0, 0, 0, 0,  laws, new ArrayList<>());
-                current.add(currentLawVotesEndBalance);
-
-            }
-        }
-        return current;
-    }
-
-    public static List<CurrentLawVotesEndBalance>filtersVotesOnlyStock(
-            List<LawEligibleForParliamentaryApproval> approvalList,
-            Map<String, Account> balances,
-            List<Block> blocks,
-            int limitBlocks
-    ) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
-        List<CurrentLawVotesEndBalance> current = new ArrayList<>();
-        Map<String, CurrentLawVotes> votesMap = null;
-        List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
-        if (blocks.size() > limitBlocks) {
-            votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks.subList(blocks.size() - limitBlocks, blocks.size()));
-        } else {
-            votesMap = UtilsCurrentLaw.calculateVotes(accounts, blocks);
-        }
-
-        //подсчитать средннее количество раз сколько он проголосовал за
-        Map<String, Integer> yesAverage = UtilsCurrentLaw.calculateAverageVotesYes(votesMap);
-        //подсчитать среднее количество раз сколько он проголосовал против
-        Map<String, Integer> noAverage = UtilsCurrentLaw.calculateAverageVotesNo(votesMap);
-
-
-        //подсчитываем голоса для для обычных законов и законов позиций
-        for (LawEligibleForParliamentaryApproval lawEligibleForParliamentaryApproval : approvalList) {
-            if (votesMap.containsKey(lawEligibleForParliamentaryApproval.getLaws().getHashLaw())) {
-                String address = lawEligibleForParliamentaryApproval.getLaws().getHashLaw();
-                String packageName = lawEligibleForParliamentaryApproval.getLaws().getPacketLawName();
-                List<String> laws = lawEligibleForParliamentaryApproval.getLaws().getLaws();
-                double vote = 0;
-                int supremeVotes = 0;
-                int boafdOfShareholderVotes = 0;
-                int houseOfRepresentativiesVotes = 0;
-                int primeMinisterVotes = 0;
-                int hightJudgesVotes = 0;
-                int founderVote = 0;
-                double fraction = 0;
-                List<Vote> directorsVote = new ArrayList<>();
-
-                //для законов подсчитываем специальные голоса
-                vote = votesMap.get(lawEligibleForParliamentaryApproval.getLaws().getHashLaw()).votesLaw(balances, yesAverage, noAverage);
-
-                List<String> founder = List.of(Seting.ADDRESS_FOUNDER);
-                founderVote = votesMap.get(lawEligibleForParliamentaryApproval.getLaws().getHashLaw()).voteGovernment(balances, founder);
-                CurrentLawVotesEndBalance currentLawVotesEndBalance = new CurrentLawVotesEndBalance(
-                        address,
-                        packageName,
-                        vote,
-                        supremeVotes,
-                        houseOfRepresentativiesVotes,
-                        boafdOfShareholderVotes,
-                        primeMinisterVotes,
-                        hightJudgesVotes,
-                        founderVote,
-                        fraction,
-                        laws,
-                        directorsVote);
-                current.add(currentLawVotesEndBalance);
-
-            }
-        }
-
-
-        return current;
-
-    }
 }

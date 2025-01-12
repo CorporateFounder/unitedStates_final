@@ -3,385 +3,349 @@
 <head>
     <title>Charter</title>
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+
+    <!-- Подключаем ваш «осенний» файл со стилями -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+
+    <!-- Если нужно оставить Bootstrap для сетки/отступов, оставьте.
+         Если нет необходимости в Bootstrap, можно удалить следующую строку. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
 </head>
 <body>
+
+<!-- Header, который потом стилизуется классом .header-custom из вашего styles.css -->
 <header th:insert="blocks/header :: header"></header>
 
+<!-- Вместо alert alert-info используем вашу .alert-info,
+     которая определяется в вашем styles.css (фон #f7e4d8, цвет #3e261a, и т.д.) -->
+<div class="alert-info" style="margin: 1rem; padding: 1rem;">
+    <img th:src="@{/vote_p/choose position.png}" alt="Choose Position"/>
+    <img th:src="@{/vote_p/create law.png}" alt="Create Law"/>
+    <img th:src="@{/vote_p/create positon.png}" alt="Create Position"/>
+    <img th:src="@{/vote_p/details.png}" alt="Details"/>
+    <img th:src="@{/vote_p/menu.png}" alt="Menu"/>
+    <img th:src="@{/vote_p/menu choose create.png}" alt="Menu Choose Create"/>
+    <img th:src="@{/vote_ptable voting.png}" alt="Voting"/>
+</div>
+
+<!-- Charter Content -->
 <div class="container mt-5">
     <h2>Charter</h2>
+    <!-- Section I: General Provisions -->
     <div class="row">
         <div class="col-md-6">
-            <h5>CHARTER Charter of Corporation International Trade Union (CITU)</h5>
+            <h5>CHARTER Corporation International Trade Union (CITU)</h5>
             <h3>Section I: General Provisions</h3>
             <p>Article 1: General Provisions</p>
-            <p>1.1. Corporation International Trade Union (CITU) is an organization aimed at creating an international currency to unite the world market, achieve global goals and ultimately become an international organization for providing international currency.
-            </p>
-            <p>1.2. CITU's mission is to create a single international currency for all humanity and unite various unions and organizations, such as the European Union, USA, BRICS, G7, CSTO, UN and others, to solve common human problems such as poverty, epidemics, space threats, etc. d. This system operates as a DAO corporation.
-            </p>
-            <p>1.3. The official currency of CITU is a cryptocurrency backed by a special algorithm.</p>
-            <!-- Add other sections similarly -->
+            <p>1.1. Corporation International Trade Union (CITU) is a global platform aimed at issuing and utilizing a digital currency protected against inflation through limited issuance and self-adaptive exchange rate regulation. The system combines the advantages of hybrid consensus (PoW+PoS), allowing decentralized and autonomous management of coin issuance, similar to the functions of a central bank.</p>
+            <p>1.2. CITU's mission is to provide a rare and reliable cryptocurrency that protects capital thanks to limited issuance and a two-decimal system, creating scarcity and stimulating its value. The unique DAO management system and fair reward distribution through a point system ensure stability and transparency, making CITU a convenient tool for use in both traditional financial systems and decentralized ecosystems.</p>
         </div>
         <div class="col-md-6">
-            <h5>Устав Corporation International Trade Union (CITU)
-            </h5>
-            <h3>Раздел I: Основные Положения
-            </h3>
-            <p>Статья 1: Общие Положения </p>
-            <p>1.1. Corporation International Trade Union (CITU) - это организация, направленная на создание международной валюты для объединения мирового рынка, достижения глобальных целей и в конечном итоге стать международной организацией для предоставления международной валюты.
-            </p>
-            <p>1.2. Миссия CITU - создание единой международной валюты для всего человечества и объединения различных союзов и организаций, таких как Евросоюз, США, БРИКС, G7, ОДКБ, ООН и других, для решения общих человеческих проблем, таких как бедность, эпидемии, космические угрозы и т.д. Данная система работает как корпорация DAO.
-            </p>
-            <p>1.3. Официальной валютой CITU является криптовалюта citu dollar, обеспеченная специальным алгоритмом.
-            </p>
-            <!-- Add other sections similarly -->
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-
-            <h3>Section II: Management Structure
-            </h3>
-            <p>Article 2: Founder</p>
-            <p>2.1. The founder of CITU has the right to change the code and amend the charter</p>
-            <p>2.2. The founder has the right to veto any decisions if they contradict the charter or pose a security risk.
-            </p>
-            <!-- Add other sections similarly -->
-        </div>
-        <div class="col-md-6">
-
-            <h3>Раздел II: Структура Управления </h3>
-            <p>Статья 2: Основатель</p>
-            <p>2.1. Основатель CITU имеет право изменять код и вносить поправки в устав
-            </p>
-            <p>2.2. Основатель имеет право наложить вето на любые решения, если они противоречат уставу или несут угрозу безопасности. </p>
-            <!-- Add other sections similarly -->
+            <h5>Устав Corporation International Trade Union (CITU)</h5>
+            <h3>Раздел I: Основные положения</h3>
+            <p>Статья 1: Общие положения</p>
+            <p>1.1. Corporation International Trade Union (CITU) – это глобальная платформа, ориентированная на выпуск и использование цифровой валюты, защищённой от инфляции за счёт ограниченной эмиссии и самоадаптивного регулирования курса. Система сочетает в себе преимущества гибридного консенсуса (PoW+PoS), позволяя децентрализованно и автономно управлять выпуском монет, аналогично функциям центрального банка.</p>
+            <p>1.2. Миссия CITU – предоставить редкую и надёжную криптовалюту, которая защищает капитал благодаря ограниченной эмиссии и системе с двумя десятичными знаками, что создаёт дефицит и стимулирует её ценность. Уникальная система управления через DAO и справедливое распределение наград через балльную систему обеспечивает стабильность и прозрачность, делая CITU удобным инструментом для использования как в традиционных финансовых системах, так и в децентрализованных экосистемах.</p>
         </div>
     </div>
 
+    <!-- Section II: Voting System -->
     <div class="row">
         <div class="col-md-6">
+            <h3>Section II: Voting System</h3>
+            <p>Article 2: Fundamental Principles of Voting</p>
+            <p>2.1. Each participant votes with their coins, where the number of votes equals the number of coins (dollar + staking) owned by the participant.</p>
+            <p>2.2. Votes are distributed among any number of candidates or proposals.</p>
 
+            <p>Article 3: Candidate Rating</p>
+            <p>3.1. Each participant votes for directors using "FOR" or "AGAINST" votes.</p>
+            <p>3.2. A candidate's rating is calculated as: "FOR" - "AGAINST".</p>
+            <p>3.3. The top 5 candidates with the highest ratings become directors for a term of 2 years.</p>
+            <p>3.4. 7 judges are elected under the name CORPORATE_COUNCIL_OF_REFEREES in a similar manner to directors. Each judge has one vote. If 4 or more judges vote against, the decision will be canceled.</p>
 
-            <p> Article 3: Board of Directors</p>
-            <p>3.1. The Board of Directors consists of 7 members. Each network participant can vote for any candidate to the Board of Directors, where each candidate receives as many votes “for” or “against” as the number of coins the voter has in stake. The 7 candidates with the highest ratings occupy seats on the Board of Directors for a period of 2 years.
-            </p>
-            <p>3.2. Decisions of the Board of Directors are made by a majority vote (at least 57%) and come into force unless there is a veto from the Judges.
-            </p>
-            <p>3.3. The Board of Directors may propose amendments to the bylaws provided they receive at least 75% of the votes and no veto by the Judges.
-            </p>
-            <!-- Add other sections similarly -->
+            <p>Article 4: Directors' Voting</p>
+            <p>4.1. Directors vote proportionally to their rating.</p>
+            <p>4.2. A director's vote equals their rating.</p>
+            <p>4.3. Example: If a director's rating = 200, and the total rating of all directors = 1000, then their vote = 20%.</p>
+
+            <p>Article 5: Direct Voting</p>
+            <p>5.1. Participants vote directly on proposals.</p>
+            <p>5.2. The final result = sum of "FOR" votes - sum of "AGAINST" votes.</p>
+            <p>5.3. A decision is considered adopted if it receives at least 52% of the total directors' ratings.</p>
+
+            <p>Article 6: System Dynamism</p>
+            <p>6.1. All votes are recalculated with each block to reflect the current state.</p>
+            <p>6.2. If a decision loses support (below 52%), it immediately loses its force.</p>
+            <p>6.3. Vote recalculation occurs automatically with any coin transaction.</p>
+
+            <p>Article 7: Vote Redistribution</p>
+            <p>7.1. If a participant transfers their coins to another, votes for candidates or proposals are redistributed in the same block.</p>
+            <p>7.2. Example: A participant had 200 coins, voted "FOR" candidate A. After transferring 100 coins, the redistribution adjusts the votes: 100 remain with the participant, 100 go to the new owner.</p>
+
+            <p>Article 8: Voting Flexibility</p>
+            <p>8.1. Participants can change or revoke their votes at any time.</p>
+            <p>8.2. Votes can be re-voted, and the validity period resets.</p>
+
+            <p>Article 9: Time Limitation</p>
+            <p>9.1. Only votes from the last 4 years are counted. This encourages active participation in voting.</p>
+
+            <p>Article 10: Decision-Making Mechanism</p>
+            <p>10.1. A decision can be made in two ways:</p>
+            <p>10.1.1. By directors, if it receives at least 52% of the directors' votes.</p>
+            <p>10.1.2. By direct voting, if it receives at least 52% of all participants' votes.</p>
+            <p>10.2. If a package name starts with ADD_DIRECTOR, it creates new positions. Each field of such a package represents one position, e.g., ADD_DIRECTOR_CEO or another title.</p>
+            <p>10.2.1. Positions from the ADD_DIRECTOR package are elected in the same way as network rules are approved, either by direct voting or by directors.</p>
+            <p>10.2.2. Any participant can apply for this position similarly to applying for other positions.</p>
+            <p>10.2.3. Appointments to these positions can be made by directors or by direct voting.</p>
+            <p>10.2.4. After the ADD_DIRECTOR package's validity period expires, individuals elected to these positions lose their authority.</p>
+            <p>10.2.5. The ADD_DIRECTOR package does not describe position responsibilities; duties must be defined by other applicable laws and regulations.</p>
         </div>
         <div class="col-md-6">
+            <h3>Раздел II: Система голосования</h3>
+            <p>Статья 2: Основные принципы голосования</p>
+            <p>2.1. Каждый участник голосует своими монетами, где количество голосов равно количеству монет (dollar + staking), принадлежащих участнику.</p>
+            <p>2.2. Голоса распределяются между любым количеством кандидатов или решений.</p>
 
-            <p>Статья 3: Совет Директоров </p>
-            <p>3.1. Совет Директоров состоит из 7 членов. Каждый участник сети может проголосовать за любого кандидата в Совет Директоров, где каждый кандидат получает столько голосов "за" или "против", сколько монет у избирателя в стэйкинге. 7 кандидатов с наибольшим рейтингом занимают места в Совете Директоров сроком на 2 года</p>
-            <p>3.2. Решения Совета Директоров принимаются большинством голосов (не менее 57%) и вступают в силу, если отсутствует вето со стороны Судей.
-            </p>
-            <p>3.3. Совет Директоров может предложить поправки в устав при условии получения не менее 75% голосов и отсутствия вето со стороны Судей.
-            </p>
-            <!-- Add other sections similarly -->
+            <p>Статья 3: Рейтинг кандидатов</p>
+            <p>3.1. Каждый участник голосует за директоров с помощью голосов "ЗА" или "ПРОТИВ".</p>
+            <p>3.2. Рейтинг кандидата вычисляется как: "ЗА" - "ПРОТИВ".</p>
+            <p>3.3. Топ-5 кандидатов с наибольшими рейтингами становятся директорами на срок 2 года.</p>
+            <p>3.4. Избираются 7 судей под названием CORPORATE_COUNCIL_OF_REFEREES аналогичным образом, как и директора. Каждый судья обладает одним голосом. Если 4 судьи или больше проголосуют против, то решение будет отменено.</p>
+
+            <p>Статья 4: Голосование директоров</p>
+            <p>4.1. Директора голосуют пропорционально своему рейтингу.</p>
+            <p>4.2. Голос директора = его рейтинг.</p>
+            <p>4.3. Пример: Если рейтинг директора = 200, а суммарный рейтинг всех директоров = 1000, то его голос = 20%.</p>
+
+            <p>Статья 5: Прямое голосование</p>
+            <p>5.1. Участники голосуют напрямую за решения.</p>
+            <p>5.2. Итоговый результат = сумма голосов "ЗА" - сумма голосов "ПРОТИВ".</p>
+            <p>5.3. Решение считается принятым, если получает не менее 52% от общего рейтинга всех директоров.</p>
+
+            <p>Статья 6: Динамичность системы</p>
+            <p>6.1. Все голоса пересчитываются с каждым блоком, чтобы отражать актуальное состояние.</p>
+            <p>6.2. Если решение теряет поддержку (менее 52%), оно немедленно утрачивает силу.</p>
+            <p>6.3. Перерасчёт голосов происходит автоматически при любой транзакции монет.</p>
+
+            <p>Статья 7: Перераспределение голосов</p>
+            <p>7.1. Если участник передаёт свои монеты другому, голоса за кандидатов или решения перераспределяются в том же блоке.</p>
+            <p>7.2. Пример: У участника было 200 монет, он голосовал "ЗА" кандидата А. После передачи 100 монет перерасчёт распределяет голоса: 100 остаётся за участником, 100 переходит новому владельцу.</p>
+
+            <p>Статья 8: Гибкость голосования</p>
+            <p>8.1. Участники могут изменять или отзывать свои голоса в любое время.</p>
+            <p>8.2. Голоса можно переголосовать, и срок действия обновляется.</p>
+
+            <p>Статья 9: Ограничение по времени</p>
+            <p>9.1. Учитываются только голоса за последние 4 года. Это стимулирует активное участие в голосовании.</p>
+
+            <p>Статья 10: Механизм принятия решений</p>
+            <p>10.1. Решение может быть принято двумя способами:</p>
+            <p>10.1.1. Директорами, если оно получает не менее 52% голосов директоров.</p>
+            <p>10.1.2. Прямым голосованием, если оно получает не менее 52% всех голосов участников.</p>
+            <p>10.2. Если название пакета начинается с ADD_DIRECTOR, то он создаёт новые должности. Каждое поле такого пакета представляет одну должность, например ADD_DIRECTOR_CEO или другое название.</p>
+            <p>10.2.1. Должности из пакета ADD_DIRECTOR избираются так же, как утверждаются правила сети, либо прямым голосованием, либо директорами.</p>
+            <p>10.2.2. Любой участник может подать заявку на данную должность аналогично тому, как подаются заявки на другие должности.</p>
+            <p>10.2.3. Назначение на данные должности может производиться как директорами, так и прямым голосованием.</p>
+            <p>10.2.4. После истечения срока действия пакета ADD_DIRECTOR лица, избранные на эти должности, теряют свои полномочия.</p>
+            <p>10.2.5. Сам пакет ADD_DIRECTOR не описывает обязанности должностей; обязанности должны быть определены другими действующими законами и правилами.</p>
         </div>
     </div>
 
+    <!-- Section III: Mining Mechanism -->
     <div class="row">
         <div class="col-md-6">
-            <p>Article 4: Judges
-            </p>
-            <p>4.1. The Council of Judges consists of 7 members. Each network participant can vote for any candidate for the Council of Judges, where each candidate receives as many votes “for” or “against” as the number of coins the voter has in stake. The 7 candidates with the highest ratings occupy seats on the Council of Judges for a period of 2 years.
-            </p>
-            <p>4.2. The judges have the power to veto any decisions if the number of votes against exceeds the number of votes in favor.
-            </p>
-            <p>4.3. Judges resolve disputes between CITU members and governing bodies.
-            </p>
-            <!-- Add other sections similarly -->
-        </div>
-        <div class="col-md-6">
+            <h3>Section III: Mining Mechanism</h3>
+            <p>Article 11: Mining System Principles</p>
+            <p>11.1. The mining system uses a hybrid consensus of PoW and PoS to ensure security.</p>
+            <p>11.2. The block reward is calculated using the formula:</p>
+            <pre>
+blocksSinceStart = current block number - 326840
 
-            <p>Статья 4: Судьи
-            </p>
-            <p>4.1. Совет Судей состоит из 7 членов. Каждый участник сети может проголосовать за любого кандидата в Совет Судей, где каждый кандидат получает столько голосов "за" или "против", сколько монет у избирателя в стэйкинге. 7 кандидатов с наибольшим рейтингом занимают места в Совете Судей сроком на 2 года.
-            </p>
-            <p>4.2. Судьи имеют право наложить вето на любые решения, если количество голосов против превышает количество голосов за.
-            </p>
-            <p>4.3. Судьи решают споры между участниками CITU и органами управления.
-            </p>
-            <!-- Add other sections similarly -->
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <p>Article 5: General Director</p>
-            <p>5.1. The Director General is elected by CITU members for a period of 2 years.
-            </p>
-            <p>5.2. The General Director is responsible for external relations and execution of decisions.
-            </p>
-            <!-- Add other sections similarly -->
-        </div>
-        <div class="col-md-6">
+year = blocksSinceStart / (432 × 360)
 
-            <p>Статья 5: Генеральный Директор </p>
-            <p>5.1. Генеральный Директор избирается участниками CITU на срок 2 года.
-            </p>
-            <p>5.2. Генеральный Директор отвечает за внешние взаимоотношения и исполнение решений.
-            </p>
-            <!-- Add other sections similarly -->
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
+difficultyV2 = max(complexity - 22, 0)
 
-            <h3>Section III: Electoral System</h3>
-            <p>Article 6: Right to Vote</p>
-            <p>6.1. Each participant who has coins and has reserved them for staking has the right to vote in proportion to the staking balance.
-            </p>
-            <p>6.2. Votes are linked to participants' accounts.
-            </p>
-            <!-- Add other sections similarly -->
-        </div>
-        <div class="col-md-6">
+Result = (3 + (coefficient / 4) + (difficultyV2 / 4)) × (1.005)^year
 
-            <h3>Раздел III: Избирательная Система
-            </h3>
-            <p>Статья 6: Право Голоса
-            </p>
-            <p>6.1. Каждый участник, имеющий монеты и зарезервировавший их в стейкинг, имеет право голоса пропорционально стейкинг-балансу.
-            </p>
-            <p>6.2. Голоса привязаны к счетам участников.
-            </p>
-            <!-- Add other sections similarly -->
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <p>Article 7: Electoral Procedure
-            </p>
-            <p>7.1. To elect officials, a standard voting procedure is used, based on the staking balance.
-            </p>
+Reward = Result × Multiplier (where Multiplier ≥ 1)
+            </pre>
+            <p>11.3. The coefficient (Coefficient) takes values:</p>
+            <p>3, if unique transactions and volumes increase compared to the previous block.</p>
+            <p>0, if they remain the same or decrease.</p>
 
-            <!-- Add other sections similarly -->
-        </div>
-        <div class="col-md-6">
+            <p>Article 12: Player Points Formation</p>
+            <p>12.1. Player points (Points) are calculated as the sum of:</p>
+            <ul>
+                <li>Complexity points;</li>
+                <li>Random number;</li>
+                <li>Staking points;</li>
+                <li>Transaction points.</li>
+            </ul>
+            <p>12.2. Staking points:</p>
+            <ul>
+                <li>1st point: 1.1 coins;</li>
+                <li>2nd point: 2.1 coins;</li>
+                <li>3rd point: 4.1 coins;</li>
+                <li>Maximum: 30 points.</li>
+            </ul>
+            <p>12.3. Transaction points:</p>
+            <ul>
+                <li>Calculated based on transaction volumes from unique senders;</li>
+                <li>1st point: 0.11 coins;</li>
+                <li>2nd point: 0.21 coins;</li>
+                <li>3rd point: 0.41 coins;</li>
+                <li>Maximum: cannot exceed staking points.</li>
+            </ul>
 
-            <p>Статья 7: Избирательная Процедура</p>
-            <p>7.1. Для избрания должностных лиц используется стандартная процедура голосования, основанная на стейкинг-балансе.
-            </p>
+            <p>Article 13: Generation of Randomness and Complexity</p>
+            <p>13.1. Complexity and hash target:</p>
+            <ul>
+                <li>Participants can submit blocks with complexity from 17 to 100.</li>
+                <li>A hash is considered valid if the number of ones in the bits is less than or equal to the target value: Target = 100 - Complexity.</li>
+            </ul>
+            <p>13.2. Random number:</p>
+            <ul>
+                <li>Generated based on the block hash, which serves as a deterministic source of randomness;</li>
+                <li>Fixed range: from 0 to 170.</li>
+            </ul>
 
-            <!-- Add other sections similarly -->
+            <p>Article 14: Final Points Calculation Model</p>
+            <p>14.1. The final points total is calculated as:</p>
+            <ul>
+                <li>Complexity points = complexity × 15;</li>
+                <li>Random value in the range from 0 to 170;</li>
+                <li>Transaction points;</li>
+                <li>Final points = Complexity points + Random value + Transaction points.</li>
+            </ul>
         </div>
-    </div>
+        <div class="col-md-6">
+            <h3>Раздел III: Механизм майнинга</h3>
+            <p>Статья 11: Принципы работы системы майнинга</p>
+            <p>11.1. Система майнинга использует гибридный консенсус PoW и PoS для обеспечения безопасности.</p>
+            <p>11.2. Награда за блок рассчитывается по формуле:</p>
+            <pre>
+blocksSinceStart = текущий номер блока - 326840
 
-    <div class="row">
-        <div class="col-md-6">
-            <h3>Section V: Mining</h3>
-            <p>Article 8: Mining Principles</p>
-            <p>8.1. Mining is based on an algorithm that combines elements of Proof of Stake (PoS) and Proof of Work
-                (PoW).</p>
-            <p>8.2. For mining you need to go to the localhost page :8082/, where multithreading is automatically
-                enabled. Then, in the menu in the upper right corner, click on "Get Locked", select "Start", and click
-                on "International Union Corporation". The message "Is Mining Proper" should appear in the information
-                window.</p>
-            <p>8.3. The console does not display information about the mining process so as not to slow it down. </p>
-            <p>8.4. To stop mining, you need to double-click on the “Stop” button and then on the “Corporation
-                International Union” inscription. If everything stopped correctly, the information window will
-                disappear.</p>
-            <p>8.5. A block is considered valid if its hash matches the target value using the formula: javaCopyint
-                result = deterministicRandom.nextInt(limit); result = (int) ((int) (result + (actual.getHashCompexity()
-                * waight)) + calculateScore(miner.getDigitalStakingBalance(), number));</p>
-            <p>8.6. The mining system stimulates a smooth increase in the value of the coin, preventing sudden drops
-                and is resistant to strong volatility.</p>
-            <p>8.7. Investors can place bets or withdraw funds via the http://localhost:8082/mining tab.</p>
-            <p>8.8. Account balances are checked at http://localhost:8082/testCalculate. If inconsistencies are found,
-                you must inform the server owner.</p>
-            <p>8.9. In the system, the block with the highest random number value, which is determined by three
-                components, wins: difficulty, random number, staking.</p>
-            <p>8.10. Each node selects the block with the highest score every 100 seconds and compares it with the
-                blocks of other nodes.</p>
-            <p>8.11. The mining reward is calculated using the formula: javaCopy(5 + coefficient + (difficulty * 0.2))
-                * multiplier</p>
-            <p>8.12. Historical features of the system include the creation of a special block at index 24281 to
-                compensate participants affected by an attack on the blockchain.</p>
+year = blocksSinceStart / (432 × 360)
 
-        </div>
-        <div class="col-md-6">
-            <h3>Раздел V: Майнинг</h3>
-            <p>Статья 8: Принципы Майнинга</p>
-            <p>8.1. Майнинг основан на алгоритме, объединяющем элементы Proof of Stake (PoS) и Proof of Work
-                (PoW). </p>
-            <p>8.2. Для майнинга необходимо перейти на страницу localhost:8082/, где автоматически включается
-                многопоточность. Затем в меню в правом верхнем углу нажать на "Get Locked", выбрать "Start", и нажать на
-                "International Union Corporation". В информационном окне должно появиться сообщение "Is Mining
-                Proper".</p>
-            <p>8.3. В консоли не отображается информация о процессе майнинга, чтобы не замедлять его.</p>
-            <p>8.4. Для остановки майнинга нужно дважды нажать на кнопку "Stop" и затем на надпись "Corporation
-                International Union". Если все остановилось корректно, информационное окно исчезнет.</p>
-            <p>8.5. Блок считается валидным, если его хеш соответствует целевому значению по формуле: javaCopyint
-                result = deterministicRandom.nextInt(limit); result = (int) ((int) (result + (actual.getHashCompexity()
-                * waight)) + calculateScore(miner.getDigitalStakingBalance(), number));</p>
-            <p>8.6. Система майнинга стимулирует плавное увеличение стоимости монеты, предотвращая резкие падения и
-                устойчива к сильной волатильности.</p>
-            <p>8.7. Вкладчики могут делать ставки или снимать средства на вкладку http://localhost:8082/mining.</p>
-            <p>8.8. Баланс аккаунтов проверяется на http://localhost:8082/testCalculate. Если обнаружены
-                несоответствия, необходимо сообщить владельцу сервера. </p>
-            <p>8.9. В системе выигрывает блок с наибольшим значением случайного числа, которое определяется по трем
-                компонентам: сложность, случайное число, стейкинг.</p>
-            <p>8.10. Каждый узел выбирает блок с наибольшим количеством очков каждые 100 секунд и сравнивает его с
-                блоками других узлов.</p>
-            <p>8.11. Вознаграждение за майнинг рассчитывается по формуле: javaCopy(5 + coefficient + (difficulty *
-                0.2)) * multiplier</p>
-            <p>8.12. Исторические особенности системы включают создание специального блока на индексе 24281 для
-                компенсации участников, пострадавших от атаки на блокчейн.</p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <p>Article 9: Mining Reserve Provisions</p>
-            <p>9.1. If violations are discovered during mining, the Council of Judges has the right to impose a temporary moratorium on the release of new coins.
-            </p>
-            <p>9.2. In the event of force majeure circumstances that threaten the system, the Founder may declare a state of emergency and temporarily suspend mining.
-            </p>
-            <p>9.3. After elimination of violations or force majeure Mining resumes as normal.
-            </p>
-        </div>
-        <div class="col-md-6">
-            <p>Статья 9: Резервные Положения Майнинга
-            </p>
-            <p>9.1. Если обнаружены нарушения при майнинге, Совет Судей имеет право наложить временный мораторий на выпуск новых монет.
-            </p>
-            <p>9.2. В случае форс-мажорных обстоятельств, угрожающих системе, Основатель может ввести чрезвычайное положение и временно приостановить майнинг.
-            </p>
-            <p>9.3. После устранения нарушений или форс-мажора майнинг возобновляется в штатном режиме.
-            </p>
+difficultyV2 = max(complexity - 22, 0)
+
+Result = (3 + (coefficient / 4) + (difficultyV2 / 4)) × (1.005)^year
+
+Reward = Result × Multiplier (где Multiplier ≥ 1)
+            </pre>
+            <p>11.3. Коэффициент (Coefficient) принимает значения:</p>
+            <p>3, если уникальные транзакции и объёмы увеличиваются по сравнению с предыдущим блоком.</p>
+            <p>0, если остаются прежними или снижаются.</p>
+
+            <p>Статья 12: Формирование очков игроков</p>
+            <p>12.1. Очки игроков (Points) рассчитываются как сумма:</p>
+            <ul>
+                <li>очков сложности (complexity points);</li>
+                <li>случайного числа (random number);</li>
+                <li>очков стейкинга (staking points);</li>
+                <li>очков транзакций (transaction points).</li>
+            </ul>
+            <p>12.2. Очки стейкинга:</p>
+            <ul>
+                <li>1-й очко: 1.1 монеты;</li>
+                <li>2-й очко: 2.1 монеты;</li>
+                <li>3-й очко: 4.1 монеты;</li>
+                <li>Максимум: 30 очков.</li>
+            </ul>
+            <p>12.3. Очки транзакций:</p>
+            <ul>
+                <li>рассчитываются на основе объёмов транзакций от уникальных отправителей;</li>
+                <li>1-й очко: 0.11 монеты;</li>
+                <li>2-й очко: 0.21 монеты;</li>
+                <li>3-й очко: 0.41 монеты;</li>
+                <li>Максимум: не может превышать очки стейкинга.</li>
+            </ul>
+
+            <p>Статья 13: Генерация случайности и сложности</p>
+            <p>13.1. Сложность и цель хеша:</p>
+            <ul>
+                <li>Участники могут отправлять блоки со сложностью от 17 до 100.</li>
+                <li>Хеш считается действительным, если количество единиц в битах меньше или равно значению: Цель = 100 - Сложность.</li>
+            </ul>
+            <p>13.2. Случайное число:</p>
+            <ul>
+                <li>генерируется на основе хеша блока, который служит детерминированным источником случайности;</li>
+                <li>диапазон фиксирован: от 0 до 170.</li>
+            </ul>
+
+            <p>Статья 14: Итоговая модель начисления очков</p>
+            <p>14.1. Финальная сумма очков рассчитывается как:</p>
+            <ul>
+                <li>Очки сложности = сложность × 15;</li>
+                <li>Случайное значение в диапазоне от 0 до 170;</li>
+                <li>Очки транзакций;</li>
+                <li>Итоговые очки = Очки сложности + Случайное значение + Очки транзакций.</li>
+            </ul>
         </div>
     </div>
 
+    <!-- Section IV: Final Provisions -->
     <div class="row">
         <div class="col-md-6">
-            <h3>Section VI: Final Provisions</h3>
-            <p>Article 10: Entry into Force</p>
-            <p>10.1. This Charter comes into force from the moment of its approval by the Founder.
-            </p>
-        </div>
-        <div class="col-md-6">
-            <h3>Раздел VI: Заключительные Положения
-            </h3>
-            <p>Статья 10: Вступление в Силу</p>
-            <p>10.1. Настоящий Устав вступает в силу с момента его утверждения Основателем.
-            </p>
-        </div>
-    </div>
+            <h3>Section IV: Final Provisions</h3>
+            <p>Article 15: Entry into Force</p>
+            <p>15.1. This Charter comes into force on 12.01.2025.</p>
 
-    <div class="row">
-        <div class="col-md-6">
-            <p>Article 11: Changes to the Charter
-            </p>
-            <p>11.1. any changes to the Charter can be made with the approval of the Founder.
-            </p>
+            <p>Article 16: Changes to the Charter</p>
+            <p>16.1. Any changes to the Charter can be made with the approval of the Founder or with the support of 70% of directors or participants, but not earlier than 7 years after the Founder’s approval of this Charter.</p>
 
-        </div>
-        <div class="col-md-6">
-            <p> Статья 11: Изменения Устава
-            </p>
-            <p>11.1. любые изменения в Устав могут быть внесены с одобрения Основателя.
-            </p>
-        </div>
-    </div>
+            <!-- New Articles Added -->
+            <p>Article 17: Amendment Procedures</p>
+            <p>17.1. The Charter can be amended by the Founder or through direct voting or the Council of Directors after 7 years from the Charter's approval, similar to law approval but with a minimum requirement of 75% instead of 52%.</p>
+            <p>17.2. A moratorium on Charter amendments is established for 7 years from the Charter's approval to increase the number of users and inform them about how the system operates.</p>
 
-    <div class="row">
-        <div class="col-md-6">
-            <h3>Section VII: Voting</h3>
-            <p>Article 12 Voting</p>
-            <p>12.1. Any vote is taken into account in the system for 2 years, where 360 days are taken per year, and approximately 576 blocks per day.
-            </p>
-            <p>12.2. Votes can be canceled or changed an unlimited number of times.
-            </p>
-            <p>12.3. Votes are tied to accounts, and their number changes depending on the staking balance. This also applies to officials.
-            </p>
-            <p>12.4. The votes can be re-voted, and the countdown will start again at 2 years.
-            </p>
-        </div>
-        <div class="col-md-6">
-            <h3>Раздел VII: Голосование</h3>
-            <p>Статья 12: Голосование</p>
-            <p>12.1. Любой голос учитывается в системе в течение 2 лет, где за год берется 360 дней, а за сутки примерно 576 блоков.
-            </p>
-            <p>12.2. Голоса могут быть отменены или изменены неограниченное количество раз.
-            </p>
-            <p>12.3. Голоса привязаны к счетам, и их количество изменяется в зависимости от стейкинг-баланса. Это касается также должностных лиц.
-            </p>
-            <p>12.4. Голоса можно переголосовать, и отсчет будет снова начинаться с 2 лет.
-            </p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <p>Article 13: Removal of Officials
-            </p>
-            <p>13.1. Any position can be removed if the official's rating falls below 1 or relative to other candidates.
-            </p>
-            <p>13.2. The General Director may be removed from office if the rating drops or by decision of the Board of Directors and Judges.
-            </p>
-        </div>
-        <div class="col-md-6">
-            <p>Статья 13: Снятие Должностных Лиц
-            </p>
-            <p>13.1. Любую должность можно снять, если рейтинг должностного лица упадет ниже 1 или относительно других кандидатов.
-            </p>
-            <p>13.2. Генеральный Директор может быть снят с должности при падении рейтинга или по решению Совета Директоров и Судей.
-            </p>
-        </div>
-    </div>
+            <p>Article 18: Transaction Requirements</p>
+            <p>18.1. Any vote or transaction in this system currently requires a minimum of 0.01 coins to be sent, regardless of whether it's in dollars or shares.</p>
+            <p>18.2. Transactions cannot simultaneously send 0 dollars and shares; at least one of them must be 0.01.</p>
+            <p>18.3. When voting, the recipient becomes the identification number.</p>
 
-    <div class="row">
-        <div class="col-md-6">
-            <p>Article 14: Financial Audit</p>
-            <p>14.1. The Council of Judges is responsible for financial audit.
-            </p>
-            <p>14.2. Money donated voluntarily for projects of the Board of Directors and decisions made by them are controlled by the Board of Directors and the General Director.
-            </p>
-            <p>14.3. A financial committee is created with representatives of the Board of Directors and Judges to coordinate financial audits and control expenses.
-            </p>
+            <p>Article 19: Founder's Reward</p>
+            <p>19.1. The Founder receives an additional 10% of the created coins in each block.</p>
+            <p>19.2. This percentage cannot exceed 10% and may be reviewed and reduced in the future.</p>
 
+            <p>Article 20: Voting Exclusions</p>
+            <p>20.1. The last 10 blocks are always excluded from voting calculations.</p>
+            <p>20.2. To ensure your vote is counted, at least 10 blocks must pass after casting your vote.</p>
+            <p>20.3. This measure is implemented to prevent private alterations and ensure the integrity of the voting process.</p>
         </div>
         <div class="col-md-6">
-            <p>Статья 14: Финансовый Аудит
-            </p>
-            <p>14.1. За финансовый аудит отвечает Совет Судей.
-            </p>
-            <p>14.2. Деньги переданные добровольно на проекты Совета директоров и принятые решения ими, контролируются Советом Директоров и Генеральным Директором.
-            </p>
-            <p>14.3. Создается финансовый комитет с представителями Совета Директоров и Судей для координации финансового аудита и контроля за тратами.
-            </p>
-        </div>
-    </div>
+            <h3>Раздел IV: Заключительные положения</h3>
+            <p>Статья 15: Вступление в силу</p>
+            <p>15.1. Настоящий устав вступает в силу с 12.01.2025 года.</p>
 
-    <div class="row">
-        <div class="col-md-6">
-            <p>Article 15: Rights of Participants
-            </p>
-            <p>15.1. Each participant has the right to be elected and to be elected.
-            </p>
-            <p>15.2. Each participant has the right to create decisions that can be voted on by the Board of Directors and the Board of Judges.
-            </p>
-            <p>15.3. Participants who have coins and have reserved them for staking have the right to vote.
-                Conclusion
-                These Bylaws establish the basis for the governance of CITU. The main goal of CITU is to promote the unification of humanity through a single currency to solve global problems.
-                date of approval of the charter 06/21/2024 founder nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43</p>
-        </div>
-        <div class="col-md-6">
-            <p>Статья 15: Права Участников
-            </p>
-            <p>15.1. Каждый участник имеет право избираться и быть избранным.</p>
-            <p>15.2. Каждый участник имеет право создавать решения, за которые могут голосовать Совет Директоров и Совет Судей.
-            </p>
-            <p>15.3. Участники, имеющие монеты и зарезервировавшие их в стейкинг, имеют право голосовать.
-                Заключение
-                Данный Устав устанавливает основы для управления CITU. Основная цель CITU - содействие объединению человечества посредством единой валюты для решения глобальных проблем.
-                дата утверждения устава 21.06.2024 основатель nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43</p>
+            <p>Статья 16: Изменения устава</p>
+            <p>16.1. Любые изменения в устав могут быть внесены с одобрения Основателя или поддержкой директоров или участников 70%, но не ранее 7 лет после утверждения основателем данного устава.</p>
+
+            <!-- Новые статьи добавлены -->
+            <p>Статья 17: Процедуры внесения изменений</p>
+            <p>17.1. Устав может быть изменён Основателем или через прямое голосование или Совет директоров через 7 лет после утверждения Устава, аналогично утверждению закона, но с минимальным требованием 75% вместо 52%.</p>
+            <p>17.2. Мораторий на изменения Устава установлен на 7 лет с момента утверждения Устава для увеличения количества пользователей и информирования их о работе системы.</p>
+
+            <p>Статья 18: Требования к транзакциям</p>
+            <p>18.1. Любое голосование или транзакция в данной системе на данный момент требует не менее 0.01 монеты для отправки, независимо от того, это доллар или акции.</p>
+            <p>18.2. Транзакция не может одновременно отправить 0 долларов и акции; хотя бы один из них должен быть 0.01.</p>
+            <p>18.3. При голосовании получателем становится идентификационный номер.</p>
+
+            <p>Статья 19: Награда основателя</p>
+            <p>19.1. Награда основателя составляет дополнительные 10% созданных монет в каждом блоке.</p>
+            <p>19.2. Это число не может превышать 10% и может быть в будущем пересмотрено в меньшую сторону.</p>
+
+            <p>Статья 20: Исключения из голосования</p>
+            <p>20.1. Всегда исключаются последние 10 блоков из расчёта голосования.</p>
+            <p>20.2. Чтобы ваш голос был учтен, должно пройти не менее 10 блоков после его подачи.</p>
+            <p>20.3. Эта мера введена для предотвращения частных изменений и обеспечения целостности процесса голосования.</p>
         </div>
     </div>
 </div>
 
+<!-- Footer, стилизуется классом .footer-custom из вашего styles.css -->
 <footer th:insert="blocks/footer :: footer"></footer>
+
 </body>
 </html>

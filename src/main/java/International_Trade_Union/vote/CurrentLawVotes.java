@@ -1,5 +1,6 @@
 package International_Trade_Union.vote;
 
+import International_Trade_Union.utils.UtilsUse;
 import lombok.Data;
 import International_Trade_Union.model.Account;
 import International_Trade_Union.setings.Seting;
@@ -10,27 +11,31 @@ import java.util.stream.Collectors;
 
 @Data
 public class CurrentLawVotes {
+
+    private long indexCreateLaw;
+    private String whoCreate;
     private String addressLaw;
-    private Set<String> YES;
-    private Set<String> NO;
+    private Map<String, Long> YES;
+    private Map<String, Long> NO;
 
 
     public CurrentLawVotes() {
     }
 
-    public CurrentLawVotes(String addressLaw, Set<String> YES, Set<String> NO) {
+    public CurrentLawVotes(String addressLaw,  Map<String, Long> YES, Map<String, Long> NO, long indexCreateLaw) {
         this.addressLaw = addressLaw;
         this.YES = YES;
         this.NO = NO;
+        this.indexCreateLaw = indexCreateLaw;
     }
 
-    public int voteDirector (Map<String, Account> balances,
-                             List<String> governments
-    ){
+    public int voteDirector(Map<String, Account> balances,
+                            List<String> governments
+    ) {
         int yes = 0;
         List<String> addressGovernment = governments;
-        for (String s : YES) {
-            if (addressGovernment.contains(s)) {
+        for (Map.Entry<String, Long> s : YES.entrySet()) {
+            if (addressGovernment.contains(s.getKey())) {
                 yes += Seting.VOTE_GOVERNMENT;
             }
 
@@ -49,14 +54,14 @@ public class CurrentLawVotes {
         int no = 0;
 
         List<String> addressGovernment = governments;
-        for (String s : YES) {
-            if (addressGovernment.contains(s)) {
+        for (Map.Entry<String, Long> s : YES.entrySet()) {
+            if (addressGovernment.contains(s.getKey())) {
                 yes += Seting.VOTE_GOVERNMENT;
             }
 
         }
-        for (String s : NO) {
-            if (addressGovernment.contains(s)) {
+        for (Map.Entry<String, Long> s : NO.entrySet()) {
+            if (addressGovernment.contains(s.getKey())) {
                 no += Seting.VOTE_GOVERNMENT;
             }
 
@@ -65,6 +70,82 @@ public class CurrentLawVotes {
 
         return yes - no;
 
+    }
+    public int voteGovernmentNo(
+            Map<String, Account> balances,
+            List<String> governments
+
+    ) {
+        int yes = 0;
+        int no = 0;
+
+        List<String> addressGovernment = governments;
+        for (Map.Entry<String, Long> s : YES.entrySet()) {
+            if (addressGovernment.contains(s.getKey())) {
+                yes += Seting.VOTE_GOVERNMENT;
+            }
+
+        }
+        for (Map.Entry<String, Long> s : NO.entrySet()) {
+            if (addressGovernment.contains(s.getKey())) {
+                no += Seting.VOTE_GOVERNMENT;
+            }
+
+        }
+
+
+        return no;
+
+    }
+    public int voteGovernmentYes(
+            Map<String, Account> balances,
+            List<String> governments
+
+    ) {
+        int yes = 0;
+        int no = 0;
+
+        List<String> addressGovernment = governments;
+        for (Map.Entry<String, Long> s : YES.entrySet()) {
+            if (addressGovernment.contains(s.getKey())) {
+                yes += Seting.VOTE_GOVERNMENT;
+            }
+
+        }
+        for (Map.Entry<String, Long> s : NO.entrySet()) {
+            if (addressGovernment.contains(s.getKey())) {
+                no += Seting.VOTE_GOVERNMENT;
+            }
+
+        }
+
+
+        return yes;
+
+    }
+
+
+
+    public int stakingPointVoting(Map<String, Account> balances, List<String> governments) {
+        int yes = 0;
+        int no = 0;
+
+        for (Map.Entry<String, Long> s : YES.entrySet()) {
+
+            if (governments.contains(s.getKey())) {
+                yes += UtilsUse.calculateScore(balances.get(s.getKey()).getDigitalStakingBalance().doubleValue(), 1);
+            }
+        }
+        //
+        for (Map.Entry<String, Long> s : NO.entrySet()) {
+            if (governments.contains(s.getKey())) {
+                no += UtilsUse.calculateScore(balances.get(s.getKey()).getDigitalStakingBalance().doubleValue(), 1);
+            }
+
+        }
+
+
+        return yes - no;
     }
 
     //для избрания должностных лиц
@@ -76,15 +157,15 @@ public class CurrentLawVotes {
 
 
         //
-        for (String s : YES) {
+        for (Map.Entry<String, Long> s : YES.entrySet()) {
 
-            yes += balances.get(s).getDigitalStakingBalance().doubleValue();
+            yes += balances.get(s.getKey()).getDigitalStakingBalance().doubleValue() + balances.get(s.getKey()).getDigitalDollarBalance().doubleValue();
 
         }
         //
-        for (String s : NO) {
+        for (Map.Entry<String, Long> s : NO.entrySet()) {
 
-            no += balances.get(s).getDigitalStakingBalance().doubleValue();
+            no += balances.get(s.getKey()).getDigitalStakingBalance().doubleValue() + balances.get(s.getKey()).getDigitalDollarBalance().doubleValue();
 
         }
 
@@ -97,11 +178,11 @@ public class CurrentLawVotes {
                         Map<String, Integer> yesAverage, Map<String, Integer> noAverage) {
         double yes = 0.0;
         double no = 0.0;
-        for (String s : YES) {
-            yes += balances.get(s).getDigitalStakingBalance().doubleValue() ;
+        for (Map.Entry<String, Long> s : YES.entrySet()) {
+            yes += balances.get(s.getKey()).getDigitalStakingBalance().doubleValue() ;
 
         }
-        for (String s : NO) {
+        for (Map.Entry<String, Long> s : NO.entrySet()) {
 
             no += balances.get(s).getDigitalStakingBalance().doubleValue() ;
 
@@ -134,9 +215,9 @@ public class CurrentLawVotes {
                 .collect(Collectors.toList())
                 .stream().reduce(0.0, Double::sum);
 
-        for (String s : YES) {
-            if (fractions.containsKey(s)) {
-                yes += (fractions.get(s)/sum) * Seting.HUNDRED_PERCENT;
+        for (Map.Entry<String, Long> s : YES.entrySet()) {
+            if (fractions.containsKey(s.getKey())) {
+                yes += (fractions.get(s.getKey())/sum) * Seting.HUNDRED_PERCENT;
             }
 
         }
@@ -160,10 +241,10 @@ public class CurrentLawVotes {
                 .collect(Collectors.toList())
                 .stream().reduce(0.0, Double::sum);
 
-        for (String s : YES) {
-            if (fractions.containsKey(s)) {
-                yes = (fractions.get(s)/sum) * Seting.HUNDRED_PERCENT;
-                directorsVote.add(new Vote(s, yes));
+        for (Map.Entry<String, Long> s : YES.entrySet()) {
+            if (fractions.containsKey(s.getKey())) {
+                yes = (fractions.get(s.getKey())/sum) * Seting.HUNDRED_PERCENT;
+                directorsVote.add(new Vote(s.getKey(), yes));
             }
 
         }

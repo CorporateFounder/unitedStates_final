@@ -237,6 +237,8 @@ public class MainController {
         model.addAttribute("validation", validation);
         EntityAccount entityAccount = blockService.findByAccount(User.getUserAddress());
         Account account = UtilsAccountToEntityAccount.entityAccountToAccount(entityAccount);
+        account.getAccount();
+
         model.addAttribute("account", account);
         model.addAttribute("score", UtilsUse.calculateScore(account.getDigitalStakingBalance(), BigDecimal.valueOf(1)));
 

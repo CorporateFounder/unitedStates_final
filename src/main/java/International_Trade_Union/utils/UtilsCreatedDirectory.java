@@ -2,7 +2,6 @@ package International_Trade_Union.utils;
 
 import International_Trade_Union.model.Mining;
 import International_Trade_Union.setings.Seting;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.IOException;
@@ -90,7 +89,7 @@ public class UtilsCreatedDirectory {
         files.add(Seting.ORIGINAL_ALL_CLASSIC_LAWS);
         files.add(Seting.ERROR_FILE);
         files.add(Seting.YOUR_SERVER);
-        files.add(Seting.SLIDING_WINDOWS_BALANCE);
+        files.add(Seting.SLIDING_WINDOWS_VOTING);
 
         //временные файлы
         files.add(Seting.ORIGINAL_TEMP_SHORT);

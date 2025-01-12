@@ -5,16 +5,16 @@ import International_Trade_Union.entity.blockchain.Blockchain;
 import International_Trade_Union.entity.blockchain.block.Block;
 import International_Trade_Union.entity.entities.*;
 import International_Trade_Union.entity.services.BlockService;
+import International_Trade_Union.governments.Director;
 import International_Trade_Union.governments.Directors;
+import International_Trade_Union.governments.NamePOSITION;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.*;
-import International_Trade_Union.network.AllTransactions;
 import International_Trade_Union.setings.Seting;
 import International_Trade_Union.utils.*;
 import International_Trade_Union.utils.base.Base;
 import International_Trade_Union.utils.base.Base58;
-import International_Trade_Union.vote.Laws;
-import International_Trade_Union.vote.VoteEnum;
+import International_Trade_Union.vote.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static International_Trade_Union.controllers.BasisController.getNodes;
+import static International_Trade_Union.setings.Seting.VETO_THRESHOLD;
 
 
 @RestController
@@ -534,13 +535,7 @@ public class ConductorController {
     }
 
 
-    @GetMapping("/fromWindow")
-    @ResponseBody
-    public String fromWindow(@RequestParam long index){
-        SlidingWindowManager windowManager = SlidingWindowManager.loadInstance(Seting.SLIDING_WINDOWS_BALANCE);
-        Map<String, Account> balance =  windowManager.getWindow(index);
-        return balance.toString() + " : " + balance.size();
-    }
+
 
     @GetMapping("/getBlocksBySenderInRange")
     public List<EntityBlock> getBlocksBySender(
@@ -567,4 +562,354 @@ public class ConductorController {
                     HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
+
+    @GetMapping("/current-laws-body")
+    @ResponseBody
+    public List<CurrentLawVotesEndBalance> currentLawVotesEndBalances() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        if (BasisController.isUpdating() || BasisController.isMining()) {
+            return new ArrayList<>();
+        }
+
+        //получает список должностей
+        Directors directors = new Directors();
+
+
+        Map<String, Account> balances = new HashMap<>();
+        //извлекает весь список балансов из базы данных.
+        balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findAllAccounts());
+
+        //извлекает из файла список объектов.
+        List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
+                UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+
+        //получить активных участников за фиксированный период.
+//        List<Account> boardOfShareholders = UtilsGovernment.findBoardOfShareholders(balances, blockService, Seting.BOARDS_BLOCK);
+        List<Account> boardOfShareholders = new ArrayList<>();
+
+
+        //подсчет происходит с блоками, полученными порциями из базы данных.
+        Map<String, CurrentLawVotes> votesMap = new HashMap<>();
+        List<Account> accounts = balances.entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
+
+        VoteMapAndLastIndex voteMapAndLastIndex = new VoteMapAndLastIndex();
+        String json = UtilsFileSaveRead.read(Seting.SLIDING_WINDOWS_VOTING);
+        if (json != null && !json.isBlank())
+            voteMapAndLastIndex = (VoteMapAndLastIndex) UtilsJson.jsonToClass(json, VoteMapAndLastIndex.class);
+        if (voteMapAndLastIndex == null)
+            voteMapAndLastIndex = new VoteMapAndLastIndex();
+        boolean isSave = false;
+        if (voteMapAndLastIndex.getFinishIndex()+1  < BasisController.getBlockchainSize() - 10) {
+            isSave = true;
+        }
+        UtilsCurrentLaw.processBlocksWithWindow(voteMapAndLastIndex, accounts, BasisController.getBlockchainSize() - 10, blockService);
+
+        if (isSave) {
+            System.out.println("vote: " + voteMapAndLastIndex.getFinishIndex());
+            System.out.println("size: " +BasisController.getBlockchainSize());
+            System.out.println("size2: " +(BasisController.getBlockchainSize() - 10));
+            UtilsFileSaveRead.save(UtilsJson.objToStringJson(voteMapAndLastIndex), Seting.SLIDING_WINDOWS_VOTING, false);
+        }
+        votesMap = voteMapAndLastIndex.getVotesMap();
+
+        //подсчитать голоса за все проголосованные законы (здесь происходит подсчет, на основе монет)
+        List<CurrentLawVotesEndBalance> current = UtilsGovernment.filtersVotes(
+                lawEligibleForParliamentaryApprovals,
+                balances,
+                boardOfShareholders,
+                votesMap);
+
+
+        //убрать появление всех бюджет и эмиссий из отображения в действующих законах
+        current = current.stream()
+                .filter(t -> !t.getPackageName().equals(Seting.EMISSION) ||
+                        t.getPackageName().equals(Seting.BUDGET))
+                .collect(Collectors.toList());
+
+
+        //здесь отображается избранный совет директоров, на основе правил.
+        List<CurrentLawVotesEndBalance> electedBoardOfDirectors = current.stream()
+                .filter(t -> directors.isElectedByStocks(t.getPackageName()))
+                .filter(t -> t.getPackageName().equals(NamePOSITION.BOARD_OF_DIRECTORS.toString()))
+                .peek(t -> t.setValid(t.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE))
+                .filter(CurrentLawVotesEndBalance::isValid)
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                .limit(directors.getDirector(NamePOSITION.BOARD_OF_DIRECTORS.toString()).getCount())
+                .collect(Collectors.toList());
+
+        //здесь отображается избранный совет судей, на основе правил.
+        List<CurrentLawVotesEndBalance> CORPORATE_COUNCIL_OF_REFEREES = current.stream()
+                .filter(t -> directors.isElectedByStocks(t.getPackageName()))
+                .filter(t -> t.getPackageName().equals(NamePOSITION.CORPORATE_COUNCIL_OF_REFEREES.toString()))
+                .peek(t -> t.setValid(t.getVotes() >= Seting.ORIGINAL_LIMIT_MIN_VOTE))
+                .filter(CurrentLawVotesEndBalance::isValid)
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                .limit(directors.getDirector(NamePOSITION.CORPORATE_COUNCIL_OF_REFEREES.toString()).getCount())
+                .collect(Collectors.toList());
+
+
+        List<CurrentLawVotesEndBalance> createdByBoardOfDirectors = current.stream()
+                .filter(t -> t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
+                .peek(t -> {
+                    double totalFractionsRating = t.getFractionsRaiting().values().stream()
+                            .mapToDouble(Double::doubleValue)
+                            .sum();
+
+                    boolean firstCondition = t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT;
+                    boolean secondCondition = (t.getVotes() / totalFractionsRating) * Seting.HUNDRED_PERCENT
+                            >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT;
+                    boolean additionalCondition = t.getVotesCorporateCouncilOfRefereesNo() < VETO_THRESHOLD;
+
+                    boolean isValid = (firstCondition || secondCondition) && additionalCondition;
+                    t.setValid(isValid); // Установка поля isValid
+                })
+                .filter(CurrentLawVotesEndBalance::isValid) // Фильтрация только валидных объектов
+                .collect(Collectors.toList());
+
+        //добавление позиций созданных советом директоров
+        for (CurrentLawVotesEndBalance currentLawVotesEndBalance : createdByBoardOfDirectors) {
+            directors.addAllByBoardOfDirectors(currentLawVotesEndBalance.getLaws());
+        }
+
+        //позиции избираемые советом директоров
+        List<CurrentLawVotesEndBalance> electedByBoardOfDirectors = current.stream()
+                .filter(t -> directors.isofficeOfDirectors(t.getPackageName()) || directors.isCabinets(t.getPackageName()))
+                .peek(t -> {
+                    double totalFractionsRating = t.getFractionsRaiting().values().stream()
+                            .mapToDouble(Double::doubleValue)
+                            .sum();
+
+                    boolean firstCondition = t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT;
+                    boolean secondCondition = (t.getVotes() / totalFractionsRating) * Seting.HUNDRED_PERCENT
+                            >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT;
+                    boolean additionalCondition = t.getVotesCorporateCouncilOfRefereesNo() < VETO_THRESHOLD;
+
+                    boolean isValid = (firstCondition || secondCondition) && additionalCondition;
+                    t.setValid(isValid); // Установка поля isValid
+                })
+                .filter(CurrentLawVotesEndBalance::isValid) // Фильтруем только валидные объекты
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                .collect(Collectors.toList());
+
+
+        //групируем по списку
+        Map<String, List<CurrentLawVotesEndBalance>> group = electedBoardOfDirectors.stream()
+                .collect(Collectors.groupingBy(CurrentLawVotesEndBalance::getPackageName));
+
+        Map<Director, List<CurrentLawVotesEndBalance>> original_group = new HashMap<>();
+
+        //оставляем то количество которое описано в данной должности
+        for (Map.Entry<String, List<CurrentLawVotesEndBalance>> stringListEntry : group.entrySet()) {
+            List<CurrentLawVotesEndBalance> temporary = stringListEntry.getValue();
+            temporary = temporary.stream()
+                    .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes))
+                    .limit(directors.getDirector(stringListEntry.getKey()).getCount())
+                    .collect(Collectors.toList());
+            original_group.put(directors.getDirector(stringListEntry.getKey()), temporary);
+        }
+
+
+        List<CurrentLawVotesEndBalance> electedByGeneralExecutiveDirector = electedByBoardOfDirectors.stream()
+                .filter(t -> directors.isElectedCEO(t.getPackageName()))
+                .filter(t -> NamePOSITION.GENERAL_EXECUTIVE_DIRECTOR.toString().equals(t.getPackageName()))
+                .peek(t -> {
+                    boolean isValid = t.getVoteGeneralExecutiveDirector() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_GENERAL_EXECUTIVE_DIRECTOR;
+                    t.setValid(isValid); // Устанавливаем поле isValid
+                })
+                .filter(CurrentLawVotesEndBalance::isValid) // Фильтруем только валидные объекты
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVoteGeneralExecutiveDirector))
+                .collect(Collectors.toList());
+
+
+        List<CurrentLawVotesEndBalance> notEnoughVotes = current.stream()
+                .filter(t -> !directors.contains(t.getPackageName()))
+                .filter(t -> !Seting.AMENDMENT_TO_THE_CHARTER.equals(t.getPackageName()))
+                .filter(t -> !directors.isCabinets(t.getPackageName()))
+                .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))
+                .filter(t -> !Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))
+                .peek(t -> {
+                    double totalFractionsRating = t.getFractionsRaiting().values().stream()
+                            .mapToDouble(Double::doubleValue)
+                            .sum();
+
+                    boolean firstCondition = t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT;
+                    boolean secondCondition = (t.getVotes() / totalFractionsRating) * Seting.HUNDRED_PERCENT
+                            >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT;
+                    boolean additionalCondition = t.getVotesCorporateCouncilOfRefereesNo() < VETO_THRESHOLD;
+
+                    boolean isValid = (firstCondition || secondCondition) && additionalCondition;
+                    t.setValid(isValid); // Установка поля isValid
+                })
+                .filter(CurrentLawVotesEndBalance::isValid) // Фильтруем только валидные объекты
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                .collect(Collectors.toList());
+
+
+        List<CurrentLawVotesEndBalance> chapter_amendment = current.stream()
+                .filter(t -> !directors.contains(t.getPackageName()))
+                .filter(t -> Seting.AMENDMENT_TO_THE_CHARTER.equals(t.getPackageName()))
+                .filter(t -> !directors.isCabinets(t.getPackageName()))
+                .peek(t -> {
+                    double totalFractionsRating = t.getFractionsRaiting().values().stream()
+                            .mapToDouble(Double::doubleValue)
+                            .sum();
+
+                    boolean firstCondition = t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_AMENDMENT;
+                    boolean secondCondition = (t.getVotes() / totalFractionsRating) * Seting.HUNDRED_PERCENT
+                            >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_AMENDMENT;
+                    boolean additionalCondition = t.getVotesCorporateCouncilOfRefereesNo() < VETO_THRESHOLD;
+
+                    boolean isValid = (firstCondition || secondCondition) && additionalCondition;
+                    t.setValid(isValid); // Установка поля isValid
+                })
+
+                .filter(CurrentLawVotesEndBalance::isValid) // Фильтруем только валидные объекты
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                .collect(Collectors.toList());
+
+        List<String> positions = directors.getDirectors().stream().map(t->t.getName()).collect(Collectors.toList());
+        // Добавляет законы, которые создают новые должности, утверждается всеми
+        List<CurrentLawVotesEndBalance> addDirectors = current.stream()
+                .filter(t -> t.getPackageName().startsWith(Seting.ADD_DIRECTOR))
+                .peek(t -> {
+                    double totalFractionsRating = t.getFractionsRaiting().values().stream()
+                            .mapToDouble(Double::doubleValue)
+                            .sum();
+
+                    boolean firstCondition = t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT;
+                    boolean secondCondition = (t.getVotes() / totalFractionsRating) * Seting.HUNDRED_PERCENT
+                            >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT;
+                    boolean additionalCondition = t.getVotesCorporateCouncilOfRefereesNo() < VETO_THRESHOLD;
+
+                    boolean isValid = (firstCondition || secondCondition) && additionalCondition;
+                    t.setValid(isValid); // Установка поля isValid
+                })
+                .filter(CurrentLawVotesEndBalance::isValid) // Оставляем только валидные объекты
+                .collect(Collectors.toList());
+
+        for (CurrentLawVotesEndBalance currentLawVotesEndBalance : createdByBoardOfDirectors) {
+            directors.addAllByBoardOfDirectors(currentLawVotesEndBalance.getLaws());
+        }
+        positions.addAll(directors.getNames());
+        positions = positions.stream().distinct().collect(Collectors.toList());
+
+        // Определение позиций, которые требуют соответствия отправителя и первой строки
+        // Поскольку все позиции требуют соответствия, senderMatchPositions = positions
+        List<String> senderMatchPositions = new ArrayList<>(positions);
+
+        // План утверждается всеми
+        List<CurrentLawVotesEndBalance> planFourYears = current.stream()
+                .filter(t -> !directors.contains(t.getPackageName()))
+                .filter(t -> Seting.STRATEGIC_PLAN.equals(t.getPackageName()))
+                .filter(t -> !directors.isCabinets(t.getPackageName()))
+                .peek(t -> {
+                    double totalFractionsRating = t.getFractionsRaiting().values().stream()
+                            .mapToDouble(Double::doubleValue)
+                            .sum();
+
+                    boolean firstCondition = t.getFractionVote() >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT;
+                    boolean secondCondition = (t.getVotes() / totalFractionsRating) * Seting.HUNDRED_PERCENT
+                            >= Seting.ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT;
+                    boolean additionalCondition = t.getVotesCorporateCouncilOfRefereesNo() < VETO_THRESHOLD;
+
+                    boolean isValid = (firstCondition || secondCondition) && additionalCondition;
+                    t.setValid(isValid); // Установка поля isValid
+                })
+                .filter(CurrentLawVotesEndBalance::isValid) // Фильтруем только валидные объекты
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                .limit(1)
+                .collect(Collectors.toList());
+
+
+        //устав всегда действующий он подписан основателем
+        List<CurrentLawVotesEndBalance> CHARTER_ORIGINAL = current.stream()
+                .filter(t -> !directors.contains(t.getPackageName()) && Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))
+                .filter(t -> !directors.isCabinets(t.getPackageName()))
+                .peek(t -> {
+                    boolean isValid = t.getFounderVote() >= 1; // Проверка условия для валидации
+                    t.setValid(isValid); // Установка поля isValid
+                })
+                .filter(CurrentLawVotesEndBalance::isValid) // Фильтруем только валидные объекты
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                .limit(1)
+                .collect(Collectors.toList());
+
+
+        //ИСХОДНЫЙ КОД СОЗДАННЫЙ ОСНОВАТЕЛЕМ
+        List<CurrentLawVotesEndBalance> CHARTER_ORIGINAL_CODE = current.stream()
+                .filter(t -> !directors.contains(t.getPackageName()) && Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))
+                .filter(t -> !directors.isCabinets(t.getPackageName()))
+                .peek(t -> {
+                    boolean isValid = t.getFounderVote() >= 1; // Проверка условия для валидации
+                    t.setValid(isValid); // Установка поля isValid
+                })
+                .filter(CurrentLawVotesEndBalance::isValid) // Фильтруем только валидные объекты
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                .limit(1)
+                .collect(Collectors.toList());
+
+
+        List<CurrentLawVotesEndBalance> charterCheckBlock = current.stream()
+                .filter(t -> !directors.contains(t.getPackageName()) && Seting.ORIGINAL_CHARTER_CURRENT_LAW_PACKAGE_NAME.equals(t.getPackageName()))
+                .filter(t -> !directors.isCabinets(t.getPackageName()))
+                .peek(t -> {
+                    boolean isValid = t.getFounderVote() >= 1; // Условие валидации
+                    t.setValid(isValid); // Установка значения поля isValid
+                })
+                .filter(CurrentLawVotesEndBalance::isValid) // Фильтруем только валидные объекты
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                .limit(1)
+                .collect(Collectors.toList());
+
+
+        CHARTER_ORIGINAL.addAll(charterCheckBlock);
+
+
+        List<CurrentLawVotesEndBalance> charterOriginalCode = current.stream()
+                .filter(t -> !directors.contains(t.getPackageName()) && Seting.ORIGINAL_CHARTER_CURRENT_ALL_CODE.equals(t.getPackageName()))
+                .filter(t -> !directors.isCabinets(t.getPackageName()))
+                .peek(t -> {
+                    boolean isValid = t.getFounderVote() >= 1; // Условие валидации
+                    t.setValid(isValid); // Установка поля isValid
+                })
+                .filter(CurrentLawVotesEndBalance::isValid) // Фильтруем только валидные объекты
+                .sorted(Comparator.comparing(CurrentLawVotesEndBalance::getVotes).reversed())
+                .limit(1)
+                .collect(Collectors.toList());
+
+
+
+
+        CHARTER_ORIGINAL_CODE.addAll(charterOriginalCode);
+        for (Map.Entry<Director, List<CurrentLawVotesEndBalance>> higherSpecialPositionsListMap : original_group.entrySet()) {
+            current.addAll(higherSpecialPositionsListMap.getValue());
+        }
+
+        current.addAll(CORPORATE_COUNCIL_OF_REFEREES);
+        current.addAll(addDirectors);
+
+        current.addAll(electedBoardOfDirectors);
+        current.addAll(planFourYears);
+
+        current.addAll(electedByBoardOfDirectors);
+        current.addAll(electedByGeneralExecutiveDirector);
+        current.addAll(notEnoughVotes);
+        current.addAll(CHARTER_ORIGINAL);
+        current.addAll(CHARTER_ORIGINAL_CODE);
+        current.addAll(chapter_amendment);
+        current = current.stream()
+                .filter(UtilsUse.distinctByKey(CurrentLawVotesEndBalance::getAddressLaw))
+                .collect(Collectors.toList());
+
+        List<String> finalPositions = positions;
+        current.forEach(item -> {
+            boolean isInPositions = finalPositions.contains(item.getPackageName());
+            item.setPosition(isInPositions);
+        });
+
+
+
+
+        return current;
+    }
+
 }

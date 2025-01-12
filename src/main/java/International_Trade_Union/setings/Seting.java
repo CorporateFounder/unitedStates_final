@@ -5,7 +5,6 @@ import International_Trade_Union.utils.MyHost;
 import International_Trade_Union.utils.UtilsUse;
 
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -51,8 +50,8 @@ public interface Seting {
     int ORIGINAL_LIMIT_MIN_VOTE_GENERAL_EXECUTIVE_DIRECTOR = 1;
 
 
-    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT =  57;
-    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_VOTE = 4;
+    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_PERCENT =  52;
+    int ORIGINAL_LIMIT_MIN_VOTE_BOARD_OF_DIRECTORS_VOTE = 3;
 
     //голос Верховного Судьи
     int ORIGINAL_LIMIT_MIN_VOTE_HIGHT_JUDGE = 1;
@@ -96,7 +95,7 @@ public interface Seting {
     int HASH_COMPLEXITY_GENESIS = 1;
 
     //совет акционеров
-    int BOARD_OF_SHAREHOLDERS = 100000;
+    int BOARD_OF_SHAREHOLDERS = 1500;
 
 
     //ПОПРАВКА В УСТАВЕ
@@ -145,7 +144,8 @@ public interface Seting {
 
 
     //подсчет голосов для законов в годах
-    int LAW_HALF_VOTE = (int) Seting.COUNT_BLOCK_IN_DAY * YEAR / 2;
+    int LAW_HALF_VOTE = (int) 432 * YEAR * 4;
+    int LAW_YEAR_BOARD_OF_DIRECTORS = (int) Seting.COUNT_BLOCK_IN_DAY;
 
     //используется для утверждения бюджета и эмиссии
     int LAW_MONTH_VOTE = (int) (FIFTEEN_DAYS * Seting.COUNT_BLOCK_IN_DAY);
@@ -195,7 +195,7 @@ public interface Seting {
 
     String ERROR_FILE = testPath +"/resources/error/error.txt";
     String YOUR_SERVER =testPath + "/resources/server/server.txt";
-    String SLIDING_WINDOWS_BALANCE = "/resources/sWindow/sWindows.txt";
+    String SLIDING_WINDOWS_VOTING = "/resources/sWindow/sWindows.txt";
 
 
 
@@ -337,8 +337,8 @@ public interface Seting {
 
     int CHECK_DUBLICATE_IN_DB_BLOCK = 287773;
 
-    String RCV_BULLETIN = "RCV BULLETIN";
-    int VOTING_DAY = (int) (COUNT_BLOCK_IN_DAY * 14);
+    String BULLETIN = "BULLETIN";
+
 
     int MONEY_MILTON_FRIDMAN_INDEX = 326840;
     double MONEY_MILTON_FRIDMAN = 24;
@@ -349,5 +349,7 @@ public interface Seting {
 
     int OPTIMAL_SCORE_INDEX = 342201;
 
+    double MIN_SENDING_FOR_LAW = 0.01;
+    int VETO_THRESHOLD = 4;
 }
 

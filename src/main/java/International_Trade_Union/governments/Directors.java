@@ -22,7 +22,7 @@ public class Directors {
 
         //Законодательная власть.
         //Legislature.
-        Director BOARD_OF_DIRECTORS = new Director("BOARD_OF_DIRECTORS", 7, false, false, false, true, false);
+        Director BOARD_OF_DIRECTORS = new Director("BOARD_OF_DIRECTORS", 5, false, false, false, true, false);
 
         //Исполнительная власть.
         //Executive power.
