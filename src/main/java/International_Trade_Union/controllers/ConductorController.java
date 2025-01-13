@@ -569,6 +569,7 @@ public class ConductorController {
         if (BasisController.isUpdating() || BasisController.isMining()) {
             return new ArrayList<>();
         }
+        utilsResolving.resolve3();
 
         //получает список должностей
         Directors directors = new Directors();
