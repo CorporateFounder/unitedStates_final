@@ -1,0 +1,503 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}">Alliance and CITU Charter</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<header th:insert="blocks/header :: header "></header>
+
+<div class="container">
+
+
+    <h2>Section 1: Fundamentals of the System's Operation</h2>
+
+    <h3>Article 1: Core Principles of the CITU System</h3>
+    <ol>
+        <li><strong>CITU</strong> — the primary cryptocurrency of the Alliance, used for voting, economic operations, and ensuring decentralized governance.</li>
+        <li><strong>DAO</strong> (Decentralized Autonomous Organization) provides the decision-making mechanism for network participants.</li>
+    </ol>
+
+    <div class="article">
+        <h3>Article 2: Principles of Governance</h3>
+
+        <p><strong>Alliance Congress</strong> is a bicameral governing body, consisting of the House of Representatives and the Senate.</p>
+
+        <p><strong>Founder</strong> holds the highest moral and strategic role in the Alliance, being the initiator of its ideas and goals.</p>
+
+        <h4>Transfer of Powers</h4>
+        <p>The Founder retains leadership until the official formation of the Alliance Congress and recognition of its competency. From that moment, the Founder delegates daily management to the Congress, based on the belief that the selfless work of the Congress reflects the original principles of freedom, equality, and prosperity for all humanity.</p>
+
+        <h4>Non-Interference as Trust</h4>
+        <p>As long as the Congress continues to work effectively in a regular mode and there are no emergencies, the Founder is free to leave decision-making to the Congress, while continuing to promote the ideas of the Alliance's prosperity and humanity. At the same time, the Founder retains the status of the originator of these ideas aimed at protecting rights and freedoms, as well as achieving the common good. The strength of the Alliance lies in unity and mutual support; like fingers on a hand, we are all different, but by joining into a fist, we become unstoppable in our pursuit of prosperity, diversity, and happiness.</p>
+
+        <h4>Emergency Intervention</h4>
+        <p>If the Congress ceases to exist or cannot perform its functions (e.g., dissolution, force majeure, etc.), the Founder has the right to temporarily assume organizational powers to restore the stability of the Alliance and assist in conducting new elections or another legitimate mechanism for forming the Congress. All decisions made during this period are subject to mandatory confirmation by the newly formed Congress.</p>
+
+        <h4>Inheritance of Founder Status</h4>
+        <p>Despite the general rule (Art. 23, para. 2.1) prohibiting direct familial inheritance of positions, the status of Founder is an exception. The Founder has the right to transfer the moral-strategic role of the Alliance to a designated successor (direct heir by will or another mechanism). This succession applies only to the "moral and strategic" role and does not grant automatic rights to hold any government positions without elections or appointments as provided by the Charter.</p>
+
+        <p>Decisions are made through voting, as described in this Charter.</p>
+    </div>
+
+
+    <h3>Article 3: Core Voting Principles</h3>
+    <h4>Voting with CITU Coins</h4>
+    <p>Each participant votes with their CITU dollars, with both free and staked coins taken into account.</p>
+    <p>The total number of CITU dollars (free + staking) determines the overall weight of a participant's vote.</p>
+
+    <h4>Vote Distribution Mechanics</h4>
+    <p>Votes can be distributed among any number of candidates or decisions. If a participant allocates N coins to a candidate, and other participants vote against him with M coins, the candidate's final rating for that participant will be (N - M). The overall rating is the sum of all "FOR" and "AGAINST" votes.</p>
+
+    <h3>Article 4: Candidate Ratings</h3>
+    <ol>
+        <li>Each participant votes for directors using "FOR" or "AGAINST" votes.</li>
+        <li><strong>Candidate Rating</strong> is calculated as: "FOR" - "AGAINST".</li>
+        <li><strong>Top 5 Candidates</strong> with the highest ratings become directors for a term of 4 years. The number of re-elections is unlimited.</li>
+        <li><strong>7 Judges are Elected</strong> to form the <strong>Corporate Council of Referees</strong>, similarly to the election of directors. Each judge has one vote. If 4 or more judges vote against, the decision is overturned.</li>
+    </ol>
+
+    <h3>Article 5: Directors' Voting</h3>
+    <ol>
+        <li>Directors vote proportionally to their rating.</li>
+        <li><strong>Director's Vote</strong> = their rating.</li>
+        <li><strong>Example:</strong> If a director's rating = 200, and the total rating of all directors = 1000, then their vote = 20%.</li>
+    </ol>
+
+    <h3>Article 6: Direct Voting (Considering Directors' Ratings)</h3>
+    <p>Participants vote directly on decisions.</p>
+
+    <p>Final result (decision rating) = sum of "FOR" votes - sum of "AGAINST" votes (all participants who chose to vote directly are taken into account).</p>
+
+    <h4>Comparison with Directors' Cumulative Rating</h4>
+    <p>For assessing the 52% threshold, the cumulative rating of the top 5 elected directors is used (see Articles 4–5). The cumulative rating of these 5 directors (Top-5) is considered 100%. If the final decision rating (YES - NO from direct voting) reaches at least 52% relative to this base (i.e., ≥ 52% of the cumulative rating of the Top-5 directors), the decision is considered accepted.</p>
+
+    <h4>Decision Validity</h4>
+    <p>The decision remains valid as long as it is supported by at least 52% (relative to the cumulative rating of the Top-5 directors) either by the Board of Directors or by direct voting of participants and is not blocked by the Council of Judges.</p>
+
+    <h4>Calculation Example</h4>
+    <ol>
+        <li>Determine the cumulative rating of the five directors with the highest ratings (Top-5). Suppose they have a total of 1000 points (considered as 100%).</li>
+        <li>If participants vote directly on a question and their final score (YES - NO) is 520, this equals 52% of 1000 (Top-5 directors' rating). Therefore, the decision is considered accepted.</li>
+        <li>Similarly, if directors vote themselves (without direct voting), they must also collectively score at least 52% of 1000 (i.e., 520) for the decision to pass.</li>
+    </ol>
+    <p>Thus, either directors' voting or final direct voting is always compared with 100%, corresponding to the total rating of the Top-5 directors. If the decision reaches 52% of this cumulative amount, it is considered approved.</p>
+
+    <h3>Article 7: System Dynamics</h3>
+    <ol>
+        <li>All votes are recalculated with each block to reflect the current state, except for the last 10 blocks. To be counted, at least 10 blocks must pass after a vote is cast.</li>
+        <li>If a decision loses support (less than 52%), it immediately loses force.</li>
+        <li>Vote recalculations occur automatically with any coin transaction.</li>
+    </ol>
+
+    <h3>Article 8: Loss of Key Positions</h3>
+    <ol>
+        <li>In the event of loss of key positions (e.g., directors, judges, or the General Director), participants must decide by direct voting or create temporary positions through the <strong>ADD_DIRECTOR</strong> package.</li>
+        <li>Temporary positions remain until permanent representatives are elected or alternative solutions are approved. To continue the temporary positions, the package must be recreated with their list through <strong>ADD_DIRECTOR</strong>.</li>
+        <li>The Founder may intervene in emergency situations until the first Congress is formed or in cases where the existing Congress of the Alliance ceases to perform its functions for objective reasons (dissolution, incapacity, etc.). In all other cases, any emergency measures are taken by the constitutional bodies of the Alliance. Upon restoring the Congress's functionality, all Founder’s decisions made during the emergency period are reviewed and re-confirmed.</li>
+    </ol>
+
+    <h3>Article 9: Precedent Law</h3>
+    <ol>
+        <li>All issues not specified in the charter or in approved decisions are subject to consideration through precedent law within the CITU community. Precedent decisions cannot contradict the Charter of the Alliance or laws adopted by the Congress.</li>
+        <li>Precedent law is based on the following principles:
+            <ul>
+                <li>The community or the Board of Directors must approve decisions on issues not specified in the charter.</li>
+                <li>The Council of Judges must actively participate in reviewing such issues, ensuring decisions comply with the charter’s main provisions.</li>
+                <li>If a decision becomes a precedent, it must be documented and communicated to all network participants.</li>
+            </ul>
+        </li>
+        <li>The Council of Judges may veto in the following cases:
+            <ul>
+                <li>If multiple decisions that contradict each other or the charter are approved.</li>
+                <li>If a decision violates current norms or poses a threat to the network's interests.</li>
+                <li>If a contentious situation arises that has not been previously resolved, the Council of Judges must decide based on precedent law principles. The final decision remains with the existing Council of Judges unless they revise their decision or a new Council is elected to review it.</li>
+            </ul>
+        </li>
+        <li>A precedent decision can be challenged or overturned if:
+            <ul>
+                <li>It violates the provisions of the charter.</li>
+                <li>New data or arguments emerge that require reconsideration.</li>
+                <li>The Council of Judges unanimously decides that the decision contradicts the network’s interests.</li>
+            </ul>
+        </li>
+        <li>To establish a precedent, confirmation by 52% of participant votes or approval by the Board of Directors is required.</li>
+        <li>The Council of Judges cannot approve decisions independently but can fill gaps in contentious situations until decisions are officially approved by the community or the Board of Directors.</li>
+        <li>The arbitration process and other procedures must be approved by the community as separate packages, similar to the approval of other decisions.</li>
+    </ol>
+
+    <h3>Article 10: Mining Mechanism</h3>
+    <ol>
+        <li><strong>Mining System</strong> uses a hybrid PoW and PoS consensus to ensure security.</li>
+        <li><strong>Block Reward</strong> is calculated using the formula:
+            <pre>
+blocksSinceStart = current block number - 326840
+year = blocksSinceStart / (432 × 360)
+difficultyV2 = max(complexity - 22, 0)
+Result = (3 + (coefficient / 4) + (difficultyV2 / 4)) × (1.005)^year
+Reward = Result × Multiplier (where Multiplier ≥ 1)
+            </pre>
+        </li>
+        <li><strong>Coefficient</strong> takes the following values:
+            <ul>
+                <li>3, if unique transactions and volumes increase compared to the previous block.</li>
+                <li>0, if they remain the same or decrease.</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h3>Article 11: Player Points Formation</h3>
+    <ol>
+        <li><strong>Player Points (Points)</strong> are calculated as the sum of:
+            <ul>
+                <li>complexity points;</li>
+                <li>random number;</li>
+                <li>staking points;</li>
+                <li>transaction points.</li>
+            </ul>
+        </li>
+        <li><strong>Staking Points</strong>:
+            <ul>
+                <li>1st point: 1.1 coins;</li>
+                <li>2nd point: 2.1 coins;</li>
+                <li>3rd point: 4.1 coins;</li>
+                <li>Maximum: 30 points.</li>
+            </ul>
+        </li>
+        <li><strong>Transaction Points</strong>:
+            <ul>
+                <li>calculated based on transaction volumes from unique senders;</li>
+                <li>1st point: 0.11 coins;</li>
+                <li>2nd point: 0.21 coins;</li>
+                <li>3rd point: 0.41 coins;</li>
+                <li>Maximum: cannot exceed staking points.</li>
+            </ul>
+        </li>
+        <li>Participants can send blocks with difficulty from 17 to 100. A hash is considered valid if the number of ones in the bits is less than or equal to the value: <strong>Target = 100 - Difficulty</strong>.</li>
+        <li><strong>Final Points</strong>:
+            <ul>
+                <li>Complexity Points = difficulty × 15;</li>
+                <li>Random value ranging from 0 to 170;</li>
+                <li>Final Points = Complexity Points + Random Value + Transaction Points.</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h3>Article 12: Additional Clarifications after the Formation of the Alliance</h3>
+    <ol>
+        <li>After the formation of the Alliance, the organization <strong>CITU</strong> focuses exclusively on managing and developing the coin's algorithms.</li>
+        <li>All changes to the algorithms or significant coin parameters must be agreed upon with the Congress of the Alliance, ensuring synchronization of community interests and strategic goals.</li>
+    </ol>
+
+    <hr>
+    <hr>
+
+    <h2>Section 2: Additional Provisions</h2>
+
+    <h1>Article 13: The U.S. Constitution as a Foundation (English)</h1>
+    <p>
+        1. For all matters not regulated by this document or the Alliance Charter, the provisions of the Constitution of the United States of America, as in force on January 1, 2025 (including all amendments accepted by that date), shall apply.
+    </p>
+    <p>
+        2. When applying the provisions of the U.S. Constitution:
+        <br>– They must not contradict the explicitly stated provisions of this document or the Alliance Charter.
+        <br>– The term "United States" is deemed to refer to the Alliance.
+        <br>– All references to the U.S. dollar and American currency are deemed to refer to the Alliance’s currency system described in this document.
+    </p>
+    <p>
+        3. In the event of legal conflicts:
+        <br>– The provisions of this document and the Alliance Charter take precedence.
+        <br>– In the absence of direct conflict, the relevant provisions of the U.S. Constitution shall apply.
+        <br>– In the event of a conflict between decisions of Congress and the community, Congress’s decisions take priority. The interpretation of such conflicts and the final ruling rest with the Supreme Court of the Alliance.
+    </p>
+    <p>
+        4. The official currency of the Alliance is the CITU dollar. The Alliance has the right to issue its own fiat currency backed by the CITU dollar cryptocurrency (CITU dollar = 1:10,000 Alliance Currency, or 1:100,000, or another rate as set by Congress).
+    </p>
+    <p>
+        5. The fixed exchange rate between the Alliance fiat currency and the CITU dollar:
+        <br>– Is reviewed at least once every five years with the mandatory approval of Congress.
+        <br>– May be changed under emergency conditions (war, pandemic, catastrophes, etc.) by decision of Congress.
+        <br>– The Alliance cannot unilaterally change the issuance of CITU dollars; it only regulates the volume of its own fiat currency while maintaining guaranteed convertibility.
+    </p>
+    <p>
+        6. The Alliance Congress consists of two chambers:
+        <br>– The House of Representatives, where representatives are elected proportionally to each state’s population by means of STAR Voting, STAR Voting PR, Ranked-Choice Voting (RCV), Single Transferable Vote (STV), or Approval Voting, at the discretion of state legislation.
+        <br>– The Senate, where each state sends 3 senators, also elected via STAR Voting, STAR Voting PR, Ranked-Choice Voting (RCV), Single Transferable Vote (STV), or Approval Voting, at the discretion of state legislation.
+    </p>
+    <p>
+        Both chambers participate equally in the legislative process. All laws and amendments are adopted by Congress, which has priority in case of conflict with community decisions, provided there is no violation of the Charter. Each state may independently decide when the Second Amendment takes effect in its territory.
+    </p>
+    <p>
+    <p><strong>Article 7: Electoral System:</strong></p>
+    <ol>
+        <li>The President is elected by the Alliance Congress through STAR Voting, where every deputy from both chambers assigns a rating to each candidate on an arbitrary scale (e.g., from 0 to 5 stars) reflecting their level of support.</li>
+        <li>The voter may freely distribute stars: giving 5 stars to their favorite candidate, 0 to the least preferred, and rating the others at their discretion or leaving them unrated. It is allowed to assign equal ratings to multiple candidates or leave some candidates unrated entirely.</li>
+        <li>The process includes two stages. First, the total scores received by each candidate are summed, and the two finalists with the highest scores are determined. Then, an automatic runoff is conducted: each deputy whose ballot reflects a preference between the finalists (i.e., who assigned more stars to one finalist) votes for that candidate; in the case of equal preferences, the vote is split evenly.</li>
+        <li>The candidate receiving an absolute majority of votes in the runoff is declared the winner.</li>
+        <li>The President is elected for a single term of 4 years. The same candidate cannot hold the presidency for more than two terms in total.</li>
+        <li>The President is accountable to the Alliance Congress: in case of severe violations of the Alliance Charter or other serious breaches as provided by law, the Congress has the right to initiate impeachment proceedings.</li>
+        <li>The voting results are published in full to ensure the transparency of the process.</li>
+    </ol>  </p>
+    <p>
+        8. Emergency provisions:
+        <br>– During crises or emergencies, Congress may temporarily change rules for issuing and exchanging the Alliance’s currency to stabilize the economy.
+        <br>– Decisions on emergency measures are made by a majority vote in both chambers of Congress.
+    </p>
+    <p>
+        9. Principles of federalism:
+        <br>– States retain autonomy in matters of internal governance, except for areas under the exclusive competence of the Alliance (currency, foreign policy, defense).
+        <br>– States must adhere to the fundamental principles set forth in the Alliance Charter.
+        <br>– The U.S. Constitution in force on January 1, 2025, is used as the legal foundation of the Alliance, insofar as its provisions do not conflict with the Alliance Charter.
+        <br>– Legislative priority is held by this document, followed by the U.S. Constitution, and then by all other documents enacted by Congress.
+    </p>
+
+    <h2>Additional Measures to Strengthen Democratic Institutions and Prevent Authoritarianism (English)</h2>
+
+    <h3>13.1. Protection against Executive Abuse of Power</h3>
+    <p>
+        1. Impeachment and Responsible Government:
+        <br>– The President of the Alliance may be subjected to impeachment procedures if accused of serious crimes (treason, corruption, violation of the Charter, threats to the constitutional order).
+        <br>– The initiation of impeachment is the right of the House of Representatives (by a simple majority) or a special commission of the Congress. The final decision to remove the President is made by the Senate of Alliance mayors by a 2/3 majority vote, following open hearings.
+    </p>
+    <p>
+        2. Limitations on Executive Orders:
+        <br>– Presidential orders cannot introduce or repeal taxes, substantially change the budget, or restrict rights and freedoms defined by the Charter or the Constitution of the United States.
+        <br>– Orders that have the force of law must receive approval from Congress within a limited timeframe (e.g., 90 days). Otherwise, they lose their validity.
+    </p>
+
+    <h3>13.2. Financial Transparency</h3>
+    <p>
+        1. Budget Approval:
+        <br>– All expenditures proposed by the President in the budget must be approved by both chambers of Congress.
+        <br>– The creation of "off-budget" funds without direct legislative act is prohibited.
+    </p>
+    <p>
+        2. Oversight of Implementation:
+        <br>– The implementation of the budget is overseen by an independent supervisory body, which publishes regular reports in open access.
+    </p>
+
+    <h3>13.3. Resolution of Legislative Deadlocks</h3>
+    <p>
+        1. Overcoming a Veto:
+        <br>– In the event of the President vetoing a congressional bill, a subsequent vote in both chambers can override the veto if at least 3/5 of each chamber votes in favor of the bill.
+    </p>
+    <p>
+        2. Reconciliation Committees:
+        <br>– If consensus is not reached on a critically important bill (budget, taxation, foreign policy) within 180 days, the President may propose convening a reconciliation committee consisting of representatives from both chambers.
+    </p>
+    <p>
+        3. Early Elections:
+        <br>– In the case of a complete blockade (e.g., budget rejection for over a year), Congress, by a 2/3 majority in each chamber, may decide to hold early elections for the House of Representatives or early presidential elections according to procedures that do not contradict the Charter.
+    </p>
+
+    <h3>13.4. Judicial Independence</h3>
+    <p>
+        1. Constitutional Oversight Rights:
+        <br>– The Supreme Court of the Alliance has the authority to declare presidential orders or congressional laws unconstitutional if they contradict the Charter or the Constitution of the United States (as of January 1, 2025).
+    </p>
+    <p>
+        2. Protection of Judges:
+        <br>– Any pressure on judges through threats of funding cuts, unjustified expansion, or reduction of the court's composition is considered a violation of the Charter and may result in legal consequences.
+    </p>
+    <p>
+        3. Transparent Appointment:
+        <br>– Supreme judges and heads of judicial districts are appointed following open hearings based on recommendations from the Independent Judicial System Council and voting in the Senate of Alliance mayors.
+    </p>
+
+    <h3>13.5. Transparent Elections and Campaign Finance</h3>
+    <p>
+        1. Regulation of Election Funds:
+        <br>– Congress sets maximum limits on donations and expenditures for campaigning, as well as the mandatory publication of donor data.
+    </p>
+    <p>
+        2. Independent Election Commission:
+        <br>– A unified federal body is established to coordinate the conduct of elections and oversee the financing of candidates and parties.
+    </p>
+
+    <h3>13.6. Application of the U.S. Constitution in Case of Conflicts</h3>
+    <p>
+        1. If the guarantees listed above contradict the amendments to the U.S. Constitution as of January 1, 2025, the Charter takes precedence. In all other cases, the U.S. Constitution and its judicial interpretations apply.
+    </p>
+    <p>
+        2. The Supreme Court of the Alliance interprets conflicts based on the principle of maximizing the preservation of U.S. Constitutional norms in the absence of an explicit contradiction with the Charter.
+    </p>
+
+
+    <hr>
+
+    <hr>
+
+    <div class="section">
+        <h2>Section 3: Alliance Economic Program</h2>
+
+        <div class="article">
+            <h3>Article 14: Principles of an Inclusive and Investment-Attractive System</h3>
+
+            <h4>14.1. Free Market and Basic Guarantees</h4>
+            <h5>Inviolability of Private Property</h5>
+            <p>Expropriation or restriction of assets (land, real estate, equipment) is only permissible by the decision of an independent court with compensation not less than the market value.</p>
+            <p>The state has no right to expropriate businesses in anyone’s private interests.</p>
+
+            <h5>Minimal Bureaucracy</h5>
+            <p>To start a business, registration in a unified electronic registry is required (within the respective state or at the federal level).</p>
+            <p>Licenses and permits are only required in areas that demand special control (environment, defense, health). All procedures are maximally simplified (electronic submission, fixed review periods).</p>
+
+            <h5>Internal Free Trade Zone</h5>
+            <p>There are no customs duties, quotas, or other barriers to goods and services between states.</p>
+            <p>The Congress may approve unified technical standards (without excessive bureaucracy) to expand the common market and guarantee free competition.</p>
+
+            <h4>14.2. Low Tax Burden</h4>
+            <h5>Federal Tax Ceiling — 10%</h5>
+            <p>A maximum tax rate of 10% is established for corporate profits across the Alliance. States have the right to implement lower rates or 0%, but not exceeding 10%.</p>
+            <p>Income tax also cannot exceed the range of 10–12% (free corridor), with low-income individuals being exempt from taxation.</p>
+
+            <h5>Flat Tax or Narrow Scale</h5>
+            <p>A "flat tax" rate is permissible or a rate close to flat, with 1–2 preferential tiers.</p>
+            <p>Excessively progressive scales that may deter large investments and highly qualified personnel are prohibited.</p>
+
+            <h5>Tax Deductions and Benefits</h5>
+            <p>Expenses for R&D, purchase of high-tech equipment, and training of specialists can be deducted from the tax base.</p>
+            <p>This stimulates modernization of production and scientific-technical growth.</p>
+
+            <h4>14.3. Stimulating Industry and R&D</h4>
+            <h5>Flexible Grants and Subsidies</h5>
+            <p>The state (through Congress or special agencies) conducts open competitions for innovative projects; winners receive grants or tax holidays.</p>
+            <p>Transparent publication of results: each application, its evaluation, and the grant amount are reflected in an open registry.</p>
+
+            <h5>Free Economic Zones (FEZ)</h5>
+            <p>The Congress may establish special industrial and technoparks where corporate tax is reduced to 0–5% for up to 10 years.</p>
+            <p>Simplified tariffs (or their absence) on the import of machinery, raw materials, and supplies for enterprises within FEZs.</p>
+
+            <h5>Clusters and "Learning by Doing"</h5>
+            <p>Scientific and production clusters are created, combining universities, research institutes, and companies (both large and small). The state invests in basic infrastructure (laboratories, telecommunications) and leaves managerial initiative to the participants themselves.</p>
+            <p>"Learning by doing" (E. Rayner): state programs encourage enterprises to improve employee qualifications, implement new technologies, and share practical developments within the cluster.</p>
+
+            <h4>14.4. Selective Protectionism and Global Openness</h4>
+            <h5>Free Trade Within the Alliance</h5>
+            <p>No tariffs or quotas on the movement of goods and services between states.</p>
+            <p>Wide competition within the Alliance forms a common market with maximum access to production factors.</p>
+
+            <h5>Only Temporary Protection of "Infant Industries"</h5>
+            <p>When necessary, the Congress may introduce tariffs/quotas on external goods if needed to protect an important but still developing industry (3–5 years).</p>
+            <p>Each such measure is reviewed publicly with justification of its effectiveness.</p>
+
+            <h5>Export Initiatives</h5>
+            <p>Enterprises exporting high-tech products are provided with insurance and credit benefits if their activities significantly increase jobs and the innovative potential within the Alliance.</p>
+            <p>All benefits are published openly to eliminate lobbying.</p>
+
+            <h4>14.5. Banking System and Financial Stability</h4>
+            <h5>Independent Central Bank</h5>
+            <p>Ensures the stability of the fiat currency, maintains low (0–2%) or near-zero inflation, and avoids unlimited issuance (no MMT).</p>
+            <p>All major credit programs or government loans are coordinated with Congress.</p>
+
+            <h5>Regulation with a Focus on Innovation Financing</h5>
+            <p>Banks adhere to reserve requirements (similar to Basel III).</p>
+            <p>Tax preferences are granted to banking institutions investing in startups, R&D, small and medium businesses.</p>
+
+            <h5>Financial Transparency</h5>
+            <p>All government expenditures (infrastructure, grants, service purchases) are reflected in an online registry; any citizen can view the budget and contract terms to eliminate corruption.</p>
+
+            <h4>14.6. Public Oversight and Community Mechanisms</h4>
+            <h5>Open Government Expenditures</h5>
+            <p>All contracts, subsidies, grants, and budget expenditures are published with data on contractors, timelines, amounts, and objectives.</p>
+            <p>Media and community organizations can conduct investigations and file lawsuits in case of detected abuses.</p>
+
+            <h5>Public Hearings and Petitions</h5>
+            <p>The Congress considers any initiatives that have gathered a sufficient number of signatures.</p>
+            <p>Decisions (approval or rejection) are published with explanations.</p>
+
+            <h5>Media Protection and Freedom of Criticism</h5>
+            <p>No government censorship, except in cases of justifying terrorism or direct incitement to violence.</p>
+            <p>Journalists and public figures have the right to protection if they investigate possible corruption or rights violations.</p>
+
+            <h4>14.7. Labor Freedoms and Worker Protection</h4>
+            <h5>Minimal Market Intervention</h5>
+            <p>No strict government directives on salaries, schedules (e.g., 4-day workweek), or social packages. These issues are resolved through agreements between employers and employees, as well as local state legislation.</p>
+            <p>Collective bargaining agreements and market instruments are permitted; the state does not restrict unions if their activities do not violate the law.</p>
+
+            <h5>Prohibition of Forced Labor</h5>
+            <p>All forms of slavery or servitude are prohibited (enshrined in both the Charter and the U.S. Constitution).</p>
+            <p>Violations are subject to immediate legal prosecution.</p>
+
+            <h5>Training and Requalification</h5>
+            <p>With state and enterprise support, programs are created to help employees adapt to technological changes (e.g., automation).</p>
+
+            <h4>14.8. Regional Alignment and Infrastructure</h4>
+            <h5>State Support for Infrastructure Projects</h5>
+            <p>States wishing to attract manufacturing can additionally introduce simplified licensing, reduce taxes (but not increase them), and apply for government funding for roads, communications, energy.</p>
+            <p>Priority is given to projects that enhance the long-term competitiveness of the region (new industrial parks, logistics hubs, etc.).</p>
+
+            <h5>Public-Private Partnerships (PPP)</h5>
+            <p>Major highways, energy nodes, telecommunications are developed through public-private partnerships (PPP). Private investors can participate in profits and management, while the state limits its role to coordination and providing the legal framework.</p>
+
+            <h5>Simplified Movement of People and Ideas</h5>
+            <p>Scientists, engineers, entrepreneurs can easily move between states and register businesses in any region.</p>
+            <p>Educational and scientific exchanges within the Alliance are encouraged through grants and benefits.</p>
+
+            <h5>14.9. Monitoring, Adjustment, and Historical Examples</h5>
+            <h5>Annual Assessment</h5>
+            <p>The Congress publishes indicators: inflow of direct investments, GDP growth, export volume, number of new enterprises, scientific-technical activity index, employment level.</p>
+            <p>The effectiveness of tax benefits, grants, external tariffs (if any) is analyzed.</p>
+
+            <h5>Flexible Adaptation</h5>
+            <p>Upon identifying low effectiveness or corruption risks, any measures (tax holidays, customs restrictions) can be repealed or adjusted through an accelerated procedure with public discussion.</p>
+
+            <h5>Reliance on Historical Examples</h5>
+            <p>When enacting laws, the Congress can refer to successful cases (United Kingdom after the "Glorious Revolution," USA in the 19th century, "Asian Tigers"), demonstrating the validity of certain incentives or protectionist measures.</p>
+            <p>However, all decisions must remain within the framework of this Charter and cannot arbitrarily violate prescribed limitations (10% tax, limited duration of tariffs, etc.).</p>
+        </div>
+
+        <div class="article final-remarks">
+            <h3>Article 20: Final Provisions</h3>
+            <h4>1. Entry into Force</h4>
+            <ul>
+                <li>The Economic Program comes into force no later than 4 years after the formation of the first Congress of the Alliance.</li>
+                <li>From that moment, it is to be implemented by all state and private institutions involved in its execution.</li>
+            </ul>
+
+            <h4>2. Five-Year Plans</h4>
+            <ul>
+                <li>The Congress develops and approves strategic development plans every 5 years, determining priorities, goals, and performance indicators.</li>
+                <li>Infrastructure (analytical centers, expert commissions) is created to formulate more accurate plans and coordinate their implementation.</li>
+                <li>The results of plan implementation are subject to independent audit, after which plans may be adjusted considering new economic and technological realities.</li>
+            </ul>
+
+            <h4>3. Program Priority</h4>
+            <ul>
+                <li>In the event of a conflict between local norms and the provisions of this program, priority remains with the Economic Program, provided it does not conflict with the main Charter of the Alliance.</li>
+                <li>Any changes or additions to the program are made by the Congress of the Alliance in accordance with established procedures.</li>
+            </ul>
+        </div>
+
+        <div class="senate-section">
+            <h3>Article 15: Composition of the Alliance Senate</h3>
+            <p>The Alliance Senate is the upper chamber of the bicameral Alliance Congress. It consists of mayors of cities representing each state.</p>
+            <ul>
+                <li>Each state is required to appoint at least one mayor to the Senate.</li>
+                <li>The total number of seats in the Senate corresponds to the number of mayors of Alliance cities.</li>
+                <li>The mayor or their designated representative has the right to vote in the Senate on behalf of their city.</li>
+            </ul>
+            <p><strong>Role and Functions of the Senate:</strong></p>
+            <ul>
+                <li>Participates in the legislative process jointly with the House of Representatives.</li>
+                <li>Ensures local representation in federal decisions, taking into account the interests of cities and municipalities.</li>
+                <li>Has the authority to approve or reject bills proposed by the House of Representatives.</li>
+                <li>Can initiate special committees to address issues related to city management and infrastructure development.</li>
+            </ul>
+            <p><strong>Voting Procedures:</strong></p>
+            <ul>
+                <li>Each mayor or their representative votes proportionally to their status and rating.</li>
+                <li>Decisions are made by majority votes, with each vote having a weight corresponding to the mayor's or their representative's rating.</li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+<footer th:insert="blocks/footer :: footer"></footer>
+
+</body>
+</html>

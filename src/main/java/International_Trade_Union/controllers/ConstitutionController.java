@@ -23,33 +23,19 @@ public class ConstitutionController {
 
     /**Отображает устав в браузере.
      * Displays the charter in the browser.*/
-    @GetMapping("corporate-charter")
-    public String constutionRus(Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
-
-        model.addAttribute("title", "corporate charter-корпоративный устав");
-        List<String> eng = charterEngList();
-        List<String> rus = charterRusList();
-
-
-        model.addAttribute("rus", rus);
-        model.addAttribute("eng", eng);
-        return "corporate-charter";
+    @GetMapping("/charter")
+    public String charter(Model model){
+        model.addAttribute("title", "charter");
+        return "charter";
+    }
+    @GetMapping("charter_rus")
+    public String charter_rus(){
+        return "charter_rus";
     }
 
-    public static String charterRus (){
-        String string = "";
-        for (String s : charterRusList()) {
-            string = s + "\n";
-        }
-        return string;
-    }
-
-    public static String charterEng(){
-        String string = "";
-        for (String s : charterEngList()) {
-            string = s + "\n";
-        }
-        return string;
+    @GetMapping("charter_eng")
+    public String charter_eng(){
+        return "charter_eng";
     }
 
 
