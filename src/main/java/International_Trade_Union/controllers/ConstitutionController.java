@@ -38,7 +38,6 @@ public class ConstitutionController {
         return "charter_eng";
     }
 
-
     public static List<String> charterRusList(){
         List<String> rus = new ArrayList<>();
 
