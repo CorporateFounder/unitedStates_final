@@ -38,6 +38,11 @@ public class ConstitutionController {
         return "charter_eng";
     }
 
+    @GetMapping("charter_chine")
+    public String charter_chine(){
+        return "charter_chine";
+    }
+
     public static List<String> charterRusList(){
         List<String> rus = new ArrayList<>();
 
