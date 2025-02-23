@@ -13,9 +13,9 @@
 
     <h3 th:text="${title}"/>
     <div th:each="el : ${allLaws}" class="alert alert-info mt-2">
-        <h4 th:text="'address package law: '+${el.addressLaw}"/>
+        <h4 th:text="'Story id: '+${el.addressLaw}"/>
         <p th:text="'staking votes raiting: '+${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"/>
-        <p th:text="'votesCorporateCouncilOfReferees raiting: '+${el.votesCorporateCouncilOfReferees}"/>
+        <p th:text="'Judges of Realitys raiting: '+${el.votesCorporateCouncilOfReferees}"/>
 <!--        <p th:text="'votes board of directiors raitng: '+${el.votesBoardOfDirectors}"/>-->
         <p th:text="'votes BoardOfShareholders raiting: '+${el.votesBoardOfShareholders}"/>
         <p th:text="'voteGeneral Executive Director: '+${el.voteGeneralExecutiveDirector}"/>

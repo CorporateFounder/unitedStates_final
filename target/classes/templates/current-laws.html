@@ -10,6 +10,9 @@
 
 <div class="container mt-5">
     <h3 th:text="${title}">Current Package</h3>
+    <h3>BOARD OF DIRECTORS is the same as Supreme Council of Creators</h3>
+    <h3>CORPORATE_COUNCIL_OF_REFEREES is the same as Judges of Reality</h3>
+
 
     <div class="mb-4">
         <a href="/create-law" class="btn btn-primary">create a decision or rule</a>
@@ -50,25 +53,25 @@
 
 
 
-        <h4 th:text="'Address Package : ' + ${el.addressLaw}"></h4>
-        <p th:text="'Package : ' + (${el.isPosition} ? 'POSITION' : 'SOLUTION/RULE')"></p>
-        <p th:text="'who create Package : ' + ${el.whoCreate}"></p>
-        <p th:text="'when create Package : ' + ${el.indexCreateLaw}"></p>
+        <h4 th:text="'story id : ' + ${el.addressLaw}"></h4>
+        <p th:text="'is story or position : ' + (${el.isPosition} ? 'POSITION' : 'STORY')"></p>
+        <p th:text="'who create story : ' + ${el.whoCreate}"></p>
+        <p th:text="'when create story : ' + ${el.indexCreateLaw}"></p>
         <p th:text="'Balance Votes Rating: ' + ${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"></p>
         <p th:text="'Balance Votes Rating Percent: ' + ${#numbers.formatDecimal(el.percentDirectDemocracy, 1, 'COMMA', 16, 'POINT')}"></p>
-        <p th:text="'Sum Rating Directors: ' + ${#numbers.formatDecimal(el.sum, 1, 'COMMA', 16, 'POINT')}"></p>
+        <p th:text="'Sum Rating Supreme Council of Creators: ' + ${#numbers.formatDecimal(el.sum, 1, 'COMMA', 16, 'POINT')}"></p>
         <p th:text="'Voting Directors: ' + ${#numbers.formatDecimal(el.fractionVote, 1, 'COMMA', 16, 'POINT')}"></p>
-        <p th:text="'The judges voted YES: ' + ${el.votesCorporateCouncilOfRefereesYes}"></p>
-        <p th:text="'The judges voted NO: ' + ${el.votesCorporateCouncilOfRefereesNo}"></p>
+        <p th:text="'Judges of Reality voted YES: ' + ${el.votesCorporateCouncilOfRefereesYes}"></p>
+        <p th:text="'Judges of Reality voted NO: ' + ${el.votesCorporateCouncilOfRefereesNo}"></p>
 
         <div th:each="director : ${el.directorsVote}" class="mt-1">
-            <span th:text="'Director: ' + ${director.address}"></span>
+            <span th:text="'Creator: ' + ${director.address}"></span>
             <span th:text="'Vote: ' + ${director.vote}"></span>
         </div>
 
-        <p th:text="'Vote General Executive Director: ' + ${el.voteGeneralExecutiveDirector}"></p>
+        <p th:text="'Vote General Executive Supreme Creator: ' + ${el.voteGeneralExecutiveDirector}"></p>
         <p th:text="'Founder Vote: ' + ${el.founderVote}"></p>
-        <p th:text="'Name of the Package : ' + ${el.packageName}"></p>
+        <p th:text="'Name of the story : ' + ${el.packageName}"></p>
 
         <!-- Кнопки для голосования непосредственно со страницы -->
         <div class="btn-group" role="group">
