@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -913,4 +914,30 @@ public class ConductorController {
         return current;
     }
 
+
+    @GetMapping("/web-detail-laws-current/{addressLaw}")
+    @ResponseBody
+    public List<String> lawsDetail(@PathVariable(value = "addressLaw") String addressLaw, RedirectAttributes redirectAttrs) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, SignatureException, NoSuchProviderException, InvalidKeyException {
+        System.out.println("LawsController detail-laws-current/{addressLaw}: " + addressLaw);
+        redirectAttrs.addAttribute("title", "detail laws");
+        //Seting.ORIGINAL_CURRENT_FEDERAL_LAWS_FILE
+        List<LawEligibleForParliamentaryApproval> lawEligibleForParliamentaryApprovals =
+                UtilsLaws.readLineCurrentLaws(Seting.ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE);
+
+        List<String> currntLaws = new ArrayList<>();
+        for (LawEligibleForParliamentaryApproval lawEligibleForParliamentaryApproval : lawEligibleForParliamentaryApprovals) {
+            int i = 0;
+            if (lawEligibleForParliamentaryApproval.getLaws().getHashLaw().equals(addressLaw)) {
+
+                for (String str : lawEligibleForParliamentaryApproval.getLaws().getLaws()) {
+
+                    currntLaws.add("" + i + ": " + str);
+                    ++i;
+                }
+
+            }
+        }
+
+       return currntLaws;
+    }
 }
