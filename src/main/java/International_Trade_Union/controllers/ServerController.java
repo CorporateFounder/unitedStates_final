@@ -22,4 +22,18 @@ public class ServerController {
     public String server(){
         return "redirect:/seting";
     }
+
+
+    @PostMapping("/poolhost")
+
+    public String poolhost(@RequestParam String host) throws IOException {
+        System.out.println("your host changed: " + host);
+        UtilsFileSaveRead.save(host, Seting.POOL_HOST, false);
+        return "redirect:/seting";
+    }
+
+    @GetMapping("/poolhost")
+    public String poolhost(){
+        return "redirect:/seting";
+    }
 }

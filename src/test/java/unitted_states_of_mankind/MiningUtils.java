@@ -94,15 +94,15 @@ public class MiningUtils {
         String previousHash = "0000000000000000000000000000000000000000000000000000000000000000";
         String merkleRoot = "axdb6f38752e0ac6ea1e9ebe8987e80ebdfbce4f0c52f1b00a08866ec59a6755";
         long timestamp = 1634582400; // Пример времени в секундах с начала эпохи
-        // Target Block Time (in seconds)
+        // Target TestingBlock Time (in seconds)
         int targetBlockTime = 150;
 
-        // Calculate Difficulty based on Target Block Time
+        // Calculate Difficulty based on Target TestingBlock Time
 //        int difficulty = calculateDifficulty(targetBlockTime);
 // Calculate Max Target based on Difficulty
 
 //
-//         Calculate Difficulty based on Target Block Time
+//         Calculate Difficulty based on Target TestingBlock Time
         //diff=1 secndond 13 diff 1
         //diff=1 secndond 12 diff 2
         long difficulty = 1;
@@ -119,7 +119,7 @@ public class MiningUtils {
 //            String hash = UtilsUse.sha256hash(blockData + nonce);
             System.out.println(nonce);
             if (isValidHash(hash, target)) {
-                System.out.println("Block mined! Nonce: " + nonce);
+                System.out.println("TestingBlock mined! Nonce: " + nonce);
                 System.out.println("Hash: " + hash);
                 System.out.println("target: " + target);
 

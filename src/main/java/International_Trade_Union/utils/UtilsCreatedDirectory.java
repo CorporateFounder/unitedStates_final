@@ -79,6 +79,9 @@ public class UtilsCreatedDirectory {
         files.add(Seting.ORIGINAL_POOL_URL_ADDRESS_BLOCKED_FILE);
 
         files.add(Seting.ORIGINAL_ACCOUNT);
+
+        files.add(Seting.ORIGINAL_POOL_ADDRESS_ACCOUNT);
+        files.add(Seting.POOL_HOST);
         files.add(Seting.ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE);
         files.add(Seting.TEMPORARY_BLOCKCHAIN_FILE);
         files.add(Seting.BALANCE_REPORT_ON_DESTROYED_COINS);

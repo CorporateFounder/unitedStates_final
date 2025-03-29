@@ -23,12 +23,14 @@ public class AllTransactions {
     private static List<DtoTransaction> instance = new ArrayList<>();
     //все транзакции которые уже добавлены в блок, нужно чтобы повторно
     //не добавлялись в блок если они скачены с дисковери.
-    private static List<DtoTransaction> sendedTransaction = new ArrayList<>();
+
 
     public static List<DtoTransaction> readFrom() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
         return UtilsTransaction.readLineObject(Seting.ORGINAL_ALL_TRANSACTION_FILE);
     }
 
+
+    private static List<DtoTransaction> sendedTransaction = new ArrayList<>();
     public static synchronized List<DtoTransaction> getInstance() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, NoSuchProviderException, InvalidKeyException {
 
         instance = new ArrayList<>();

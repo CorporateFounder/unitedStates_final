@@ -170,6 +170,8 @@ public interface Seting {
     String ORIGINAL_BOARD_0F_SHAREHOLDERS_FILE = testPath +"/resources/federalGovernment/federalGovernment.txt";
     String ORIGINAL_ALL_CORPORATION_LAWS_FILE = testPath +"/resources/federalLaws/";
     String ORIGINAL_ACCOUNT = testPath +"/resources/minerAccount/minerAccount.txt";
+
+    String ORIGINAL_POOL_ADDRESS_ACCOUNT = testPath +"/resources/poolAddressAccount/poolAddressAccount.txt";
     String ORIGINAL_CORPORATE_VOTE_FILE = testPath +"/resources/vote/";
 
     String ORIGINAL_ALL_CORPORATION_LAWS_WITH_BALANCE_FILE = testPath +"/resources/allLawsWithBalance/";
@@ -204,6 +206,9 @@ public interface Seting {
     Set<String> ORIGINAL_ADDRESSES = IS_TEST ? new HashSet<>(Arrays.asList("http://localhost:8083")) : new HashSet<>(Arrays.asList("http://194.87.236.238:82"));
     Set<String> ORIGINAL_BLOCKED_ADDRESS = Set.of("http://154.40.38.130:80",
             "http://10.0.36.2:80", "http://localhost:8083");
+
+
+    String POOL_HOST = "/resources/poolhost/poolhost.txt";
 
     int SIZE_FILE_LIMIT = 2;
 

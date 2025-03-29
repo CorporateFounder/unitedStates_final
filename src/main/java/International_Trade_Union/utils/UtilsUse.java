@@ -785,18 +785,7 @@ public class UtilsUse {
     }
 
 
-    //возвращает скользящее окно для хранения последних 30 слепков балана
-    public static Map<Long, Map<String, Account>> slideWindow() {
-        // Replace the HashMap with a LinkedHashMap that has a size limit for the sliding window
-        Map<Long, Map<String, Account>> windows = new LinkedHashMap<Long, Map<String, Account>>(30, 0.75f, true) {
-            @Override
-            protected boolean removeEldestEntry(Map.Entry<Long, Map<String, Account>> eldest) {
-                return size() > Seting.SLIDING_WINDOW_BALANCE; // Keep only the latest 30 entries
-            }
-        };
 
-        return windows;
-    }
 
     //определяет количество знаков после запятой и не пропускает транзакции с большим количеством знаков.
     public static boolean isTransactionValid(BigDecimal value, long index) {

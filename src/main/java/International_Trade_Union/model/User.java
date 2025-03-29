@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 
 public class User {
     private static String addressMiner="";
+    private static String addressPool="";
 
     public static void setUserAddress(String addressMiner) {
 //        System.out.println("change minerAccount: " + addressMiner);
@@ -21,5 +22,13 @@ public class User {
         if(addressMiner.isEmpty() || addressMiner == null)
             addressMiner = Seting.BUDGET;
         return addressMiner;
+    }
+
+    public static String getPoolAddress() throws FileNotFoundException {
+        addressPool = UtilsFileSaveRead.read(Seting.ORIGINAL_POOL_ADDRESS_ACCOUNT);
+        System.out.println("getPoolAddress: " + addressPool);
+        if(addressPool.isEmpty() || addressPool == null)
+            addressPool = Seting.BUDGET;
+        return addressPool;
     }
 }

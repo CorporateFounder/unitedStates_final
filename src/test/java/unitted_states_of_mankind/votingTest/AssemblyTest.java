@@ -257,7 +257,7 @@ public class AssemblyTest {
         for (int i = 0; i < blocks.size(); i++) {
             boolean isFinish = (i == blocks.size() - 1);
             selectedMembers = selectAssemblyMembers(blocks.get(i), patron, isFinish);
-//            System.out.println("Block " + i + ": selected members count: " + selectedMembers.size());
+//            System.out.println("TestingBlock " + i + ": selected members count: " + selectedMembers.size());
         }
         System.out.println("Final selected members: " + selectedMembers.size());
 

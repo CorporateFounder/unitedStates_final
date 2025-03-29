@@ -193,10 +193,7 @@ public final class Block implements Cloneable {
         }
 
         public String hashForTransaction() throws IOException {
-
                 return UtilsUse.sha256hash(jsonString());
-
-
         }
 
         public String jsonString() throws IOException {

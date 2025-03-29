@@ -100,6 +100,77 @@ public class Testing {
     }
 
     @Test
+    public void getPrevBlockTest() throws JSONException, IOException {
+        String s = "http://194.87.236.238:82";
+        String json = UtilUrl.readJsonFromUrl(s + "/prevBlock");
+        Block block = UtilsJson.jsonToBLock(json);
+        System.out.println("block: " + block);
+    }
+
+    @Test
+    public void testhash() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        Block block = UtilsJson.jsonToBLock("{\n" +
+                "    \"dtoTransactions\": [\n" +
+                "        {\n" +
+                "            \"sender\": \"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\n" +
+                "            \"customer\": \"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\n" +
+                "            \"digitalDollar\": 93.0,\n" +
+                "            \"digitalStockBalance\": 93.0,\n" +
+                "            \"laws\": {\n" +
+                "                \"packetLawName\": null,\n" +
+                "                \"laws\": null,\n" +
+                "                \"hashLaw\": null\n" +
+                "            },\n" +
+                "            \"bonusForMiner\": 0.0,\n" +
+                "            \"voteEnum\": \"YES\",\n" +
+                "            \"sign\": \"MEUCIQDoUqbiNqqD4FxeTbPPs8tCv2ijTeLq7xRgs+0Uylg8UwIgAdKjzBUv+0whNuY8UEwl+vMB4GfytmX39z4+qBOvudc=\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"sender\": \"faErFrDnBhfSfNnj1hYjxydKNH28cRw1PBwDQEXH3QsJ\",\n" +
+                "            \"customer\": \"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\n" +
+                "            \"digitalDollar\": 9.3,\n" +
+                "            \"digitalStockBalance\": 9.3,\n" +
+                "            \"laws\": {\n" +
+                "                \"packetLawName\": null,\n" +
+                "                \"laws\": null,\n" +
+                "                \"hashLaw\": null\n" +
+                "            },\n" +
+                "            \"bonusForMiner\": 0.0,\n" +
+                "            \"voteEnum\": \"YES\",\n" +
+                "            \"sign\": \"MEUCIQD38SWkS/nlMkMvK5DMvNKArEHacEHyIEv1QUkn4ApiQgIgFj/XT20SCkyta+dGYIntiVpvo1u+CADaasaC3VgYBQM=\"\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"previousHash\": \"12c0201b25312836266818a0084ca008202c0b28a383434130208a10480a7556\",\n" +
+                "    \"minerAddress\": \"2B2JAxRi6Uf12PGG6bYkkQKKNGC46zFr2dRhLXxFM4VwL\",\n" +
+                "    \"founderAddress\": \"nNifuwmFZr7fnV1zvmpiyQDV5z7ETWvqR6GSeqeHTY43\",\n" +
+                "    \"randomNumberProof\": 17000163251582,\n" +
+                "    \"minerRewards\": 0.0,\n" +
+                "    \"hashCompexity\": 20,\n" +
+                "    \"timestamp\": 1742046927000,\n" +
+                "    \"index\": 380059,\n" +
+                "    \"hashBlock\": \"554800560223721d50c4e10104a42540a858c0c0c3802a12046e100b400012f9\"\n" +
+                "}");
+
+        TestingBlock block1= new TestingBlock();
+        List<DtoTransaction> dtoTransactions = block.getDtoTransactions();
+        TestingBlock.BlockForHash blockForHash =  block1.new BlockForHash(
+                dtoTransactions,
+                block.getPreviousHash(),
+                block.getMinerAddress(),
+                block.getFounderAddress(),
+                0,
+                block.getMinerRewards(),
+                block.getHashCompexity(),
+                block.getTimestamp(),
+                block.getIndex());
+
+        String jsonStringWithoutProof = blockForHash.jsonStringWithoutProof();
+        String prevhash = DigestUtils.sha256Hex(jsonStringWithoutProof);
+        String hash = DigestUtils.sha256Hex(prevhash + block.getRandomNumberProof());
+        System.out.println("hash: " + hash);
+        System.out.println("block: " + block.getHashBlock());
+    }
+    @Test
     public void testRew() {
         int index = 336625;
         double fridman = UtilsUse.calculateMinedMoneyFridman(index, 100, 29, 0);
@@ -936,7 +1007,7 @@ public class Testing {
         System.out.println(two.getHashBlock().equals(two.hashForTransaction()));
 
 
-//        List<Block> subBlocks = UtilsBlock.readLineObject("C://resources/blockchain/");
+//        List<TestingBlock> subBlocks = UtilsBlock.readLineObject("C://resources/blockchain/");
         System.out.println("1:download sub block: " + subBlocks.size());
         Block prev = null;
         for (int i = 0; i < subBlocks.size(); i++) {
@@ -1062,14 +1133,14 @@ public class Testing {
 //                            Mining.miningIsObsolete = true;
 //                            System.out.println("someone mined a block before you, the search for this block is no longer relevant and outdated: " + tempHash);
 //
-//                            synchronized (Block.class) {
+//                            synchronized (TestingBlock.class) {
 //                                if (!blockFound) {
 //                                    blockFound = true;
 //                                    Mining.miningIsObsolete = true;
 //                                    foundHash = tempHash;
 //                                }
 //                            }
-//                            System.out.println("Block found: hash: " + tempHash);
+//                            System.out.println("TestingBlock found: hash: " + tempHash);
 //                            break;
 //
 //                        }
@@ -1080,14 +1151,14 @@ public class Testing {
 //                    if (Mining.isIsMiningStop()) {
 //                        System.out.println("mining will be stopped");
 //
-//                        synchronized (Block.class) {
+//                        synchronized (TestingBlock.class) {
 //                            if (!blockFound) {
 //                                blockFound = true;
 //                                Mining.miningIsObsolete = true;
 //                                foundHash = tempHash;
 //                            }
 //                        }
-//                        System.out.println("Block found: hash: " + tempHash);
+//                        System.out.println("TestingBlock found: hash: " + tempHash);
 //
 //                        foundHash= tempHash;
 //                        break;
@@ -1107,7 +1178,7 @@ public class Testing {
                                 foundHash = tempHash;
                             }
                         }
-                        System.out.println("Block found: hash: " + tempHash);
+                        System.out.println("TestingBlock found: hash: " + tempHash);
                         foundHash = tempHash;
                         break;
                     }

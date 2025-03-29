@@ -44,7 +44,7 @@ public class MultiThreadExample {
                                 foundHash = localHash;
                             }
                         }
-                        System.out.println("Block found: hash: " + localHash);
+                        System.out.println("TestingBlock found: hash: " + localHash);
                         break;
                     }
                     localNonce++;

@@ -37,6 +37,7 @@ import International_Trade_Union.vote.VoteEnum;
 
 
 import javax.annotation.PostConstruct;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.*;
@@ -275,6 +276,16 @@ public class MainController {
         return "redirect:/seting";
     }
 
+    @PostMapping("/setPoolAddress")
+    public String setPoolAddress(@RequestParam(value = "poolAddress") String poolAddress, RedirectAttributes redirectAttrs){
+
+
+        System.out.println("MainController:  " + poolAddress);
+        UtilsFileSaveRead.save(poolAddress, Seting.ORIGINAL_POOL_ADDRESS_ACCOUNT, false);
+        return "redirect:/seting";
+    }
+
+
 
     /**При майнинге, устанавливает минимальную сумму в долларах, если количество транзакций больше 1000 на блок,
      * то будут отбираться только те кто награду за блок.
@@ -451,22 +462,25 @@ public class MainController {
 
 
     @GetMapping("/seting")
-    public String seting(Model model){
+    public String seting(Model model) throws FileNotFoundException {
         model.addAttribute("title", "Settings");
 //        model.addAttribute("reward", "the reward that
 //        the miner must receive in order to add a transaction.: " +
 //        BasisController.getMinDollarRewards());
-        System.out.println("pool: " + Block.getThreadCount());
-        System.out.println("multithread: " + Block.isMultiThread());
 
-        model.addAttribute("minerRew", BasisController.getMinDollarRewards());
-        model.addAttribute("pool",Block.getThreadCount());
-        model.addAttribute("multithread", Block.isMultiThread());
-        long startMiningNumber = Block.getRandomNumberProofStatic();
-        if(Block.isMultiThread()){
-            startMiningNumber += Block.getThreadCount() * Block.getIncrementValue();
-        }
-        model.addAttribute("number", startMiningNumber);
+
+
+        String server = UtilsFileSaveRead.read(Seting.YOUR_SERVER);
+        String poolhost = UtilsFileSaveRead.read(Seting.POOL_HOST);
+        String setMinner = UtilsFileSaveRead.read(Seting.ORIGINAL_ACCOUNT);
+        String setPoolAddress = UtilsFileSaveRead.read(Seting.ORIGINAL_POOL_ADDRESS_ACCOUNT);
+
+        model.addAttribute("server",server);
+        model.addAttribute("poolhost",poolhost);
+        model.addAttribute("setMinner",setMinner);
+        model.addAttribute("setPoolAddress",setPoolAddress);
+
+
         return "seting";
     }
 

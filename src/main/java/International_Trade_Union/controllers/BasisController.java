@@ -4,6 +4,7 @@ import International_Trade_Union.entity.*;
 import International_Trade_Union.entity.blockchain.DataShortBlockchainInformation;
 import International_Trade_Union.entity.entities.EntityAccount;
 import International_Trade_Union.entity.entities.EntityBlock;
+import International_Trade_Union.entity.entities.PoolBlock;
 import International_Trade_Union.entity.services.BlockService;
 import International_Trade_Union.governments.UtilsGovernment;
 import International_Trade_Union.model.*;
@@ -36,6 +37,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.math.BigDecimal;
@@ -790,7 +792,13 @@ public class BasisController {
             return -4;
         }
     }
-
+    public int sendPool(PoolBlock poolBlock) throws IOException {
+        String host =  UtilsFileSaveRead.read(Seting.POOL_HOST);
+        String urlFrom = host + "/pool/add";
+        String json = UtilsJson.objToStringJson(poolBlock);
+        UtilUrl.sendPost(json, urlFrom);
+        return 0;
+    }
     /**
      * mine every 576 blocks. добывать каждые 576 блоков
      */
@@ -849,10 +857,15 @@ public class BasisController {
             Map<String, Account> balances = new HashMap<>();
 
             EntityAccount entityAccount = blockService.findByAccount(User.getUserAddress());
+            EntityAccount entityPool = blockService.findByAccount(User.getPoolAddress());
             if (entityAccount == null) {
                 entityAccount = new EntityAccount(User.getUserAddress(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
             }
+            if (entityPool == null) {
+                entityPool = new EntityAccount(User.getPoolAddress(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+            }
             Account miner = UtilsAccountToEntityAccount.entityAccountToAccount(entityAccount);
+            Account pool = UtilsAccountToEntityAccount.entityAccountToAccount(entityPool);
             minerShow = miner;
 
             String address = "http://194.87.236.238:80";
@@ -929,6 +942,7 @@ public class BasisController {
                 tempAccount = new EntityAccount(User.getUserAddress(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
             }
             miner = UtilsAccountToEntityAccount.entityAccountToAccount(tempAccount);
+
             minerShow = miner;
             System.out.println("BasisController: mining: account miner: " + miner);
             if (miner == null) {
@@ -979,6 +993,12 @@ public class BasisController {
             //BLOCK_GENERATION_INTERVAL how often the block should be found
             //temporaryDtoList adds transactions to the block.
             balances.putAll(UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(temporaryDtoList)));
+            PoolBlock poolBlock = new PoolBlock();
+            if(!pool.getAccount().equals(Seting.BUDGET)){
+               poolBlock.setMiner(miner.getAccount());
+               miner = pool;
+
+            }
             Block block = Mining.miningDay(
                     miner,
                     tempBlockchain,
@@ -1063,8 +1083,13 @@ public class BasisController {
             System.out.println("hash: " + block.getHashBlock());
             //отправляет блоки на узел или узлы.
             //sends blocks to a node or nodes.
+
             sendAllBlocksToStorage(sends);
 
+            if(!pool.getAccount().equals(Seting.BUDGET)){
+                poolBlock.setBlock(block);
+                sendPool(poolBlock);
+            }
 
             //отправить адресса
 //        sendAddress();

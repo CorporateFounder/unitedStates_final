@@ -650,7 +650,7 @@ public class LawsController {
         });
 
 
-        model.addAttribute("title", "upvoted stories" +
+        model.addAttribute("title", "How the current laws are made is described in the charter." +
                 " ");
         model.addAttribute("currentLaw", current);
 

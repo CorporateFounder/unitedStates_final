@@ -259,7 +259,7 @@ public class HybridTest {
      * @param eligibleSenders       List of eligible senders.
      * @param senderContributions   Map of senders and their maximum contributions.
      * @param count                 Number of members to select.
-     * @param blockHash             Block hash for deterministic randomness.
+     * @param blockHash             TestingBlock hash for deterministic randomness.
      * @param maxIndividualProbability Maximum individual selection probability.
      * @return List of selected assembly members.
      * @throws NoSuchAlgorithmException If SHA-256 is unavailable.
