@@ -55,11 +55,11 @@
 
         <h4 th:text="'id : ' + ${el.addressLaw}"></h4>
         <p th:text="'is rule or position : ' + (${el.isPosition} ? 'POSITION' : 'STORY')"></p>
-        <p th:text="'who create story : ' + ${el.whoCreate}"></p>
-        <p th:text="'when create story : ' + ${el.indexCreateLaw}"></p>
+        <p th:text="'who create rule/position : ' + ${el.whoCreate}"></p>
+        <p th:text="'when create rule/position : ' + ${el.indexCreateLaw}"></p>
         <p th:text="'Balance Votes Rating: ' + ${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"></p>
         <p th:text="'Balance Votes Rating Percent: ' + ${#numbers.formatDecimal(el.percentDirectDemocracy, 1, 'COMMA', 16, 'POINT')}"></p>
-        <p th:text="'Sum Rating Supreme Council of Creators: ' + ${#numbers.formatDecimal(el.sum, 1, 'COMMA', 16, 'POINT')}"></p>
+        <p th:text="'Sum Rating Directors: ' + ${#numbers.formatDecimal(el.sum, 1, 'COMMA', 16, 'POINT')}"></p>
         <p th:text="'Voting Directors: ' + ${#numbers.formatDecimal(el.fractionVote, 1, 'COMMA', 16, 'POINT')}"></p>
         <p th:text="'Judges of Reality voted YES: ' + ${el.votesCorporateCouncilOfRefereesYes}"></p>
         <p th:text="'Judges of Reality voted NO: ' + ${el.votesCorporateCouncilOfRefereesNo}"></p>
@@ -69,7 +69,7 @@
             <span th:text="'Vote: ' + ${director.vote}"></span>
         </div>
 
-        <p th:text="'Vote General Executive Supreme Creator: ' + ${el.voteGeneralExecutiveDirector}"></p>
+        <p th:text="'Vote CEO: ' + ${el.voteGeneralExecutiveDirector}"></p>
         <p th:text="'Founder Vote: ' + ${el.founderVote}"></p>
         <p th:text="'Name of the package : ' + ${el.packageName}"></p>
 
