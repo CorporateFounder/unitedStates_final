@@ -26,6 +26,11 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -529,12 +534,41 @@ public class ConductorController {
 
             accountMap = UtilsAccountToEntityAccount
                     .entityAccountsToMapAccounts(blockService.findAllAccounts());
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return accountMap;
     }
 
+    @GetMapping("/TopAddress")
+    @ResponseBody
+    public Map<String, Account> topAddresses(@RequestParam(defaultValue = "100") int limit) {
+        try {
+            return UtilsAccountToEntityAccount
+                    .entityAccountsToMapAccounts(blockService.findAllAccounts())
+                    .entrySet()
+                    .stream()
+                    .sorted((e1, e2) -> {
+                        BigDecimal sum1 = e1.getValue().getDigitalDollarBalance()
+                                .add(e1.getValue().getDigitalStakingBalance());
+                        BigDecimal sum2 = e2.getValue().getDigitalDollarBalance()
+                                .add(e2.getValue().getDigitalStakingBalance());
+                        return sum2.compareTo(sum1); // по убыванию
+                    })
+                    .limit(limit)
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            Map.Entry::getValue,
+                            (e1, e2) -> e1,
+                            LinkedHashMap::new
+                    ));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyMap();
+        }
+    }
 
 
 
@@ -567,10 +601,13 @@ public class ConductorController {
     @GetMapping("/current-laws-body")
     @ResponseBody
     public List<CurrentLawVotesEndBalance> currentLawVotesEndBalances() throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
+        System.out.println("currentLawVotesEndBalances: start");
         if (BasisController.isUpdating() || BasisController.isMining()) {
             return new ArrayList<>();
         }
-        utilsResolving.resolve3();
+        System.out.println("currentLawVotesEndBalances: before update");
+        int result = utilsResolving.resolve3();
+        System.out.println("currentLawVotesEndBalances: after update: result: " + result);
 
         //получает список должностей
         Directors directors = new Directors();
@@ -940,4 +977,9 @@ public class ConductorController {
 
        return currntLaws;
     }
+
+
+
 }
+
+
