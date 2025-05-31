@@ -53,8 +53,8 @@
 
 
 
-        <h4 th:text="'story id : ' + ${el.addressLaw}"></h4>
-        <p th:text="'is story or position : ' + (${el.isPosition} ? 'POSITION' : 'STORY')"></p>
+        <h4 th:text="'id : ' + ${el.addressLaw}"></h4>
+        <p th:text="'is rule or position : ' + (${el.isPosition} ? 'POSITION' : 'STORY')"></p>
         <p th:text="'who create story : ' + ${el.whoCreate}"></p>
         <p th:text="'when create story : ' + ${el.indexCreateLaw}"></p>
         <p th:text="'Balance Votes Rating: ' + ${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"></p>
@@ -65,7 +65,7 @@
         <p th:text="'Judges of Reality voted NO: ' + ${el.votesCorporateCouncilOfRefereesNo}"></p>
 
         <div th:each="director : ${el.directorsVote}" class="mt-1">
-            <span th:text="'Creator: ' + ${director.address}"></span>
+            <span th:text="'director: ' + ${director.address}"></span>
             <span th:text="'Vote: ' + ${director.vote}"></span>
         </div>
 
