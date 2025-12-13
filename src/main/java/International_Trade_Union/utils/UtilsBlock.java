@@ -374,6 +374,9 @@ public class UtilsBlock {
             List<String> SignaturesNotTakenIntoAccount) throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, NoSuchProviderException, InvalidKeyException {
 
         Base base = new Base58();
+        // КОНСТАНТА: Индекс блока, с которого меняется порядок округления
+        long FIX_FRIDMAN_ROUNDING_INDEX = 482360;
+
         if (!addressFounder.equals(thisBlock.getFounderAddress())) {
             System.out.println("genesis address not equals block founder: ");
             System.out.println("genesis address: " + addressFounder);
@@ -417,24 +420,27 @@ public class UtilsBlock {
             List<DtoTransaction> dublicates = UtilsUse.getDuplicateTransactions(thisBlock);
             for (int i = 0; i < dublicates.size(); i++) {
                 System.out.println("dublicate: " + dublicates.get(i));
+                MyLogger.saveLog("dublicate: " + dublicates.get(i));
             }
 
             validated = false;
+
+            MyLogger.saveLog("the block contains transactions with duplicate signatures. " + validated);
             return validated;
         }
 
         if (thisBlock.getIndex() > BALANCE_CHEKING) {
             Map<String, Account> balances = balance;
 
-           List<Block> tempBlock = new ArrayList<>();
-           tempBlock.add(previusblock);
-           tempBlock.add(thisBlock);
+            List<Block> tempBlock = new ArrayList<>();
+            tempBlock.add(previusblock);
+            tempBlock.add(thisBlock);
 
 
-           if(balances == null){
-               balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(previusblock.getDtoTransactions()));
-               MyLogger.saveLog("validation balance from  null: " + balances);
-           }
+            if(balances == null){
+                balances = UtilsAccountToEntityAccount.entityAccountsToMapAccounts(blockService.findByDtoAccounts(previusblock.getDtoTransactions()));
+                MyLogger.saveLog("validation balance from  null: " + balances);
+            }
 
             List<DtoTransaction> transactions = thisBlock.getDtoTransactions()
                     .stream()
@@ -468,7 +474,7 @@ public class UtilsBlock {
                 if (!dtoTransaction.getCustomer().equals(BASIS_ADDRESS)) {
                     if (dtoTransaction.getDigitalDollar() < MINIMUM
                             && dtoTransaction.getDigitalStockBalance() < MINIMUM
-                          && thisBlock.getIndex() < Seting.CHANGE_DECIMAL_2_INDEX) {
+                            && thisBlock.getIndex() < Seting.CHANGE_DECIMAL_2_INDEX) {
                         System.out.println("*************************************");
                         System.out.println("If a transaction is not a voting transaction, it cannot transfer less than 0.01 of both a dollar and shares at the same time.");
                         System.out.println("index: " + thisBlock.getIndex());
@@ -541,6 +547,9 @@ public class UtilsBlock {
                             System.out.println("transaction: : " + dtoTransaction);
                             System.out.println("index block: " + thisBlock.getIndex());
                             System.out.println("*************************************");
+                            MyLogger.saveLog("dtoSender: The sender and recipient address cannot be the same if VoteEnum.YES or NO");
+                            MyLogger.saveLog("transaction: : " + dtoTransaction);
+                            MyLogger.saveLog("index block: " + thisBlock.getIndex());
                             validated = false;
                             return validated;
                         }
@@ -584,6 +593,7 @@ public class UtilsBlock {
                 double G = 0;
                 long index = thisBlock.getIndex();
                 int multiplier = 0;
+
                 if (thisBlock.getIndex() > Seting.V34_NEW_ALGO) {
 
                     int day = 576;
@@ -616,28 +626,68 @@ public class UtilsBlock {
                         minerPowerReward += moneyFromDif * (MULT + G);
                     }
 
+                    // ====================================================================================
+                    // ИСПРАВЛЕНИЕ: Разделение логики для старых и новых блоков
+                    // ====================================================================================
 
-                    if(index > OPTIMAL_SCORE_INDEX){
-                        minerReward = 0;
-                        minerPowerReward = 0;
-                        multiplier = (int) money;
-                    }
+                    if (thisBlock.getIndex() >= FIX_FRIDMAN_ROUNDING_INDEX) {
+                        // ДЛЯ НОВЫХ БЛОКОВ: Сначала считаем формулы, ПОТОМ округляем
 
-                    if (thisBlock.getIndex() > Seting.START_BLOCK_DECIMAL_PLACES && thisBlock.getIndex() <= ALGORITM_MINING) {
-                        minerReward = UtilsUse.round(minerReward, Seting.DECIMAL_PLACES);
-                        minerPowerReward = UtilsUse.round(minerPowerReward, Seting.DECIMAL_PLACES);
-                    }
-
-
-
-                    if (thisBlock.getIndex() > ALGORITM_MINING) {
-                        int decimal = SENDING_DECIMAL_PLACES;
-                        if(thisBlock.getIndex() >= CHANGE_DECIMAL_2_INDEX){
-                            decimal = SENDING_DECIMAL_PLACES_2;
+                        if(index > OPTIMAL_SCORE_INDEX){
+                            minerReward = 0;
+                            minerPowerReward = 0;
+                            multiplier = (int) money;
                         }
-                        minerReward = UtilsUse.round(minerReward, decimal);
-                        minerPowerReward = UtilsUse.round(minerPowerReward, decimal);
+
+                        // Применяем Фридмана СНАЧАЛА
+                        minerReward = UtilsUse.calculateMinedMoneyFridman(thisBlock.getIndex(), minerReward, thisBlock.getHashCompexity(), G);
+                        minerPowerReward = UtilsUse.calculateMinedMoneyFridman(thisBlock.getIndex(), minerPowerReward, thisBlock.getHashCompexity(), G);
+
+                        // Применяем множитель
+                        if(index > OPTIMAL_SCORE_INDEX){
+                            minerReward *= multiplier;
+                            minerPowerReward *= multiplier;
+                        }
+
+                        // Теперь округляем ПОСЛЕ
+                        if (thisBlock.getIndex() > Seting.START_BLOCK_DECIMAL_PLACES && thisBlock.getIndex() <= ALGORITM_MINING) {
+                            minerReward = UtilsUse.round(minerReward, Seting.DECIMAL_PLACES);
+                            minerPowerReward = UtilsUse.round(minerPowerReward, Seting.DECIMAL_PLACES);
+                        }
+
+                        if (thisBlock.getIndex() > ALGORITM_MINING) {
+                            int decimal = SENDING_DECIMAL_PLACES;
+                            if(thisBlock.getIndex() >= CHANGE_DECIMAL_2_INDEX){
+                                decimal = SENDING_DECIMAL_PLACES_2;
+                            }
+                            minerReward = UtilsUse.round(minerReward, decimal);
+                            minerPowerReward = UtilsUse.round(minerPowerReward, decimal);
+                        }
+
+                    } else {
+                        // ДЛЯ СТАРЫХ БЛОКОВ: Сохраняем старый порядок (сначала округление, Фридман будет ниже по коду)
+
+                        if(index > OPTIMAL_SCORE_INDEX){
+                            minerReward = 0;
+                            minerPowerReward = 0;
+                            multiplier = (int) money;
+                        }
+
+                        if (thisBlock.getIndex() > Seting.START_BLOCK_DECIMAL_PLACES && thisBlock.getIndex() <= ALGORITM_MINING) {
+                            minerReward = UtilsUse.round(minerReward, Seting.DECIMAL_PLACES);
+                            minerPowerReward = UtilsUse.round(minerPowerReward, Seting.DECIMAL_PLACES);
+                        }
+
+                        if (thisBlock.getIndex() > ALGORITM_MINING) {
+                            int decimal = SENDING_DECIMAL_PLACES;
+                            if(thisBlock.getIndex() >= CHANGE_DECIMAL_2_INDEX){
+                                decimal = SENDING_DECIMAL_PLACES_2;
+                            }
+                            minerReward = UtilsUse.round(minerReward, decimal);
+                            minerPowerReward = UtilsUse.round(minerPowerReward, decimal);
+                        }
                     }
+                    // ====================================================================================
 
 
                 }
@@ -646,27 +696,34 @@ public class UtilsBlock {
                     minerPowerReward = SPECIAL_FORK_BALANCE;
                 }
 
-                //фридман модель рост в 2 после будет 0.005%
-                minerReward = UtilsUse.calculateMinedMoneyFridman(thisBlock.getIndex(), minerReward, thisBlock.getHashCompexity(), G);
-                minerPowerReward = UtilsUse.calculateMinedMoneyFridman(thisBlock.getIndex(), minerPowerReward, thisBlock.getHashCompexity(), G);
+                // ====================================================================================
+                // ЛОГИКА ДЛЯ СТАРЫХ БЛОКОВ (< 482360)
+                // ВАЖНО: Применяем Фридмана здесь ТОЛЬКО для старых блоков.
+                // Для новых блоков мы уже посчитали это выше перед округлением.
+                // ====================================================================================
+                if (thisBlock.getIndex() < FIX_FRIDMAN_ROUNDING_INDEX) {
+                    //фридман модель рост в 2 после будет 0.005%
+                    minerReward = UtilsUse.calculateMinedMoneyFridman(thisBlock.getIndex(), minerReward, thisBlock.getHashCompexity(), G);
+                    minerPowerReward = UtilsUse.calculateMinedMoneyFridman(thisBlock.getIndex(), minerPowerReward, thisBlock.getHashCompexity(), G);
 
-                if(index > OPTIMAL_SCORE_INDEX){
-                    minerReward *= multiplier;
-                    minerPowerReward *= multiplier;
+                    if(index > OPTIMAL_SCORE_INDEX){
+                        minerReward *= multiplier;
+                        minerPowerReward *= multiplier;
+                    }
                 }
+                // ====================================================================================
 
                 if (transaction.getSender().equals(Seting.BASIS_ADDRESS) &&
                         transaction.getCustomer().equals(thisBlock.getMinerAddress()) && transaction.getDigitalDollar() > minerReward
                         && thisBlock.getIndex() > 1) {
-                    System.out.println("wrong transaction: reward miner wrong digital dollar: " + minerReward + " index: " + thisBlock.getIndex());
-                    System.out.println("sendmoney " + transaction.getDigitalDollar());
-
-                    UtilsFileSaveRead.save("************************************", ERROR_FILE, true);
-                    UtilsFileSaveRead.save("If a transaction is not a voting transaction, it cannot transfer less than 0.01 of both a dollar and shares at the same time.", ERROR_FILE, true);
-                    UtilsFileSaveRead.save("wrong transaction: reward miner wrong digital dollar: " + minerReward + " index: " + thisBlock.getIndex(), ERROR_FILE, true);
-                    UtilsFileSaveRead.save("sendmoney " + transaction.getDigitalDollar(), ERROR_FILE, true);
-                    UtilsFileSaveRead.save("************************************", ERROR_FILE, true);
-
+                    System.out.println("ERROR: wrong transaction: reward miner wrong digital dollar: " + minerReward + " index: " + thisBlock.getIndex());
+                    System.out.println("ERROR: send money " + transaction.getDigitalDollar());
+                    MyLogger.saveLog("************************************\n");
+                    MyLogger.saveLog("If a transaction is not a voting transaction, it cannot transfer less than 0.01 of both a dollar and shares at the same time.");
+                    MyLogger.saveLog("wrong transaction: reward miner wrong digital dollar: " + minerReward + " index: " + thisBlock.getIndex());
+                    MyLogger.saveLog("sendmoney " + transaction.getDigitalDollar());
+                    MyLogger.saveLog("block: " + thisBlock);
+                    MyLogger.saveLog("************************************\n");
                     validated = false;
                     break;
                 }
@@ -834,9 +891,10 @@ public class UtilsBlock {
             } else if (!verify) {
                 System.out.println("wrong transaction: " + transaction + " verify: " + verify);
 
-                MyLogger.saveLog("************************************");
-                MyLogger.saveLog("wrong transaction: " + transaction + " verify: " + verify + " index: " + thisBlock.getIndex());
-                MyLogger.saveLog("************************************");
+                MyLogger.saveLog("************************************\n");
+                MyLogger.saveLog("ERROR: wrong transaction: " + transaction + " verify: " + verify + " index: " + thisBlock.getIndex());
+                MyLogger.saveLog("block: " + thisBlock);
+                MyLogger.saveLog("************************************\n");
 
                 validated = false;
                 break finished;

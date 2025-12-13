@@ -54,7 +54,7 @@
 
 
         <h4 th:text="'id : ' + ${el.addressLaw}"></h4>
-        <p th:text="'is rule or position : ' + (${el.isPosition} ? 'POSITION' : 'STORY')"></p>
+        <p th:text="'is rule or position : ' + (${el.isPosition} ? 'POSITION' : 'RULE')"></p>
         <p th:text="'who create rule/position : ' + ${el.whoCreate}"></p>
         <p th:text="'when create rule/position : ' + ${el.indexCreateLaw}"></p>
         <p th:text="'Balance Votes Rating: ' + ${#numbers.formatDecimal(el.votes, 1, 'COMMA', 16, 'POINT')}"></p>
