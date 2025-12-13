@@ -1053,6 +1053,7 @@ public class UtilsBlock {
 
     }
 
+
     public static List<DtoTransaction> validDto(List<Block> blocks, List<DtoTransaction> transactions) {
 
         List<DtoTransaction> transactionArrayList = new ArrayList<>();
